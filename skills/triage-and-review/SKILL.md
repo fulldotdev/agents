@@ -47,22 +47,22 @@ So for a complete task view:
 Read `/Users/otis/.openclaw/workspace/TOOLS.md` before acting so lane and tool assumptions come from the current workspace.
 
 ### Incoming collectors
-- `/Users/otis/.openclaw/skills/triage-and-review/collect_communication_lanes.py`
-- `/Users/otis/.openclaw/skills/triage-and-review/collect_slack.py`
-- `/Users/otis/.openclaw/skills/triage-and-review/collect_gmail.py`
-- `/Users/otis/.openclaw/skills/triage-and-review/collect_whatsapp.py`
-- `/Users/otis/.openclaw/skills/triage-and-review/collect_calendar.py`
-- `/Users/otis/.openclaw/skills/triage-and-review/collect_meetings.py`
+- `{baseDir}/scripts/collect_communication_lanes.py`
+- `{baseDir}/scripts/collect_slack.py`
+- `{baseDir}/scripts/collect_gmail.py`
+- `{baseDir}/scripts/collect_whatsapp.py`
+- `{baseDir}/scripts/collect_calendar.py`
+- `{baseDir}/scripts/collect_meetings.py`
 
-Lane-specific collection logic lives in the lane files themselves. Shared utilities and constants live in `task_triage_common.py`.
+Lane-specific collection logic lives in the lane files themselves. Shared utilities and constants live in `scripts/task_triage_common.py`.
 
 ### Existing work collectors
-- `/Users/otis/.openclaw/skills/triage-and-review/collect_work_lanes.py`
-- `/Users/otis/.openclaw/skills/triage-and-review/collect_tasks.py`
-- `/Users/otis/.openclaw/skills/triage-and-review/collect_projects.py`
+- `{baseDir}/scripts/collect_work_lanes.py`
+- `{baseDir}/scripts/collect_tasks.py`
+- `{baseDir}/scripts/collect_projects.py`
 
 ## What each collector is for
-### `collect_communication_lanes.py`
+### `scripts/collect_communication_lanes.py`
 Canonical incoming collector.
 Use this when you want the full incoming set for an explicit window.
 
@@ -79,7 +79,7 @@ For overlapping triage runs, it is correct to include the previous day and the c
 The caller is responsible for choosing the date window.
 The collector should be treated as stateless with respect to cron success checkpoints.
 
-### `collect_work_lanes.py`
+### `scripts/collect_work_lanes.py`
 Canonical existing-work collector.
 Use this when you want the main execution context set in one pass.
 
@@ -92,7 +92,7 @@ Reach for the individual collectors only when you specifically need one source i
 
 Important: this collector does not fetch full Notion page bodies. For tasks, it gives the Notion `properties` object, not the real page body. If the actual task body may contain execution-relevant context, fetch it separately through the markdown API.
 
-### `collect_tasks.py`
+### `scripts/collect_tasks.py`
 Canonical existing-task collector.
 Use this when you need to know what work already exists before matching, enriching, or creating tasks.
 
@@ -102,7 +102,7 @@ It collects:
 
 Important: this collector does not fetch full Notion page bodies. It returns the Notion `properties` object only. If a task's real body content matters, read it separately through `GET /v1/pages/{page_id}/markdown`.
 
-### `collect_projects.py`
+### `scripts/collect_projects.py`
 Direct project-context collector.
 Use this when project-level context is useful for matching, resolving ambiguity, or enriching durable background context.
 
@@ -111,7 +111,7 @@ It is a standalone utility, not part of the incoming collector.
 ### Lane-specific collectors
 Use the standalone incoming collectors when you want to inspect, debug, or rerun one source in isolation.
 
-`collect_calendar.py` is the calendar-events collector.
+`scripts/collect_calendar.py` is the calendar-events collector.
 Use this when you want actual calendar entries for an explicit window, including items that are not represented in the Meetings database.
 
 It collects:
@@ -120,7 +120,7 @@ It collects:
 Pass `--after <YYYY-MM-DD>` and optionally `--before <YYYY-MM-DD>`.
 Treat these as date boundaries, not exact timestamps.
 
-`collect_gmail.py` supports three modes:
+`scripts/collect_gmail.py` supports three modes:
 - default with no params: current inbox (`in:inbox`)
 - `--query "..."`: explicit Gmail query
 - `--after <YYYY-MM-DD> [--before <YYYY-MM-DD>]`: explicit date window
@@ -139,15 +139,15 @@ When handling work context:
 
 ### Full triage run
 For a cron or full triage pass:
-1. run `collect_communication_lanes.py` with an explicit window
-2. run `collect_work_lanes.py`
+1. run `scripts/collect_communication_lanes.py` with an explicit window
+2. run `scripts/collect_work_lanes.py`
 3. compare incoming items against existing tasks and relevant project context
 4. enrich existing work where confidence is high
 5. create a new task only when needed
 6. decide lane follow-up actions from the triage result
 7. send a short Telegram summary after a successful run
 
-If a caller only needs one slice of existing work, it may still use `collect_tasks.py` or `collect_projects.py` directly, but the default full-run path should use `collect_work_lanes.py`.
+If a caller only needs one slice of existing work, it may still use `scripts/collect_tasks.py` or `scripts/collect_projects.py` directly, but the default full-run path should use `scripts/collect_work_lanes.py`.
 
 The cron is responsible for its own windowing, checkpoint logic, scheduling behavior, and exact step order.
 For overlapping date-based runs, keep the windows simple and let the triage logic recognize recurring context across days.
@@ -157,7 +157,7 @@ Write that checkpoint only after the full triage run succeeds, including lane ac
 
 ### Weekly review run
 For a weekly review pass:
-1. run `collect_work_lanes.py`
+1. run `scripts/collect_work_lanes.py`
 2. collect any extra project, task-body, or calendar context needed to judge the real state of work
 3. scan for stale, duplicate, blocked, misframed, or misplaced items
 4. clean up statuses, project relations, and task framing where confidence is high
@@ -340,7 +340,7 @@ Prefer targeted queries over broad search.
 - Expand into full page detail only for tasks that look actionable or relevant.
 - If a reference is indirect or ambiguous, enumerate plausible candidates before picking one.
 - When you need the actual human-readable task or project body, use the markdown API instead of block-children reads.
-- Do not assume `collect_tasks.py` or `collect_work_lanes.py` already included the full body. They did not.
+- Do not assume `scripts/collect_tasks.py` or `scripts/collect_work_lanes.py` already included the full body. They did not.
 
 ## Commenting rule
 Use Notion comments sparingly as the page-local audit trail.
