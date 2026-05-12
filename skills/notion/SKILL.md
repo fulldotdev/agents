@@ -52,6 +52,8 @@ curl -X POST "https://api.notion.com/v1/search" \
   -d '{"query": "page title"}'
 ```
 
+Use this for discovery only. Do not use `/v1/search` as the final method for structured questions like which projects belong to a contact, which tasks belong to a project, or which meetings involve a person. For those, query the relevant data source directly with filters/relations.
+
 **Get page:**
 
 ```bash
@@ -163,6 +165,13 @@ Common property formats for database items:
 - **Search results:** Databases return as `"object": "data_source"` with their `data_source_id`
 - **Parent in responses:** Pages show `parent.data_source_id` alongside `parent.database_id`
 - **Finding the data_source_id:** Search for the database, or call `GET /v1/data_sources/{data_source_id}`
+
+## Contacts and structured queries
+
+If a user mentions a person name in a Notion context, prefer this order:
+1. resolve the person in the Notion `Contacts` database
+2. use relations/filters from Contacts, Projects, Meetings, or Tasks
+3. use `/v1/search` only if the database or page is unknown
 
 ## Notes
 

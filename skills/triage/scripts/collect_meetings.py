@@ -79,7 +79,7 @@ def collect_meetings(after_dt, before_dt):
                 {"property": "Created", "created_time": {"on_or_before": iso_utc(before_dt)}}
             ]
         },
-        "sorts": [{"property": "Last edited time", "direction": "descending"}],
+        "sorts": [{"property": "Edited", "direction": "descending"}],
         "page_size": 50
     }
     cmd = [
@@ -106,7 +106,7 @@ def collect_meetings(after_dt, before_dt):
             "url": row.get("url"),
             "Name": title,
             "Summary": summary,
-            "Last edited time": ((props.get("Last edited time") or {}).get("last_edited_time")),
+            "Edited": ((props.get("Edited") or {}).get("last_edited_time")),
             "Calendar event URL": ((props.get("Calendar event URL") or {}).get("url")),
         })
     return {"ok": True, "items": items}

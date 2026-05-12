@@ -27,13 +27,13 @@ def collect_tasks(recently_closed_after_dt=None):
                 {
                     "and": [
                         {"property": "Status", "status": {"equals": "Done"}},
-                        {"property": "Last edited time", "last_edited_time": {"on_or_after": iso_utc(recently_closed_after_dt)}}
+                        {"property": "Edited", "last_edited_time": {"on_or_after": iso_utc(recently_closed_after_dt)}}
                     ]
                 },
                 {
                     "and": [
                         {"property": "Status", "status": {"equals": "Canceled"}},
-                        {"property": "Last edited time", "last_edited_time": {"on_or_after": iso_utc(recently_closed_after_dt)}}
+                        {"property": "Edited", "last_edited_time": {"on_or_after": iso_utc(recently_closed_after_dt)}}
                     ]
                 }
             ]
@@ -43,7 +43,7 @@ def collect_tasks(recently_closed_after_dt=None):
 
     payload = {
         "filter": payload_filter,
-        "sorts": [{"property": "Last edited time", "direction": "descending"}],
+        "sorts": [{"property": "Edited", "direction": "descending"}],
         "page_size": 100
     }
     cmd = [

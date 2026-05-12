@@ -1,6 +1,6 @@
 ---
 name: gog
-description: Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.
+description: Google CLI for Gmail, Calendar, Drive, Contacts, Sheets, Docs, Analytics, Search Console, Ads, and more.
 homepage: https://gogcli.sh
 metadata:
   {
@@ -24,12 +24,12 @@ metadata:
 
 # gog
 
-Use `gog` for Gmail/Calendar/Drive/Contacts/Sheets/Docs. Requires OAuth setup.
+Use `gog` for Gmail/Calendar/Drive/Contacts/Sheets/Docs/Analytics/Search Console/Ads and other Google APIs. Requires OAuth setup.
 
 Setup (once)
 
 - `gog auth credentials /path/to/client_secret.json`
-- `gog auth add you@gmail.com --services gmail,calendar,drive,contacts,docs,sheets`
+- `gog auth add you@gmail.com --services gmail,calendar,drive,contacts,docs,sheets,analytics,searchconsole,ads`
 - `gog auth list`
 
 Common commands
@@ -57,6 +57,8 @@ Common commands
 - Sheets metadata: `gog sheets metadata <sheetId> --json`
 - Docs export: `gog docs export <docId> --format txt --out /tmp/doc.txt`
 - Docs cat: `gog docs cat <docId>`
+- Search Console sites: `gog searchconsole sites list --json`
+- Search Console query: `gog searchconsole query 'sc-domain:example.com' --from YYYY-MM-DD --to YYYY-MM-DD --dimensions QUERY,PAGE --json`
 
 Calendar Colors
 

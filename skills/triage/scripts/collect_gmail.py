@@ -111,6 +111,8 @@ def collect_gmail(after_dt=None, before_dt=None, accounts=DEFAULT_GMAIL_ACCOUNTS
                 messages = []
                 contains_sent_by_me = False
                 contains_in_window = False
+                thread_has_inbox = False
+                thread_has_unread = False
                 for message in thread.get("messages") or []:
                     payload = message.get("payload") or {}
                     headers = _header_map(payload)
@@ -121,17 +123,23 @@ def collect_gmail(after_dt=None, before_dt=None, accounts=DEFAULT_GMAIL_ACCOUNTS
                     labels = message.get("labelIds") or []
                     is_sent_by_me = "SENT" in labels
                     contains_sent_by_me = contains_sent_by_me or is_sent_by_me
+                    thread_has_inbox = thread_has_inbox or ("INBOX" in labels)
+                    thread_has_unread = thread_has_unread or ("UNREAD" in labels)
                     attachments = []
                     for attachment in downloaded_by_message.get(message.get("id"), []):
-                        src_path = Path(attachment.get("path"))
-                        dest_path = attachment_dir / src_path.name
-                        if src_path.exists() and src_path != dest_path:
+                        src = attachment.get("path")
+                        src_path = Path(src) if src else None
+                        dest_path = attachment_dir / src_path.name if src_path else None
+                        if src_path and src_path.exists() and dest_path and src_path != dest_path:
                             shutil.copy2(src_path, dest_path)
+                        saved_path = dest_path if dest_path and dest_path.exists() else src_path if src_path and src_path.exists() else None
                         attachments.append({
                             "filename": attachment.get("filename"),
                             "mimeType": attachment.get("mimeType"),
                             "size": attachment.get("size"),
                             "saved_dir": str(attachment_dir),
+                            "saved_path": str(saved_path) if saved_path else None,
+                            "source_path": src,
                         })
                     messages.append({
                         "id": message.get("id"),
@@ -153,6 +161,9 @@ def collect_gmail(after_dt=None, before_dt=None, accounts=DEFAULT_GMAIL_ACCOUNTS
                     "messages": messages,
                     "contains_sent_by_me": contains_sent_by_me,
                     "contains_in_window": contains_in_window,
+                    "is_in_inbox": thread_has_inbox,
+                    "is_archived": not thread_has_inbox,
+                    "has_unread": thread_has_unread,
                     "query": gmail_query,
                 })
             results.append({"account": account, "ok": True, "items": items})

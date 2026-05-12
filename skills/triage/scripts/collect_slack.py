@@ -88,6 +88,20 @@ class SlackClient:
     def search_messages(self, query, count=100):
         return (((self._api("search.messages", {"query": query, "count": count}).get("messages") or {}).get("matches")) or [])
 
+    def conversations_list(self, types="public_channel,private_channel,im,mpim", limit=1000):
+        channels = []
+        cursor = None
+        while True:
+            params = {"types": types, "limit": limit}
+            if cursor:
+                params["cursor"] = cursor
+            data = self._api("conversations.list", params)
+            channels.extend(data.get("channels") or [])
+            cursor = ((data.get("response_metadata") or {}).get("next_cursor") or "").strip()
+            if not cursor:
+                break
+        return channels
+
     def replies(self, channel_id, thread_ts):
         return (self._api("conversations.replies", {"channel": channel_id, "ts": thread_ts, "limit": SLACK_THREAD_REPLY_LIMIT}).get("messages") or [])
 
@@ -99,10 +113,51 @@ class SlackClient:
             "limit": limit,
         }).get("messages") or [])
 
+    def history_range(self, channel_id, oldest, latest, limit=200):
+        messages = []
+        cursor = None
+        while True:
+            params = {
+                "channel": channel_id,
+                "oldest": oldest,
+                "latest": latest,
+                "inclusive": True,
+                "limit": min(limit, 200),
+            }
+            if cursor:
+                params["cursor"] = cursor
+            data = self._api("conversations.history", params)
+            batch = data.get("messages") or []
+            messages.extend(batch)
+            cursor = ((data.get("response_metadata") or {}).get("next_cursor") or "").strip()
+            if not cursor or len(messages) >= MAX_ITEMS_PER_LANE:
+                break
+        return messages[:MAX_ITEMS_PER_LANE]
+
 
 
 def _slack_permalink(team_id, channel_id, ts):
     return f"slack://channel?team={team_id}&id={channel_id}&message={str(ts).replace('.', '')}"
+
+
+
+def _slack_files(raw_files):
+    files = []
+    for file in raw_files or []:
+        files.append({
+            "id": file.get("id"),
+            "name": file.get("name") or file.get("title"),
+            "title": file.get("title"),
+            "mimetype": file.get("mimetype"),
+            "filetype": file.get("filetype"),
+            "size": file.get("size"),
+            "permalink": file.get("permalink"),
+            "permalink_public": file.get("permalink_public"),
+            "url_private": file.get("url_private"),
+            "url_private_download": file.get("url_private_download"),
+            "preview": compact_text(file.get("preview") or "", 4000) if file.get("preview") else None,
+        })
+    return files
 
 
 
@@ -120,7 +175,7 @@ def _slack_message_obj(client, raw, channel_id=None):
         **({"channel_name": meta.get("name")} if channel_id else {}),
         **({"channel_type": meta.get("chat_type")} if channel_id else {}),
         "permalink": _slack_permalink(client.team_id, channel_id, raw.get("ts")) if channel_id and raw.get("ts") else None,
-        "files": raw.get("files") or [],
+        "files": _slack_files(raw.get("files") or []),
     }
 
 
@@ -152,12 +207,32 @@ def collect_slack(config, after_dt, before_dt):
                     continue
                 mention_seen.add(key)
                 mention_matches.append(match)
+
+        oldest_ts = str(after_dt.timestamp())
+        latest_ts = str(before_dt.timestamp())
+        dm_matches = []
+        for convo in client.conversations_list(types="im,mpim"):
+            channel_id = convo.get("id")
+            if not channel_id:
+                continue
+            for msg in reversed(client.history_range(channel_id, oldest_ts, latest_ts)):
+                if msg.get("subtype") and msg.get("subtype") != "file_share":
+                    continue
+                dm_matches.append({
+                    **msg,
+                    "channel_id": channel_id,
+                })
+                if len(dm_matches) >= MAX_ITEMS_PER_LANE:
+                    break
+            if len(dm_matches) >= MAX_ITEMS_PER_LANE:
+                break
+
         items = []
         seen = set()
 
         for raw in sent_matches:
             channel_id = (raw.get("channel") or {}).get("id")
-            key = (channel_id, raw.get("ts"), "sent")
+            key = (channel_id, raw.get("ts"))
             if key in seen:
                 continue
             seen.add(key)
@@ -196,7 +271,7 @@ def collect_slack(config, after_dt, before_dt):
             if raw.get("user") == client.my_user_id:
                 continue
             channel_id = (raw.get("channel") or {}).get("id")
-            key = (channel_id, raw.get("ts"), "mention")
+            key = (channel_id, raw.get("ts"))
             if key in seen:
                 continue
             seen.add(key)
@@ -214,6 +289,40 @@ def collect_slack(config, after_dt, before_dt):
                 "thread_messages": thread_messages,
                 "sent_context": [],
                 "contains_my_participation": any(msg.get("user") == client.my_user_id for msg in thread_messages),
+            })
+
+        for raw in dm_matches:
+            channel_id = raw.get("channel_id")
+            key = (channel_id, raw.get("ts"))
+            if key in seen:
+                continue
+            seen.add(key)
+            message = _slack_message_obj(client, raw, channel_id)
+            thread_ts = raw.get("thread_ts") or raw.get("ts")
+            thread_messages = [_slack_message_obj(client, msg, channel_id) for msg in client.replies(channel_id, thread_ts)]
+            history = client.history(channel_id, raw.get("ts"), SLACK_SENT_CONTEXT_LIMIT + SLACK_SURROUNDING_LIMIT + 1)
+            history = list(reversed(history))
+            surrounding = []
+            for msg in history:
+                if msg.get("ts") == raw.get("ts"):
+                    continue
+                surrounding.append({
+                    "ts": msg.get("ts"),
+                    "user": msg.get("user"),
+                    "user_name": client.user_name(msg.get("user")) or msg.get("user"),
+                    "text": compact_text(msg.get("text") or "", 4000),
+                })
+            items.append({
+                "lane": "slack",
+                "kind": "dm",
+                "channel": channel_id,
+                "channel_name": message.get("channel_name"),
+                "channel_type": message.get("channel_type"),
+                "message": message,
+                "surrounding_messages": surrounding[-SLACK_SENT_CONTEXT_LIMIT:],
+                "thread_messages": thread_messages,
+                "sent_context": [],
+                "contains_my_participation": True,
             })
 
         items.sort(key=lambda item: item.get("message", {}).get("ts") or "", reverse=False)

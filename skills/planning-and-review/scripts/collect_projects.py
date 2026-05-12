@@ -14,7 +14,7 @@ def collect_projects():
         return {"ok": False, "error": "missing notion api key", "items": []}
 
     payload = {
-        "sorts": [{"property": "Last edited time", "direction": "descending"}],
+        "sorts": [{"property": "Edited", "direction": "descending"}],
         "page_size": 100,
     }
     cmd = [
