@@ -10,7 +10,7 @@ def notion_get_blocks(key, page_id):
     cmd = [
         "curl", "-sS", f"https://api.notion.com/v1/blocks/{page_id}/children?page_size=100",
         "-H", f"Authorization: Bearer {key}",
-        "-H", "Notion-Version: 2025-09-03",
+        "-H", "Notion-Version: 2026-03-11",
     ]
     return json.loads(run(cmd)).get("results", [])
 
@@ -19,7 +19,7 @@ def notion_get_block(key, block_id):
     cmd = [
         "curl", "-sS", f"https://api.notion.com/v1/blocks/{block_id}",
         "-H", f"Authorization: Bearer {key}",
-        "-H", "Notion-Version: 2025-09-03",
+        "-H", "Notion-Version: 2026-03-11",
     ]
     return json.loads(run(cmd))
 
@@ -85,7 +85,7 @@ def collect_meetings(after_dt, before_dt):
     cmd = [
         "curl", "-sS", f"https://api.notion.com/v1/data_sources/{NOTION_MEETINGS_DATA_SOURCE_ID}/query",
         "-H", f"Authorization: Bearer {key}",
-        "-H", "Notion-Version: 2025-09-03",
+        "-H", "Notion-Version: 2026-03-11",
         "-H", "Content-Type: application/json",
         "--data", json.dumps(payload),
     ]

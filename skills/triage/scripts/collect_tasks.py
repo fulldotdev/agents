@@ -49,7 +49,7 @@ def collect_tasks(recently_closed_after_dt=None):
     cmd = [
         "curl", "-sS", f"https://api.notion.com/v1/data_sources/{NOTION_TASKS_DATA_SOURCE_ID}/query",
         "-H", f"Authorization: Bearer {key}",
-        "-H", "Notion-Version: 2025-09-03",
+        "-H", "Notion-Version: 2026-03-11",
         "-H", "Content-Type: application/json",
         "--data", json.dumps(payload),
     ]

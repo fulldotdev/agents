@@ -16,7 +16,7 @@ Use this to improve the work system around Notion tasks/projects. Not for daily 
 - Before changing any task/project body, read it first. Never append blind.
 
 ## Collectors
-Read `/Users/otis/.openclaw/workspace/TOOLS.md` first.
+Read your workspace `TOOLS.md` if present.
 
 Use:
 - `{baseDir}/scripts/collect_weekly_review_tasks.py`
@@ -63,6 +63,6 @@ Rules:
 - if no action is needed, use one item saying no direct action is needed
 
 ## State
-- run logs: `/Users/otis/.openclaw/workspace/state/review/runs/`
-- checkpoint: `/Users/otis/.openclaw/workspace/state/review/checkpoint.json`
+- run logs: workspace `state/review/runs/`
+- checkpoint: workspace `state/review/checkpoint.json`
 - checkpoint ownership belongs to the caller or cron wrapper

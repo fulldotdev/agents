@@ -1,38 +1,41 @@
 ---
 name: triage
-description: Turn new inbound communication into clean Notion task and project updates with correct status, context, references, and follow-up work. Use for incoming triage across Gmail, Slack, WhatsApp, calendar, meetings, attachments, approvals, blockers, and tasks left in Triage by weaker capture tools.
+description: Turn new inbound communication into clean Notion work-package and project updates with correct status, context, references, and follow-up state. Use for incoming triage across Gmail, Slack, WhatsApp, calendar, meetings, attachments, approvals, blockers, and tasks left in Triage by weaker capture tools.
 ---
 
 # Triage
 
 Use for the incoming lane only: new communication, captured work, and tasks still in `Triage`.
 
+Notion `Tasks` are work packages/workloads, not tiny todos. One task can contain a batch of related improvements, approvals, delivery notes, and follow-up state.
+
 ## Default order
-1. enrich existing task
+1. enrich existing work package/task
 2. apply clear status/lifecycle change
-3. create concrete follow-up caused by that change
+3. create concrete separate follow-up only when it is outside the current work package
 4. enrich existing project
-5. create new task
+5. create new work package/task
 6. ignore
 
 ## Source of truth
-- Notion tasks are the execution layer.
+- Notion tasks are the execution layer, but treat them as work packages/workloads rather than tiny todos.
 - Important context belongs in the task body, not only in mail/chat/meetings.
-- Projects hold durable context; executable context goes on the task people will use.
+- Projects hold durable context; executable context, batches of related improvements, approvals, and waiting/follow-up state go on the task people will use.
 - Use the Notion API.
 - Read properties through Tasks or Projects.
 - Read bodies through `GET /v1/pages/{page_id}/markdown`.
 - Before changing a task/project body, read it first. Never append blind or duplicate source facts.
+- Never create Notion comments; Telegram summaries are the human-facing updates.
 
 ## Collectors
-Read `/Users/otis/.openclaw/workspace/TOOLS.md` first.
+Resolve bundled collector paths relative to this skill directory.
 
 Default order:
-1. `{baseDir}/scripts/collect_communication_lanes.py`
-2. `{baseDir}/scripts/collect_tasks.py`
-3. `{baseDir}/scripts/collect_projects.py`
+1. `scripts/collect_communication_lanes.py`
+2. `scripts/collect_tasks.py`
+3. `scripts/collect_projects.py`
 
-Debug: `{baseDir}/scripts/collect_work_lanes.py`
+Debug: `scripts/collect_work_lanes.py`
 
 ## Matching
 ### Existing task
@@ -48,8 +51,10 @@ Match only with high confidence: same work, deliverable, follow-up chain, or rev
 Use only for durable project context that does not belong on one task.
 
 ### New task
-Create only for concrete follow-up, commitments, deliverables, decisions, or unresolved work worth tracking.
+Create only for concrete commitments, deliverables, decisions, or unresolved work worth tracking that does not fit an existing work package.
 - check `Waiting`, `Backlog`, and existing `Triage` first
+- do not create a separate task for routine awaiting, approval, or next-check reminders; put that state in the existing task and set `Waiting`
+- split only when the new work is genuinely separate: different deliverable, later phase, different owner/context, or too large to keep clear
 - give every new task an initial status
 - use `Triage` only when the item is still unprocessed incoming work
 - assign real execution status whenever readiness is clear
@@ -64,20 +69,63 @@ With high-confidence source evidence, directly:
 - move work into active status
 - mark confirmed work `Done`
 - mark declined/canceled/no-longer-relevant work `Canceled`
-- create execution task after accepted proposal/kickoff
+- convert accepted proposal/kickoff tasks from `Sales` to `Delivery`
 - create invoice/admin follow-up when required
 - remove stale blockers when resolved
 
 Every touched task should end with a status. Do not use `Triage` as a resting status for understood work.
 
-## Body and references
-A finished update must stand alone.
-- body includes source, key people, ask/decision, timing, blocker, expected follow-up when known
+## Sales to delivery handoff
+Tasks should be named after the durable work package, not the temporary sales phase. Avoid titles like `... proposal`; prefer outcome/work-package titles like `Ambdetailing website`.
+
+When triage finds that a proposal task is accepted/done and should become execution work:
+- keep the same Notion task by default so AI execution context stays in one place
+- change task Type from `Sales` to `Delivery`
+- set the Moneybird quote/estimate to accepted when needed
+- prepare a new draft invoice in Moneybird when invoicing should follow from the accepted proposal
+- add Moneybird references for the accepted quote and draft invoice when available
+- restructure the task body for execution: put current delivery scope/next actions at the top, keep relevant proposal context/agreements below, and remove or compress only noise
+- create separate Delivery tasks only when one accepted proposal creates multiple distinct work packages
+
+## Body, summary, and references
+A finished update must stand alone, with execution state easy to read at the top and append-only source context at the bottom.
+
+Use Notion fields this way:
+- `Summary` = current state / short assignment. Update it whenever the current state materially changes.
+- `References` = all provenance and source artifacts: email, Slack, WhatsApp, meeting notes/recordings, shared docs, files, images, PDFs, attachments, preview links, repos, and other source URLs. Include both parent conversation and specific artifact links when both add value.
+- Do not dump source links/files/threads in the body when they belong in `References`; the body may mention the source briefly in prose, but `References` is the actual link/provenance field.
+
+Default task body structure:
+```md
+## Todo
+[ ] Next concrete action
+[ ] Second action if known
+[ ] Reply / deliver / verify
+
+## Scope / agreements
+- Confirmed scope, decisions, price, deadline, owner.
+- Keep this short. No full history here.
+
+## Waiting
+- Who/what we are waiting for, since when, and what unblocks it.
+- Remove if not relevant.
+
+---
+
+## Context log
+### YYYY-MM-DD — Triage update
+- Append new context here.
+- Summarize source content, decisions, asks, timing, and follow-up state.
+- Put actual source links/files/threads in the `References` field, not here.
+```
+
+Body rules:
+- keep the top sections clean, current, and execution-oriented
+- append new communication/context under `Context log` with the date
+- include source, key people, ask/decision, timing, blocker, and expected follow-up/waiting state when known
 - copy quoted asks, decisions, attachment details, and source context when needed for execution
 - explain status changes and follow-ups in plain language
-- `References` is provenance, not a substitute for body context
-
-Fill `References` when source artifacts matter: email, Slack, WhatsApp, meeting notes/recordings, shared docs, files, images, PDFs, attachments. Include both parent conversation and specific artifact links when both add value.
+- never lose context; compress or restructure only obvious duplication/noise
 
 ## Lane rules
 - Gmail: archive only when safe and no reply is needed
@@ -97,6 +145,6 @@ Use one continuous numbered list. No intro/outro.
 - if nothing changed, send one short line saying no triage changes were needed
 
 ## State
-- run logs: `/Users/otis/.openclaw/workspace/state/triage/runs/`
-- checkpoint: `/Users/otis/.openclaw/workspace/state/triage/checkpoint.json`
-- checkpoint ownership belongs to the caller or cron wrapper
+- State and checkpoints belong to the caller/runtime, not the skill.
+- If bundled scripts need local state, pass it via runtime configuration such as `TRIAGE_STATE_DIR`.
+- Advance checkpoints only after the full requested run succeeds.

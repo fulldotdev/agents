@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 import json
+import os
 import subprocess
 from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
 
-CONFIG_PATH = Path.home() / ".openclaw" / "openclaw.json"
-WORKSPACE = Path("/Users/otis/.openclaw/workspace")
-STATE_DIR = WORKSPACE / "state" / "triage"
+
+def _path_from_env(name, default):
+    value = os.environ.get(name)
+    return Path(value).expanduser() if value else default
+
+
+CONFIG_PATH = _path_from_env("TRIAGE_CONFIG_PATH", Path.home() / ".config" / "triage" / "config.json")
+STATE_DIR = _path_from_env("TRIAGE_STATE_DIR", Path.cwd() / "state" / "triage")
 RUN_LOG_DIR = STATE_DIR / "runs"
 ATTACHMENTS_DIR = STATE_DIR / "attachments"
-CHECKPOINT_PATH = STATE_DIR / "checkpoint.json"
+CHECKPOINT_PATH = _path_from_env("TRIAGE_CHECKPOINT_PATH", STATE_DIR / "checkpoint.json")
 DEFAULT_GMAIL_ACCOUNTS = [
     "sil@full.dev",
     "silveltman@gmail.com",
