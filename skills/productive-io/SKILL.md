@@ -7,16 +7,37 @@ description: Work with Productive.io time entries through the Productive API. Us
 
 Use this skill only for Productive.io hours/time-entry work. Do not broaden into projects, invoices, sales, or planning unless the user explicitly asks.
 
-## Required env vars
+## Credentials
 
-Read credentials from the current repo or shell environment:
+Prefer global user config, not project repos:
+
+```sh
+mkdir -p ~/.config/productive-io
+cat > ~/.config/productive-io/config.env <<'EOF'
+PRODUCTIVE_API_KEY=...
+PRODUCTIVE_ORGANIZATION_ID=...
+EOF
+chmod 600 ~/.config/productive-io/config.env
+```
+
+Before API calls, load it if env vars are not already exported:
+
+```sh
+set -a
+[ -f ~/.config/productive-io/config.env ] && . ~/.config/productive-io/config.env
+set +a
+```
+
+Required variables:
 
 ```sh
 PRODUCTIVE_API_KEY=...
 PRODUCTIVE_ORGANIZATION_ID=...
 ```
 
-Never print the full API key. If confirming config, only say whether it exists.
+Fallback: if a repo already has these vars in `.env`, they may be used for that repo only. Do not create new project-local `.env` files for Productive credentials unless the user explicitly asks.
+
+Never print the full API key. If confirming config, only say whether it exists and where it was loaded from.
 
 ## API basics
 
@@ -75,7 +96,7 @@ Use:
 
 ## Workflow
 
-1. Load env vars from `.env` if they are not already exported.
+1. Load env vars from the shell or `~/.config/productive-io/config.env`; use repo `.env` only as a fallback when it already exists.
 2. For read-only questions, call `GET /time_entries` with date/person/service filters where possible.
 3. Summarize hours in human units, but keep raw minutes available for calculations.
 4. For writes, show the intended date, minutes, person/service/task IDs, and note before sending the request unless the user explicitly asked to execute directly.
