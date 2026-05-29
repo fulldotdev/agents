@@ -9,7 +9,13 @@ Use this skill only for Productive.io hours/time-entry work. Do not broaden into
 
 ## Credentials
 
-Prefer global user config, not project repos:
+Preferred credential order:
+
+1. Already-exported shell env vars.
+2. Global user config at `~/.config/productive-io/config.env`.
+3. Existing repo `.env` only as a legacy fallback.
+
+Store personal Productive credentials in global user config, not in project repos or this skill repo:
 
 ```sh
 mkdir -p ~/.config/productive-io
@@ -20,7 +26,7 @@ EOF
 chmod 600 ~/.config/productive-io/config.env
 ```
 
-Before API calls, load it if env vars are not already exported:
+Before API calls, load the global config if env vars are not already exported:
 
 ```sh
 set -a
@@ -35,7 +41,7 @@ PRODUCTIVE_API_KEY=...
 PRODUCTIVE_ORGANIZATION_ID=...
 ```
 
-Fallback: if a repo already has these vars in `.env`, they may be used for that repo only. Do not create new project-local `.env` files for Productive credentials unless the user explicitly asks.
+Fallback: if a repo already has these vars in `.env`, they may be used for that repo only. Do not create new project-local `.env` files for Productive credentials unless the user explicitly asks. If Productive credentials are found in a project `.env`, prefer moving them to `~/.config/productive-io/config.env` and removing them from the project file.
 
 Never print the full API key. If confirming config, only say whether it exists and where it was loaded from.
 
