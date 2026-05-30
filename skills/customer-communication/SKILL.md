@@ -1,9 +1,9 @@
 ---
-name: client-communication
-description: Draft and refine client-facing messages in Sil's direct, practical communication style across WhatsApp, email, and Slack. Use when writing, reviewing, shortening, or adapting client communication, especially replies, project updates, scope/pricing notes, technical explanations, and status updates.
+name: customer-communication
+description: Draft and refine customer-facing messages in Sil's direct, practical communication style across WhatsApp, email, and Slack. Use when writing, reviewing, shortening, or adapting customer communication, especially replies, project updates, scope/pricing notes, technical explanations, and status updates.
 ---
 
-# Client Communication
+# Customer Communication
 
 ## Core Style
 
@@ -44,7 +44,7 @@ Slack:
 - Match the workspace language. Dutch or English are both fine; code-switch only if the thread already does.
 - Keep updates operational: version/status first, then bullets, then owner/check request.
 - Use direct pings only when needed.
-- For shared client channels, be concise and factual: "fixed in 2.18.2 ✅", "on it", "preview is now pushed as 2.18.0 ✅".
+- For shared customer channels, be concise and factual: "fixed in 2.18.2 ✅", "on it", "preview is now pushed as 2.18.0 ✅".
 
 ## Common Structures
 
@@ -74,10 +74,10 @@ Pricing or billing:
 
 Technical explanation:
 
-1. "Het probleem" in plain client language.
+1. "Het probleem" in plain customer language.
 2. Concrete example.
 3. "De oplossing".
-4. What the client should do or check.
+4. What the customer should do or check.
 
 ## Language Details
 
@@ -85,7 +85,7 @@ Technical explanation:
 - Use "je/jullie" naturally.
 - Keep apologies rare and concrete: "Sorry zie t nu pas, staat over 10 min online."
 - Do not over-thank. "Thanks!" or "Dankjewel voor het doorgeven" is enough.
-- For client-facing Dutch, contractions are fine in WhatsApp/Slack; keep email a bit cleaner.
+- For customer-facing Dutch, contractions are fine in WhatsApp/Slack; keep email a bit cleaner.
 - Do not make messages corporate, legalistic, or overly warm.
 
 ## Draft Checklist

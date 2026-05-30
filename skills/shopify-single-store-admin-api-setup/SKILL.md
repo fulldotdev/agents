@@ -1,19 +1,19 @@
 ---
 name: shopify-single-store-admin-api-setup
-description: Sets up Admin API access for one Shopify client store using Shopify CLI, a Dev Dashboard app, custom distribution, and either client-credentials or OAuth offline token flow. Use when a user wants Codex to create or link a Shopify app, deploy broad Admin scopes, install it for a client store, write credentials into a repo `.env`, or troubleshoot `shop_not_permitted`.
+description: Sets up Admin API access for one Shopify customer store using Shopify CLI, a Dev Dashboard app, custom distribution, and either client-credentials or OAuth offline token flow. Use when a user wants Codex to create or link a Shopify app, deploy broad Admin scopes, install it for a customer store, write credentials into a repo `.env`, or troubleshoot `shop_not_permitted`.
 ---
 
 # Shopify Single-Store Admin API Setup
 
 ## Outcome
 
-Create or link one Shopify app for a client store, deploy Admin API scopes, write local credentials into the current repo `.env`, and verify Admin GraphQL access. Choose the auth path that matches store ownership.
+Create or link one Shopify app for a customer store, deploy Admin API scopes, write local credentials into the current repo `.env`, and verify Admin GraphQL access. Choose the auth path that matches store ownership.
 
 ## Defaults
 
-- Treat the current working directory as the client repo.
+- Treat the current working directory as the customer repo.
 - Use `../fulldev-shopify-app` if it exists; scaffold/create a helper repo only if a Dev Dashboard app is needed.
-- Name the app after the client store/repo.
+- Name the app after the customer store/repo.
 - Pause before account-bound create/link steps until the user confirms Shopify CLI is logged into the correct account.
 - Keep `.env` ignored. Never echo tokens, secrets, or raw `.env` contents.
 
@@ -39,8 +39,8 @@ cd ../fulldev-shopify-app
 shopify app config link --reset
 ```
 
-- Select the correct organization and create/link an app named for the client.
-- In a shared helper repo, prefer a separate config such as `shopify.app.<client>.toml`.
+- Select the correct organization and create/link an app named for the customer.
+- In a shared helper repo, prefer a separate config such as `shopify.app.<customer>.toml`.
 - Re-open generated TOML after linking; CLI can overwrite local edits.
 
 ### 4. Deploy Scopes
@@ -49,7 +49,7 @@ shopify app config link --reset
 - Avoid rejected scopes listed in that reference unless explicitly retesting.
 
 ```bash
-shopify app deploy --config <client> --allow-updates --allow-deletes --no-build --no-color
+shopify app deploy --config <customer> --allow-updates --allow-deletes --no-build --no-color
 ```
 
 - Capture the version URL and derive:
@@ -61,10 +61,10 @@ https://partners.shopify.com/org/<org_id>/org_apps/<app_numeric_id>/distribution
 ### 5. Store App Credentials
 
 ```bash
-shopify app env show --config <client> --no-color
+shopify app env show --config <customer> --no-color
 ```
 
-Write to the client repo `.env`:
+Write to the customer repo `.env`:
 
 ```env
 SHOPIFY_STORE_DOMAIN=<store>.myshopify.com

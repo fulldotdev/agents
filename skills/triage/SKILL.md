@@ -21,11 +21,13 @@ Notion `Tasks` are work packages/workloads, not tiny todos. One task can contain
 Overlapping triage runs are expected. Prefer missing nothing over perfect separation, but deduplicate before writing or reporting: existing task, source artifact, fact, reference, and status change all count.
 
 ## Source of truth
+- Workspace model: Customers hold relationship context; Projects hold durable work context; Tasks and Meetings hang off Projects.
 - Notion tasks are the execution layer, but treat them as work packages/workloads rather than tiny todos.
 - Important context belongs in the task body, not only in mail/chat/meetings.
 - Projects hold durable context; executable context, batches of related improvements, approvals, and waiting/follow-up state go on the task people will use.
 - Use the Notion API.
-- Read properties through Tasks or Projects.
+- Read current data source schemas before relying on relation/property names.
+- Read properties through Tasks or Projects; use Customer context through Projects, not direct Task <> Customer links.
 - Read bodies through `GET /v1/pages/{page_id}/markdown`.
 - Before changing a task/project body, read it first. Never append blind or duplicate source facts.
 - Never create Notion comments; Telegram summaries are the human-facing updates.
@@ -59,7 +61,8 @@ Use only for durable project context that does not belong on one task.
 Create only for concrete commitments, deliverables, decisions, or unresolved work worth tracking that does not fit an existing work package.
 - if an email task is quick enough to complete directly from the mailbox, do not create a Notion task; keep it in the inbox and report it as mailbox work to do from Gmail
 - check `Waiting`, `Backlog`, and existing `Triage` first
-- also check active/recent related tasks by client/project/deliverable/source before creating anything new
+- also check active/recent related tasks by customer/project/deliverable/source before creating anything new
+- when customer context matters, find the matching Project first and link/update work there
 - if an existing task can hold the work without losing clarity, update that task instead of creating a sibling
 - do not create a separate task for routine awaiting, approval, or next-check reminders; put that state in the existing task and set `Waiting`
 - split only when the new work is genuinely separate: different deliverable, later phase, different owner/context, or too large to keep clear
@@ -138,7 +141,7 @@ Body rules:
 ## Lane rules
 - Gmail: never archive emails or threads that clearly still need a reply from Sil
 - Gmail: archive only when safe and no reply is needed
-- Gmail: if a thread contains a concrete ask, proposal, collaboration request, scheduling request, approval request, unanswered client/vendor message, or any other reply-needed signal, keep it in the inbox unless Sil explicitly says to archive it
+- Gmail: if a thread contains a concrete ask, proposal, collaboration request, scheduling request, approval request, unanswered customer/vendor message, or any other reply-needed signal, keep it in the inbox unless Sil explicitly says to archive it
 - Gmail: before archiving, confirm the thread is currently in inbox
 - Gmail: already archived/context-only threads are never reported as fresh archive actions
 - Slack: never archive/hide

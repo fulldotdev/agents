@@ -34,7 +34,7 @@ mcporter call https://moneybird.com/mcp/v1/read_write.create_estimate \
 - Keep docs short, direct, and commercially believable.
 - Prefer a few strong lines over many weak fragments.
 - Preserve agreed rates, IDs, titles, and fixed billing lines exactly.
-- Do not silently normalize a client-specific rate.
+- Do not silently normalize a customer-specific rate.
 - Separate:
   - already billed / already covered work
   - one-off work
