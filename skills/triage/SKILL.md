@@ -11,11 +11,14 @@ Notion `Tasks` are work packages/workloads, not tiny todos. One task can contain
 
 ## Default order
 1. enrich existing work package/task
-2. apply clear status/lifecycle change
-3. create concrete separate follow-up only when it is outside the current work package
-4. enrich existing project
-5. create new work package/task
-6. ignore
+2. handle quick mailbox-only work directly from the inbox
+3. apply clear status/lifecycle change
+4. create concrete separate follow-up only when it is outside the current work package
+5. enrich existing project
+6. create new work package/task
+7. ignore
+
+Overlapping triage runs are expected. Prefer missing nothing over perfect separation, but deduplicate before writing or reporting: existing task, source artifact, fact, reference, and status change all count.
 
 ## Source of truth
 - Notion tasks are the execution layer, but treat them as work packages/workloads rather than tiny todos.
@@ -41,6 +44,8 @@ Debug: `scripts/collect_work_lanes.py`
 ### Existing task
 Match only with high confidence: same work, deliverable, follow-up chain, or revision round.
 - enrich body with missing execution context
+- before adding context, read the body and references and verify the fact/source/status is not already captured
+- if the item is already captured, do not rewrite it just to make a fresh update
 - keep status by default, except do not preserve `Triage` by default
 - treat `Triage` as inbox signal: assign real status unless still genuinely unprocessed
 - change status when the source clearly proves it
@@ -52,7 +57,10 @@ Use only for durable project context that does not belong on one task.
 
 ### New task
 Create only for concrete commitments, deliverables, decisions, or unresolved work worth tracking that does not fit an existing work package.
+- if an email task is quick enough to complete directly from the mailbox, do not create a Notion task; keep it in the inbox and report it as mailbox work to do from Gmail
 - check `Waiting`, `Backlog`, and existing `Triage` first
+- also check active/recent related tasks by client/project/deliverable/source before creating anything new
+- if an existing task can hold the work without losing clarity, update that task instead of creating a sibling
 - do not create a separate task for routine awaiting, approval, or next-check reminders; put that state in the existing task and set `Waiting`
 - split only when the new work is genuinely separate: different deliverable, later phase, different owner/context, or too large to keep clear
 - give every new task an initial status
@@ -128,7 +136,9 @@ Body rules:
 - never lose context; compress or restructure only obvious duplication/noise
 
 ## Lane rules
+- Gmail: never archive emails or threads that clearly still need a reply from Sil
 - Gmail: archive only when safe and no reply is needed
+- Gmail: if a thread contains a concrete ask, proposal, collaboration request, scheduling request, approval request, unanswered client/vendor message, or any other reply-needed signal, keep it in the inbox unless Sil explicitly says to archive it
 - Gmail: before archiving, confirm the thread is currently in inbox
 - Gmail: already archived/context-only threads are never reported as fresh archive actions
 - Slack: never archive/hide
@@ -136,11 +146,16 @@ Body rules:
 - never send Gmail, Slack, or WhatsApp replies unless explicitly told
 
 ## Telegram summary
-Use one continuous numbered list. No intro/outro.
+Send exactly one visible message: one continuous numbered list. No intro/outro, no separate status/checkpoint summary.
 - prefixes: `Task:`, `Project:`, `Archived:`, `Done:` when clearer
 - use markdown links first, then short action phrase
-- every archived email gets its own line: `Archived: [mailtitel](link)`
+- every standalone archived email gets its own line: `Archived: [mailtitel](link)`
+- if an archived email is the same source already reported in a task/project line, fold the archive action into that line instead of creating a duplicate-looking `Archived:` line
 - include only mails triage actually archived in this run
+- include task/project lines only for net-new writes, real status changes, new references, or newly discovered action-relevant facts
+- suppress lines for facts/status/references that were already present before the run, even if this run rediscovered them
+- when a source email/thread was already archived before the run, do not report it again as archived
+- do not include checkpoint success, run-result paths, internal completion metadata, or other runtime-only status
 - keep the real source link when one exists
 - if nothing changed, send one short line saying no triage changes were needed
 

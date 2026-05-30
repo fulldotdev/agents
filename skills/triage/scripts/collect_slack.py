@@ -270,6 +270,11 @@ def collect_slack(config, after_dt, before_dt):
         for raw in mention_matches:
             if raw.get("user") == client.my_user_id:
                 continue
+            # Slack search can return broad channel matches for `mentioned:<name>`.
+            # Only treat it as an actionable mention when the message contains an
+            # explicit user tag for Sil; otherwise normal channel updates create noise.
+            if f"<@{client.my_user_id}>" not in (raw.get("text") or ""):
+                continue
             channel_id = (raw.get("channel") or {}).get("id")
             key = (channel_id, raw.get("ts"))
             if key in seen:

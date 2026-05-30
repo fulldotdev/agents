@@ -1,46 +1,31 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
-from task_triage_common import ATTACHMENTS_DIR, MAX_ITEMS_PER_LANE, compact_text, day_bounds_utc, iso_utc, json_cmd
+from task_triage_common import MAX_ITEMS_PER_LANE, compact_text, day_bounds_utc, iso_utc, json_cmd
 
 
 
-def _download_media(chat_id, msg_id):
-    output_dir = ATTACHMENTS_DIR / "whatsapp" / chat_id / msg_id
-    output_dir.mkdir(parents=True, exist_ok=True)
-    try:
-        result = json_cmd([
-            "wacli", "--json", "media", "download",
-            "--chat", chat_id,
-            "--id", msg_id,
-            "--output", str(output_dir),
-        ])
-    except Exception as exc:
-        return {"error": str(exc), "saved_dir": str(output_dir)}
-    data = result.get("data")
-    paths = []
-    if isinstance(data, dict):
-        for key in ("path", "file", "saved_path"):
-            value = data.get(key)
-            if value:
-                paths.append(value)
-        for key in ("paths", "files"):
-            value = data.get(key)
-            if isinstance(value, list):
-                paths.extend(v for v in value if isinstance(v, str) and v)
-    elif isinstance(data, str):
-        paths.append(data)
-    existing = [str(Path(p)) for p in paths if Path(p).exists()]
-    if not existing:
-        existing = [str(p) for p in sorted(output_dir.iterdir()) if p.is_file()]
+def _wacli_store_dir():
+    return Path(os.environ.get("WACLI_STORE_DIR") or Path.home() / ".wacli").expanduser()
+
+
+def _media_chat_dir(chat_id):
+    return chat_id.replace("@", "_") if chat_id else ""
+
+
+def _local_media(chat_id, msg_id):
+    media_dir = _wacli_store_dir() / "media" / _media_chat_dir(chat_id) / msg_id
+    existing = []
+    if media_dir.exists():
+        existing = [str(p) for p in sorted(media_dir.rglob("*")) if p.is_file()]
     return {
-        "saved_dir": str(output_dir),
+        "saved_dir": str(media_dir),
         "saved_paths": existing,
-        **({"meta": data} if data is not None else {}),
-        **({"error": result.get("error")} if result.get("error") else {}),
+        **({} if existing else {"error": "media_not_downloaded_yet"}),
     }
 
 
@@ -60,7 +45,7 @@ def collect_whatsapp(after_dt, before_dt):
         media_type = msg.get("MediaType")
         media = None
         if media_type and chat_id and msg_id:
-            download = _download_media(chat_id, msg_id)
+            download = _local_media(chat_id, msg_id)
             media = {
                 "type": media_type,
                 "display_text": msg.get("DisplayText"),
