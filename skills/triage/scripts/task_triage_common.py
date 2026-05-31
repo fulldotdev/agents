@@ -15,7 +15,6 @@ CONFIG_PATH = _path_from_env("TRIAGE_CONFIG_PATH", Path.home() / ".config" / "tr
 STATE_DIR = _path_from_env("TRIAGE_STATE_DIR", Path.cwd() / "state" / "triage")
 RUN_LOG_DIR = STATE_DIR / "runs"
 ATTACHMENTS_DIR = STATE_DIR / "attachments"
-CHECKPOINT_PATH = _path_from_env("TRIAGE_CHECKPOINT_PATH", STATE_DIR / "checkpoint.json")
 DEFAULT_GMAIL_ACCOUNTS = [
     "sil@full.dev",
     "silveltman@gmail.com",
