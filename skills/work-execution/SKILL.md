@@ -1,11 +1,11 @@
 ---
 name: work-execution
-description: Executes or prepares Notion Tasks using the project-management model, including concise assignee instructions, status routing, evidence, and review handoff. Use when doing AI/background work on Tasks, preparing Tasks for Todo/Doing/Review, or deciding whether AI can complete a Task without Sil.
+description: Executes or prepares Notion Tasks using the work-management model, including concise assignee instructions, status routing, evidence, and review handoff. Use when doing AI/background work on Tasks, preparing Tasks for Todo/Doing, or deciding whether AI can complete a Task without Sil.
 ---
 
 # Work Execution
 
-Use with `project-management`. This skill is for working an existing or newly triaged Task, not broad inbox triage.
+Use with `work-management`. This skill is for working an existing or newly triaged Task, not broad inbox triage.
 
 ## Core Rule
 
@@ -16,12 +16,13 @@ If a step could fit 100 random tasks, delete it.
 ## Status Routing
 
 - `Todo`: task is executable and ready. AI may or may not have prepared it.
-- `Doing`: AI did real execution work, but result is incomplete or not ready for review.
-- `Review`: AI believes work is complete and there is a concrete review artifact.
+- `Doing`: active work, including AI/background work that is ready for Sil to review.
+- `Waiting`: task is blocked on external input, customer/vendor decision, dependency, or timing.
 - `Done`: only when explicitly allowed, or local/admin/metadata cleanup that is low-risk and fully verified. Do not mark customer-facing delivery `Done` unless explicit.
-- Keep `Triage` only when actionability is unclear. `Waiting` is deprecated; do not use.
-Review artifacts: PR/diff, screenshot/screencapture, Notion doc/checklist, terminal/test output, browser QA log, or draft external message/offer that was not sent.
-No artifact = no `Review`.
+- Keep `Triage` only when actionability is unclear.
+Sil review artifacts: PR/diff, screenshot/screencapture, Notion doc/checklist, terminal/test output, browser QA log, or draft external message/offer that was not sent.
+If AI/background work is ready for Sil, keep status `Doing` and put a `## Review` section at the top with artifact/evidence and concrete review asks.
+No artifact = keep `Doing` only if real active work is in progress; otherwise route to `Todo`/`Waiting`.
 
 ## Readiness
 
@@ -44,7 +45,7 @@ Task body has two zones:
 - Top = execution surface for current assignee/reviewer.
 - Bottom/context = dated trace/evidence/source context.
 
-When preparing/executing a Task, add or update the top execution section. Otherwise keep the project-management dated trace pattern.
+When preparing/executing a Task, add or update the top execution section. Otherwise keep the work-management dated trace pattern.
 
 ```md
 ## Next steps
@@ -54,7 +55,7 @@ When preparing/executing a Task, add or update the top execution section. Otherw
 ---
 ```
 
-For `Review`:
+For Sil review after AI/background work:
 
 ```md
 ## Review
@@ -69,7 +70,7 @@ Below the divider is context. Put work logs, evidence, original context, and sou
 ```md
 ## Context
 ### YYYY-MM-DD - Source/update label
-- Trace from triage/project-management/source context.
+- Trace from work-triage/work-management/source context.
 
 ### AI work log
 - What AI actually did.
@@ -92,7 +93,7 @@ Good: "Draft checklist using sections: Agent discovery, machine-readable content
 ## Execution Safety
 
 - Ask before destructive, irreversible, privacy-sensitive, external, money/account, or customer-impacting actions.
-- Draft external communication only; do not send unless explicit.
+- For messages that need to be sent, create/place drafts only, for example email or Slack drafts. Never send external messages unless explicit.
 - Do not read private content unless needed and allowed. Prefer metadata/schema/evidence when enough.
 - Preserve original language in source/customer context. Default new instructions/context to English.
 
@@ -102,6 +103,6 @@ Report only net changes: task URL, status change, artifact/evidence, or blocker 
 
 ## Examples
 
-- AI can execute and verify: do work -> add evidence -> `Review`.
+- AI can execute and verify: do work -> add evidence + `## Review` section -> `Doing`.
 - Missing scope/budget/taste decision: keep `Triage`; note blocker.
 - Prepared clear assignee steps but no execution done: `Todo`.
