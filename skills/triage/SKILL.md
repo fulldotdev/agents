@@ -19,12 +19,13 @@ Incoming lane only. Always apply `project-management`: Projects = durable bucket
 ## Lanes
 
 Use available tools: API, CLI, MCP, app connector. Do not assume same integrations in Codex/OpenClaw/cron/desktop.
+Default cron window: caller should pass `after`/`before`. If missing: Gmail inbox mode, Notion open work, no time-window claims for comms. Max 200 items/lane unless caller says otherwise. Partial lane failure: continue, report failed lane, do not pretend full triage ran.
 
 ### Notion Tasks: Execution Inventory
 
 Fetch current Tasks.
-- Include all `Status` not `Done`/`Canceled`, including `Review`.
-- Include recently edited `Done`/`Canceled` only for dedupe/closure/no-reopen; old default 48h.
+- Filter: `Status != Done AND Status != Canceled`; includes `Review`.
+- Also fetch `Done`/`Canceled` edited in last 48h for dedupe/closure/no-reopen.
 - Sort `Edited` desc if possible.
 - Capture url/id, all props, `Project`, `Meetings`, `Sprint`, `Due`, `Assignee`, `Status`.
 - Read body if changing or matching.
@@ -33,7 +34,7 @@ Fetch current Tasks.
 ### Notion Projects: Durable Context
 
 Fetch current Projects.
-- Default active set: `Discovery`, `Planned`, `In Progress`, `Paused`.
+- Filter default: `Status IN (Discovery, Planned, In Progress, Paused)`.
 - Do not use `Completed`/`Canceled` as ordinary match candidates.
 - Fetch closed Project only through exact relation/search/history need.
 - Capture url/id, all props, `Customers`, `Tasks`, `Meetings`, `Target`, `Status`.
@@ -43,6 +44,7 @@ Fetch current Projects.
 ### Meetings: Source Material
 
 Fetch meeting pages created/edited in window.
+- Filter by `Created` or `Edited` inside cron window when available.
 - Capture url/id, `Name`, `Edited`, `Projects`, `Tasks`, calendar/source URL if any.
 - Read body + transcript/summary. Long transcript: summary + action-relevant passages first.
 - Convert decisions/commitments/actions to Project update or concrete Task.
@@ -51,7 +53,7 @@ Fetch meeting pages created/edited in window.
 ### Gmail: Inbox/Thread Context
 
 Fetch configured accounts/mailboxes.
-- Default: inbox. Scheduled run: requested date window.
+- Modes: inbox mode = `in:inbox`; window mode = `after:YYYY/MM/DD before:YYYY/MM/DD`; custom query if caller provides one.
 - Per thread: full messages, labels, from/to/cc/bcc, date, subject, plain text, attachments, thread id/link.
 - Track: in-window, in inbox, unread, archived, Sil replied.
 - Attachments: filename, MIME, size, saved path/source URL.
@@ -61,7 +63,7 @@ Fetch configured accounts/mailboxes.
 ### Slack: Mentions/DMs/Threads
 
 Fetch window context.
-- Fetch Sil sent messages, explicit mentions, DMs/MPIMs.
+- Fetch `from:me`, explicit user mentions, DMs/MPIMs in window.
 - Sent: include surrounding history + thread replies.
 - Mentions: require explicit user mention if possible; broad name matches are noise.
 - DMs: include nearby history + replies.
@@ -71,6 +73,7 @@ Fetch window context.
 ### WhatsApp: Inbound Chats/Media
 
 Fetch window messages.
+- Require `after`/`before`; if absent, skip and report missing window.
 - Group by chat.
 - Capture chat name/id, msg id, sender, timestamp, text/display/snippet, message/media kind.
 - Media: type, display text, saved paths/source refs.
@@ -80,12 +83,24 @@ Fetch window messages.
 ### Calendar: Prep/Follow-up Signals
 
 Fetch events in window per account.
+- Require `after`/`before`; if absent, skip and report missing window.
 - Capture id, iCalUID, title, description, location, status, type, link, start/end, created/updated, organizer, creator, attendees, source calendar.
 - Use for prep, follow-up, customer/project context, meeting links.
 - Create Task only for concrete prep/follow-up.
 
 For Notion: prefer stable `NOTION_API_KEY`; else active connector/MCP. Always read schema before fields. Bodies via markdown/body API or equivalent.
 Known collection IDs are hints only. Prefer current database by name + schema.
+
+## Cron Contract
+
+- Inputs: `after`, `before`, optional lane/account/customer/project filters.
+- Window is half-open when tool supports it: `after <= item < before`.
+- Required lanes for full cron triage: Notion Tasks, Notion Projects, Gmail. Other lanes best-effort unless caller requires them.
+- On auth/tool failure: continue other lanes; report `Failed: lane - reason`; do not write changes based on missing required lane.
+- Before any write: re-read target page properties/body.
+- After write: verify status/relation/body changed or report failure.
+- If any required write fails, report blocker; do not claim task/project handled.
+- Output: one numbered list; include writes, archives, failed lanes, blockers. No internal run paths.
 
 ## Matching/Writes
 
