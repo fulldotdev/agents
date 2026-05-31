@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from task_triage_common import MAX_ITEMS_PER_LANE, iso_utc, notion_key, run
 
 NOTION_PROJECTS_DATA_SOURCE_ID = "4f5bd6fe-452e-4fbc-bcf8-cfcc2d19a2ae"
+ACTIVE_PROJECT_STATUSES_EXCLUDE = ["Completed", "Canceled"]
 
 
 def collect_projects():
@@ -13,7 +14,16 @@ def collect_projects():
     if not key:
         return {"ok": False, "error": "missing notion api key", "items": []}
 
-    payload = {"page_size": 100}
+    payload = {
+        "filter": {
+            "and": [
+                {"property": "Status", "status": {"does_not_equal": status}}
+                for status in ACTIVE_PROJECT_STATUSES_EXCLUDE
+            ]
+        },
+        "sorts": [{"property": "Status", "direction": "ascending"}],
+        "page_size": 100,
+    }
     cmd = [
         "curl", "-sS", f"https://api.notion.com/v1/data_sources/{NOTION_PROJECTS_DATA_SOURCE_ID}/query",
         "-H", f"Authorization: Bearer {key}",

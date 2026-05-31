@@ -66,7 +66,7 @@ mcporter call https://moneybird.com/mcp/v1/read_write.create_estimate \
 
 ## Moneybird conventions
 - Prefer direct app URLs over public/external URLs.
-- For proposals/estimates and invoices, always add the Moneybird reference to the related Notion task/page when available.
+- For proposals/estimates and invoices, add the Moneybird URL inline in the related Notion task body on the relevant context/decision bullet when available. Do not use a separate Notion `References` property.
 - When an accepted estimate becomes delivery work, keep/update the same Notion task by default; do not create a separate delivery task unless one estimate creates multiple distinct work packages.
 - Link templates:
   - Estimate: `https://moneybird.com/<administration_id>/estimates/<estimate_id>`
