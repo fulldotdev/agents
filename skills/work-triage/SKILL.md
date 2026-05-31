@@ -1,6 +1,6 @@
 ---
 name: work-triage
-description: Runs inbound work triage across Gmail, Slack, WhatsApp, calendar, meetings, and Notion capture buckets using the work-management model. Use for incoming communication, captured notes, cron triage, source collection, dedupe, task/project updates, and Tasks in Triage.
+description: Runs inbound work triage across Gmail, Slack, WhatsApp, calendar, meetings, and Notion capture buckets using live work-management metadata.
 ---
 
 # Work Triage
@@ -10,42 +10,49 @@ Incoming lane only. Always apply `work-management`: Projects = durable buckets. 
 ## Order
 
 1. Collect lanes.
-2. Match/create Project first.
-3. Match/create Task only for concrete action.
-4. Update Project for scope/agreement/customer/project-state.
-5. Move non-executable to Someday.
-6. Report real changes only.
+2. Fetch live Notion metadata for relevant databases.
+3. Match/create Project first.
+4. Match/create Task only for concrete action.
+5. Update Project for scope/agreement/customer/project-state.
+6. Move non-executable to Someday.
+7. Report real changes only.
+
+## Metadata
+
+For Notion: prefer stable `NOTION_API_KEY`; else active connector/MCP. Always read schema metadata before relying on fields. Bodies via markdown/body API or equivalent.
+
+Known collection IDs are hints only. Prefer current database by name + schema. Use live database/property descriptions, relation targets, and status/select options for schema semantics. Use this skill for collection strategy, matching, write safety, and reporting.
 
 ## Lanes
 
 Use available tools: API, CLI, MCP, app connector. Do not assume same integrations in Codex/OpenClaw/cron/desktop.
+
 Default cron window: caller should pass `after`/`before`. If missing: Gmail inbox mode, Notion open work, no time-window claims for comms. Max 200 items/lane unless caller says otherwise. Partial lane failure: continue, report failed lane, do not pretend full triage ran.
 
 ### Notion Tasks: Execution Inventory
 
-Fetch current Tasks.
-- Filter: `Status != Done AND Status != Canceled`; includes `Doing` and `Waiting`.
-- Also fetch `Done`/`Canceled` edited in last 48h for dedupe/closure/no-reopen.
-- Sort `Edited` desc if possible.
-- Capture url/id, all props, `Project`, `Meetings`, `Sprint`, `Due`, `Assignee`, `Status`.
+Fetch current Tasks using live status names.
+- Include open statuses; exclude closed statuses.
+- Also fetch recently edited closed Tasks for dedupe/closure/no-reopen.
+- Sort by Edited/last edited desc if possible.
+- Capture url/id, all props, important relations, dates, assignee, and status.
 - Read body if changing or matching.
-- Existing projectless Task: resolve/create smallest durable Project, link Task, then report.
+- Existing projectless customer/delivery Task: resolve/create smallest durable Project, link Task, then report.
 
 ### Notion Projects: Durable Context
 
-Fetch current Projects.
-- Filter default: `Status IN (Discovery, Planned, In Progress, Paused)`.
-- Do not use `Completed`/`Canceled` as ordinary match candidates.
+Fetch current active/open Projects using live status names.
+- Do not use closed Projects as ordinary match candidates.
 - Fetch closed Project only through exact relation/search/history need.
-- Capture url/id, all props, `Customers`, `Tasks`, `Meetings`, `Target`, `Status`.
+- Capture url/id, all props, relations, target/date, and status.
 - Read body only for likely match, relation, or update.
-- New execution/admin/follow-up Task must have Project relation.
+- New execution/admin/follow-up Task must have Project relation when customer/delivery related.
 
 ### Meetings: Source Material
 
 Fetch meeting pages created/edited in window.
-- Filter by `Created` or `Edited` inside cron window when available.
-- Capture url/id, `Name`, `Edited`, `Projects`, `Tasks`, calendar/source URL if any.
+- Filter by Created or Edited inside cron window when available.
+- Capture url/id, title, edited time, relations, calendar/source URL if any.
 - Read body + transcript/summary. Long transcript: summary + action-relevant passages first.
 - Convert decisions/commitments/actions to Project update or concrete Task.
 - Meeting page is not work bucket.
@@ -88,9 +95,6 @@ Fetch events in window per account.
 - Use for prep, follow-up, customer/project context, meeting links.
 - Create Task only for concrete prep/follow-up.
 
-For Notion: prefer stable `NOTION_API_KEY`; else active connector/MCP. Always read schema before fields. Bodies via markdown/body API or equivalent.
-Known collection IDs are hints only. Prefer current database by name + schema.
-
 ## Cron Contract
 
 - Inputs: `after`, `before`, optional lane/account/customer/project filters.
@@ -108,20 +112,16 @@ Known collection IDs are hints only. Prefer current database by name + schema.
 - Match Project first. Create compact Project if real work lacks one.
 - Link Project to Customer when identifiable.
 - Do not create Task if concrete action already exists.
-- No old task-as-work-package behavior; durable context -> Project.
-- `Triage` is inbox signal. Once understood -> `Backlog`, `Todo`, `Doing`, `Waiting`, `Done`, `Canceled`, or Someday.
-- `Doing` = active work, including AI/background work that is ready for Sil to review.
-- `Waiting` = blocked on external input, customer/vendor decision, dependency, or timing.
-- Strong source evidence may close concrete work `Done` or `Canceled`.
+- Once an item is understood, route out of triage status using live status options.
+- Strong source evidence may close concrete work only when safe and allowed.
 - Real schema names only. No hallucinated fields.
 - Read body before interpreting/changing. Never blind append.
-- Do not paste full transcripts, duplicate Project scope in Tasks, overwrite execution/review top sections, or edit autogenerated `Summary`.
+- Do not paste full transcripts, duplicate Project scope in Tasks, overwrite execution/review top sections, or edit autogenerated summary fields.
 
 ## Body Placement
 
 - Project body: durable outcome, scope/agreements, current context, delivery notes, source links, main refs. Loose structure; do not force sections.
 - Task body: work-triage/work-management additions are compact dated trace/context. Do not overwrite work-execution top sections.
-- `Summary` autogenerated; do not edit.
 - Prefer mentions, links, dates, people, concise trace over copied transcripts.
 
 ## Safety
