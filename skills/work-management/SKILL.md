@@ -36,14 +36,14 @@ IDs are bootstrap hints. Prefer finding by name, then verify live metadata/schem
 - Someday = non-executable idea, maybe-later note, or vague exploration.
 - Sprint = Saturday-Friday planning week.
 
-Customer/delivery Tasks normally need a Project. Projects usually link Customer; internal Projects may not. Durable scope, decisions, and customer context belong on Projects. Execution details for one action belong on Tasks.
+Tasks may link directly to Customer when useful. Create/link a Project only for durable scope, multi-step delivery, retainers/sprints, proposals, repositories, or context that must survive multiple tasks. Execution details for one action belong on Tasks.
 
 ## Triage Decision
 
 1. Read item + source context.
 2. Fetch live metadata for relevant databases.
 3. Decide: Task, Project/Customer update, source-only context, or Someday.
-4. If Task: concrete name, real status, Project relation when known.
+4. If Task: concrete name, real status, Customer relation when identifiable; Project relation only when durable context is warranted.
 5. Active soon: use live-ready status and Sprint when useful. Active/review-ready AI work: use active/review status. Blocked: use blocked/waiting status. Not active: use backlog/later status.
 6. Not executable: Someday or triage with missing decision.
 7. Preserve trace via relations/body.

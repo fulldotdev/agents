@@ -11,15 +11,16 @@ Incoming lane only. Always apply `work-management`: Projects = durable buckets. 
 
 1. Collect lanes.
 2. Fetch live Notion metadata for relevant databases.
-3. Match/create Project first.
-4. Match/create Task only for concrete action.
-5. Update Project for scope/agreement/customer/project-state.
-6. Move non-executable to Someday.
-7. Report real changes only.
+3. Match Customer first when identifiable.
+4. Create Project only when the work is durable/project-shaped.
+5. Match/create Task only for concrete action.
+6. Link every customer-related Task directly to Customer, and to Project only when project context is warranted.
+7. Move non-executable to Someday.
+8. Report real changes only.
 
 ## Metadata
 
-For Notion: prefer stable `NOTION_API_KEY`; else active connector/MCP. Always read schema metadata before relying on fields. Bodies via markdown/body API or equivalent.
+For Notion: prefer official `ntn` CLI with local login; use `NOTION_API_TOKEN` only for headless runs. Always read schema metadata before relying on fields. Bodies via markdown/body API or equivalent.
 
 Known collection IDs are hints only. Prefer current database by name + schema. Use live database/property descriptions, relation targets, and status/select options for schema semantics. Use this skill for collection strategy, matching, write safety, and reporting.
 
@@ -37,7 +38,7 @@ Fetch current Tasks using live status names.
 - Sort by Edited/last edited desc if possible.
 - Capture url/id, all props, important relations, dates, assignee, and status.
 - Read body if changing or matching.
-- Existing projectless customer/delivery Task: resolve/create smallest durable Project, link Task, then report.
+- Existing customer/delivery Task without direct Customer: fill the direct Customer relation when identifiable, even if Project is already linked. Create/link Project only when the Task belongs to a durable project, retainer, sprint, delivery scope, or multi-step work package.
 
 ### Notion Projects: Durable Context
 
@@ -46,7 +47,8 @@ Fetch current active/open Projects using live status names.
 - Fetch closed Project only through exact relation/search/history need.
 - Capture url/id, all props, relations, target/date, and status.
 - Read body only for likely match, relation, or update.
-- New execution/admin/follow-up Task must have Project relation when customer/delivery related.
+- New customer-related execution/admin/follow-up Task must link directly to Customer when identifiable. Project is optional and only for durable project context.
+- Create Project only for durable context: scoped delivery, retainer/sprint, proposal/contract package, recurring work, multi-task effort, repository/site/app context, or customer work that needs ongoing project state.
 
 ### Meetings: Source Material
 
@@ -54,7 +56,7 @@ Fetch meeting pages created/edited in window.
 - Filter by Created or Edited inside cron window when available.
 - Capture url/id, title, edited time, relations, calendar/source URL if any.
 - Read body + transcript/summary. Long transcript: summary + action-relevant passages first.
-- Convert decisions/commitments/actions to Project update or concrete Task.
+- Convert decisions/commitments/actions to Customer update, Project update, or concrete Task based on scope.
 - Meeting page is not work bucket.
 
 ### Gmail: Inbox/Thread Context
@@ -81,9 +83,12 @@ Fetch window context.
 
 Fetch window messages.
 - Require `after`/`before`; if absent, skip and report missing window.
+- If `wacli doctor` reports the default store locked by an active `wacli sync --follow` / media sync, do not start another sync/backfill against that store. Use read-only `chats list` / `messages search` against the current store when possible; report blocked only if the needed data is unavailable.
+- For window triage, use `wacli messages list --after <date> --before <date> --json`; do not call `wacli messages search ""` because empty queries fail.
+- Use `wacli messages context --chat <jid> --id <msgid> --json` for nearby context when a message looks actionable.
 - Group by chat.
 - Capture chat name/id, msg id, sender, timestamp, text/display/snippet, message/media kind.
-- Media: type, display text, saved paths/source refs.
+- Media: first capture metadata from the message. If a media message looks action-relevant or likely contains needed context, fetch it on demand with `wacli media download --chat <jid> --id <msgid> --output <dir> --json`, then include saved path/source refs. Do not run broad `--download-media` during continuous sync.
 - Preserve chronological order.
 - Input only unless user asks to send.
 
@@ -104,13 +109,16 @@ Fetch events in window per account.
 - Before any write: re-read target page properties/body.
 - After write: verify status/relation/body changed or report failure.
 - If any required write fails, report blocker; do not claim task/project handled.
-- Output: one numbered list; include writes, archives, failed lanes, blockers. No internal run paths.
+- Output: one compact numbered list; include writes, archives, drafts, failed lanes, blockers. No internal run paths.
 
 ## Matching/Writes
 
-- Dedupe before write: source, Project, Task, fact, link, status.
-- Match Project first. Create compact Project if real work lacks one.
-- Link Project to Customer when identifiable.
+- Dedupe before write: source, Customer, Project, Task, fact, link, status.
+- Match Customer first for every customer-related source. `Task.Customer` is the operational source of truth for customer work filters.
+- Do not create a Project purely to give a Task a Customer.
+- Link Task directly to Customer whenever identifiable, regardless of whether Project is also linked.
+- Create compact Project only when the item is project-shaped or needs durable project context.
+- Link Project to Customer when the Project itself carries customer context, but do not rely on Project.Customer as a substitute for Task.Customer.
 - Do not create Task if concrete action already exists.
 - Once an item is understood, route out of triage status using live status options.
 - Strong source evidence may close concrete work only when safe and allowed.
@@ -130,15 +138,24 @@ Fetch events in window per account.
 - Gmail: archive only safe, no reply needed, currently inbox.
 - Slack/WhatsApp: never send/hide/archive unless explicit.
 - Never send Gmail/Slack/WhatsApp replies unless explicit.
+- Never draft when the source message still needs a human reply decision, missing context, or triage judgement first.
+- Drafts may be prepared for Email and Slack only when the needed answer is clear, low-risk, and useful for Sil to review/send.
 
 ## Report
 
 - One concise numbered list.
-- Include only net-new writes, real status changes, new refs, action-relevant facts.
+- One numbered item = one concrete action/change/blocker. Do not bundle multiple Gmail archives, drafts, Notion writes, status changes, or blockers into one item.
+- General format: `Type: [name](link) info`.
+- Use compact type prefixes. Common examples: `Customer:`, `Project:`, `Task:`, `Archive:`, `Draft:`, `Failed:`, `Blocked:`, etc.
+- For linked items, use exact source/page URL and a compact name variant. Put the action/info after the link.
+- Archived Gmail: one archived thread/message per item. Format exactly: `Archive: [short subject or sender](mail link)`.
+- Drafted Email/Slack message: one draft per item. Format `Draft: [short subject/customer/channel](draft link) info` when link exists; otherwise `Draft: name - info`.
+- Include only net-new writes, real status changes, new refs, archives, drafts, execution artifacts, failed lanes, blockers.
 - Suppress rediscovered facts/already-archived sources.
 - Nothing changed -> say so.
 
 ## Examples
 
-- Customer email adds scope -> update Project, create Task only for concrete next action.
+- Customer email adds standalone action -> create/update Task linked directly to Customer; do not create Project just for the relation.
+- Customer email adds durable scope -> update/create Project, create Task only for concrete next action.
 - Vague captured idea -> Someday, not Task.

@@ -46,7 +46,7 @@ Open decisions that block readiness: scope, customer promise, budget, priority, 
 Use live schema names only.
 
 Fallback field behavior:
-- Customer/delivery Tasks need Project. Resolve/create the smallest durable Project before execution if missing.
+- Customer/delivery Tasks may link directly to Customer. Resolve/create a Project only when durable project context is warranted.
 - If Assignee is missing and task is executable, prefer Sil Veltman. Current id hint: `23d00f52-372e-4f47-b96e-d1bec34fb9d3`; verify if user lookup exists.
 - Set date fields only from explicit/hard dates.
 - Use Sprint when source says this week/next week/before a date, or a hard date implies the week.
