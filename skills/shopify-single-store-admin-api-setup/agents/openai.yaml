@@ -1,4 +1,0 @@
-interface:
-  display_name: "Shopify Single-Store Admin API Setup"
-  short_description: "Set up Admin API access for one Shopify client store"
-  default_prompt: "Use $shopify-single-store-admin-api-setup to create or link a Shopify app for one client store, deploy Admin API scopes, handle custom distribution/install, and verify API access."
