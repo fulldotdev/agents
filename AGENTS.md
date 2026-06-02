@@ -18,3 +18,5 @@
 - Work on branch `preview`: merge to `main` when tested/publish-ready
 - On teveo/fayn Shopify projects, push directly to main, because user will publish to Shopify via CLI himself
 - Use separate branches only for real divergence, migrations, or major version splits.
+
+@/Users/otis/.codex/RTK.md
