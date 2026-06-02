@@ -62,6 +62,17 @@ Fetch meeting pages created/edited in window.
 ### Gmail: Inbox/Thread Context
 
 Fetch configured accounts/mailboxes.
+- Account meaning:
+  - `sil@full.dev` = zakelijke mailbox.
+  - `silveltman@gmail.com` = persoonlijke mailbox.
+  - `sil@smallgiants.nl` = Smallgiants mailbox.
+- Preferred efficient setup: centralize imported/forwarded mail in `sil@full.dev` only when Gmail labels make the source account explicit, e.g. `Account/Full.dev`, `Account/Smallgiants`, and `Account/Personal`.
+- When centralized labels exist, triage `sil@full.dev` first by account labels and use separate account OAuth/API checks as fallback or verification.
+- Always check all three Gmail accounts unless caller explicitly narrows scope:
+  - `sil@full.dev`
+  - `sil@smallgiants.nl`
+  - `silveltman@gmail.com`
+- If one account auth/token fails, continue the other two and report the failed account by email address.
 - Modes: inbox mode = `in:inbox`; window mode = `after:YYYY/MM/DD before:YYYY/MM/DD`; custom query if caller provides one.
 - Per thread: full messages, labels, from/to/cc/bcc, date, subject, plain text, attachments, thread id/link.
 - Track: in-window, in inbox, unread, archived, Sil replied.
