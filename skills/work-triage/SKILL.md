@@ -65,14 +65,13 @@ Fetch configured accounts/mailboxes.
 - Account meaning:
   - `sil@full.dev` = zakelijke mailbox.
   - `silveltman@gmail.com` = persoonlijke mailbox.
-  - `sil@smallgiants.nl` = Smallgiants mailbox.
-- Preferred efficient setup: centralize imported/forwarded mail in `sil@full.dev` only when Gmail labels make the source account explicit, e.g. `Account/Full.dev`, `Account/Smallgiants`, and `Account/Personal`.
-- When centralized labels exist, triage `sil@full.dev` first by account labels and use separate account OAuth/API checks as fallback or verification.
-- Always check all three Gmail accounts unless caller explicitly narrows scope:
+- `sil@smallgiants.nl` is forwarded/centralized into `sil@full.dev`; do not check it as a separate Gmail account by default.
+- Use labels on `sil@full.dev` when available to distinguish source/context, e.g. `Account/Full.dev`, `Account/Smallgiants`.
+- Always check these two Gmail accounts unless caller explicitly narrows scope:
   - `sil@full.dev`
-  - `sil@smallgiants.nl`
   - `silveltman@gmail.com`
-- If one account auth/token fails, continue the other two and report the failed account by email address.
+- Use `sil@smallgiants.nl` Gmail OAuth/API only as fallback/verification when forwarding/labels look broken or caller explicitly requests it.
+- If one account auth/token fails, continue the other account and report the failed account by email address.
 - Modes: inbox mode = `in:inbox`; window mode = `after:YYYY/MM/DD before:YYYY/MM/DD`; custom query if caller provides one.
 - Per thread: full messages, labels, from/to/cc/bcc, date, subject, plain text, attachments, thread id/link.
 - Track: in-window, in inbox, unread, archived, Sil replied.
@@ -105,8 +104,14 @@ Fetch window messages.
 
 ### Calendar: Prep/Follow-up Signals
 
-Fetch events in window per account.
+Fetch events in window per configured account/calendar.
 - Require `after`/`before`; if absent, skip and report missing window.
+- Default account setup:
+  - Use `sil@full.dev` as the zakelijke Calendar OAuth account.
+  - `gog calendar events --account sil@full.dev ...` only returns the primary `sil@full.dev` calendar.
+  - Fetch `sil@full.dev` and the visible shared `sil@smallgiants.nl` calendar as separate calendar IDs under the same `sil@full.dev` account.
+  - Use `silveltman@gmail.com` for personal calendar.
+  - Do not check `sil@smallgiants.nl` as a separate Calendar OAuth account by default; use it only as fallback/verification when the shared calendar is missing or unreadable.
 - Capture id, iCalUID, title, description, location, status, type, link, start/end, created/updated, organizer, creator, attendees, source calendar.
 - Use for prep, follow-up, customer/project context, meeting links.
 - Create Task only for concrete prep/follow-up.
