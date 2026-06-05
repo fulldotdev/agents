@@ -56,6 +56,8 @@ Fetch meeting pages created/edited in window.
 - Filter by Created or Edited inside cron window when available.
 - Capture url/id, title, edited time, relations, calendar/source URL if any.
 - Read body + transcript/summary. Long transcript: summary + action-relevant passages first.
+- Suffix vague/default meeting note titles with useful context when the source clearly supports it, preferably customer/project + topic; preserve the existing title/date/time instead of replacing it unless the title is empty or unusable.
+- Fill Meeting note relation fields whenever identifiable from title/body/calendar/source context: Customer(s), Project(s), and concrete Task(s). Prefer existing related pages; create Customers/Projects/Tasks only under the normal triage rules below.
 - Convert decisions/commitments/actions to Customer update, Project update, or concrete Task based on scope.
 - Meeting page is not work bucket.
 
@@ -92,13 +94,14 @@ Fetch window context.
 ### WhatsApp: Inbound Chats/Media
 
 Fetch window messages.
+- WhatsApp is special: sync actionable messages and needed media refs/paths into Notion, because not every agent/runtime has WhatsApp access.
 - Require `after`/`before`; if absent, skip and report missing window.
-- If `wacli doctor` reports the default store locked by an active `wacli sync --follow` / media sync, do not start another sync/backfill against that store. Use read-only `chats list` / `messages search` against the current store when possible; report blocked only if the needed data is unavailable.
+- If `wacli doctor` reports the default store locked by an active `wacli sync --follow --download-media`, do not stop it and do not start another sync/backfill against that store. Use read-only `chats list` / `messages list/search/show/context` and local store paths when possible; report blocked only if the needed data is unavailable.
 - For window triage, use `wacli messages list --after <date> --before <date> --json`; do not call `wacli messages search ""` because empty queries fail.
 - Use `wacli messages context --chat <jid> --id <msgid> --json` for nearby context when a message looks actionable.
 - Group by chat.
 - Capture chat name/id, msg id, sender, timestamp, text/display/snippet, message/media kind.
-- Media: first capture metadata from the message. If a media message looks action-relevant or likely contains needed context, fetch it on demand with `wacli media download --chat <jid> --id <msgid> --output <dir> --json`, then include saved path/source refs. Do not run broad `--download-media` during continuous sync.
+- Media: first capture metadata from the message and prefer the already-downloaded local file (`LocalPath`/`DownloadedAt` in wacli JSON, or `local_path`/`downloaded_at` in `wacli.db`; usually under `<store>/media/...`) when sync is running with `--download-media`. If the message is synced but the local path is missing and the file is needed, use `wacli --read-only media download --chat <jid> --id <msgid> --output <dir> --json` with an explicit output path; otherwise wait for/background sync. Do not stop `sync --follow --download-media` for triage media.
 - Preserve chronological order.
 - Input only unless user asks to send.
 
@@ -131,6 +134,7 @@ Fetch events in window per configured account/calendar.
 
 - Dedupe before write: source, Customer, Project, Task, fact, link, status.
 - Match Customer first for every customer-related source. `Task.Customer` is the operational source of truth for customer work filters.
+- For Meeting notes, also update the Meeting page itself when possible: suffix the existing title with logical context and fill Customer, Project, and Task relation fields with matched/created pages. Do not invent relations when evidence is weak.
 - Do not create a Project purely to give a Task a Customer.
 - Link Task directly to Customer whenever identifiable, regardless of whether Project is also linked.
 - Create compact Project only when the item is project-shaped or needs durable project context.

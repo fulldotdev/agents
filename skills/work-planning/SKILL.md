@@ -41,14 +41,16 @@ Read body before interpreting or changing a Task, Project, Someday, Sprint, or U
 
 1. Sprint = one week, Saturday through Friday.
 2. Move only concrete executable work into next Sprint.
-3. Prefer hard due dates, active customer commitments, current Projects, Doing/review items, Waiting items with actionable unblock paths, and work with clear next steps.
-4. Move ready Backlog items to ready/todo status and assign next Sprint when they should happen next week.
-5. Keep non-urgent executable work in backlog/later status.
-6. Keep unclear work in triage status only with a concrete missing decision.
-7. Include practical carry-over from last week when needed.
-8. Link planned Tasks and Project Update drafts to the upcoming Saturday-Friday Sprint page.
-9. Do not write personal reflection, feelings/energy review, or planner-photo/schrift content. Sil does that on paper.
-10. Do not overload the Sprint. If everything is important, the plan is fake.
+3. Always include open Tasks whose `Due` date falls inside the upcoming Sprint date range: link them to that Sprint and make sure their status is planned/executable unless they are Done, Canceled, or explicitly on hold.
+4. Prefer hard due dates, active customer commitments, current Projects, Doing/review items, Waiting items with actionable unblock paths, and work with clear next steps.
+5. Move ready Backlog items to ready/todo status and assign next Sprint when they should happen next week.
+6. Keep non-urgent executable work in backlog/later status.
+7. Keep unclear work in triage status only with a concrete missing decision.
+8. Do not manually roll unfinished Notion Tasks from the current Sprint into the next Sprint just because they are unfinished; Notion handles that automatic carry-over.
+9. Include practical carry-over from last week only when it needs a real planning decision, status cleanup, or explicit mention.
+10. Link planned Tasks and Project Update drafts to the upcoming Saturday-Friday Sprint page.
+11. Do not write personal reflection, feelings/energy review, or planner-photo/schrift content. Sil does that on paper.
+12. Do not overload the Sprint. If everything is important, the plan is fake.
 
 ## Project Updates
 

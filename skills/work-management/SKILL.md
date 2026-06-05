@@ -36,6 +36,8 @@ IDs are bootstrap hints. Prefer finding by name, then verify live metadata/schem
 - Someday = non-executable idea, maybe-later note, or vague exploration.
 - Sprint = Saturday-Friday planning week.
 
+New Customer pages always get a fitting page emoji.
+
 Tasks may link directly to Customer when useful. Create/link a Project only for durable scope, multi-step delivery, retainers/sprints, proposals, repositories, or context that must survive multiple tasks. Execution details for one action belong on Tasks.
 
 ## Triage Decision
