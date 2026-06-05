@@ -1,13 +1,13 @@
 ---
 name: customer-communication
-description: Draft and refine customer-facing messages in Sil's direct, practical communication style across WhatsApp, email, and Slack. Use when writing, reviewing, shortening, or adapting customer communication, especially replies, project updates, scope/pricing notes, technical explanations, and status updates.
+description: Draft and refine customer-facing messages in direct, practical communication style. Use when drafting, writing, reviewing, shortening, or adapting customer communication, especially replies, project updates, scope/pricing notes, technical explanations, and status updates.
 ---
 
 # Customer Communication
 
 ## Core Style
 
-Write like Sil: direct, practical, human, and certain. Lead with the useful answer, status, or ask. Skip padding.
+Write direct, practical, human, and certain. Lead with the useful answer, status, or ask. Skip padding.
 
 Default tone:
 
