@@ -18,6 +18,16 @@ Default tone:
 - Honest when scope, timing, or assumptions are off.
 - Short by default; only expand when the topic needs context or accountability.
 
+Before drafting clarification questions for a customer, separate:
+
+- Confirmed intent: what the customer already made clear.
+- Open intent: what the customer still needs to decide or clarify.
+- Internal implementation: technical choices we should not push back to the customer unless their intent depends on it.
+
+Ask customers about intent and business rules, not implementation mechanics. For example: ask whether a group should be fixed or self-manageable, not whether it should be a tag, metafield, segment, or API rule.
+
+Keep the customer's own words for business concepts, then translate internally. If they say "groothandel", "collega's", "volle doos", or "laagste staffelprijs", use those words in the customer message instead of prematurely replacing them with technical terms.
+
 Avoid filler and softeners such as: "volgens mij", "misschien", "wellicht", "ik denk", "even" as a nervous habit, "zou eventueel kunnen", "naar mijn idee". Use uncertainty only when it is real.
 
 ## Channel Rules
