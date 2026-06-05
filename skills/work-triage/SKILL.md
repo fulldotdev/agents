@@ -5,6 +5,10 @@ description: "Runs inbound work triage across Gmail, Slack, WhatsApp, calendar, 
 
 # Work Triage
 
+Use when running work triage across incoming messages, meetings, calendars, email, Slack, WhatsApp, and Notion work context.
+
+## Workflow
+
 1. Collect incoming lane context through sub-agents:
 Start one sub-agent per lane:
 - WhatsApp messages
