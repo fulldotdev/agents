@@ -9,7 +9,7 @@ Use one shared tmux dev server per project.
 
 ## Rules
 
-1. Session name = project folder, e.g. `plantsome`.
+1. Session name = project folder.
 2. Store the port in `.env.local` as `DEV_PORT`.
 3. tmux only keeps the server alive; `.env.local` is the source of truth for the port.
 4. Before starting: check `http://localhost:$DEV_PORT`. If healthy, reuse it.
