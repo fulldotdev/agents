@@ -1,9 +1,9 @@
 ---
-name: shopify-single-store-app
-description: "Create or link one single-store Shopify app as a server-side proxy for storefront actions and Admin API access."
+name: shopify-client-store-app
+description: "Create or link one Shopify app for a client store as an agency-specific server-side proxy for storefront actions and Admin API access."
 ---
 
-# Shopify Single-Store App
+# Shopify Client Store App
 
 Use when one customer store needs a small Shopify app for Admin API access, app extensions, or server-side actions the theme/frontend cannot safely do.
 
@@ -16,7 +16,7 @@ Think of it as a store-owned proxy, not a productized multi-tenant app. The fron
 - Pause before Shopify account-bound create/link/install steps.
 - Keep `.env` ignored. Never print tokens, secrets, or raw `.env`.
 - Use minimum scopes unless broad access is explicitly needed.
-- Keep the app single-store unless the user explicitly asks for multi-tenant.
+- Keep the app scoped to one client store unless the user explicitly asks for multi-tenant.
 - Do not expose a generic Admin API proxy. Expose named, allowlisted actions only.
 
 ## Proxy Pattern
