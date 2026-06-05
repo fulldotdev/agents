@@ -1,6 +1,6 @@
 ---
 name: work-triage
-description: "Runs inbound work triage across Gmail, Slack, WhatsApp, calendar, meetings, and Notion capture buckets using live work-management metadata."
+description: "Use when running work triage across Gmail, Slack, WhatsApp, calendar, meetings, and Notion work context."
 ---
 
 # Work Triage
