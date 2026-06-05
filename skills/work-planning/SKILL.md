@@ -1,6 +1,6 @@
 ---
 name: work-planning
-description: Plans practical weekly work using live work-management metadata: sprint selection, backlog/Someday grooming, recurring planning items, Project Updates drafts, and status cleanup.
+description: "Plan practical weekly work: Sprint selection, backlog/Someday grooming, recurring planning items, Project Updates drafts, and status cleanup."
 ---
 
 # Work Planning
@@ -9,11 +9,11 @@ Use with `work-management`. Use `work-execution` only for Task readiness, eviden
 
 Friday weekly planning is practical. It may look backward only to decide what should happen next. It is not personal reflection and not broad inbox triage.
 
-## Metadata
+## Schema
 
-Before planning, fetch live metadata for Tasks, Projects, Someday, Sprints, Updates, and any related Customers/Meetings needed for context. Use live database/property descriptions, relation targets, and status/select options for schema semantics.
+Use `work-management` for workflow meaning. Fetch Notion schema only when needed for exact property/status names, relation targets, IDs, or write validation.
 
-Keep Sprints metadata especially fresh: it defines the Task/Update Sprint relation and the Saturday-Friday planning week.
+Sprints are Saturday-Friday planning weeks. Link Tasks and Updates through their `Sprint` relation.
 
 ## Purpose
 

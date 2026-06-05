@@ -1,17 +1,15 @@
 ---
 name: work-management
-description: "Explains the Notion work-management workflow: live schema metadata, Tasks, Projects, Customers, Meetings, Someday, body rules, routing, and safe writes."
+description: "Canonical Notion work model: database roles, routing, relations, body conventions, schema lookup, and safe writes."
 ---
 
 # Work Management
 
 Shared workflow rules. Does not authorize writes by itself. Write only when user/automation scope allows.
 
-## Live Schema First
+## Schema Lookup
 
-Before interpreting or writing work-management data, fetch relevant Notion data source metadata. Use live database descriptions, property descriptions, relation targets, and status/select options as the source of truth for schema semantics.
-
-If metadata is missing, weak, or conflicts with this skill, use these rules only as fallback and report the mismatch before writing.
+This skill is the source of truth for workflow meaning. Fetch Notion schema only when needed for exact property names, option names, relation targets, IDs, or write validation. Do not rely on Notion schema descriptions for rules.
 
 ## Databases
 
@@ -27,7 +25,7 @@ IDs are bootstrap hints. Prefer finding by name, then verify live metadata/schem
 - **Goals** `collection://2005979e-268c-80d1-8ecf-000b841762a2`
 - **Sprints** `collection://3555979e-268c-807b-bdb4-000b86b48f90`
 
-## Fallback Model
+## Model
 
 - Task = concrete executable next action with a clear outcome.
 - Project = durable finishable work bucket, scope, delivery phase, sprint package, proposal, prototype, or important internal outcome.
@@ -43,12 +41,19 @@ Tasks may link directly to Customer when useful. Create/link a Project only for 
 ## Triage Decision
 
 1. Read item + source context.
-2. Fetch live metadata for relevant databases.
-3. Decide: Task, Project/Customer update, source-only context, or Someday.
-4. If Task: concrete name, real status, Customer relation when identifiable; Project relation only when durable context is warranted.
-5. Active soon: use live-ready status and Sprint when useful. Active/review-ready AI work: use active/review status. Blocked: use blocked/waiting status. Not active: use backlog/later status.
-6. Not executable: Someday or triage with missing decision.
-7. Preserve trace via relations/body.
+2. Decide: Task, Project/Customer update, source-only context, or Someday.
+3. If Task: concrete name, real status, Customer relation when identifiable; Project relation only when durable context is warranted.
+4. Preserve trace via relations/body.
+
+## Task Status
+
+- Todo = ready/executable.
+- Doing = active work, including AI/background work ready for Sil review.
+- Waiting = blocked on person, dependency, decision, timing, customer, or vendor.
+- Triage = unclear actionability, missing decision, or not routed yet.
+- Done/Canceled = only when explicit, or low-risk local/admin cleanup is fully verified.
+
+Do not mark customer-facing delivery Done unless explicit.
 
 ## Bodies
 
@@ -95,11 +100,6 @@ Allowed: add/remove/rename sections when clearer. Keep durable decisions, scope,
 ## Constraints
 
 - Ask before destructive, irreversible, privacy-sensitive action.
-- Use real Notion schema/status names from live metadata.
+- Use real Notion property/status names. Fetch schema when unsure or before writes that need exact names/options.
 - Do not hallucinate fields.
 - Compress duplicated old task bodies when migrating to Projects.
-
-## Examples
-
-- "Maybe make a dashboard someday" -> Someday.
-- "Renew passport later" -> Task backlog/later status.
