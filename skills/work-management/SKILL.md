@@ -38,6 +38,8 @@ New Customer pages always get a fitting page emoji.
 
 Tasks may link directly to Customer when useful. Create/link a Project only for durable scope, multi-step delivery, retainers/sprints, proposals, repositories, or context that must survive multiple tasks. Execution details for one action belong on Tasks.
 
+Whenever creating a Project, create or link at least one concrete Task in the same workflow. If the first Task is unclear, create a scoped planning/scoping Task instead of leaving the Project empty.
+
 ## Triage Decision
 
 1. Read item + source context.

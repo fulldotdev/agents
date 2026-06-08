@@ -16,7 +16,9 @@ description: "Runs inbound work triage across Gmail, Slack, WhatsApp, calendar, 
 - Emails for sil@full.dev
 - Emails for silveltman@gmail.com
 
-Each sub-agent must return findings in a clean, context-efficient format while preserving all relevant content. Split by topic and/or chat. Always include references per item.
+Each sub-agent must return only clean, context-efficient source findings while preserving all relevant content. Split by topic and/or chat. Always include references per item. Do not ask sub-agents for write plans, action schemas, or final routing decisions; the parent agent decides after reading all lane outputs together.
+
+For cron/isolated runs, the parent must finish the full triage in the same run. Do not call `sessions_yield` before lane outputs are collected, Notion decisions are made, writes are completed, and the final report is ready. If that cannot be done, fail clearly instead of returning partial collection as success.
 
 2. Collect current Notion context:
 
@@ -25,7 +27,9 @@ Each sub-agent must return findings in a clean, context-efficient format while p
 - Active tasks with status Todo, Doing, Waiting, or edited in the last week
 
 3. Match incoming information against existing Notion data:
-   Process relevant incoming lane context into Notion. Use current Notion context to decide the best destination. Prefer updating existing items over creating new ones when there is a reasonable match. Use Notion properties where possible, and store incoming lane context in page bodies.
+   Process relevant incoming lane context into Notion. Use all lane outputs plus current Notion context to decide the best destination. Prefer updating existing items over creating new ones when there is a reasonable match. Use Notion properties where possible, and store incoming lane context in page bodies.
+
+When creating a Project during triage, create or link at least one concrete Task in the same workflow. If the first Task is unclear, create a scoped planning/scoping Task instead of leaving the Project empty.
 
 4. Process lanes accordingly:
 
