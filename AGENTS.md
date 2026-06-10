@@ -15,8 +15,8 @@
 - Use Moneybird when user references quotes, invoices
 
 ## Development
-- Pull latest when new session.
+- Pull latest when new session without open changes.
 - Work on branch `preview`; merge to `main` when tested/publish-ready.
 - On teveo/fayn Shopify projects, push directly to main, user publishes via Shopify CLI.
-- Verify through dev server; when done, give url(s) or snapshot(s).
+- Verify through dev server; when done, give url(s).
 - For local dev servers, use the `shared-dev-server` skill.
