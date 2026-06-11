@@ -38,6 +38,24 @@
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-06-10T14:57:20.639Z",
       "updatedAt": "2026-06-10T14:57:20.639Z"
+    },
+    "github": {
+      "source": "steipete/clawdis",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/steipete/clawdis.git",
+      "skillPath": "skills/github/SKILL.md",
+      "skillFolderHash": "8a98723139d287abd2af7d29c568411a379f2197",
+      "installedAt": "2026-06-11T09:50:12.871Z",
+      "updatedAt": "2026-06-11T09:50:12.871Z"
+    },
+    "notion": {
+      "source": "steipete/clawdis",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/steipete/clawdis.git",
+      "skillPath": "skills/notion/SKILL.md",
+      "skillFolderHash": "d2e041c19097a66fa22c89991690aa69c7616895",
+      "installedAt": "2026-06-11T09:50:46.120Z",
+      "updatedAt": "2026-06-11T09:50:46.120Z"
     }
   },
   "dismissed": {
