@@ -74,6 +74,194 @@
       "skillFolderHash": "53547268e4c90c0dd7981e098e1ea4a89393575a",
       "installedAt": "2026-06-11T10:02:16.756Z",
       "updatedAt": "2026-06-11T10:02:16.756Z"
+    },
+    "stripe-best-practices": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "sourceUrl": "https://docs.stripe.com/.well-known/skills/stripe-best-practices/SKILL.md",
+      "skillFolderHash": "",
+      "installedAt": "2026-06-11T10:07:25.359Z",
+      "updatedAt": "2026-06-11T10:07:25.359Z"
+    },
+    "netlify-cli-and-deploy": {
+      "source": "netlify/context-and-tools",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/netlify/context-and-tools.git",
+      "skillPath": "skills/netlify-cli-and-deploy/SKILL.md",
+      "skillFolderHash": "d2eca0150c85c47909b3f13a63b74c0e038d545f",
+      "installedAt": "2026-06-11T10:09:30.019Z",
+      "updatedAt": "2026-06-11T10:09:30.019Z"
+    },
+    "netlify-config": {
+      "source": "netlify/context-and-tools",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/netlify/context-and-tools.git",
+      "skillPath": "skills/netlify-config/SKILL.md",
+      "skillFolderHash": "ddc359e79e9b50fa98ebdb38ead2bda6fe3fb658",
+      "installedAt": "2026-06-11T10:09:30.021Z",
+      "updatedAt": "2026-06-11T10:09:30.021Z"
+    },
+    "netlify-forms": {
+      "source": "netlify/context-and-tools",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/netlify/context-and-tools.git",
+      "skillPath": "skills/netlify-forms/SKILL.md",
+      "skillFolderHash": "bc2842bb736fa7c86ae3bc631bac1dc887b705e2",
+      "installedAt": "2026-06-11T10:09:30.021Z",
+      "updatedAt": "2026-06-11T10:09:30.021Z"
+    },
+    "netlify-frameworks": {
+      "source": "netlify/context-and-tools",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/netlify/context-and-tools.git",
+      "skillPath": "skills/netlify-frameworks/SKILL.md",
+      "skillFolderHash": "e7bfd04106dcae7ba331a4dc14eaab5ce0a1f955",
+      "installedAt": "2026-06-11T10:09:30.022Z",
+      "updatedAt": "2026-06-11T10:09:30.022Z"
+    },
+    "shopify-admin": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-admin/SKILL.md",
+      "skillFolderHash": "773731c28baadf31dca6922e7b506a285dcb10ad",
+      "installedAt": "2026-06-11T10:11:44.239Z",
+      "updatedAt": "2026-06-11T10:11:44.239Z"
+    },
+    "shopify-custom-data": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-custom-data/SKILL.md",
+      "skillFolderHash": "8a81bcc9b46151b4ad3b65b004e20cd301bd4e08",
+      "installedAt": "2026-06-11T10:11:44.243Z",
+      "updatedAt": "2026-06-11T10:11:44.243Z"
+    },
+    "shopify-customer": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-customer/SKILL.md",
+      "skillFolderHash": "dc0ae047fa26eb085538e61b2ef12bcbe7719373",
+      "installedAt": "2026-06-11T10:11:44.244Z",
+      "updatedAt": "2026-06-11T10:11:44.244Z"
+    },
+    "shopify-dev": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-dev/SKILL.md",
+      "skillFolderHash": "1964c9c19f395c8f40d4deb41f596436e9a53cfe",
+      "installedAt": "2026-06-11T10:11:44.244Z",
+      "updatedAt": "2026-06-11T10:11:44.244Z"
+    },
+    "shopify-functions": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-functions/SKILL.md",
+      "skillFolderHash": "ee192514d7966a94539a789f3ef1d6eeb53374d9",
+      "installedAt": "2026-06-11T10:11:44.244Z",
+      "updatedAt": "2026-06-11T10:11:44.244Z"
+    },
+    "shopify-liquid": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-liquid/SKILL.md",
+      "skillFolderHash": "a4ffe5783dc4463fb03f48f6db59feb1d827ed4a",
+      "installedAt": "2026-06-11T10:11:44.245Z",
+      "updatedAt": "2026-06-11T10:11:44.245Z"
+    },
+    "shopify-use-shopify-cli": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-use-shopify-cli/SKILL.md",
+      "skillFolderHash": "5856f5917e74082d93119b84549c6f83676a618d",
+      "installedAt": "2026-06-11T10:11:44.246Z",
+      "updatedAt": "2026-06-11T10:11:44.246Z"
+    },
+    "convex": {
+      "source": "get-convex/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/get-convex/agent-skills.git",
+      "skillPath": "skills/convex/SKILL.md",
+      "skillFolderHash": "ef028ac502bb9ede98dcd656126fb34394d3ea6d",
+      "installedAt": "2026-06-11T10:13:32.311Z",
+      "updatedAt": "2026-06-11T10:13:32.311Z"
+    },
+    "convex-quickstart": {
+      "source": "get-convex/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/get-convex/agent-skills.git",
+      "skillPath": "skills/convex-quickstart/SKILL.md",
+      "skillFolderHash": "f4a8d601f97f146dc07c127c08dd94ef6eaeaa26",
+      "installedAt": "2026-06-11T10:13:32.314Z",
+      "updatedAt": "2026-06-11T10:13:32.314Z"
+    },
+    "convex-performance-audit": {
+      "source": "get-convex/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/get-convex/agent-skills.git",
+      "skillPath": "skills/convex-performance-audit/SKILL.md",
+      "skillFolderHash": "7f7f041f547efe03c2276de255a33c399f992379",
+      "installedAt": "2026-06-11T10:13:32.315Z",
+      "updatedAt": "2026-06-11T10:13:32.315Z"
+    },
+    "convex-migration-helper": {
+      "source": "get-convex/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/get-convex/agent-skills.git",
+      "skillPath": "skills/convex-migration-helper/SKILL.md",
+      "skillFolderHash": "3b342fc0bc978a9c35f4564e48b44dc23eacd5b1",
+      "installedAt": "2026-06-11T10:13:32.315Z",
+      "updatedAt": "2026-06-11T10:13:32.315Z"
+    },
+    "convex-create-component": {
+      "source": "get-convex/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/get-convex/agent-skills.git",
+      "skillPath": "skills/convex-create-component/SKILL.md",
+      "skillFolderHash": "5d18cce51d602d29ac60cfe5923061ac5b9ec5ab",
+      "installedAt": "2026-06-11T10:13:32.316Z",
+      "updatedAt": "2026-06-11T10:13:32.316Z"
+    },
+    "convex-setup-auth": {
+      "source": "get-convex/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/get-convex/agent-skills.git",
+      "skillPath": "skills/convex-setup-auth/SKILL.md",
+      "skillFolderHash": "03cc54c4b915308053d2b30d18e575c88721b6bc",
+      "installedAt": "2026-06-11T10:13:32.316Z",
+      "updatedAt": "2026-06-11T10:13:32.316Z"
+    },
+    "astro": {
+      "source": "astrolicious/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/astrolicious/agent-skills.git",
+      "skillPath": "skills/astro/SKILL.md",
+      "skillFolderHash": "81d96cec5008970ed8fbecb23f7fb48536102b84",
+      "installedAt": "2026-06-11T10:24:51.833Z",
+      "updatedAt": "2026-06-11T10:24:51.833Z"
+    },
+    "workos": {
+      "source": "workos/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/workos/skills.git",
+      "skillPath": "plugins/workos/skills/workos/SKILL.md",
+      "skillFolderHash": "51ba53966686a6f459f9f7aee358168dbe7526c7",
+      "installedAt": "2026-06-11T10:28:13.399Z",
+      "updatedAt": "2026-06-11T10:28:31.143Z"
+    },
+    "workos-widgets": {
+      "source": "workos/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/workos/skills.git",
+      "skillPath": "plugins/workos/skills/workos-widgets/SKILL.md",
+      "skillFolderHash": "99506e1276215350c803436d5e88efa4b72e558d",
+      "installedAt": "2026-06-11T10:29:30.049Z",
+      "updatedAt": "2026-06-11T10:29:30.049Z"
     }
   },
   "dismissed": {
