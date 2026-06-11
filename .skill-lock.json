@@ -1,0 +1,61 @@
+{
+  "version": 3,
+  "skills": {
+    "wacli": {
+      "source": "steipete/clawdis",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/steipete/clawdis.git",
+      "skillPath": "skills/wacli/SKILL.md",
+      "skillFolderHash": "b9ee3fca75dc0c0c9fbe4526e3cfecbb8b5d47a4",
+      "installedAt": "2026-06-10T14:52:33.273Z",
+      "updatedAt": "2026-06-10T14:53:00.690Z"
+    },
+    "gog": {
+      "source": "steipete/clawdis",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/steipete/clawdis.git",
+      "skillPath": "skills/gog/SKILL.md",
+      "skillFolderHash": "865fadff4c3fcc3db2bb68e64f323c7a5562c5da",
+      "installedAt": "2026-06-10T14:54:43.968Z",
+      "updatedAt": "2026-06-10T14:54:43.968Z"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/anthropics/skills.git",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "skillFolderHash": "0d5b74a14bdf3ebcd64f352d06376a2ef05ed296",
+      "pluginName": "example-skills",
+      "installedAt": "2026-06-10T14:56:22.631Z",
+      "updatedAt": "2026-06-10T14:56:22.631Z"
+    },
+    "grill-me": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mattpocock/skills.git",
+      "skillPath": "skills/productivity/grill-me/SKILL.md",
+      "skillFolderHash": "2a1ad17028306ebe45f0e49703fa28b9b2e7f499",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-06-10T14:57:20.639Z",
+      "updatedAt": "2026-06-10T14:57:20.639Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "amp",
+    "antigravity",
+    "antigravity-cli",
+    "cline",
+    "codex",
+    "cursor",
+    "deepagents",
+    "gemini-cli",
+    "github-copilot",
+    "kimi-code-cli",
+    "opencode",
+    "warp",
+    "zed"
+  ]
+}
