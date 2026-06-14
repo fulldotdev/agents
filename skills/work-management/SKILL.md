@@ -27,14 +27,23 @@ IDs are bootstrap hints. Prefer finding by name, then verify live metadata/schem
 
 ## Model
 
-- Task = concrete executable next action with a clear outcome.
+- Task = executable workload: a coherent unit of work that can be picked up as one effort and has a clear outcome.
 - Project = durable finishable work bucket, scope, delivery phase, sprint package, proposal, prototype, or important internal outcome.
 - Customer = stable account/context layer.
 - Meeting/email/Slack/WhatsApp/calendar = source/context, not work bucket.
+- Source context = any message, email, meeting, file, link, attachment, quote, decision, blocker, requirement, or reference that may matter later.
 - Someday = non-executable idea, maybe-later note, or vague exploration.
 - Sprint = Saturday-Friday planning week.
 
 New Customer pages always get a fitting page emoji.
+
+Treat Tasks as workloads, not atomic message fragments. If multiple small actions belong to the same domain and will naturally be handled together at the same time, capture them in one Task instead of making tiny duplicates.
+
+Examples:
+
+- Two small development fixes for the same customer website -> one Task such as `Small fixes for Customer Website`.
+- Create an estimate and send it to the customer -> one Task such as `Prepare and send estimate for Customer`.
+- Separate domains, separate timing, separate owner, or separate delivery context -> separate Tasks.
 
 Tasks may link directly to Customer when useful. Create/link a Project only for durable scope, multi-step delivery, retainers/sprints, proposals, repositories, or context that must survive multiple tasks. Execution details for one action belong on Tasks.
 
@@ -46,6 +55,22 @@ Whenever creating a Project, create or link at least one concrete Task in the sa
 2. Decide: Task, Project/Customer update, source-only context, or Someday.
 3. If Task: concrete name, real status, Customer relation when identifiable; Project relation only when durable context is warranted.
 4. Preserve trace via relations/body.
+
+## Context Capture
+
+All new context or references to context must be captured.
+
+Capture context when it includes customer requirements, decisions, approvals, preferences, deadlines, scope, blockers, files, links, technical notes, meeting decisions, source references, or evidence that work is done, waiting, canceled, superseded, or deprioritized.
+
+Capture into the most specific place:
+
+1. Existing Task, if it affects an active workload.
+2. Existing Project, if it is durable context but not a specific executable action.
+3. Customer, if it is account-level preference/history/context.
+4. New Task, if it is executable and not already captured.
+5. New Project plus first Task, if it creates a durable bucket and concrete next action.
+
+Source context should be compact, traceable, and useful: source type, date, sender/source, link/reference when available, and the decision/actionable fact. Do not dump huge raw transcripts unless the source itself is the deliverable.
 
 ## Task Status
 
