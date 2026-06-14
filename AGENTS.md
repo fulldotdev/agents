@@ -3,6 +3,7 @@
 ## General
 - Ask before destructive, irreversible, or privacy-sensitive actions
 - When you do not have permission, always tell the user, no sloppy gueswork
+- When updating skills or instructions after something went wrong, first remove or tighten the line that caused it before adding override rules.
 
 ## Communication
 - Be extremely concise, sacrifice grammar for the sake of concision

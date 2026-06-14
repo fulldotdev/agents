@@ -37,15 +37,18 @@ IDs are bootstrap hints. Prefer finding by name, then verify live metadata/schem
 
 New Customer pages always get a fitting page emoji.
 
-Treat Tasks as workloads, not atomic message fragments. If multiple small actions belong to the same domain and will naturally be handled together at the same time, capture them in one Task instead of making tiny duplicates.
+Treat Tasks as workloads, not atomic message fragments. A good Task is often a small work package: one coherent delivery/admin/sales outcome with the checklist and source context needed to execute it. If multiple small actions belong to the same domain and will naturally be handled together at the same time, capture them in one Task instead of making tiny duplicates.
 
 Examples:
 
 - Two small development fixes for the same customer website -> one Task such as `Small fixes for Customer Website`.
 - Create an estimate and send it to the customer -> one Task such as `Prepare and send estimate for Customer`.
+- Same admin action for several customers -> one batch Task with a customer checklist, unless timing, responsibility, or risk differs.
 - Separate domains, separate timing, separate owner, or separate delivery context -> separate Tasks.
 
-Tasks may link directly to Customer when useful. Create/link a Project only for durable scope, multi-step delivery, retainers/sprints, proposals, repositories, or context that must survive multiple tasks. Execution details for one action belong on Tasks.
+Tasks may link directly to Customer when useful. Create/link a Project only for durable scope, multi-step delivery, retainers/sprints, proposals, repositories, invoiceable customer work, or context that must survive multiple tasks. Execution details for one action belong on Tasks.
+
+If work will need billable hours, a proposal/estimate, delivery tracking, or invoice follow-up, create or link a Project even when the first visible action is tiny. The Task can stay small, but the commercial/delivery context belongs in a Project because the workflow usually spans scoping, doing the work, communication, and invoicing.
 
 Whenever creating a Project, create or link at least one concrete Task in the same workflow. If the first Task is unclear, create a scoped planning/scoping Task instead of leaving the Project empty.
 
@@ -54,7 +57,9 @@ Whenever creating a Project, create or link at least one concrete Task in the sa
 1. Read item + source context.
 2. Decide: Task, Project/Customer update, source-only context, or Someday.
 3. If Task: concrete name, real status, Customer relation when identifiable; Project relation only when durable context is warranted.
-4. Preserve trace via relations/body.
+4. Prefer updating an existing broader Task/work package over creating a narrow sibling Task.
+5. If new context is just one checklist item inside an active package, append it to that package body instead of creating another Task.
+6. Preserve trace via relations/body.
 
 ## Context Capture
 
@@ -78,7 +83,8 @@ Source context should be compact, traceable, and useful: source type, date, send
 - Doing = active work or work ready for Sil review.
 - Waiting = blocked on person, dependency, decision, timing, customer, or vendor.
 - Triage = unclear actionability, missing decision, or not routed yet.
-- Done/Canceled = only when explicit, or low-risk local/admin cleanup is fully verified.
+- Done = work actually completed, verified, or safely finished through low-risk local/admin cleanup.
+- Canceled = duplicate, superseded by a broader work package, moved to Someday, no longer executable, or explicitly dropped.
 
 Do not mark customer-facing delivery Done unless explicit.
 
