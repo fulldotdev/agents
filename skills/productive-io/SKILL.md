@@ -118,9 +118,47 @@ Current setup:
 2. Cadence: every Monday at 09:00 Europe/Amsterdam.
 3. Delivery: Work Telegram group.
 4. Scope: Small Giants, previous complete Monday-Sunday week.
-5. Mode: read-only/proposal-only by default. It reports target totals, existing entries, gaps, and proposed allocation. It does not create/update/delete Productive entries unless Sil explicitly asks in a separate manual run.
+5. Mode: execute routine weekly registration when the evidence is good enough. Register the previous week's Productive hours, then report a clear per-day overview of what was logged so Sil can correct it afterward.
 
 Do not recreate old Notion routine tasks such as `Uren invullen in Productive` just because a month/week started. If Productive credentials, contract context, or invoice context are missing, report the blocker instead of inventing a manual planning task.
+
+## Scripted context collection
+
+Use the collector pipeline before reconstructing or registering hours, especially for cron runs and retroactive backfills:
+
+```sh
+python3 ~/.agents/skills/productive-io/scripts/collect_all_context.py \
+  --after 2026-06-08 \
+  --before 2026-06-15 \
+  --customer "Small Giants" \
+  --format yaml
+```
+
+For the routine weekly cron, the default collection window is the previous complete Monday-Sunday week. For retroactive backfills, pass explicit `--after` and `--before` dates.
+
+Productive is scoped through the Small Giants work context. Treat Small Giants as the Productive/customer wrapper, and treat Teveo, Skantrae, Fayn, or similar names as project/client filters inside that wrapper. Do not mix unrelated Productive customers into the evidence set.
+
+The combined collector runs these lanes concurrently:
+
+1. `moneybird`: invoice/contract target lines for the Small Giants customer/window and relevant project/client.
+2. `productive`: existing Small Giants-related Productive entries, service IDs, notes, approvals, invoice status.
+3. `calendar`: calendar events in the same week/window matching the relevant project/client.
+4. `notion`: related task/project/search context for the same week/window and project/client.
+5. `github`: commits by Sil in the same week/window across explicit project repos where possible.
+
+Pass explicit repos when the relevant repo is known but not discoverable:
+
+```sh
+python3 ~/.agents/skills/productive-io/scripts/collect_all_context.py \
+  --after 2026-06-08 \
+  --before 2026-06-15 \
+  --customer "Skantrae" \
+  --repo /Users/otis/projects/metispro \
+  --author Sil \
+  --format yaml
+```
+
+Lane failure means collect the rest, but report the failed lane and do not pretend the evidence is complete. The agent still owns reconciliation and Productive writes; scripts gather context only.
 
 ## Retroactive hours reconstruction
 
@@ -140,32 +178,36 @@ Use this mode when the user wants to fill, audit, or repair Productive hours aft
    - minutes
    - notes
    - approval/status
-3. Notion tasks, sprint pages, project pages, comments, and status history indicate what work likely happened and which buckets it belongs to.
-4. GitHub commits, pull requests, and merged branches indicate roughly when engineering work happened and which project or task it relates to.
-5. Chat or memory context may clarify intent, but should not override contracts, invoices, or live Productive data.
+3. Calendar events indicate meetings, kickoff/setup timing, customer touchpoints, and days when work realistically started.
+4. Notion tasks, sprint pages, project pages, comments, and status history indicate what work likely happened and which buckets it belongs to.
+5. GitHub commits, pull requests, and merged branches indicate roughly when engineering work happened and which project or task it relates to.
+6. Chat or memory context may clarify intent, but should not override contracts, invoices, or live Productive data.
 
 ### Reconstruction rules
 
 1. Work contract-total-first: the final Productive total must match the contract/invoice total for the relevant date range.
 2. Treat exact dates and per-task durations as estimates unless a source explicitly says otherwise.
-3. Use Notion and GitHub evidence to distribute hours over plausible work dates, weeks, projects, services, and notes.
+3. Use Calendar, Notion, and GitHub evidence to distribute hours over plausible work dates, weeks, projects, services, and notes. Calendar comes first for meeting-heavy setup weeks and start-date reality checks.
 4. Preserve existing Productive entries where possible. Fill gaps before changing existing entries.
 5. Avoid fake precision. Prefer rounded entries such as 30, 45, 60, 90, 120, or 180 minutes unless existing entries use another pattern.
 6. Match existing Productive service buckets and naming before creating or requesting new ones.
 7. Keep weekly totals plausible, but prioritize the period total when there is tension.
-8. Flag overlaps, missing evidence, unclear services, or contract/invoice mismatches before writing.
-9. Never create, update, or delete entries silently. Show the proposed diff first unless the user explicitly asked to execute directly.
+8. For the `productive-hours` cron, create or update entries when the target total, person, service/project bucket, and weekly allocation are sufficiently clear from contracts/invoices, Productive, Notion, GitHub, or stable prior mappings.
+9. Preserve existing Productive entries where possible. Fill gaps before changing existing entries. Do not delete entries unless Sil explicitly asks.
+10. Flag overlaps, missing evidence, unclear services, or contract/invoice mismatches as blockers instead of fabricating certainty.
+11. For manual retroactive work outside the cron, show the proposed diff first unless Sil explicitly asked to execute directly.
 
 ### Expected output
 
-For read-only reconstruction, produce:
+For `productive-hours` cron execution, produce:
 
 1. Contract/invoice target total and date range.
 2. Existing Productive total for that range.
-3. Gap or surplus in hours.
-4. Evidence summary from Notion and GitHub.
-5. Proposed Productive allocation by week, service, project, and note.
-6. Blockers or assumptions.
+3. What was created or updated in Productive.
+4. A readable per-day overview: date, customer/project/service, minutes/hours, note.
+5. Evidence used by lane: invoice/contract, Productive, Calendar, Notion, GitHub.
+6. Remaining gap or surplus.
+7. Blockers, assumptions, or items Sil should correct.
 
 For write preparation, produce a concrete entry plan with date, minutes, person ID, service ID, optional task ID, and note for every proposed entry.
 

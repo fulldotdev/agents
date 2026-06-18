@@ -37,6 +37,8 @@ IDs are bootstrap hints. Prefer finding by name, then verify live metadata/schem
 
 New Customer pages always get a fitting page emoji.
 
+Customer names use lowercase domain/repo-style handles. Prefer the recognizable domain or repository root: strip protocol and `www.`, strip the TLD when that leaves a clear handle, lowercase everything, and keep meaningful hyphens only when they are part of the recognizable domain/brand. Do not title-case Customer names unless Sil explicitly asks for display-name cleanup. Examples: `teveo`, `fayn`, `mandendeco`, `fulldev`, `smallgiants`, `skantrae`.
+
 Treat Tasks as workloads, not atomic message fragments. A good Task is often a small work package: one coherent delivery/admin/sales outcome with the checklist and source context needed to execute it. If multiple small actions belong to the same domain and will naturally be handled together at the same time, capture them in one Task instead of making tiny duplicates.
 
 Examples:
@@ -51,6 +53,28 @@ Tasks may link directly to Customer when useful. Create/link a Project only for 
 If work will need billable hours, a proposal/estimate, delivery tracking, or invoice follow-up, create or link a Project even when the first visible action is tiny. The Task can stay small, but the commercial/delivery context belongs in a Project because the workflow usually spans scoping, doing the work, communication, and invoicing.
 
 Whenever creating a Project, create or link at least one concrete Task in the same workflow. If the first Task is unclear, create a scoped planning/scoping Task instead of leaving the Project empty.
+
+## Commercial and Delivery Structure
+
+Projects are the commercial and delivery container for invoiceable customer work. Quotes, estimates, invoice links, accepted scope, billing basis, and payment/follow-up context belong primarily on the Project, even when a Task triggers the commercial action. Keep Tasks executable and independent from the exact invoicing schedule.
+
+Sales/admin Tasks may still exist for work such as preparing and sending a quote, checking invoice status, or syncing Moneybird. Link those Tasks to the Project and capture the resulting quote/invoice context on the Project.
+
+For customer delivery that naturally moves through versions, phases, or feedback rounds, create separate Tasks under the same Project for each concrete delivery effort. Examples:
+
+- `AMB Detailing website - v1`
+- `AMB Detailing website - v2`
+- `AMB Detailing website - v3`
+
+Each version/phase Task should contain only the work, feedback, checklist, source context, and acceptance criteria needed for that version. The Project keeps durable scope, commercial context, cross-version decisions, and references.
+
+When a meeting, approval, message, or delivery note marks a transition between Tasks, treat it as transition evidence. Link or capture it on:
+
+1. The Project, when it affects durable scope, delivery, or commercial context.
+2. The previous Task, when it proves completion, review, cancellation, or supersession.
+3. The next Task, when it creates new executable work.
+
+Use the same transition pattern for sales-to-delivery handoffs: the Project is the bridge; the Sales Task closes when accepted; the Delivery Task starts with only delivery-relevant context.
 
 ## Routing
 
@@ -113,11 +137,19 @@ Finishable result.
 
 ## Scope / agreements
 
-- Commercial, timing, ownership, agreed scope.
+- Timing, ownership, agreed scope.
+
+## Commercials
+
+- Quote, estimate, invoice, billing basis, payment, and follow-up context.
 
 ## Current context / decisions
 
 - Current state, decisions, blockers, constraints.
+
+## Delivery versions
+
+- Version/phase Tasks and cross-version notes.
 
 ## Delivery notes
 
