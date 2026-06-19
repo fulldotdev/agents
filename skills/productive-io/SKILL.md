@@ -138,13 +138,15 @@ For the routine weekly cron, the default collection window is the previous compl
 
 Productive is scoped through the Small Giants work context. Treat Small Giants as the Productive/customer wrapper, and treat Teveo, Skantrae, Fayn, or similar names as project/client filters inside that wrapper. Do not mix unrelated Productive customers into the evidence set.
 
+Keep the collector pragmatic. It is allowed to return more context than strictly needed, as long as the result is bounded to the week/window and reconciliation remains explicit. Do not overfit on exact calendar titles or contact sync.
+
 The combined collector runs these lanes concurrently:
 
 1. `moneybird`: invoice/contract target lines for the Small Giants customer/window and relevant project/client.
-2. `productive`: existing Small Giants-related Productive entries, service IDs, notes, approvals, invoice status.
-3. `calendar`: calendar events in the same week/window matching the relevant project/client.
-4. `notion`: related task/project/search context for the same week/window and project/client.
-5. `github`: commits by Sil in the same week/window across explicit project repos where possible.
+2. `productive`: existing entries for known Small Giants service IDs, plus the previous few weeks as reference context.
+3. `calendar`: all calendar events in the same week/window by default; only filter when an explicit calendar query is provided.
+4. `notion`: search context plus tasks/projects/customers edited in the same week/window.
+5. `github`: commits by Sil in the same week/window across explicit project repos where possible; local repo scan is acceptable as fallback.
 
 Pass explicit repos when the relevant repo is known but not discoverable:
 
@@ -157,6 +159,18 @@ python3 ~/.agents/skills/productive-io/scripts/collect_all_context.py \
   --author Sil \
   --format yaml
 ```
+
+Use `--project` to add extra Notion search terms without changing the Productive billing wrapper:
+
+```sh
+python3 ~/.agents/skills/productive-io/scripts/collect_all_context.py \
+  --customer "Small Giants" \
+  --project "Skantrae" \
+  --repo /Users/otis/projects/metispro \
+  --format yaml
+```
+
+Use `--all-productive-services` only when intentionally auditing outside the known Small Giants service IDs.
 
 Lane failure means collect the rest, but report the failed lane and do not pretend the evidence is complete. The agent still owns reconciliation and Productive writes; scripts gather context only.
 
@@ -196,6 +210,20 @@ Use this mode when the user wants to fill, audit, or repair Productive hours aft
 9. Preserve existing Productive entries where possible. Fill gaps before changing existing entries. Do not delete entries unless Sil explicitly asks.
 10. Flag overlaps, missing evidence, unclear services, or contract/invoice mismatches as blockers instead of fabricating certainty.
 11. For manual retroactive work outside the cron, show the proposed diff first unless Sil explicitly asked to execute directly.
+
+### Teveo automated testing retainer
+
+Keep Teveo automated testing separate from regular Teveo sprint development. Use the automated testing retainer only for BrowserStack/Percy/test-run work, such as:
+
+1. Reviewing daily or weekly BrowserStack test runs.
+2. Investigating BrowserStack failures or flaky regression results.
+3. Updating tests after feature changes.
+4. Adding clearly new test coverage.
+5. Sprint QA/release regression checks tied to the automated test setup.
+
+Do not use the automated testing retainer for normal feature implementation, theme work, CRO work, wishlist changes, translations, Klaviyo/VWO work, or generic release work unless the note clearly explains the test impact.
+
+When evidence is thin, it is acceptable to reserve about 2h per week for test-run review because the automated suite always needs recurring review. The remaining testing capacity can move across weeks: one week may be 0h and another 4h when a new test is added or a real BrowserStack issue is investigated.
 
 ### Expected output
 

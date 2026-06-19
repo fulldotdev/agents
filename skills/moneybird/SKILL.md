@@ -54,7 +54,7 @@ mcporter call https://moneybird.com/mcp/v1/read_write.create_estimate \
 - Default cleaned-up line style:
   - heading in bold: `**...**`
   - no blank line under the heading
-  - optional short paragraph
+  - one specific short paragraph with scope and billing basis
   - optional `Kenmerken:` bullets
   - optional `Inbegrepen:` bullets
 - Do not add decorative intro text above package headings.
@@ -63,6 +63,9 @@ mcporter call https://moneybird.com/mcp/v1/read_write.create_estimate \
 - Use `Kenmerken:` for what the line is.
 - Use `Inbegrepen:` for explicit included scope.
 - If two lines are easy to confuse, sharpen the distinction in the first sentence.
+- Use the Moneybird period field for dates; make descriptions explain scope, corrections, and calculation basis.
+- Always include the unit in invoice quantities, e.g. `37 uur`, `4 weken`, `per maand`.
+- For multi-line SOW invoices, avoid repeated boilerplate. Name the workstream and mention its driver, e.g. `9 uur per week`, `4 uur per week`, or `9 uur per twee weken`.
 
 ## Moneybird conventions
 - Prefer direct app URLs over public/external URLs.

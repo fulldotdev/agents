@@ -32,9 +32,9 @@ def collect_account(account, a, b, query):
 
 def main():
     p = argparse.ArgumentParser(); add_common_args(p); p.add_argument("--account", action="append"); p.add_argument("--query")
-    args = p.parse_args(); a, b = window_from_args(args.after, args.before)
+    args = p.parse_args(); a, b = window_from_args(args.after, args.before, require=False)
     r = base_result("calendar", "events", a, b); r["sources"] = []
-    query = args.query or args.customer
+    query = args.query
     for account in args.account or DEFAULT_CALENDAR_ACCOUNTS:
         try:
             items = collect_account(account, a, b, query)

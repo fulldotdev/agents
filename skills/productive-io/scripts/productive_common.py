@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 import argparse, json, os, re, subprocess
-from datetime import datetime, time, timezone
+from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 MAX_ITEMS = int(os.environ.get("PRODUCTIVE_HOURS_MAX_ITEMS", "300"))
 DEFAULT_CALENDAR_ACCOUNTS = ["sil@full.dev", "silveltman@gmail.com"]
 DEFAULT_AUTHOR = os.environ.get("PRODUCTIVE_HOURS_GIT_AUTHOR", "Sil")
 PRODUCTIVE_CONFIG = Path(os.environ.get("PRODUCTIVE_IO_CONFIG", "~/.config/productive-io/config.env")).expanduser()
+DEFAULT_TZ = ZoneInfo(os.environ.get("PRODUCTIVE_HOURS_TZ", "Europe/Amsterdam"))
 
 def run(cmd, cwd=None):
     p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
@@ -29,8 +31,21 @@ def parse_iso(value):
 def iso_utc(dt):
     return dt.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
+def previous_complete_week(now=None):
+    now = now or datetime.now(DEFAULT_TZ)
+    today = now.date()
+    this_monday = today - timedelta(days=today.weekday())
+    start = this_monday - timedelta(days=7)
+    end = this_monday
+    return (
+        datetime.combine(start, time.min, tzinfo=DEFAULT_TZ).astimezone(timezone.utc),
+        datetime.combine(end, time.min, tzinfo=DEFAULT_TZ).astimezone(timezone.utc),
+    )
+
 def window_from_args(after=None, before=None, require=True):
     a = parse_iso(after)
+    if not a and not before and not require:
+        return previous_complete_week()
     b = parse_iso(before) or datetime.now(timezone.utc)
     if require and not a:
         raise ValueError("after is required")
@@ -133,7 +148,7 @@ def emit(result, pretty=False, output_format="json"):
         print(json.dumps(result, indent=2 if pretty else None, ensure_ascii=False))
 
 def add_common_args(parser):
-    parser.add_argument("--after", required=True)
+    parser.add_argument("--after")
     parser.add_argument("--before")
     parser.add_argument("--customer", default="Small Giants")
     parser.add_argument("--pretty", action="store_true")
