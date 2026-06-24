@@ -271,6 +271,51 @@
       "skillFolderHash": "b61e723c00a0757daf549ac6d8835ef1c3a7ed10",
       "installedAt": "2026-06-11T16:36:12.853Z",
       "updatedAt": "2026-06-11T16:36:12.853Z"
+    },
+    "content-modeling-best-practices": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/sanity-io/agent-toolkit.git",
+      "skillPath": "skills/content-modeling-best-practices/SKILL.md",
+      "skillFolderHash": "a9cdf383668a8c38871f75e8ef34ece0bb0d2d7e",
+      "installedAt": "2026-06-23T08:09:43.900Z",
+      "updatedAt": "2026-06-23T08:09:43.900Z"
+    },
+    "portable-text-conversion": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/sanity-io/agent-toolkit.git",
+      "skillPath": "skills/portable-text-conversion/SKILL.md",
+      "skillFolderHash": "ac7a669a4eaef5ec46798f607cd6b5412b5aac5c",
+      "installedAt": "2026-06-23T08:09:43.902Z",
+      "updatedAt": "2026-06-23T08:09:43.902Z"
+    },
+    "portable-text-serialization": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/sanity-io/agent-toolkit.git",
+      "skillPath": "skills/portable-text-serialization/SKILL.md",
+      "skillFolderHash": "5beb26495be66788593a50ddf3b12dcb0e5cc21d",
+      "installedAt": "2026-06-23T08:09:43.903Z",
+      "updatedAt": "2026-06-23T08:09:43.903Z"
+    },
+    "sanity-best-practices": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/sanity-io/agent-toolkit.git",
+      "skillPath": "skills/sanity-best-practices/SKILL.md",
+      "skillFolderHash": "d4279379338a24fde31a44960a9528dc27b2f842",
+      "installedAt": "2026-06-23T08:09:43.903Z",
+      "updatedAt": "2026-06-23T08:09:43.903Z"
+    },
+    "seo-aeo-best-practices": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/sanity-io/agent-toolkit.git",
+      "skillPath": "skills/seo-aeo-best-practices/SKILL.md",
+      "skillFolderHash": "b78a397999f979d85eeea8deb32656733672e9b3",
+      "installedAt": "2026-06-23T08:09:43.904Z",
+      "updatedAt": "2026-06-23T08:09:43.904Z"
     }
   },
   "dismissed": {
