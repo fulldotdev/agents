@@ -81,9 +81,12 @@ Use the same transition pattern for sales-to-delivery handoffs: the Project is t
 1. Read item + source context.
 2. Decide: Task, Project/Customer update, source-only context, or Someday.
 3. If Task: concrete name, real status, Customer relation when identifiable; Project relation only when durable context is warranted.
-4. Prefer updating an existing broader Task/work package over creating a narrow sibling Task.
+4. Prefer updating an existing broader active Task/work package over creating a narrow sibling Task.
 5. If new context is just one checklist item inside an active package, append it to that package body instead of creating another Task.
-6. Preserve trace via relations/body.
+6. If the best matching Task was set to `Done` before the current local date, be more willing to create a new related Task under the same Project/Customer instead of reopening or appending, unless the new source only proves/corrects the completed work.
+7. If the best matching Task was set to `Done` on the current local date, it may still be reopened or moved back when the fresh source shows the closure was premature.
+8. If the best matching Task is `Waiting`, append related blocker/decision/context to that Task and move its status only when the new source makes the next action executable.
+9. Preserve trace via relations/body.
 
 ## Context Capture
 
@@ -93,11 +96,13 @@ Capture context when it includes customer requirements, decisions, approvals, pr
 
 Capture into the most specific place:
 
-1. Existing Task, if it affects an active workload.
+1. Existing active Task, if it affects that workload.
 2. Existing Project, if it is durable context but not a specific executable action.
 3. Customer, if it is account-level preference/history/context.
 4. New Task, if it is executable and not already captured.
 5. New Project plus first Task, if it creates a durable bucket and concrete next action.
+
+Completed Tasks older than the current local date are closure records. New executable follow-up after an older `Done` Task should usually become a new related Task, with transition/source context captured on the Project when durable.
 
 Source context should be compact, traceable, and useful: source type, date, sender/source, link/reference when available, and the decision/actionable fact. Do not dump huge raw transcripts unless the source itself is the deliverable.
 
