@@ -7,6 +7,14 @@ description: Work with Productive.io time entries through the Productive API. Us
 
 Use this skill only for Productive.io hours/time-entry work. Do not broaden into projects, invoices, sales, or planning unless the user explicitly asks. When reconstructing hours, contracts and invoices may be used as evidence for exact date ranges and total hours, but this skill should still produce Productive time-entry work rather than finance, sales, or project-planning output.
 
+## Loop integration
+
+Productive.io is a domain skill, not the loop owner. When `work-execution`, a Project Steward, or a weekly hours loop starts Productive work, this skill defines the Productive-specific evidence model, collection pipeline, time-entry shape, and write safety.
+
+The loop owns timing, sprint/project selection, thread orchestration, Notion writeback, and follow-up scheduling. This skill owns how Productive hours are inspected, reconstructed, proposed, created, updated, and reported.
+
+For sprint work, the Project Steward may treat weekly Productive registration as an administrative Task Executor workstream. Use this skill for the Productive part and keep sprint/project planning decisions in `work-execution` and `work-management`.
+
 ## Credentials
 
 Preferred credential order:
@@ -85,7 +93,7 @@ curl -sS "https://api.productive.io/api/v2/time_entries/ENTRY_ID" \
   -H "Content-Type: application/vnd.api+json"
 ```
 
-Create or update hours only after confirming the required IDs with the user. A normal manual time entry usually needs at least:
+Create or update hours only after confirming the required IDs. For manual retroactive writes, show the intended entries to the user first unless Sil explicitly asked to execute directly. For loop-driven routine weekly registration, writes may proceed when the evidence and IDs satisfy the reconstruction rules below. A normal time entry usually needs at least:
 
 - `person_id`
 - `service_id`
@@ -105,42 +113,28 @@ Use:
 1. Load env vars from the shell or `~/.config/productive-io/config.env`; use repo `.env` only as a fallback when it already exists.
 2. For read-only questions, call `GET /time_entries` with date/person/service filters where possible.
 3. Summarize hours in human units, but keep raw minutes available for calculations.
-4. For writes, show the intended date, minutes, person/service/task IDs, and note before sending the request unless the user explicitly asked to execute directly.
+4. For manual writes, show the intended date, minutes, person/service/task IDs, and note before sending the request unless the user explicitly asked to execute directly. For loop-driven routine weekly registration, write when the reconstruction rules say evidence is strong enough; otherwise report the blocker to the loop/steward.
 5. If Productive returns `401`, `403`, or `429`, stop and explain the auth, permission, or rate-limit issue.
 
-## Productive-hours ownership
+## Weekly hours loop
 
-Routine Productive hour reconstruction is owned by the `productive-hours` cron, not by `work-planning`.
+Routine Productive hour reconstruction is loop-driven through `work-execution` Project Steward or Task Executor threads. The old standalone cron job named `productive-hours` and its collector scripts were retired; do not assume they exist.
 
-Current setup:
+The skill name remains `productive-io`. `productive-hours` was only the old cron/job name.
 
-1. Cron name: `productive-hours`.
-2. Cadence: every Monday at 09:00 Europe/Amsterdam.
-3. Delivery: Work Telegram group.
-4. Scope: Small Giants, previous complete Monday-Sunday week.
-5. Mode: execute routine weekly registration when the evidence is good enough. Register the previous week's Productive hours, then report a clear per-day overview of what was logged so Sil can correct it afterward.
+Expected loop setup:
 
-Do not recreate old Notion routine tasks such as `Uren invullen in Productive` just because a month/week started. If Productive credentials, contract context, or invoice context are missing, report the blocker instead of inventing a manual planning task.
+1. A Project Steward or Task Executor owns the Productive workstream for a sprint/week.
+2. Scope should come from the Project/Sprint/Task context, such as Small Giants, Teveo, Skantrae, Fayn, and the target Monday-Sunday week.
+3. The loop may register hours when evidence is good enough, then report a compact project-first summary so Sil can correct the split afterward.
 
-## Scripted context collection
+Do not recreate old Notion routine tasks such as `Uren invullen in Productive` just because a month/week started. If Productive credentials, contract context, or invoice context are missing, report the blocker to the loop/steward instead of inventing a manual planning task.
 
-Use the collector pipeline before reconstructing or registering hours, especially for cron runs and retroactive backfills:
-
-```sh
-python3 ~/.agents/skills/productive-io/scripts/collect_all_context.py \
-  --after 2026-06-08 \
-  --before 2026-06-15 \
-  --customer "Small Giants" \
-  --format yaml
-```
-
-For the routine weekly cron, the default collection window is the previous complete Monday-Sunday week. For retroactive backfills, pass explicit `--after` and `--before` dates.
+## Context collection
 
 Productive is scoped through the Small Giants work context. Treat Small Giants as the Productive/customer wrapper, and treat Teveo, Skantrae, Fayn, or similar names as project/client filters inside that wrapper. Do not mix unrelated Productive customers into the evidence set.
 
-Keep the collector pragmatic. It is allowed to return more context than strictly needed, as long as the result is bounded to the week/window and reconciliation remains explicit. Do not overfit on exact calendar titles or contact sync.
-
-The combined collector runs these lanes concurrently:
+Collect only the evidence needed for the target project/week. Useful evidence lanes:
 
 1. `moneybird`: invoice/contract target lines for the Small Giants customer/window and relevant project/client.
 2. `productive`: existing entries for known Small Giants service IDs, plus the previous few weeks as reference context.
@@ -148,31 +142,7 @@ The combined collector runs these lanes concurrently:
 4. `notion`: search context plus tasks/projects/customers edited in the same week/window.
 5. `github`: commits by Sil in the same week/window across explicit project repos where possible; local repo scan is acceptable as fallback.
 
-Pass explicit repos when the relevant repo is known but not discoverable:
-
-```sh
-python3 ~/.agents/skills/productive-io/scripts/collect_all_context.py \
-  --after 2026-06-08 \
-  --before 2026-06-15 \
-  --customer "Skantrae" \
-  --repo /Users/otis/projects/metispro \
-  --author Sil \
-  --format yaml
-```
-
-Use `--project` to add extra Notion search terms without changing the Productive billing wrapper:
-
-```sh
-python3 ~/.agents/skills/productive-io/scripts/collect_all_context.py \
-  --customer "Small Giants" \
-  --project "Skantrae" \
-  --repo /Users/otis/projects/metispro \
-  --format yaml
-```
-
-Use `--all-productive-services` only when intentionally auditing outside the known Small Giants service IDs.
-
-Lane failure means collect the rest, but report the failed lane and do not pretend the evidence is complete. The agent still owns reconciliation and Productive writes; scripts gather context only.
+Lane failure means collect the rest, but report the failed lane and do not pretend the evidence is complete. The agent owns reconciliation and Productive writes; no helper script is authoritative.
 
 ## Retroactive hours reconstruction
 
@@ -206,10 +176,10 @@ Use this mode when the user wants to fill, audit, or repair Productive hours aft
 5. Avoid fake precision. Prefer rounded entries such as 30, 45, 60, 90, 120, or 180 minutes unless existing entries use another pattern.
 6. Match existing Productive service buckets and naming before creating or requesting new ones.
 7. Keep weekly totals plausible, but prioritize the period total when there is tension.
-8. For the `productive-hours` cron, create or update entries when the target total, person, service/project bucket, and weekly allocation are sufficiently clear from contracts/invoices, Productive, Notion, GitHub, or stable prior mappings.
+8. For loop-driven weekly registration, create or update entries when the target total, person, service/project bucket, and weekly allocation are sufficiently clear from contracts/invoices, Productive, Notion, GitHub, or stable prior mappings.
 9. Preserve existing Productive entries where possible. Fill gaps before changing existing entries. Do not delete entries unless Sil explicitly asks.
 10. Flag overlaps, missing evidence, unclear services, or contract/invoice mismatches as blockers instead of fabricating certainty.
-11. For manual retroactive work outside the cron, show the proposed diff first unless Sil explicitly asked to execute directly.
+11. For manual retroactive work outside an approved loop run, show the proposed diff first unless Sil explicitly asked to execute directly.
 
 ### Teveo automated testing retainer
 
@@ -225,17 +195,46 @@ Do not use the automated testing retainer for normal feature implementation, the
 
 When evidence is thin, it is acceptable to reserve about 2h per week for test-run review because the automated suite always needs recurring review. The remaining testing capacity can move across weeks: one week may be 0h and another 4h when a new test is added or a real BrowserStack issue is investigated.
 
+### Teveo weekly contract buckets
+
+For routine Small Giants Productive registration, use the contract baseline before inferred calendar/GitHub distribution:
+
+1. Teveo development: 8h per week.
+2. Teveo customer lead: 1h per week.
+3. Teveo automated testing: contract line is 4h per week for 12 weeks when extended. Operationally, keep at least 2h in active weeks and about 4h/week average across the run.
+
+### Skantrae contract bucket
+
+For Skantrae ONE project weeks, use the SOW baseline:
+
+1. Skantrae development retainer: 16h per week for 8 weeks.
+
+Name the PM/customer service bucket `customer lead` in summaries.
+
 ### Expected output
 
-For `productive-hours` cron execution, produce:
+For loop-driven weekly execution, produce:
 
-1. Contract/invoice target total and date range.
-2. Existing Productive total for that range.
-3. What was created or updated in Productive.
-4. A readable per-day overview: date, customer/project/service, minutes/hours, note.
-5. Evidence used by lane: invoice/contract, Productive, Calendar, Notion, GitHub.
-6. Remaining gap or surplus.
-7. Blockers, assumptions, or items Sil should correct.
+1. A compact project-first summary, not a per-day ledger.
+2. Omit verification language when verification succeeded; if it is reported, it should be true by default.
+3. Group services under each project only when useful, such as customer lead, development, or automated testing.
+4. Keep notes to one short line only when they change how Sil should interpret the split.
+5. Mention caps, SOW, or Moneybird uncertainty only as one short caveat when it affects billing.
+6. Use this shape:
+
+```md
+1. Teveo: 13h
+   Customer lead 1h, development 8h, automated testing 4h.
+
+2. Skantrae: 16h
+   Development retainer.
+
+3. Fayn: 0h apart
+   Staat nu verstopt in Teveo-notes.
+
+4. Totaal: 29h
+   Week 2026-06-15 t/m 2026-06-21.
+```
 
 For write preparation, produce a concrete entry plan with date, minutes, person ID, service ID, optional task ID, and note for every proposed entry.
 

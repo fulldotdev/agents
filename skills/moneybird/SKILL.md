@@ -7,6 +7,22 @@ description: Use Moneybird through the Moneybird MCP via mcporter, including sha
 
 Use this for both Moneybird ops and Moneybird-facing commercial docs.
 
+## Loop integration
+
+Moneybird is a domain skill, not the loop owner. When `work-execution` or another loop starts Moneybird work, this skill defines the Moneybird-specific request shape, commercial quality bar, evidence requirements, and write safety.
+
+The loop owns timing, thread orchestration, Notion task selection, and follow-up scheduling. This skill owns whether the Moneybird action is safe and how to perform it.
+
+Allowed loop-driven actions when evidence is clear:
+
+- prepare a concept estimate/offerte,
+- prepare a concept sales invoice/factuur,
+- sync/link live Moneybird status back to Notion,
+- link existing matching Moneybird documents instead of creating duplicates,
+- use prior customer/project documents as reference for wording, rates, VAT, and structure.
+
+Ask before external sending/publishing, destructive cleanup, rejected/canceled status changes, or creating/changing finance documents when customer, contact, amount, VAT, scope, rate, or acceptance evidence is unclear.
+
 ## Quick start
 - Endpoint: `https://moneybird.com/mcp/v1/read_write`
 - Use `mcporter` with the URL directly.
