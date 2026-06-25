@@ -9,7 +9,7 @@ Use this skill only for Productive.io hours/time-entry work. Do not broaden into
 
 ## Loop integration
 
-Productive.io is a domain skill, not the loop owner. When `work-execution`, a Project Steward, or a weekly hours loop starts Productive work, this skill defines the Productive-specific evidence model, collection pipeline, time-entry shape, and write safety.
+Productive.io is a domain skill, not the loop owner. When `work-execution`, a Project Steward, or a weekly hours loop starts Productive work, this skill defines the Productive-specific evidence model, context collection, time-entry shape, and write safety.
 
 The loop owns timing, sprint/project selection, thread orchestration, Notion writeback, and follow-up scheduling. This skill owns how Productive hours are inspected, reconstructed, proposed, created, updated, and reported.
 
