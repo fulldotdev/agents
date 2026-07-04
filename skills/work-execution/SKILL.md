@@ -1,6 +1,6 @@
 ---
 name: work-execution
-description: "Run Notion-backed work with flexible execution judgment: choose inline work, subagents, or separate Hermes sessions/threads based on scope, freshness of context, reviewability, and follow-up needs."
+description: "Run Notion-backed work with flexible execution judgment: choose inline work, subagents, or separate agent sessions/threads such as Codex app or Hermes based on scope, freshness of context, reviewability, and follow-up needs."
 ---
 
 # Work Execution
@@ -37,7 +37,7 @@ Choose one of these shapes per cycle:
 
 1. **Inline work**: best for small reads, simple updates, clear status summaries, or one-step fixes.
 2. **Subagent**: best for focused research, review, validation, second opinions, or independent context gathering inside the current task.
-3. **Separate Hermes session/thread**: best for a concrete workstream that Sil may want to inspect, resume, branch from, or follow up on later.
+3. **Separate agent session/thread**: best for a concrete workstream Sil may want to inspect, resume, branch from, or follow up on later; this can be Codex app, Hermes, or another appropriate agent surface.
 
 Prefer a separate thread when:
 
@@ -76,7 +76,7 @@ For any meaningful execution cycle:
 
 ## Separate Threads
 
-Separate threads are for user-checkable work lanes, not mandatory roles.
+Separate threads are for user-checkable work lanes, not mandatory roles. Use the surface that best fits the work: Codex app for coding threads Sil may continue there; Hermes for tool-heavy or gateway-scheduled work; subagents for bounded current-answer research/review.
 
 When starting one, give it a concrete name based on the work, for example:
 
