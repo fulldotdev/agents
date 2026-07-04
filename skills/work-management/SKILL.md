@@ -37,7 +37,7 @@ IDs are bootstrap hints. Prefer finding by name, then verify live metadata/schem
 
 New Customer pages always get a fitting page emoji.
 
-Customer names use lowercase domain/repo-style handles. Prefer the recognizable domain or repository root: strip protocol and `www.`, strip the TLD when that leaves a clear handle, lowercase everything, and keep meaningful hyphens only when they are part of the recognizable domain/brand. Do not title-case Customer names unless Sil explicitly asks for display-name cleanup. Examples: `teveo`, `fayn`, `mandendeco`, `fulldev`, `smallgiants`, `skantrae`.
+Customer names use lowercase domain/repo-style handles. Prefer the recognizable domain or repository root: strip protocol and `www.`, strip the TLD when that leaves a clear handle, lowercase everything, and keep meaningful hyphens only when they are part of the recognizable domain/brand. Do not title-case Customer names unless Sil explicitly asks for display-name cleanup. Examples: `teveo`, `fayn`, `mandendeco`, `fulldev`, `smallgiants`, `skantrae`. Rationale: Customers started as project/repo-like work anchors, so preserve the compact handle style instead of drifting into mixed display names like `Small Giants` or `Skantrae`.
 
 Treat Tasks as workloads, not atomic message fragments. A good Task is often a small work package: one coherent delivery/admin/sales outcome with the checklist and source context needed to execute it. If multiple small actions belong to the same domain and will naturally be handled together at the same time, capture them in one Task instead of making tiny duplicates.
 
@@ -108,6 +108,7 @@ Source context should be compact, traceable, and useful: source type, date, send
 
 ## Task Status
 
+- Backlog = executable someday/soon work that is valid to keep, but not ready or important enough for the current Sprint/Todo lane.
 - Todo = ready/executable.
 - Doing = active work or work ready for Sil review.
 - Waiting = blocked on person, dependency, decision, timing, customer, or vendor.

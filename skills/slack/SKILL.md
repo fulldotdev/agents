@@ -14,9 +14,9 @@ metadata:
 
 # Slack
 
-Use this skill for direct Slack Web API work through `curl`, not for running Slack as an OpenClaw chat channel.
+Use this skill for direct Slack Web API work through `curl`, not for running Slack as a Hermes chat gateway channel.
 
-Prefer this skill when Slack should be a tool/lane for search, triage, context gathering, drafts, or explicit sends. Do not use or re-enable the OpenClaw Slack channel runtime for this.
+Prefer this skill when Slack should be a tool/lane for search, triage, context gathering, drafts, or explicit sends. Do not use or reconfigure the Hermes Slack gateway for this unless the user explicitly wants Hermes to run as a Slack bot.
 
 ## Credentials
 
@@ -25,7 +25,7 @@ Preferred credential order:
 1. Already-exported shell env vars.
 2. Global user config at `~/.config/slack/config.env`.
 
-Store Slack credentials in global user config, not in OpenClaw channel config, project repos, skills, or chat logs:
+Store Slack credentials in global user config, not in Hermes gateway/channel config, project repos, skills, or chat logs:
 
 ```sh
 mkdir -p ~/.config/slack
@@ -133,7 +133,7 @@ Triage collectors should read Slack credentials in this order:
 1. Env vars: `SLACK_USER_TOKEN`, `SLACK_BOT_TOKEN`, optional `SLACK_USER_TOKEN_READONLY`.
 2. `~/.config/slack/config.env`.
 
-Do not read Slack tokens from `~/.openclaw/openclaw.json`. That file is for OpenClaw channel configuration, not reusable API credentials.
+Do not read Slack tokens from old `~/.openclaw/openclaw.json` backups or Hermes gateway config. Use `~/.config/slack/config.env` as the reusable API credential source.
 
 Collector reads should prefer `SLACK_USER_TOKEN`, then `SLACK_BOT_TOKEN`, then `SLACK_USER_TOKEN_READONLY` if present and valid.
 

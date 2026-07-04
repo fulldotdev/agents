@@ -9,11 +9,11 @@ Use this skill only for Productive.io hours/time-entry work. Do not broaden into
 
 ## Loop integration
 
-Productive.io is a domain skill, not the loop owner. When `work-execution`, a Project Steward, or a weekly hours loop starts Productive work, this skill defines the Productive-specific evidence model, context collection, time-entry shape, and write safety.
+Productive.io is a domain skill, not the loop owner. When `work-execution` or a weekly hours loop starts Productive work, this skill defines the Productive-specific evidence model, context collection, time-entry shape, and write safety.
 
 The loop owns timing, sprint/project selection, thread orchestration, Notion writeback, and follow-up scheduling. This skill owns how Productive hours are inspected, reconstructed, proposed, created, updated, and reported.
 
-For sprint work, the Project Steward may treat weekly Productive registration as an administrative Task Executor workstream. Use this skill for the Productive part and keep sprint/project planning decisions in `work-execution` and `work-management`.
+For sprint work, `work-execution` may treat weekly Productive registration as an administrative workstream. Use this skill for the Productive part and keep sprint/project planning decisions in `work-execution` and `work-management`.
 
 ## Credentials
 
@@ -118,13 +118,13 @@ Use:
 
 ## Weekly hours loop
 
-Routine Productive hour reconstruction is loop-driven through `work-execution` Project Steward or Task Executor threads. The old standalone cron job named `productive-hours` and its collector scripts were retired; do not assume they exist.
+Routine Productive hour reconstruction is loop-driven through `work-execution`. The old standalone cron job named `productive-hours` and its collector scripts were retired; do not assume they exist.
 
 The skill name remains `productive-io`. `productive-hours` was only the old cron/job name.
 
 Expected loop setup:
 
-1. A Project Steward or Task Executor owns the Productive workstream for a sprint/week.
+1. A `work-execution` cycle owns the Productive workstream for a sprint/week.
 2. Scope should come from the Project/Sprint/Task context, such as Small Giants, Teveo, Skantrae, Fayn, and the target Monday-Sunday week.
 3. The loop may register hours when evidence is good enough, then report a compact project-first summary so Sil can correct the split afterward.
 

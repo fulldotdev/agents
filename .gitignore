@@ -1,2 +1,6 @@
 .DS_Store
 node_modules/
+
+# Generated/private collector state; skills should commit code and docs only.
+skills/**/state/
+skills/**/scripts/state/
