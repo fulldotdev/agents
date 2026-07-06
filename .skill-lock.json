@@ -325,6 +325,60 @@
       "skillFolderHash": "0f1f5e31ce921513828ac8f440f358df6fa0751a",
       "installedAt": "2026-06-24T14:42:09.594Z",
       "updatedAt": "2026-06-24T14:42:09.594Z"
+    },
+    "improve": {
+      "source": "shadcn/improve",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/shadcn/improve.git",
+      "skillPath": "skills/improve/SKILL.md",
+      "skillFolderHash": "7d77d76815e6deb704427f17f6e393f55e3cb6da",
+      "installedAt": "2026-07-01T11:41:08.760Z",
+      "updatedAt": "2026-07-01T11:41:08.760Z"
+    },
+    "tanstack-router": {
+      "source": "tanstack-skills/tanstack-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/tanstack-skills/tanstack-skills.git",
+      "skillPath": "plugins/tanstack-router/skills/tanstack-router/SKILL.md",
+      "skillFolderHash": "3b8331bcf3766835e37439290ba2fa843186f2d1",
+      "installedAt": "2026-07-01T11:42:15.900Z",
+      "updatedAt": "2026-07-01T11:42:15.900Z"
+    },
+    "tanstack-start": {
+      "source": "tanstack-skills/tanstack-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/tanstack-skills/tanstack-skills.git",
+      "skillPath": "plugins/tanstack-start/skills/tanstack-start/SKILL.md",
+      "skillFolderHash": "2da37ffef5e4ffa3d71aaf8ed32bd059346324de",
+      "installedAt": "2026-07-01T11:42:15.902Z",
+      "updatedAt": "2026-07-01T11:42:15.902Z"
+    },
+    "tanstack-table": {
+      "source": "tanstack-skills/tanstack-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/tanstack-skills/tanstack-skills.git",
+      "skillPath": "plugins/tanstack-table/skills/tanstack-table/SKILL.md",
+      "skillFolderHash": "dc0227e127c47b7f4a192f30594bd7b4f2140a48",
+      "installedAt": "2026-07-01T11:42:15.902Z",
+      "updatedAt": "2026-07-01T11:42:15.902Z"
+    },
+    "tanstack-virtual": {
+      "source": "tanstack-skills/tanstack-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/tanstack-skills/tanstack-skills.git",
+      "skillPath": "plugins/tanstack-virtual/skills/tanstack-virtual/SKILL.md",
+      "skillFolderHash": "edc663cae0f6ffa3dbbce883e5472524410f20bf",
+      "installedAt": "2026-07-01T11:42:15.903Z",
+      "updatedAt": "2026-07-01T11:42:15.903Z"
+    },
+    "tanstack-query": {
+      "source": "tanstack-skills/tanstack-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/tanstack-skills/tanstack-skills.git",
+      "skillPath": "plugins/tanstack-query/skills/tanstack-query/SKILL.md",
+      "skillFolderHash": "50fdcfbff89fba75fd5c2be42701b907d185abeb",
+      "installedAt": "2026-07-01T11:42:15.903Z",
+      "updatedAt": "2026-07-01T11:42:15.903Z"
     }
   },
   "dismissed": {
