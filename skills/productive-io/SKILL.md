@@ -118,17 +118,19 @@ Use:
 
 ## Weekly hours loop
 
-Routine Productive hour reconstruction is loop-driven through `work-execution`. The old standalone cron job named `productive-hours` and its collector scripts were retired; do not assume they exist.
+Routine Productive hour reconstruction is loop-driven through `work-execution` from visible Notion Tasks. The old standalone cron job named `productive-hours` and its collector scripts were retired; do not assume they exist.
 
 The skill name remains `productive-io`. `productive-hours` was only the old cron/job name.
 
 Expected loop setup:
 
-1. A `work-execution` cycle owns the Productive workstream for a sprint/week.
-2. Scope should come from the Project/Sprint/Task context, such as Small Giants, Teveo, Skantrae, Fayn, and the target Monday-Sunday week.
-3. The loop may register hours when evidence is good enough, then report a compact project-first summary so Sil can correct the split afterward.
+1. A visible Notion Task such as `Productive hours reconcile` owns the weekly Productive workstream.
+2. A `work-execution` cycle reads that Task and owns the timing, writeback, and follow-up Task creation.
+3. Scope should come from the Task/Project/Sprint context, such as Small Giants, Teveo, Skantrae, Fayn, and the target Monday-Sunday week.
+4. The loop may register hours when evidence is good enough, then report a compact project-first summary so Sil can correct the split afterward.
+5. After completion, ensure the next weekly Productive Task exists in Notion unless a Notion recurring automation already created it.
 
-Do not recreate old Notion routine tasks such as `Uren invullen in Productive` just because a month/week started. If Productive credentials, contract context, or invoice context are missing, report the blocker to the loop/steward instead of inventing a manual planning task.
+Do not recreate vague legacy tasks such as `Uren invullen in Productive` just because a month/week started. If Productive credentials, contract context, or invoice context are missing, report the blocker on the visible Notion Task instead of inventing duplicate planning tasks.
 
 ## Context collection
 

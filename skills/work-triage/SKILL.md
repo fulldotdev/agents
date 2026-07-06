@@ -1,13 +1,13 @@
 ---
 name: work-triage
-description: "Runs inbound work triage with concurrent deterministic collectors and full context capture."
+description: "Runs inbound work triage with concurrent deterministic collectors and references-first context capture."
 ---
 
 # Work Triage
 
 Use for broad incoming triage across Gmail, Slack, WhatsApp, calendar, meetings, and Notion work context.
 
-Triage is not execution. It captures context, routes work, updates Notion, creates low-risk drafts, and reports concrete changes.
+Triage is not execution. It captures source references, routes work, updates Notion, creates low-risk drafts, and reports concrete changes. Context capture means preserving traceability with links/references and one-line facts, not copying inbound content into Notion bodies.
 
 Scripts collect context only. The parent agent decides Notion writes, archives, drafts, and the final report.
 
@@ -31,8 +31,7 @@ Collector output is YAML for agent readability. Work-context output is intention
 Current cron cadence:
 
 - 07:00 Europe/Amsterdam: normally captures 17:00 previous day -> 07:00.
-- 12:00 Europe/Amsterdam: normally captures 07:00 -> 12:00.
-- 17:00 Europe/Amsterdam: normally captures 12:00 -> 17:00.
+- 17:00 Europe/Amsterdam: normally captures 07:00 -> 17:00.
 
 Actual cron metadata wins over these normal windows.
 
@@ -45,15 +44,28 @@ The collector scripts define lane-specific fetching details. Triage treats these
 - WhatsApp
 - Calendar
 - Meetings
+- Codex
 - Customers
 - Projects
 - Tasks
 
-Meeting AI notes: use the Meetings lane `body_excerpt` as the default source. If the excerpt is insufficient and the full transcript matters for a write/decision, fetch the transcript from the provided transcript block ID.
+Meeting AI notes: use the Meetings lane `body_excerpt` as the default source. If the excerpt is insufficient and the full transcript matters for a write/decision, fetch the transcript from the provided transcript block ID. The Meetings data source has a `When` property; set it on new/generated meetings when known. The collector uses `When` as the primary window and includes created/edited meetings only when `When` is missing.
+
+Calendar notes: the Calendar lane includes events in the triage window plus a small context window around it to link messages and meeting notes. Defaults: 2 days back and 2 days ahead via `CALENDAR_CONTEXT_LOOKBACK_DAYS` / `CALENDAR_CONTEXT_LOOKAHEAD_DAYS`. Do not collapse recurring events; weekly instances may have different meaning.
+
+Codex thread notes: use the Codex lane as a compact project/thread index, not a conversation dump. It groups local Codex app threads by derived project and includes thread id, description, cwd/git metadata, goals, spawn edges, and a rollout reference. Read into a specific thread only when the compact index can change a triage decision: blocked/needs Sil, ready for review, failed, merged/shipped, or new executable scope. Prefer `scripts/collect_codex.py --thread-id <id> --format yaml` for deep reads. Do not create Notion work from intermediate Codex chatter alone.
+
+Regenerated meeting summaries work best when triage reads them as structured evidence:
+
+- Prefer explicit `Decisions`, `Open questions / blockers`, and cited topic details over generic action lists.
+- Treat `Confirmed Sil-owned execution` or clearly Sil-owned high-confidence possible actions as Task candidates.
+- Treat external-owner, waiting, unclear-owner, and context-only items as Project/Customer/Task context or blockers.
+- When related Notion items are mentioned, check their current status before writing; prefer active Tasks over Done/Canceled/Completed links.
+- Teveo sprint-package context belongs on a `Teveo sprint N` Task linked to the Teveo Customer and Sil's weekly Sprint.
 
 ## Reliability
 
-- All lanes are required: Gmail, Slack, WhatsApp, Calendar, Meetings, Customers, Projects, Tasks.
+- All lanes are required: Gmail, Slack, WhatsApp, Calendar, Meetings, Codex, Customers, Projects, Tasks.
 - Lane failure means collect the rest, but do not write based on incomplete context unless the write is clearly local, safe, and independent of the failed lane.
 - If any lane fails, report `Failed:` or `Blocked:` with the practical consequence.
 - Schema/property/status mismatch must return structured lane failure. No fake empty success.
@@ -62,6 +74,50 @@ Meeting AI notes: use the Meetings lane `body_excerpt` as the default source. If
 ## Writes
 
 Use `work-management` for Customer/Project/Task routing, context capture, body format, status meaning, dedupe, and write safety.
+
+### References-first capture
+
+Default to references, not body dumps. Every useful source should be preserved as a compact reference on the most specific Customer, Project, or Task. Add only the minimum human-readable fact needed to make the reference useful.
+
+Preferred Task body shape:
+
+```md
+## Next / Waiting
+
+Concrete next action, or who/what is blocking the task.
+
+## Context
+
+Concise synthesized summary across all relevant references: decisions, blockers, requirements, current state, and execution facts needed to do the work. Deduplicate repeated facts; do not write a timeline.
+
+## References
+
+- <Gmail/Slack/WhatsApp/meeting/calendar/thread/file> <date/sender/title> <link/reference>.
+- <Another source/reference>.
+```
+
+Use `## State`, `## Decisions`, or `## Done when` only when they make a larger delivery task clearer. Keep `## References` as a bullet list.
+
+Use this heading order:
+
+1. `## Waiting` when blocked, otherwise `## Next`.
+2. `## Next` after `## Waiting` only when there are concrete follow-up actions despite the blocker.
+3. `## State` for larger delivery tasks where current progress matters.
+4. `## Decisions` only when decisions are the main execution input and need their own section.
+5. `## Context` as the concise synthesized summary.
+6. `## References` last, always as a bullet list.
+
+Rules:
+
+1. Keep headings in English exactly as shown (`## Waiting`, `## Next`, `## State`, `## Decisions`, `## Context`, `## References`). Default task titles and body prose to English for consistency, especially internal/dev/process/agency work or mixed-source work. Use Dutch only when the task is clearly Dutch customer-facing communication/work. Keep source titles, file names, IDs, quotes, and references literal.
+2. Prefer source links/references over copying message text.
+3. Do not paste long emails, Slack threads, transcripts, meeting summaries, or repeated context into bodies.
+4. Context may summarize all references, but it must be compact, deduplicated, and useful for execution/routing; references carry the trace.
+5. Keep References complete enough to reopen real sources: Slack threads/conversations, WhatsApp chats/messages, Gmail thread IDs, meetings, files, previews, Moneybird links, Discord/Codex/execution threads, and repo/branch refs when they matter.
+6. Add exact body detail only when the source cannot be reliably reopened later, the exact wording is contractually/customer important, or the detail is needed to execute without re-reading the source.
+7. For existing Tasks, rewrite/maintain the body as concise Context + complete References instead of appending chronological source sections.
+8. For Projects/Customers, capture durable decisions, scope, links, and blockers; avoid turning them into chronological inbox logs.
+9. If multiple sources say the same thing, synthesize it once in Context and list/group the sources under References.
 
 Before modifying an existing Task, Project, or Customer, fetch that full page and body with the Notion Markdown API. Use the item properties/body as the primary write context.
 
@@ -75,6 +131,8 @@ Task status changes are conservative:
 - Current-Sprint Tasks may be reopened when the fetched Task and source context both support it.
 
 Prefer updating an existing broader active Task/work package over creating a narrow sibling Task. If the inbound item is one implementation point, blocker, preference, file, or checklist item inside an active or `Waiting` package, append it to that package body and keep the package as the executable Task. If that package is `Waiting`, move its status only when the new source makes the next action executable.
+
+When triage touches an existing Task, do small opportunistic cleanup if it is clearly safe: remove fake/stale due dates, add a short `Waiting:` / `Follow-up:` note for meaningful Waiting tasks, add a minimal `Next:` / `Context:` note for non-trivial work tasks, or correct an obvious Type mismatch. Do not run broad backlog cleanup during triage unless Sil explicitly asks; leave broad active-list cleanup to work-planning or a dedicated cleanup pass.
 
 If the strongest matching Task was set to `Done` before the current local date, treat it as a closure record. Create a new related Task under the same Project/Customer more aggressively for fresh executable follow-up, and capture only the source/transition note on the completed Task or Project when useful. If it was set to `Done` on the current local date, it may still be reopened or moved back when the fresh source shows the closure was premature.
 

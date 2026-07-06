@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from triage_common import RUN_LOG_DIR, add_common_args, emit, iso_utc, window_from_args
-LANES={"gmail":"collect_gmail","slack":"collect_slack","whatsapp":"collect_whatsapp","calendar":"collect_calendar","meetings":"collect_meetings"}
+LANES={"gmail":"collect_gmail","slack":"collect_slack","whatsapp":"collect_whatsapp","calendar":"collect_calendar","meetings":"collect_meetings","codex":"collect_codex"}
 TRIAGE_TZ = ZoneInfo("Europe/Amsterdam")
 
 def incoming_window(a, b):
@@ -28,6 +28,7 @@ def collect_lane(lane, a, b):
     m=importlib.import_module(LANES[lane])
     if lane=="gmail": return {"sources":[m.collect_account(x,a,b) for x in m.DEFAULT_GMAIL_ACCOUNTS],"ok":True}
     if lane=="calendar": return {"sources":[m.collect_account(x,a,b) for x in m.DEFAULT_CALENDAR_ACCOUNTS],"ok":True}
+    if lane=="codex": return m.collect(a,b)
     return {"items":m.collect(a,b)}
 
 def collect(a, b, lanes=None):

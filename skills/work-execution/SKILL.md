@@ -86,6 +86,8 @@ When starting one, give it a concrete name based on the work, for example:
 
 Avoid artificial prefixes such as fixed modes unless the user asked for that structure.
 
+If the actual work runs via a parent-session subagent/delegation, the new thread will not automatically show that subagent's progress. Seed the thread with a visible status message that says the background agent is running, scope, stop conditions, and that results will be posted back there. When the subagent finishes, manually post its outcome to that thread before claiming the thread has active work.
+
 The starter should pass enough context for the thread to operate independently:
 
 1. objective,
