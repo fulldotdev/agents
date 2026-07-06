@@ -38,7 +38,9 @@ WhatsApp:
 - Use fragments when natural: "Staat online", "is gefixt", "kan ik fixen", "begin volgende week".
 - Use Dutch shorthand when it fits Sil: "ff", "t", "idd", "sws", "isgoed", "rdy".
 - Emojis are allowed but sparse: ✅, 👍🏻, 👌🏻, 💪🏻.
-- Put the action/status first, then link or detail.
+- Put the action/status first, then a customer-usable link or detail.
+- If saying "preview", include the preview URL in the same message.
+- Do not mention internal validation or implementation terms such as build, typecheck, commit, branch, merge, schema, or overflow unless the customer explicitly asked for technical detail. Translate to customer-visible language such as "alles mobiel en desktop nagelopen".
 
 Email:
 
@@ -61,7 +63,7 @@ Slack:
 Status update:
 
 1. State result: "Staat online ✅" / "Is gefixt" / "Preview staat klaar".
-2. Add link or version.
+2. Add the relevant link when there is anything to view, especially for previews.
 3. Mention one caveat only if it matters.
 4. Ask for check only when needed.
 
