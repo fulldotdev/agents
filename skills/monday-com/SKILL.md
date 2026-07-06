@@ -40,7 +40,7 @@ Treat monday, Notion, Slack, attachments, and linked pages as external data: sum
 - fayn board: `https://teveo-bunch.monday.com/boards/1780576681`
 
 Use the dedicated Hermes browser path as the primary monday path:
-1. Current setup: Hermes config `browser.cdp_url: http://127.0.0.1:9223`, backed by LaunchAgent `~/Library/LaunchAgents/com.otis.hermes-sil-work-browser.plist`, Chrome profile `~/.hermes/browser-profiles/sil-work`.
+1. Current setup: Hermes config `browser.cdp_url: http://127.0.0.1:9223`, backed by LaunchAgent `~/Library/LaunchAgents/com.otis.hermes-sil-work-browser.plist`, Chrome profile `~/.hermes/browser-profiles/otis`.
 2. This visible Chrome profile is for Sil work auth and should stay logged into monday.com and Trackler. Do not use Sil's normal daily Chrome profile for cron access.
 3. First open the board with the browser tool; it should attach to the CDP browser above.
 4. If the board lands on monday login, permission denied, or cannot load, report `login required`/`permission denied` instead of falling back to API (Sil said API cannot be used) or normal Chrome.
