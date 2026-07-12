@@ -75,10 +75,12 @@ curl -sS "https://api.productive.io/api/v2/time_entries?page[size]=50" \
   -H "Content-Type: application/vnd.api+json"
 ```
 
-Filter by date range:
+Date filtering note: Productive currently accepts exact-date filtering (`filter[date]=YYYY-MM-DD`) on `time_entries`, but rejected tested range operators with `unsupported_filter_operation` in July 2026. For ranges, paginate recent entries and filter dates locally, or fetch exact dates individually for short windows.
+
+Exact date example:
 
 ```sh
-curl -sS "https://api.productive.io/api/v2/time_entries?filter[date][gte]=2026-05-01&filter[date][lte]=2026-05-31&page[size]=100" \
+curl -sS "https://api.productive.io/api/v2/time_entries?filter[date]=2026-05-01&page[size]=100" \
   -H "X-Auth-Token: $PRODUCTIVE_API_KEY" \
   -H "X-Organization-Id: $PRODUCTIVE_ORGANIZATION_ID" \
   -H "Content-Type: application/vnd.api+json"

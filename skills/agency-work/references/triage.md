@@ -43,8 +43,8 @@ Do not paste full messages or transcripts into Notion. Synthesize facts in Conte
 
 ## Lane actions
 
-- **Gmail**: decide keep/archive for every collected inbox thread. Archive only after useful value is captured or no action is needed. Keep task-needed, security, CI failure, customer, applicant, payment, intake, and useful appointment mail.
-- **Drafts**: draft email or Slack only when useful and low risk. Keep customer messages as drafts unless explicitly asked to send.
+- **Gmail**: decide keep/archive for every collected inbox thread. Archive only when no reply, Task, decision, payment, approval, clarification, or execution action remains. Keep threads linked to open work, drafted-but-unsent replies, and Sil/customer/vendor follow-up in Inbox; capturing context in Notion alone is not enough to archive.
+- **Drafts**: draft email or Slack only when useful and low risk. Keep customer messages as drafts unless explicitly asked to send, and keep the source thread in Inbox until the reply is sent and no action remains.
 - **Calendar/meetings**: capture explicit decisions, blockers, and confirmed Sil-owned actions; preserve ambiguity instead of assigning work by default.
 - **Blocked/Triage**: record the exact missing decision or source.
 

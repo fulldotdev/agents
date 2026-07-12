@@ -65,7 +65,8 @@ Preferred plan:
 
 ## Recurring work
 
-- **Teveo**: use one Task named `Teveo sprint N`, linked to the Teveo Customer and Sil's Sprint. Infer numbering from previous Tasks and capture selected tickets/current state in its body.
+- **Teveo/Fayn**: use one sprint Task linked directly to the matching Customer and Sil's Sprint. Individual monday tickets stay in monday; capture selected tickets and state in the sprint Task body. Do not create or link a Project merely because work belongs to a client sprint.
+- **Teveo**: name the Task `Teveo sprint N` and infer numbering from previous Tasks.
 - **Fayn**: update existing sprint work. Create new Fayn sprint work only when explicitly requested; do not use theme versions as sprint names.
 - **Someday**: promote only when a concrete action/outcome or durable Project exists.
 - Notion normally opens/closes Sprint pages automatically. Create a missing Sprint only when live schema makes safe creation clear.

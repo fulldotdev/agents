@@ -64,20 +64,30 @@ def description(row):
     return None
 
 
+def open_readonly_db(path):
+    """Open a live Codex SQLite DB, tolerating transient WAL sidecar races."""
+    last_error = None
+    for suffix in ("?mode=ro", "?mode=ro&immutable=1"):
+        try:
+            con = sqlite3.connect(f"file:{path}{suffix}", uri=True, timeout=5)
+            con.row_factory = sqlite3.Row
+            return con
+        except sqlite3.OperationalError as exc:
+            last_error = exc
+    raise last_error
+
+
 def open_state():
     if not STATE_DB.exists():
         raise FileNotFoundError(f"Codex state DB not found: {STATE_DB}")
-    con = sqlite3.connect(f"file:{STATE_DB}?mode=ro", uri=True)
-    con.row_factory = sqlite3.Row
-    return con
+    return open_readonly_db(STATE_DB)
 
 
 def load_goals(thread_ids):
     if not GOALS_DB.exists() or not thread_ids:
         return {}
     placeholders = ",".join("?" for _ in thread_ids)
-    con = sqlite3.connect(f"file:{GOALS_DB}?mode=ro", uri=True)
-    con.row_factory = sqlite3.Row
+    con = open_readonly_db(GOALS_DB)
     try:
         rows = con.execute(
             f"""
