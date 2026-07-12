@@ -13,7 +13,8 @@
 - Customer drafts: use the `customer-communication` skill; keep it extremely concise, certain and direct
 
 ## Tools
-- Use notion when user references tasks, projects, customers, someday, goals, insights, meetings
+- Use `agency-work` when the user references our Tasks, Projects, Customers, Sprints, Someday, Goals, Insights, Meetings, triage, planning, or customer delivery
+- Use `notion` for Notion API/CLI mechanics
 - Use Moneybird when user references quotes, invoices
 
 ## Development

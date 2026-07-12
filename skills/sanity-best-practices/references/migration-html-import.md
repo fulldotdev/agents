@@ -68,14 +68,14 @@ Clean HTML before conversion:
 function cleanHtml(html) {
   const dom = new JSDOM(html)
   const doc = dom.window.document
-
+  
   // Remove layout elements
   doc.querySelectorAll('header, footer, nav, .sidebar').forEach(el => el.remove())
-
+  
   // Extract metadata before processing body
   const title = doc.querySelector('title')?.textContent
   const description = doc.querySelector('meta[name="description"]')?.content
-
+  
   return {
     body: doc.body.innerHTML,
     metadata: { title, description }
@@ -91,11 +91,11 @@ Don't just link external images—upload them:
 async function uploadImage(client, imageUrl) {
   const response = await fetch(imageUrl)
   const buffer = await response.arrayBuffer()
-
+  
   const asset = await client.assets.upload('image', Buffer.from(buffer), {
     filename: imageUrl.split('/').pop()
   })
-
+  
   return {
     _type: 'image',
     asset: { _type: 'reference', _ref: asset._id }
@@ -116,12 +116,12 @@ export default defineMigration({
   title: 'Import WordPress posts',
   async *migrate(documents, context) {
     const posts = await fetchWordPressPosts() // Your import source
-
+    
     for (const post of posts) {
       const blocks = htmlToBlocks(post.content, blockContentType, {
         parseHtml: html => new JSDOM(html).window.document,
       })
-
+      
       yield create({
         _type: 'post',
         title: post.title,

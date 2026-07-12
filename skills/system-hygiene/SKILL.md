@@ -19,7 +19,7 @@ Inspect only the smallest useful set:
 4. Hermes config references: platform routing, toolsets, MCP names, gateway delivery targets, and paths that affect execution.
 5. Generated clutter: Hermes-owned `tmp`, `.tmp`, `cache`, `.cache`, `artifacts`, generated output, obsolete backups, and failed-run leftovers under `~/.hermes/` or clearly Hermes-managed workspaces.
 
-Use `work-triage`, `work-planning`, or `work-execution` for work itself.
+Use `agency-work` for triage, planning, delivery, and Notion-backed work itself.
 
 ## Worth Reporting
 

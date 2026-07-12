@@ -1,0 +1,119 @@
+---
+name: agency-work
+description: "Run Notion-backed agency work: triage sources, plan Monday-Sunday Sprints, execute Tasks/admin, and deliver customer work. Use for Notion Tasks, Projects, Customers, Sprints, Someday, agency triage/planning, customer previews/releases, or Productive/Moneybird work."
+---
+
+# Agency Work
+
+Use this as the single source of truth for agency work. Read the matching workflow reference before acting:
+
+- Broad Gmail, Slack, WhatsApp, calendar, meeting, Codex, or Notion intake: [triage.md](references/triage.md)
+- Weekly review, Productive reconciliation, system review, or Sprint planning: [planning.md](references/planning.md)
+- Customer preview, review, release, production change, or handoff: [delivery.md](references/delivery.md)
+- Normal Task execution or a direct Notion update: use this main skill plus the relevant domain skill; no workflow reference is required.
+
+Load multiple references only when the request genuinely crosses workflows.
+
+Collector routing is explicit: `scripts/collect.py triage`, `scripts/collect.py planning`, or `scripts/collect.py source <name>`. Treat the other files in `scripts/` as internal modules.
+
+## Schema
+
+This skill owns workflow meaning. Fetch live Notion schema only for exact property names, option names, relations, IDs, or write validation. IDs below are bootstrap hints; verify live metadata when needed.
+
+- **Tasks** `collection://1cb5979e-268c-80e9-bd7d-000b00ac4424`
+- **Projects** `collection://4f5bd6fe-452e-4fbc-bcf8-cfcc2d19a2ae`
+- **Customers** `collection://2635979e-268c-8191-b322-000bd3109d1c`
+- **Meetings** `collection://1cb5979e-268c-808d-888d-000bfa3a527c`
+- **Someday** `collection://8b6245be-419a-4203-97e4-f7660514c661`
+- **Insights** `collection://1d65979e-268c-80a9-9f26-000bcfb57574`
+- **Goals** `collection://2005979e-268c-80d1-8ecf-000b841762a2`
+- **Sprints** `collection://3555979e-268c-807b-bdb4-000b86b48f90`
+
+## Model
+
+- **Task**: executable workload with one coherent outcome; use a checklist for related small actions instead of creating message-sized Tasks.
+- **Project**: durable commercial or delivery container for invoiceable work, proposals, prototypes, repositories, retainers, versions, or scope spanning multiple Tasks.
+- **Customer**: stable account context. Use a lowercase domain/repo-style handle and add a fitting page emoji when creating one.
+- **Sprint**: Sil's Monday-Sunday planning week.
+- **Someday**: non-executable idea, maybe-later note, or vague exploration.
+- **Source**: message, email, meeting, file, link, attachment, quote, decision, blocker, requirement, or other evidence; a source is context, not automatically work.
+
+Tasks may link directly to a Customer. Create or link a Project when work has billable hours, accepted scope, an estimate/invoice, delivery versions, or context that must survive multiple Tasks. Every Project needs at least one concrete Task; create a scoped planning Task when the first execution Task is not yet clear.
+
+Projects own durable scope, commercials, cross-version decisions, and delivery history. Tasks own the executable work, checklist, evidence, and acceptance criteria for one effort.
+
+## Routing
+
+1. Read the target item and relevant source context before deciding or writing.
+2. Route to an existing active Task, Project/Customer context, new Task, new Project plus first Task, Someday, or no action.
+3. Prefer an existing broader active work package over a narrow sibling Task.
+4. Put one implementation point, blocker, preference, or file into the active package instead of creating a duplicate.
+5. Treat Tasks completed before today as closure records. Create a related follow-up Task for genuinely new execution; reopen today's completion only when fresh evidence shows closure was premature.
+6. Keep `Waiting` until the dependency clears. Move status only when the next action becomes executable.
+7. Preserve source trace through relations and compact references.
+
+## Status
+
+- **Triage**: unclear actionability or routing; record the missing decision.
+- **Backlog**: executable work worth keeping, but not ready or important enough for Todo/current Sprint.
+- **Todo**: ready and executable.
+- **Doing**: actively being worked or ready for Sil's review.
+- **Waiting**: blocked on a person, dependency, decision, timing, customer, or vendor.
+- **Done**: actually completed and verified; customer delivery needs explicit completion evidence.
+- **Canceled**: duplicate, superseded, moved to Someday, no longer executable, or explicitly dropped.
+
+Use due dates only for real deadlines or follow-up dates, never as historical guilt markers.
+
+## Context and bodies
+
+Capture durable requirements, decisions, approvals, preferences, deadlines, scope, blockers, files, technical notes, and completion evidence in the most specific relevant Task, Project, or Customer.
+
+Before changing an existing page, read its full properties and Markdown body. Never blind append or edit autogenerated summary fields.
+
+For non-trivial Tasks, prefer:
+
+```md
+## Next
+
+Concrete next action.
+
+## Context
+
+Compact, deduplicated execution context.
+
+## References
+
+- Reopenable source/link/thread/file reference.
+```
+
+Use `## Waiting` instead of `## Next` when blocked. Add `## State`, `## Decisions`, or `## Done when` only when useful. Keep `## References` last. Tiny reminders may have a light or empty body.
+
+Default internal titles and bodies to English. Keep customer-facing Dutch, source titles, filenames, IDs, and quotes literal.
+
+Project bodies are flexible. Use only relevant sections such as `## Outcome`, `## Current state`, `## Open loops`, and `## Commercials`.
+
+## Domain work
+
+Use domain skills for domain rules:
+
+- `moneybird` for estimates, invoices, recurring billing, and finance safety.
+- `productive-io` for hours evidence and time-entry writes.
+- `monday-com` and `trackler-nl` for their read-only external context.
+- `customer-communication` for customer-facing messages.
+- Project/platform skills for implementation.
+
+Before calling Moneybird or Productive during exploratory work, prove:
+
+1. a concrete executable action exists;
+2. the action is allowed now;
+3. the owning Task, Project, or Customer is known for writeback.
+
+If any are missing, stop before external writes and return the exact blocker.
+
+## Safety and completion
+
+Ask before sending customer/vendor messages, publishing Moneybird documents, changing unclear finance data, deploying production, deleting records/data, broad private-source scans, or changing automation schedules.
+
+Verify work proportionally through tests, builds, browser checks, API readback, screenshots, document validation, or source confirmation. Leave only the durable result, verification, state, next action, and useful links in Notion; do not create diary noise.
+
+Keep user-facing output concise. Use numbered items for multiple actions, decisions, blockers, or approval questions.

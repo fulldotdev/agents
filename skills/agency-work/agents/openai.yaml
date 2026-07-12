@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agency Work"
+  short_description: "Triage, plan, and deliver agency work"
+  default_prompt: "Use $agency-work to triage, plan, or deliver this agency work."

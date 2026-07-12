@@ -6,8 +6,8 @@ author: Hermes Agent
 license: MIT
 metadata:
   hermes:
-    tags: [trackler, work-management, read-only, notion-context]
-    related_skills: [monday-com, notion, work-management]
+    tags: [trackler, agency-work, read-only, notion-context]
+    related_skills: [agency-work, monday-com, notion]
 ---
 
 # Trackler.nl Track Research

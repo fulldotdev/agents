@@ -1,0 +1,83 @@
+# Planning
+
+Use for Sil's Monday agency loop: review the completed Monday-Sunday week, reconcile hours/admin, inspect operational friction, and prepare the current Monday-Sunday Sprint. Planning is Notion-first and does not run broad inbox triage or customer delivery.
+
+## Inputs
+
+Always inspect live Notion state. Run `scripts/collect.py planning --after <start> --before <end> --format yaml`. It collects recent Sprints, open and review-window Tasks, active Projects/Customers, and calendar constraints.
+
+Also gather current planning signals from `trackler-nl` and relevant Teveo/Fayn boards through `monday-com`. These sources remain read-only. Gather them concurrently when the host supports bounded parallel work; otherwise gather directly. Continue with other phases when one source is blocked and report the gap.
+
+Do not run broad inbox triage during planning. Use source context already linked in Notion. If fresh inbox context is essential, run triage as a separate labelled phase only when explicitly requested.
+
+## Workflow
+
+### 1. Review
+
+Inspect the previous Sprint, linked Tasks, completed/canceled/status-changed work, carry-over decisions, blockers, and meaningful Project/Customer movement.
+
+Write a compact review:
+
+```md
+## Review
+
+- Completed: ...
+- Carried over: ...
+- Blocked/waiting: ...
+- Notable changes: ...
+- Hours/admin: ...
+```
+
+Keep this practical; no personal reflection or energy journaling.
+
+### 2. Hours and commercials
+
+Use `productive-io` to reconcile the previous week when evidence is strong enough. Prefer filling gaps over changing existing entries; never delete entries without explicit approval.
+
+The planning loop owns weekly Productive reconciliation. Do not create recurring `Productive hours reconcile` Tasks. When evidence or IDs are insufficient, record the blocker on the owning Sprint/admin context.
+
+Check open commercial loops through Notion and `moneybird`. Link existing documents or create drafts only when scope, contact, price, VAT, and evidence are clear. Never send estimates/invoices without approval.
+
+### 3. Improve the system
+
+Act only on concrete repeated friction: duplicate/stale Tasks, bloated bodies, broken routing, stale automation/skill references, recurring access/schema blockers, or clearly obsolete generated clutter. Apply `system-hygiene` for cleanup. Create a visible improvement Task only when it represents real work for the current Sprint.
+
+### 4. Plan
+
+1. Fill the current Sprint body with focus, planned work, admin/hours, risks, decisions, and improvements.
+2. Include open Tasks due inside the Sprint unless Done, Canceled, or explicitly on hold.
+3. Prefer hard commitments, active Projects, Doing/review work, actionable Waiting items, due-soon work, and Tasks with clear next actions.
+4. Promote ready Backlog/Triage work only when it should happen this week. Leave non-urgent work in Backlog and vague ideas in Someday.
+5. Do not manually roll unfinished work solely because it is unfinished; include it only when it needs a planning decision.
+6. Do not overload the Sprint. If everything is important, the plan is fake.
+
+Preferred plan:
+
+```md
+## Plan
+
+- Focus: ...
+- Planned: ...
+- Admin/hours: ...
+- Watch: ...
+- Improvements: ...
+```
+
+## Recurring work
+
+- **Teveo**: use one Task named `Teveo sprint N`, linked to the Teveo Customer and Sil's Sprint. Infer numbering from previous Tasks and capture selected tickets/current state in its body.
+- **Fayn**: update existing sprint work. Create new Fayn sprint work only when explicitly requested; do not use theme versions as sprint names.
+- **Someday**: promote only when a concrete action/outcome or durable Project exists.
+- Notion normally opens/closes Sprint pages automatically. Create a missing Sprint only when live schema makes safe creation clear.
+
+## Safety and report
+
+Planning may update Sprint bodies, link Tasks, create concrete planning/improvement Tasks, and correct clear low-risk statuses. It may not send messages/documents, publish customer work, delete records, or restructure databases/templates without approval.
+
+Return one concise numbered list using `Review:`, `Hours:`, `Finance:`, `Plan:`, `Task:`, `Improvement:`, `Automation:`, `Cleaned:`, `Decision:`, `Blocked:`, or `Failed:`.
+
+If nothing changed:
+
+```md
+1. Planning: no changes needed.
+```

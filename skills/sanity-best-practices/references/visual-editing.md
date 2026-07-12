@@ -187,7 +187,7 @@ import { stegaClean } from "@sanity/client/stega";
 
 export async function generateMetadata({ params }) {
   const { data } = await sanityFetch({ query: PAGE_QUERY })
-  return {
+  return { 
     title: stegaClean(data.title),
     description: stegaClean(data.description),
     openGraph: { url: stegaClean(data.canonicalUrl) }

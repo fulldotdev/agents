@@ -1,23 +1,14 @@
 {
   "version": 3,
   "skills": {
-    "wacli": {
-      "source": "steipete/clawdis",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/steipete/clawdis.git",
-      "skillPath": "skills/wacli/SKILL.md",
-      "skillFolderHash": "b9ee3fca75dc0c0c9fbe4526e3cfecbb8b5d47a4",
-      "installedAt": "2026-06-10T14:52:33.273Z",
-      "updatedAt": "2026-06-10T14:53:00.690Z"
-    },
     "gog": {
       "source": "steipete/clawdis",
       "sourceType": "github",
       "sourceUrl": "https://github.com/steipete/clawdis.git",
       "skillPath": "skills/gog/SKILL.md",
-      "skillFolderHash": "865fadff4c3fcc3db2bb68e64f323c7a5562c5da",
+      "skillFolderHash": "ceca95bf1ce9e1e66d6fac7f58b0ab69ae9e1771",
       "installedAt": "2026-06-10T14:54:43.968Z",
-      "updatedAt": "2026-06-10T14:54:43.968Z"
+      "updatedAt": "2026-07-12T15:30:49.476Z"
     },
     "frontend-design": {
       "source": "anthropics/skills",
@@ -34,19 +25,18 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
       "skillPath": "skills/productivity/grill-me/SKILL.md",
-      "skillFolderHash": "2a1ad17028306ebe45f0e49703fa28b9b2e7f499",
-      "pluginName": "mattpocock-skills",
+      "skillFolderHash": "8320e7b87f7b208f50ce165b1dd43d1e93c8e801",
       "installedAt": "2026-06-10T14:57:20.639Z",
-      "updatedAt": "2026-06-10T14:57:20.639Z"
+      "updatedAt": "2026-07-12T15:31:08.215Z"
     },
     "github": {
       "source": "steipete/clawdis",
       "sourceType": "github",
       "sourceUrl": "https://github.com/steipete/clawdis.git",
       "skillPath": "skills/github/SKILL.md",
-      "skillFolderHash": "8a98723139d287abd2af7d29c568411a379f2197",
+      "skillFolderHash": "fab34dc9cb22cd950c4c8b3772df2000a7741b87",
       "installedAt": "2026-06-11T09:50:12.871Z",
-      "updatedAt": "2026-06-11T09:50:12.871Z"
+      "updatedAt": "2026-07-12T15:31:06.259Z"
     },
     "notion": {
       "source": "steipete/clawdis",
@@ -71,9 +61,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/shadcn/ui.git",
       "skillPath": "skills/shadcn/SKILL.md",
-      "skillFolderHash": "53547268e4c90c0dd7981e098e1ea4a89393575a",
+      "skillFolderHash": "962eb7ef77f17e0bce530153d4fec2136c5fa061",
       "installedAt": "2026-06-11T10:02:16.756Z",
-      "updatedAt": "2026-06-11T10:02:16.756Z"
+      "updatedAt": "2026-07-12T15:31:12.390Z"
     },
     "stripe-best-practices": {
       "source": "docs.stripe.com",
@@ -81,106 +71,34 @@
       "sourceUrl": "https://docs.stripe.com/.well-known/skills/stripe-best-practices/SKILL.md",
       "skillFolderHash": "",
       "installedAt": "2026-06-11T10:07:25.359Z",
-      "updatedAt": "2026-06-11T10:07:25.359Z"
-    },
-    "netlify-cli-and-deploy": {
-      "source": "netlify/context-and-tools",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/netlify/context-and-tools.git",
-      "skillPath": "skills/netlify-cli-and-deploy/SKILL.md",
-      "skillFolderHash": "d2eca0150c85c47909b3f13a63b74c0e038d545f",
-      "installedAt": "2026-06-11T10:09:30.019Z",
-      "updatedAt": "2026-06-11T10:09:30.019Z"
+      "updatedAt": "2026-07-12T15:32:21.196Z"
     },
     "netlify-config": {
       "source": "netlify/context-and-tools",
       "sourceType": "github",
       "sourceUrl": "https://github.com/netlify/context-and-tools.git",
       "skillPath": "skills/netlify-config/SKILL.md",
-      "skillFolderHash": "ddc359e79e9b50fa98ebdb38ead2bda6fe3fb658",
+      "skillFolderHash": "edb87d573b34c04b12243526dffd9ccfb8f3225d",
       "installedAt": "2026-06-11T10:09:30.021Z",
-      "updatedAt": "2026-06-11T10:09:30.021Z"
+      "updatedAt": "2026-07-12T15:31:14.200Z"
     },
     "netlify-forms": {
       "source": "netlify/context-and-tools",
       "sourceType": "github",
       "sourceUrl": "https://github.com/netlify/context-and-tools.git",
       "skillPath": "skills/netlify-forms/SKILL.md",
-      "skillFolderHash": "bc2842bb736fa7c86ae3bc631bac1dc887b705e2",
+      "skillFolderHash": "9bdd5ef3a92ebda03ceb600ad4c22914dcf77ba0",
       "installedAt": "2026-06-11T10:09:30.021Z",
-      "updatedAt": "2026-06-11T10:09:30.021Z"
+      "updatedAt": "2026-07-12T15:31:15.700Z"
     },
     "netlify-frameworks": {
       "source": "netlify/context-and-tools",
       "sourceType": "github",
       "sourceUrl": "https://github.com/netlify/context-and-tools.git",
       "skillPath": "skills/netlify-frameworks/SKILL.md",
-      "skillFolderHash": "e7bfd04106dcae7ba331a4dc14eaab5ce0a1f955",
+      "skillFolderHash": "8917fb40629695c834814dd011143fe4e82df728",
       "installedAt": "2026-06-11T10:09:30.022Z",
-      "updatedAt": "2026-06-11T10:09:30.022Z"
-    },
-    "shopify-admin": {
-      "source": "Shopify/shopify-ai-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
-      "skillPath": "skills/shopify-admin/SKILL.md",
-      "skillFolderHash": "773731c28baadf31dca6922e7b506a285dcb10ad",
-      "installedAt": "2026-06-11T10:11:44.239Z",
-      "updatedAt": "2026-06-11T10:11:44.239Z"
-    },
-    "shopify-custom-data": {
-      "source": "Shopify/shopify-ai-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
-      "skillPath": "skills/shopify-custom-data/SKILL.md",
-      "skillFolderHash": "8a81bcc9b46151b4ad3b65b004e20cd301bd4e08",
-      "installedAt": "2026-06-11T10:11:44.243Z",
-      "updatedAt": "2026-06-11T10:11:44.243Z"
-    },
-    "shopify-customer": {
-      "source": "Shopify/shopify-ai-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
-      "skillPath": "skills/shopify-customer/SKILL.md",
-      "skillFolderHash": "dc0ae047fa26eb085538e61b2ef12bcbe7719373",
-      "installedAt": "2026-06-11T10:11:44.244Z",
-      "updatedAt": "2026-06-11T10:11:44.244Z"
-    },
-    "shopify-dev": {
-      "source": "Shopify/shopify-ai-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
-      "skillPath": "skills/shopify-dev/SKILL.md",
-      "skillFolderHash": "1964c9c19f395c8f40d4deb41f596436e9a53cfe",
-      "installedAt": "2026-06-11T10:11:44.244Z",
-      "updatedAt": "2026-06-11T10:11:44.244Z"
-    },
-    "shopify-functions": {
-      "source": "Shopify/shopify-ai-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
-      "skillPath": "skills/shopify-functions/SKILL.md",
-      "skillFolderHash": "ee192514d7966a94539a789f3ef1d6eeb53374d9",
-      "installedAt": "2026-06-11T10:11:44.244Z",
-      "updatedAt": "2026-06-11T10:11:44.244Z"
-    },
-    "shopify-liquid": {
-      "source": "Shopify/shopify-ai-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
-      "skillPath": "skills/shopify-liquid/SKILL.md",
-      "skillFolderHash": "a4ffe5783dc4463fb03f48f6db59feb1d827ed4a",
-      "installedAt": "2026-06-11T10:11:44.245Z",
-      "updatedAt": "2026-06-11T10:11:44.245Z"
-    },
-    "shopify-use-shopify-cli": {
-      "source": "Shopify/shopify-ai-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
-      "skillPath": "skills/shopify-use-shopify-cli/SKILL.md",
-      "skillFolderHash": "5856f5917e74082d93119b84549c6f83676a618d",
-      "installedAt": "2026-06-11T10:11:44.246Z",
-      "updatedAt": "2026-06-11T10:11:44.246Z"
+      "updatedAt": "2026-07-12T15:31:17.171Z"
     },
     "convex": {
       "source": "get-convex/agent-skills",
@@ -205,9 +123,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/get-convex/agent-skills.git",
       "skillPath": "skills/convex-performance-audit/SKILL.md",
-      "skillFolderHash": "7f7f041f547efe03c2276de255a33c399f992379",
+      "skillFolderHash": "dd5db2709277e051ab8f7c9a84378acfbd64b170",
       "installedAt": "2026-06-11T10:13:32.315Z",
-      "updatedAt": "2026-06-11T10:13:32.315Z"
+      "updatedAt": "2026-07-12T15:31:18.788Z"
     },
     "convex-migration-helper": {
       "source": "get-convex/agent-skills",
@@ -218,15 +136,6 @@
       "installedAt": "2026-06-11T10:13:32.315Z",
       "updatedAt": "2026-06-11T10:13:32.315Z"
     },
-    "convex-create-component": {
-      "source": "get-convex/agent-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/get-convex/agent-skills.git",
-      "skillPath": "skills/convex-create-component/SKILL.md",
-      "skillFolderHash": "5d18cce51d602d29ac60cfe5923061ac5b9ec5ab",
-      "installedAt": "2026-06-11T10:13:32.316Z",
-      "updatedAt": "2026-06-11T10:13:32.316Z"
-    },
     "convex-setup-auth": {
       "source": "get-convex/agent-skills",
       "sourceType": "github",
@@ -236,14 +145,68 @@
       "installedAt": "2026-06-11T10:13:32.316Z",
       "updatedAt": "2026-06-11T10:13:32.316Z"
     },
-    "astro": {
-      "source": "astrolicious/agent-skills",
+    "shopify-admin": {
+      "source": "Shopify/shopify-ai-toolkit",
       "sourceType": "github",
-      "sourceUrl": "https://github.com/astrolicious/agent-skills.git",
-      "skillPath": "skills/astro/SKILL.md",
-      "skillFolderHash": "81d96cec5008970ed8fbecb23f7fb48536102b84",
-      "installedAt": "2026-06-11T10:24:51.833Z",
-      "updatedAt": "2026-06-11T10:24:51.833Z"
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-admin/SKILL.md",
+      "skillFolderHash": "90b726f25d02746cc3a5455f9ac3f922835e099b",
+      "installedAt": "2026-06-11T10:11:44.239Z",
+      "updatedAt": "2026-07-12T15:31:24.191Z"
+    },
+    "shopify-custom-data": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-custom-data/SKILL.md",
+      "skillFolderHash": "0cddd4f2821a3ba4e57668837e174025a0419fd9",
+      "installedAt": "2026-06-11T10:11:44.243Z",
+      "updatedAt": "2026-07-12T15:31:29.741Z"
+    },
+    "shopify-customer": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-customer/SKILL.md",
+      "skillFolderHash": "55c9702045fb7ba21c46806298d2d9b3f613e4c5",
+      "installedAt": "2026-06-11T10:11:44.244Z",
+      "updatedAt": "2026-07-12T15:31:35.691Z"
+    },
+    "shopify-dev": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-dev/SKILL.md",
+      "skillFolderHash": "e514eb051e901f702f1f4da20ef2bec9c574888e",
+      "installedAt": "2026-06-11T10:11:44.244Z",
+      "updatedAt": "2026-07-12T15:31:41.418Z"
+    },
+    "shopify-functions": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-functions/SKILL.md",
+      "skillFolderHash": "bb2c71d8b344064f9f7d9813ea78605c3b3eacab",
+      "installedAt": "2026-06-11T10:11:44.244Z",
+      "updatedAt": "2026-07-12T15:31:48.737Z"
+    },
+    "shopify-liquid": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-liquid/SKILL.md",
+      "skillFolderHash": "b889e0bb6f481223ee0490d597ad1a7f33d9ec00",
+      "installedAt": "2026-06-11T10:11:44.245Z",
+      "updatedAt": "2026-07-12T15:31:55.004Z"
+    },
+    "shopify-use-shopify-cli": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
+      "skillPath": "skills/shopify-use-shopify-cli/SKILL.md",
+      "skillFolderHash": "1f6fe62b32d05eb62c618cb8f3f11d2e28529914",
+      "installedAt": "2026-06-11T10:11:44.246Z",
+      "updatedAt": "2026-07-12T15:32:00.323Z"
     },
     "workos": {
       "source": "workos/skills",
@@ -281,32 +244,14 @@
       "installedAt": "2026-06-23T08:09:43.900Z",
       "updatedAt": "2026-06-23T08:09:43.900Z"
     },
-    "portable-text-conversion": {
-      "source": "sanity-io/agent-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/sanity-io/agent-toolkit.git",
-      "skillPath": "skills/portable-text-conversion/SKILL.md",
-      "skillFolderHash": "ac7a669a4eaef5ec46798f607cd6b5412b5aac5c",
-      "installedAt": "2026-06-23T08:09:43.902Z",
-      "updatedAt": "2026-06-23T08:09:43.902Z"
-    },
-    "portable-text-serialization": {
-      "source": "sanity-io/agent-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/sanity-io/agent-toolkit.git",
-      "skillPath": "skills/portable-text-serialization/SKILL.md",
-      "skillFolderHash": "5beb26495be66788593a50ddf3b12dcb0e5cc21d",
-      "installedAt": "2026-06-23T08:09:43.903Z",
-      "updatedAt": "2026-06-23T08:09:43.903Z"
-    },
     "sanity-best-practices": {
       "source": "sanity-io/agent-toolkit",
       "sourceType": "github",
       "sourceUrl": "https://github.com/sanity-io/agent-toolkit.git",
       "skillPath": "skills/sanity-best-practices/SKILL.md",
-      "skillFolderHash": "d4279379338a24fde31a44960a9528dc27b2f842",
+      "skillFolderHash": "658e3f688efb133fc36a9b40d1f0b4fc677fae0d",
       "installedAt": "2026-06-23T08:09:43.903Z",
-      "updatedAt": "2026-06-23T08:09:43.903Z"
+      "updatedAt": "2026-07-12T15:32:03.294Z"
     },
     "seo-aeo-best-practices": {
       "source": "sanity-io/agent-toolkit",
@@ -317,68 +262,14 @@
       "installedAt": "2026-06-23T08:09:43.904Z",
       "updatedAt": "2026-06-23T08:09:43.904Z"
     },
-    "seo-audit": {
-      "source": "coreyhaines31/marketingskills",
+    "netlify-deploy": {
+      "source": "netlify/context-and-tools",
       "sourceType": "github",
-      "sourceUrl": "https://github.com/coreyhaines31/marketingskills.git",
-      "skillPath": "skills/seo-audit/SKILL.md",
-      "skillFolderHash": "0f1f5e31ce921513828ac8f440f358df6fa0751a",
-      "installedAt": "2026-06-24T14:42:09.594Z",
-      "updatedAt": "2026-06-24T14:42:09.594Z"
-    },
-    "improve": {
-      "source": "shadcn/improve",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/shadcn/improve.git",
-      "skillPath": "skills/improve/SKILL.md",
-      "skillFolderHash": "7d77d76815e6deb704427f17f6e393f55e3cb6da",
-      "installedAt": "2026-07-01T11:41:08.760Z",
-      "updatedAt": "2026-07-01T11:41:08.760Z"
-    },
-    "tanstack-router": {
-      "source": "tanstack-skills/tanstack-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/tanstack-skills/tanstack-skills.git",
-      "skillPath": "plugins/tanstack-router/skills/tanstack-router/SKILL.md",
-      "skillFolderHash": "3b8331bcf3766835e37439290ba2fa843186f2d1",
-      "installedAt": "2026-07-01T11:42:15.900Z",
-      "updatedAt": "2026-07-01T11:42:15.900Z"
-    },
-    "tanstack-start": {
-      "source": "tanstack-skills/tanstack-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/tanstack-skills/tanstack-skills.git",
-      "skillPath": "plugins/tanstack-start/skills/tanstack-start/SKILL.md",
-      "skillFolderHash": "2da37ffef5e4ffa3d71aaf8ed32bd059346324de",
-      "installedAt": "2026-07-01T11:42:15.902Z",
-      "updatedAt": "2026-07-01T11:42:15.902Z"
-    },
-    "tanstack-table": {
-      "source": "tanstack-skills/tanstack-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/tanstack-skills/tanstack-skills.git",
-      "skillPath": "plugins/tanstack-table/skills/tanstack-table/SKILL.md",
-      "skillFolderHash": "dc0227e127c47b7f4a192f30594bd7b4f2140a48",
-      "installedAt": "2026-07-01T11:42:15.902Z",
-      "updatedAt": "2026-07-01T11:42:15.902Z"
-    },
-    "tanstack-virtual": {
-      "source": "tanstack-skills/tanstack-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/tanstack-skills/tanstack-skills.git",
-      "skillPath": "plugins/tanstack-virtual/skills/tanstack-virtual/SKILL.md",
-      "skillFolderHash": "edc663cae0f6ffa3dbbce883e5472524410f20bf",
-      "installedAt": "2026-07-01T11:42:15.903Z",
-      "updatedAt": "2026-07-01T11:42:15.903Z"
-    },
-    "tanstack-query": {
-      "source": "tanstack-skills/tanstack-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/tanstack-skills/tanstack-skills.git",
-      "skillPath": "plugins/tanstack-query/skills/tanstack-query/SKILL.md",
-      "skillFolderHash": "50fdcfbff89fba75fd5c2be42701b907d185abeb",
-      "installedAt": "2026-07-01T11:42:15.903Z",
-      "updatedAt": "2026-07-01T11:42:15.903Z"
+      "sourceUrl": "https://github.com/netlify/context-and-tools.git",
+      "skillPath": "skills/netlify-deploy/SKILL.md",
+      "skillFolderHash": "d842ec59e4bbec2152d39f5699e90a2b294f2841",
+      "installedAt": "2026-07-12T15:37:22.826Z",
+      "updatedAt": "2026-07-12T15:37:22.826Z"
     }
   },
   "dismissed": {

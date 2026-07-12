@@ -9,7 +9,7 @@ Use this for both Moneybird ops and Moneybird-facing commercial docs.
 
 ## Loop integration
 
-Moneybird is a domain skill, not the loop owner. When `work-execution` or another loop starts Moneybird work, this skill defines the Moneybird-specific request shape, commercial quality bar, evidence requirements, and write safety.
+Moneybird is a domain skill, not the loop owner. When `agency-work` starts Moneybird work, this skill defines the Moneybird-specific request shape, commercial quality bar, evidence requirements, and write safety.
 
 The loop owns timing, thread orchestration, Notion task selection, and follow-up scheduling. This skill owns whether the Moneybird action is safe and how to perform it.
 
