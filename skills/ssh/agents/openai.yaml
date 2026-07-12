@@ -1,0 +1,4 @@
+interface:
+  display_name: "SSH"
+  short_description: "Operate configured SSH hosts safely"
+  default_prompt: "Use $ssh to inspect or update a configured remote host safely."
