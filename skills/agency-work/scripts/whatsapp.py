@@ -9,13 +9,16 @@ def media(chat_id,msg_id):
     return {"saved_dir": str(d), "saved_paths": paths, **({} if paths else {"error": "media_not_downloaded_yet"})}
 
 def collect(a,b):
-    chats = {c.get("JID"): c for c in (json_cmd(["wacli","--json","chats","list"]).get("data") or [])}
+    chat_rows = (json_cmd(["wacli","--json","chats","list","--limit",str(MAX_ITEMS_PER_LANE)]).get("data") or [])
+    chats = {(c.get("jid") or c.get("JID")): c for c in chat_rows}
     data = json_cmd(["wacli","--json","messages","list","--after",iso_utc(a),"--before",iso_utc(b),"--limit",str(MAX_ITEMS_PER_LANE)])
-    grouped = {}
+    grouped, chat_names = {}, {}
     for m in (data.get("data") or {}).get("messages") or []:
         cid, mid, mt = m.get("ChatJID"), m.get("MsgID"), m.get("MediaType")
-        grouped.setdefault(cid, []).append({"id": mid, "sender": m.get("SenderJID"), "timestamp": m.get("Timestamp"), "kind": "media" if mt else "message", "text": compact_text(m.get("Text") or m.get("DisplayText") or m.get("Snippet") or "", 12000), "media": {"type": mt, "display_text": m.get("DisplayText"), **media(cid, mid)} if mt else None})
-    return [{"chat_id": cid, "chat": (chats.get(cid) or {}).get("Name") or cid, "messages": sorted(msgs, key=lambda x: x.get("timestamp") or "")} for cid,msgs in grouped.items()]
+        chat_row = chats.get(cid) or {}
+        chat_names[cid] = m.get("ChatName") or chat_names.get(cid) or chat_row.get("name") or chat_row.get("Name") or cid
+        grouped.setdefault(cid, []).append({"id": mid, "sender": m.get("SenderJID"), "sender_name": m.get("SenderName") or None, "timestamp": m.get("Timestamp"), "kind": "media" if mt else "message", "text": compact_text(m.get("Text") or m.get("DisplayText") or m.get("Snippet") or "", 12000), "media": {"type": mt, "display_text": m.get("DisplayText"), **media(cid, mid)} if mt else None})
+    return [{"chat_id": cid, "chat": chat_names.get(cid) or cid, "messages": sorted(msgs, key=lambda x: x.get("timestamp") or "")} for cid,msgs in grouped.items()]
 
 def main():
     p=argparse.ArgumentParser(); add_common_args(p); args=p.parse_args(); a,b=window_from_args(args.after,args.before,require=True); r=base_result("whatsapp","window",a,b)

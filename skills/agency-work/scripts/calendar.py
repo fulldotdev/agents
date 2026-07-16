@@ -44,9 +44,26 @@ def collect_account(account, after, before, limit=MAX_ITEMS_PER_LANE, context=Fa
             "event_type": event.get("eventType"), "url": event.get("htmlLink"),
             "start": event_time(event.get("start")), "end": event_time(event.get("end")),
             "created": event.get("created"), "updated": event.get("updated"),
-            "organizer": (event.get("organizer") or {}).get("email"),
-            "creator": (event.get("creator") or {}).get("email"),
-            "attendees": [x.get("email") for x in event.get("attendees") or [] if x.get("email")],
+            "organizer": {
+                "email": (event.get("organizer") or {}).get("email"),
+                "name": (event.get("organizer") or {}).get("displayName"),
+            },
+            "creator": {
+                "email": (event.get("creator") or {}).get("email"),
+                "name": (event.get("creator") or {}).get("displayName"),
+            },
+            "attendees": [
+                {
+                    "email": attendee.get("email"),
+                    "name": attendee.get("displayName"),
+                    "response_status": attendee.get("responseStatus"),
+                    "organizer": bool(attendee.get("organizer")),
+                    "self": bool(attendee.get("self")),
+                    "optional": bool(attendee.get("optional")),
+                }
+                for attendee in event.get("attendees") or []
+                if attendee.get("email") or attendee.get("displayName")
+            ],
             "source_account": account,
         }
         if context:

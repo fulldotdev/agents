@@ -106,6 +106,15 @@ Email Formatting
     --body-html "<p>Hi Name,</p><p>Thanks for meeting today. Here are the next steps:</p><ul><li>Item one</li><li>Item two</li></ul><p>Best regards,<br>Your Name</p>"
   ```
 
+Google Forms
+
+- Check access with `gog auth list --json --no-input`; Forms requires `forms.body` and optionally `forms.responses.readonly`.
+- Create: `gog forms create --title="Title" --account=you@example.com --json --no-input`.
+- Add questions: `gog forms add-question <formId> --title="Question?" --type=text --account=you@example.com --json --no-input`.
+- Publish: `gog forms publish <formId> --accepting-responses --account=you@example.com --json --no-input`.
+- Verify with `gog forms raw <formId> --account=you@example.com --json --no-input`.
+- If `gog` reports `Forms API is not enabled for this OAuth project`, the OAuth scopes alone are insufficient. Use an OAuth client whose Google Cloud project has the Forms API enabled, or build the form in the Google Forms web UI. For a different final owner: share the temporary form to the destination account, copy it there with `gog drive copy`, verify the copied form in preview, then remove temporary sharing and trash the source.
+
 Notes
 
 - Set `GOG_ACCOUNT=you@gmail.com` to avoid repeating `--account`.

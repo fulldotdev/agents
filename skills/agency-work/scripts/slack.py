@@ -2,7 +2,7 @@
 import argparse, json, os, shlex, subprocess, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from urllib.parse import urlencode
+from urllib.parse import parse_qs, urlencode, urlparse
 from common import MAX_ITEMS_PER_LANE, add_common_args, base_result, compact_text, emit, error_obj, window_from_args
 
 SLACK_API_TIMEOUT_SECONDS = float(os.environ.get("SLACK_API_TIMEOUT_SECONDS", "8"))
@@ -16,6 +16,30 @@ SLACK_REPLIES_LIMIT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_REPLIES_
 SLACK_WORKERS = max(1, int(os.environ.get("SLACK_WORKERS", "4")))
 SLACK_CONFIG_PATH = os.environ.get("SLACK_CONFIG_PATH") or str(Path.home() / ".config" / "slack" / "config.env")
 _deadline = None
+_users = {}
+
+def user_display(user_id):
+    user = _users.get(user_id) or {}
+    profile = user.get("profile") or {}
+    return (
+        profile.get("display_name_normalized") or profile.get("display_name") or
+        profile.get("real_name_normalized") or profile.get("real_name") or
+        user.get("real_name") or user.get("name") or user_id
+    )
+
+def load_users():
+    users, cursor = {}, None
+    while True:
+        params = {"limit": "200"}
+        if cursor:
+            params["cursor"] = cursor
+        data = api("users.list", params)
+        for user in data.get("members") or []:
+            if isinstance(user, dict) and user.get("id"):
+                users[user["id"]] = user
+        cursor = (((data.get("response_metadata") or {}).get("next_cursor")) or "").strip()
+        if not cursor:
+            return users
 
 def load_config_env():
     cfg = Path(SLACK_CONFIG_PATH)
@@ -104,15 +128,36 @@ def channel_id(msg):
     if isinstance(ch, dict): return ch.get("id")
     return ch if isinstance(ch, str) else None
 
+def thread_root_ts(msg):
+    if not isinstance(msg, dict): return None
+    if msg.get("thread_ts"):
+        return msg.get("thread_ts")
+    permalink_url = msg.get("permalink") or ""
+    if permalink_url:
+        values = parse_qs(urlparse(permalink_url).query).get("thread_ts") or []
+        if values:
+            return values[0]
+    return msg.get("ts")
+
 def norm(msg, channel=None, channel_name=None, channel_type=None, after_dt=None, before_dt=None):
     if not isinstance(msg, dict): msg = {}
     msg_channel = msg.get("channel") if isinstance(msg.get("channel"), dict) else {}
     ch = channel or channel_id(msg)
-    return {"channel_id": ch, "channel_name": channel_name or msg_channel.get("name"), "channel_type": channel_type or ("im" if msg_channel.get("is_im") else "channel"), "ts": msg.get("ts"), "thread_ts": msg.get("thread_ts") or msg.get("ts"), "sender": msg.get("user"), "text": compact_text(msg.get("text"), 12000), "url": msg.get("permalink"), "files": msg.get("files") or [], "in_window": in_window(msg, after_dt, before_dt) if after_dt and before_dt else None}
+    sender = msg.get("user")
+    resolved_channel_name = channel_name or msg_channel.get("name")
+    if resolved_channel_name in _users:
+        resolved_channel_name = user_display(resolved_channel_name)
+    resolved_channel_type = channel_type or ("im" if msg_channel.get("is_im") else "channel")
+    return {"channel_id": ch, "channel_name": resolved_channel_name, "channel_type": resolved_channel_type, "ts": msg.get("ts"), "thread_ts": thread_root_ts(msg), "sender": sender, "sender_name": user_display(sender), "text": compact_text(msg.get("text"), 12000), "url": msg.get("permalink"), "files": msg.get("files") or [], "in_window": in_window(msg, after_dt, before_dt) if after_dt and before_dt else None}
 
-def replies(ch, thread_ts, a, b):
+def replies(ch, thread_ts, a, b, channel_name=None):
     if not ch or not thread_ts: return []
-    return [norm(m, channel=ch, after_dt=a, before_dt=b) for m in api("conversations.replies", {"channel": ch, "ts": thread_ts, "limit": str(SLACK_REPLIES_LIMIT)}).get("messages") or [] if isinstance(m, dict) and in_window(m, a, b)]
+    messages = api("conversations.replies", {"channel": ch, "ts": thread_ts, "limit": str(SLACK_REPLIES_LIMIT)}).get("messages") or []
+    return [
+        norm(m, channel=ch, channel_name=channel_name, after_dt=a, before_dt=b)
+        for m in messages
+        if isinstance(m, dict) and (m.get("ts") == thread_ts or in_window(m, a, b))
+    ]
 
 def slack_search_messages(q):
     matches = (api("search.messages", {"query": q, "count": str(SLACK_SEARCH_COUNT), "sort": "timestamp", "sort_dir": "desc"}).get("messages") or {}).get("matches") or []
@@ -123,17 +168,19 @@ def search(q, a, b, filter_window=True, include_replies=True):
     items = []
     for m in matches:
         item = norm(m, after_dt=a, before_dt=b); item["match_query"] = q
-        item["thread_replies"] = replies(item["channel_id"], item["thread_ts"], a, b) if include_replies else []
+        item["thread_replies"] = replies(item["channel_id"], item["thread_ts"], a, b, item.get("channel_name")) if include_replies else []
         if not filter_window or item.get("in_window") or item["thread_replies"]:
             items.append(item)
     return items
 
 def dm_channel_history(ch, a, b, oldest, latest):
     items = []
+    channel_type = "mpim" if ch.get("is_mpim") else "im"
+    channel_name = ch.get("name") or (user_display(ch.get("user")) if channel_type == "im" else None)
     for m in api("conversations.history", {"channel": ch.get("id"), "oldest": oldest, "latest": latest, "inclusive": "false", "limit": str(SLACK_HISTORY_LIMIT)}).get("messages") or []:
         if not isinstance(m, dict): continue
-        item = norm(m, channel=ch.get("id"), channel_name=ch.get("name"), channel_type="mpim" if ch.get("is_mpim") else "im", after_dt=a, before_dt=b)
-        item["match_query"] = "dm_history"; item["thread_replies"] = replies(ch.get("id"), item["thread_ts"], a, b) if m.get("reply_count") else []; items.append(item)
+        item = norm(m, channel=ch.get("id"), channel_name=channel_name, channel_type=channel_type, after_dt=a, before_dt=b)
+        item["match_query"] = "dm_history"; item["thread_replies"] = replies(ch.get("id"), item["thread_ts"], a, b, channel_name) if m.get("reply_count") else []; items.append(item)
     return items
 
 def dm_history(a,b):
@@ -151,23 +198,29 @@ def active_threads(uid,a,b):
     roots = slack_search_messages(f"from:<@{uid}> before:{b.date().isoformat()}")[:SLACK_ACTIVE_THREAD_LIMIT]
     seen, items, jobs = set(), [], []
     for r in roots:
-        key = (channel_id(r), r.get("thread_ts") or r.get("ts"))
+        root_ts = thread_root_ts(r)
+        key = (channel_id(r), root_ts)
         if not key[0] or not key[1] or key in seen: continue
-        seen.add(key); jobs.append((key[0], key[1], r.get("permalink")))
+        seen.add(key)
+        raw_channel = r.get("channel") if isinstance(r.get("channel"), dict) else {}
+        raw_channel_name = raw_channel.get("name")
+        channel_name = user_display(raw_channel_name) if raw_channel_name in _users else raw_channel_name
+        jobs.append((key[0], key[1], r.get("permalink"), channel_name))
     with ThreadPoolExecutor(max_workers=min(SLACK_WORKERS, max(1, len(jobs)))) as executor:
-        futures = {executor.submit(replies, ch, ts, a, b):(ch, ts, url) for ch, ts, url in jobs}
+        futures = {executor.submit(replies, ch, ts, a, b, channel_name):(ch, ts, url, channel_name) for ch, ts, url, channel_name in jobs}
         for future in as_completed(futures):
-            ch, ts, url = futures[future]
+            ch, ts, url, channel_name = futures[future]
             try:
                 rs = future.result()
-                if rs: items.append({"channel_id": ch, "thread_ts": ts, "url": url, "reason": "sil_active_thread", "thread_replies": rs})
+                if rs: items.append({"channel_id": ch, "channel_name": channel_name, "thread_ts": ts, "url": url, "reason": "sil_active_thread", "thread_replies": rs})
             except Exception as exc:
                 items.append({"ok": False, "query": "active_thread_replies", "error": str(exc), "channel_id": ch, "thread_ts": ts})
     return items[:MAX_ITEMS_PER_LANE]
 
 def collect(a,b,query=None):
-    global _deadline
+    global _deadline, _users
     _deadline = time.monotonic() + SLACK_COLLECT_TIMEOUT_SECONDS
+    _users = load_users()
     uid = None if query else me()
     qs = [query] if query else [f"<@{uid}> after:{a.date().isoformat()} before:{b.date().isoformat()}", f"from:<@{uid}> after:{a.date().isoformat()} before:{b.date().isoformat()}"]
     items = []

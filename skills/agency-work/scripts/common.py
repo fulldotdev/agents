@@ -133,6 +133,17 @@ def rollup_relation_ids(row, name):
     return ids
 
 
+def rollup_urls(row, name):
+    urls = []
+    for value in (prop(row, name).get("rollup") or {}).get("array") or []:
+        url = value.get("url")
+        if not url and value.get("type") == "formula":
+            url = (value.get("formula") or {}).get("string")
+        if url and url not in urls:
+            urls.append(url)
+    return urls
+
+
 def date_start(row, name):
     return (prop(row, name).get("date") or {}).get("start")
 
@@ -158,6 +169,7 @@ def customer_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row), "domain": url_value(row, "Domain"),
+        "github_repo_url": url_value(row, "GitHub Repo URL"),
         "contacts": multi_select_names(row, "Contacts"),
         "edited": prop_time(row, "Edited"), "created": prop_time(row, "Created"),
     }
@@ -168,6 +180,7 @@ def project_item(row):
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row), "summary": plain_text(prop(row, "Summary")),
         "customers": relation_ids(row, "Customers"), "contacts": relation_ids(row, "Contacts"),
+        "github_repo_urls": rollup_urls(row, "Github Repo URL"),
         "tasks": relation_ids(row, "Tasks"), "meetings": relation_ids(row, "Meetings"),
         "start": date_start(row, "Start"), "end": date_start(row, "End"),
         "edited": prop_time(row, "Edited"), "created": prop_time(row, "Created"),

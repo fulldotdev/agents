@@ -13,7 +13,7 @@ from common import (
 CUSTOMER_STATUSES = ["Prospect", "Active"]
 TRIAGE_PROJECT_STATUSES = ["Discovery", "Planned", "In Progress"]
 PLANNING_PROJECT_STATUSES = TRIAGE_PROJECT_STATUSES + ["Paused"]
-TRIAGE_TASK_STATUSES = ["Todo", "Doing", "Waiting"]
+TRIAGE_TASK_STATUSES = ["Triage", "Backlog", "Todo", "Doing", "Waiting"]
 OPEN_TASK_STATUSES = ["Triage", "Backlog", "Todo", "Doing", "Waiting"]
 
 

@@ -3,7 +3,13 @@ import argparse, base64, shutil
 from datetime import timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
+from urllib.parse import quote
 from common import ATTACHMENTS_DIR, DEFAULT_GMAIL_ACCOUNTS, MAX_ITEMS_PER_LANE, add_common_args, base_result, compact_text, emit, error_obj, json_cmd, window_from_args
+
+
+def gmail_url(account, thread_id):
+    """Match `gog gmail url`: select the mailbox without Gmail's fragile /u/<email>/ route."""
+    return f"https://mail.google.com/mail/?authuser={quote(account, safe='')}#all/{thread_id}"
 
 def headers(payload):
     return {h.get("name","").lower(): h.get("value") for h in (payload or {}).get("headers", []) if h.get("name")}
@@ -83,7 +89,7 @@ def collect_account(account, after_dt=None, before_dt=None, query=None):
             continue
         if query and after_dt and not has_window:
             continue
-        items.append({"id": tid, "url": f"https://mail.google.com/mail/u/{account}/#all/{tid}", "account": account, "subject": summary.get("subject"), "query": summary.get("matched_query"), "queries": queries, "mode": mode, "contains_sent_by_me": has_sent, "contains_in_window": has_window, "is_in_inbox": has_inbox, "is_archived": not has_inbox, "has_unread": has_unread, "messages": messages})
+        items.append({"id": tid, "url": gmail_url(account, tid), "account": account, "subject": summary.get("subject"), "query": summary.get("matched_query"), "queries": queries, "mode": mode, "contains_sent_by_me": has_sent, "contains_in_window": has_window, "is_in_inbox": has_inbox, "is_archived": not has_inbox, "has_unread": has_unread, "messages": messages})
     return {"source": account, "ok": True, "mode": mode, "queries": queries, "items": items}
 
 def main():
