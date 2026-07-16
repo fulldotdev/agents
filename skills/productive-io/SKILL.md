@@ -114,9 +114,10 @@ Use:
 
 1. Load env vars from the shell or `~/.config/productive-io/config.env`; use repo `.env` only as a fallback when it already exists.
 2. For read-only questions, call `GET /time_entries` with date/person/service filters where possible.
-3. Summarize hours in human units, but keep raw minutes available for calculations.
-4. For manual writes, show the intended date, minutes, person/service/task IDs, and note before sending the request unless the user explicitly asked to execute directly. For loop-driven routine weekly registration, write when the reconstruction rules say evidence is strong enough; otherwise report the blocker to the loop/steward.
-5. If Productive returns `401`, `403`, or `429`, stop and explain the auth, permission, or rate-limit issue.
+3. For named retainers, resolve the selected service with `GET /services/{service_id}?include=deal` and verify the parent deal and entry date before writing.
+4. Summarize hours in human units, but keep raw minutes available for calculations.
+5. For manual writes, show the intended date, minutes, person/service/task IDs, and note before sending the request unless the user explicitly asked to execute directly. For loop-driven routine weekly registration, write when the reconstruction rules say evidence is strong enough; otherwise report the blocker to the loop/steward.
+6. If Productive returns `401`, `403`, or `429`, stop and explain the auth, permission, or rate-limit issue.
 
 ## Weekly hours loop
 
@@ -178,7 +179,7 @@ Use this mode when the user wants to fill, audit, or repair Productive hours aft
 3. Use Calendar, Notion, and GitHub evidence to distribute hours over plausible work dates, weeks, projects, services, and notes. Calendar comes first for meeting-heavy setup weeks and start-date reality checks.
 4. Preserve existing Productive entries where possible. Fill gaps before changing existing entries.
 5. Avoid fake precision. Prefer rounded entries such as 30, 45, 60, 90, 120, or 180 minutes unless existing entries use another pattern.
-6. Match existing Productive service buckets and naming before creating or requesting new ones.
+6. Match the parent Productive deal and entry date before matching a service ID. Never infer a retainer bucket from the time-entry note or service name alone.
 7. Keep weekly totals plausible, but prioritize the period total when there is tension.
 8. For loop-driven weekly registration, create or update entries when the target total, person, service/project bucket, and weekly allocation are sufficiently clear from contracts/invoices, Productive, Notion, GitHub, or stable prior mappings.
 9. Preserve existing Productive entries where possible. Fill gaps before changing existing entries. Do not delete entries unless Sil explicitly asks.
@@ -194,6 +195,13 @@ Keep Teveo automated testing separate from regular Teveo sprint development. Use
 3. Updating tests after feature changes.
 4. Adding clearly new test coverage.
 5. Sprint QA/release regression checks tied to the automated test setup.
+
+Treat the Productive bucket identity as strict:
+
+1. Require the parent deal name to contain `Automated Testing Retainer` and require its date range to cover the entry date.
+2. Reject every `AB testing` service and every service under `Teveo - CRO & Development 2026`; those are CRO experimentation, not automated testing.
+3. Use the `Development` service only when its parent deal is the automated testing retainer. The service label alone is not the bucket identity.
+4. For July 2026, use deal `#2494` and service ID `15255108`. Resolve later months from the matching dated retainer deal instead of reusing this ID.
 
 Do not use the automated testing retainer for normal feature implementation, theme work, CRO work, wishlist changes, translations, Klaviyo/VWO work, or generic release work unless the note clearly explains the test impact.
 
