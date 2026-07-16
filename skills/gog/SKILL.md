@@ -1,7 +1,6 @@
 ---
 name: gog
 description: "Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs."
-homepage: https://gogcli.sh
 metadata:
   {
     "openclaw":
@@ -40,7 +39,7 @@ Common commands
 - Gmail send (multi-line): `gog gmail send --to a@b.com --subject "Hi" --body-file ./message.txt`
 - Gmail send (stdin): `gog gmail send --to a@b.com --subject "Hi" --body-file -`
 - Gmail send (HTML): `gog gmail send --to a@b.com --subject "Hi" --body-html "<p>Hello</p>"`
-- Gmail draft: `gog gmail drafts create --to a@b.com --subject "Hi" --body-file ./message.txt`
+- Gmail draft: `gog gmail drafts create --to a@b.com --subject "Hi" --body-file ./message.txt`; keep the returned `draftId` for CLI/API actions and `message.id` for Gmail web links.
 - Gmail send draft: `gog gmail drafts send <draftId>`
 - Gmail reply: `gog gmail send --to a@b.com --subject "Re: Hi" --body "Reply" --reply-to-message-id <msgId>`
 - Calendar list events: `gog calendar events <calendarId> --from <iso> --to <iso>`
@@ -78,6 +77,7 @@ Calendar Colors
 Email Formatting
 
 - Prefer plain text. Use `--body-file` for multi-paragraph messages (or `--body-file -` for stdin).
+- Build a Gmail draft link as `https://mail.google.com/mail/u/0/#drafts/<message.id>`. The `/u/` segment accepts a numeric browser account index, never an email address; use the index of the signed-in mailbox.
 - Same `--body-file` pattern works for drafts and replies.
 - `--body` does not unescape `\n`. If you need inline newlines, use a heredoc or `$'Line 1\n\nLine 2'`.
 - Use `--body-html` only when you need rich formatting.

@@ -44,7 +44,7 @@ Check open commercial loops through Notion and `moneybird`. Link existing docume
 
 ### 3. Improve the system
 
-Act only on concrete repeated friction: duplicate/stale Tasks, bloated bodies, broken routing, stale automation/skill references, recurring access/schema blockers, or clearly obsolete generated clutter. Apply `system-hygiene` for cleanup. Create a visible improvement Task only when it represents real work for the current Sprint.
+Act only on concrete repeated friction: duplicate/stale Tasks, bloated bodies, broken routing, stale automation/skill references, recurring access/schema blockers, or clearly obsolete generated clutter. Create a visible improvement Task only when it represents real work for the current Sprint.
 
 ### 4. Plan
 

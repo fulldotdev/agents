@@ -10,7 +10,7 @@ Default to preview and approval before production. Publish immediately only when
 
 1. Read the relevant Task, Project, Customer, acceptance criteria, approvals, and source context.
 2. Make the scoped change using the relevant project/domain skills.
-3. Verify locally with appropriate build, typecheck, lint, tests, dev server, browser, responsive, console, form, link, and task-specific checks. Use `shared-dev-server` for local servers.
+3. Verify locally with appropriate build, typecheck, lint, tests, dev server, browser, responsive, console, form, link, and task-specific checks.
 4. Use an independent review for non-trivial changes when it materially improves confidence. Tests, CI, and browser QA remain authoritative.
 5. Deploy to preview/staging when applicable and verify the live preview in a browser.
 6. Draft a concise update with the preview URL, what changed, and what the reviewer should check. Use `customer-communication`.
