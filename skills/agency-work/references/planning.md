@@ -6,9 +6,13 @@ Use for Sil's Monday agency loop: review the completed Monday-Sunday week, recon
 
 Always inspect live Notion state. Run `scripts/collect.py planning --after <start> --before <end> --format yaml`. It collects recent Sprints, open and review-window Tasks, active Projects/Customers, and calendar constraints.
 
-Also gather current planning signals from `trackler-nl` and relevant Teveo/Fayn boards through `monday-com`. These sources remain read-only. Gather them concurrently when the host supports bounded parallel work; otherwise gather directly. Continue with other phases when one source is blocked and report the gap.
+Also gather current planning signals from `trackler-nl` and relevant Teveo/Fayn boards through `monday-com`. These sources remain read-only. Continue with other phases when one source is blocked and report the gap.
 
-Do not run broad inbox triage during planning. Use source context already linked in Notion. If fresh inbox context is essential, run triage as a separate labelled phase only when explicitly requested.
+At the beginning, start a bounded Trackler/business-coach subagent. Inspect recent coach communication and especially Sil's weekplanner/schrift photos. Extract practical review and planning signals, decisions, commitments, blockers, and improvement ideas. If access is blocked, report `Blocked: Trackler login/session required` and continue.
+
+When entering weekly planning, start a bounded monday.com subagent. Inspect relevant Teveo/Fayn sprint and backlog context, always using the `Main table` first as source of truth. Return concrete ticket findings and Notion planning/writeback suggestions. Use other optional subagents only for bounded independent checks that feed the current run; never use them for broad inbox collection.
+
+Do not run broad inbox triage during planning. Use source context already linked in Notion and recent triage outputs only as pattern evidence. If fresh inbox context is essential, run triage as a separate labelled phase only when explicitly requested.
 
 ## Workflow
 
@@ -72,6 +76,8 @@ Preferred plan:
 - Notion normally opens/closes Sprint pages automatically. Create a missing Sprint only when live schema makes safe creation clear.
 
 ## Safety and report
+
+Run autonomously: complete all in-scope, safe, evidence-backed planning actions without asking for normal operational permission. Use `Decision:` or `Blocked:` only when a hard approval gate or missing evidence prevents action.
 
 Planning may update Sprint bodies, link Tasks, create concrete planning/improvement Tasks, and correct clear low-risk statuses. It may not send messages/documents, publish customer work, delete records, or restructure databases/templates without approval.
 

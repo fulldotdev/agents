@@ -150,63 +150,63 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
       "skillPath": "skills/shopify-admin/SKILL.md",
-      "skillFolderHash": "90b726f25d02746cc3a5455f9ac3f922835e099b",
+      "skillFolderHash": "258e08bc9e7a58e398da0d719ffbf2120138d2ee",
       "installedAt": "2026-06-11T10:11:44.239Z",
-      "updatedAt": "2026-07-12T15:31:24.191Z"
+      "updatedAt": "2026-07-16T19:17:23.046Z"
     },
     "shopify-custom-data": {
       "source": "Shopify/shopify-ai-toolkit",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
       "skillPath": "skills/shopify-custom-data/SKILL.md",
-      "skillFolderHash": "0cddd4f2821a3ba4e57668837e174025a0419fd9",
+      "skillFolderHash": "3e78ca0ffebfb744cc0f4f9bf37fe775a8dfe6b5",
       "installedAt": "2026-06-11T10:11:44.243Z",
-      "updatedAt": "2026-07-12T15:31:29.741Z"
+      "updatedAt": "2026-07-16T19:17:27.696Z"
     },
     "shopify-customer": {
       "source": "Shopify/shopify-ai-toolkit",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
       "skillPath": "skills/shopify-customer/SKILL.md",
-      "skillFolderHash": "55c9702045fb7ba21c46806298d2d9b3f613e4c5",
+      "skillFolderHash": "4d1ffa7674022dc08e19f2e7b3790ba26bef1df5",
       "installedAt": "2026-06-11T10:11:44.244Z",
-      "updatedAt": "2026-07-12T15:31:35.691Z"
+      "updatedAt": "2026-07-16T19:17:32.209Z"
     },
     "shopify-dev": {
       "source": "Shopify/shopify-ai-toolkit",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
       "skillPath": "skills/shopify-dev/SKILL.md",
-      "skillFolderHash": "e514eb051e901f702f1f4da20ef2bec9c574888e",
+      "skillFolderHash": "8349794a298fba84fc470c3556c10a43f6c9fee3",
       "installedAt": "2026-06-11T10:11:44.244Z",
-      "updatedAt": "2026-07-12T15:31:41.418Z"
+      "updatedAt": "2026-07-16T19:17:36.627Z"
     },
     "shopify-functions": {
       "source": "Shopify/shopify-ai-toolkit",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
       "skillPath": "skills/shopify-functions/SKILL.md",
-      "skillFolderHash": "bb2c71d8b344064f9f7d9813ea78605c3b3eacab",
+      "skillFolderHash": "2dc67b2eac6fd1d7c7ba4cc5ccddeb72c37cdc4a",
       "installedAt": "2026-06-11T10:11:44.244Z",
-      "updatedAt": "2026-07-12T15:31:48.737Z"
+      "updatedAt": "2026-07-16T19:17:44.263Z"
     },
     "shopify-liquid": {
       "source": "Shopify/shopify-ai-toolkit",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
       "skillPath": "skills/shopify-liquid/SKILL.md",
-      "skillFolderHash": "b889e0bb6f481223ee0490d597ad1a7f33d9ec00",
+      "skillFolderHash": "b51586b71b6e244e08b7e9c68a904d38a6880035",
       "installedAt": "2026-06-11T10:11:44.245Z",
-      "updatedAt": "2026-07-12T15:31:55.004Z"
+      "updatedAt": "2026-07-16T19:17:49.318Z"
     },
     "shopify-use-shopify-cli": {
       "source": "Shopify/shopify-ai-toolkit",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Shopify/shopify-ai-toolkit.git",
       "skillPath": "skills/shopify-use-shopify-cli/SKILL.md",
-      "skillFolderHash": "1f6fe62b32d05eb62c618cb8f3f11d2e28529914",
+      "skillFolderHash": "570d8ee419782f991adad84b92140e36f5e5a70c",
       "installedAt": "2026-06-11T10:11:44.246Z",
-      "updatedAt": "2026-07-12T15:32:00.323Z"
+      "updatedAt": "2026-07-16T19:17:54.145Z"
     },
     "workos": {
       "source": "workos/skills",

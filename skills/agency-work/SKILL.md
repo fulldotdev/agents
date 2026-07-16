@@ -31,22 +31,22 @@ This skill owns workflow meaning. Fetch live Notion schema only for exact proper
 
 ## Model
 
-- **Task**: executable workload with one coherent outcome; use a checklist for related small actions instead of creating message-sized Tasks.
-- **Project**: durable commercial or delivery container for invoiceable work, proposals, prototypes, repositories, retainers, versions, or scope spanning multiple Tasks.
+- **Task**: executable work with one coherent outcome. Keep its steps and acceptance criteria as a checklist in the body.
+- **Project**: a bounded outcome or commercial delivery scope with a clear completion point, usually comprising multiple independently managed Tasks.
 - **Customer**: stable account context. Use a lowercase domain/repo-style handle and add a fitting page emoji when creating one.
 - **Sprint**: Sil's Monday-Sunday planning week.
 - **Someday**: non-executable idea, maybe-later note, or vague exploration.
 - **Source**: message, email, meeting, file, link, attachment, quote, decision, blocker, requirement, or other evidence; a source is context, not automatically work.
 
-Tasks may link directly to a Customer. Create or link a Project when work has billable hours, accepted scope, an estimate/invoice, delivery versions, or context that must survive multiple Tasks. Every Project needs at least one concrete Task; create a scoped planning Task when the first execution Task is not yet clear.
+Tasks may link directly to a Customer. Use a Project when several Tasks contribute to one shared outcome or planned completion. A larger coherent effort remains one Task when a body checklist is enough to execute it.
 
-Projects own durable scope, commercials, cross-version decisions, and delivery history. Tasks own the executable work, checklist, evidence, and acceptance criteria for one effort.
+Projects own the shared outcome, scope, commercials, cross-Task decisions, and delivery history. Tasks own execution, evidence, and acceptance criteria.
 
 ## Routing
 
 1. Read the target item and relevant source context before deciding or writing.
 2. Route to an existing active Task, Project/Customer context, new Task, new Project plus first Task, Someday, or no action.
-3. Prefer an existing broader active work package over a narrow sibling Task.
+3. Prefer an existing active work package when it owns the same outcome or commercial scope.
 4. Put one implementation point, blocker, preference, or file into the active package instead of creating a duplicate.
 5. Treat Tasks completed before today as closure records. Create a related follow-up Task for genuinely new execution; reopen today's completion only when fresh evidence shows closure was premature.
 6. Keep `Waiting` until the dependency clears. Move status only when the next action becomes executable.

@@ -5,15 +5,37 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
+import time as time_module
 from datetime import datetime, time, timezone
 from pathlib import Path
 
 MAX_ITEMS_PER_LANE = int(os.environ.get("TRIAGE_MAX_ITEMS_PER_LANE", "200"))
 MAX_ITEMS = int(os.environ.get("SPRINT_PLANNING_MAX_ITEMS", "250"))
-STATE_DIR = Path(os.environ.get("TRIAGE_STATE_DIR", Path.cwd() / "state" / "triage")).expanduser()
-ATTACHMENTS_DIR = STATE_DIR / "attachments"
-RUN_LOG_DIR = STATE_DIR / "runs"
+TEMP_ROOT = Path(
+    os.environ.get("AGENCY_WORK_TEMP_DIR", Path.home() / ".hermes" / "tmp" / "agency-work")
+).expanduser()
+
+
+def create_run_dir():
+    """Create bounded per-run scratch space and remove leftovers older than 24h."""
+    TEMP_ROOT.mkdir(parents=True, exist_ok=True)
+    cutoff = time_module.time() - 86400
+    for child in TEMP_ROOT.iterdir():
+        try:
+            if child.stat().st_mtime < cutoff:
+                shutil.rmtree(child) if child.is_dir() else child.unlink()
+        except FileNotFoundError:
+            pass
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    run_dir = TEMP_ROOT / f"{stamp}-{os.getpid()}"
+    run_dir.mkdir(parents=True, exist_ok=False)
+    return run_dir
+
+
+RUN_DIR = create_run_dir()
+ATTACHMENTS_DIR = RUN_DIR / "attachments"
 
 DEFAULT_GMAIL_ACCOUNTS = ["sil@full.dev", "silveltman@gmail.com"]
 DEFAULT_CALENDAR_ACCOUNTS = ["sil@full.dev", "silveltman@gmail.com"]
@@ -223,6 +245,7 @@ def base_result(lane, mode, after_dt=None, before_dt=None):
         "generated_at": iso_utc(datetime.now(timezone.utc)), "lane": lane, "mode": mode,
         "after": iso_utc(after_dt) if after_dt else None,
         "before": iso_utc(before_dt) if before_dt else None,
+        "temporary_files_dir": str(RUN_DIR),
         "ok": True, "errors": [], "items": [],
     }
 

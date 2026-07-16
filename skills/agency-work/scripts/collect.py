@@ -2,7 +2,6 @@
 """Single public CLI for agency-work context collection."""
 
 import argparse
-import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
@@ -16,7 +15,7 @@ import slack
 import whatsapp
 from common import (
     DEFAULT_CALENDAR_ACCOUNTS, DEFAULT_GMAIL_ACCOUNTS, MAX_ITEMS,
-    MAX_ITEMS_PER_LANE, RUN_LOG_DIR, base_result, emit, error_obj, iso_utc,
+    MAX_ITEMS_PER_LANE, base_result, emit, error_obj,
     window_from_args,
 )
 
@@ -124,11 +123,6 @@ def triage(args):
                 result["groups"][name] = error
                 result["errors"].append(error)
                 result["ok"] = False
-    if args.save:
-        RUN_LOG_DIR.mkdir(parents=True, exist_ok=True)
-        path = RUN_LOG_DIR / f"triage_{before.astimezone(TRIAGE_TZ).date().isoformat()}.json"
-        path.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
-        result["saved_to"] = str(path)
     return result
 
 
@@ -191,7 +185,7 @@ def build_parser():
     triage_parser.add_argument("--project")
     triage_parser.add_argument("--thread-id")
     triage_parser.add_argument("--detail-events", type=int, default=codex.DEFAULT_DETAIL_EVENTS)
-    triage_parser.add_argument("--save", action="store_true")
+
 
     planning_parser = commands.add_parser("planning", help="collect Sprint review and planning context")
     window_args(planning_parser, required=True)

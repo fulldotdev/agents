@@ -74,6 +74,10 @@ Never clean, trim, compress, rewrite, or delete:
 
 Do not change cron schedules, delivery targets, live config, skills, plugins, or MCP definitions unless the user explicitly asked for that specific change.
 
+### External skills CLI safety
+
+- `npx skills update --help` is not a safe help probe in the current Vercel Skills CLI: it executes an update. Use top-level `npx skills --help` for documented update flags, or inspect the upstream CLI docs/source. Treat `skills update` as a mutating command and check Git status afterward.
+
 ## Run Shape
 
 1. Inspect only relevant files/config for the trigger.
