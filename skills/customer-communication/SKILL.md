@@ -16,7 +16,21 @@ Default tone:
 - Practical over explanatory.
 - Specific about dates, money, links, scope, and next steps.
 - Honest when scope, timing, or assumptions are off.
-- Short by default; only expand when the topic needs context or accountability.
+- Be concise only after the receiver has enough context. Remove repetition and padding, not information they need to understand the message or act on it.
+
+## Receiver Context First
+
+Write from the receiver's knowledge, not from the internal conversation that produced the draft.
+
+Before drafting:
+
+1. Identify who will receive the message and what they have actually seen, supplied, discussed, or approved.
+2. Treat everything else as new information. Assume no project knowledge unless the conversation provides direct evidence that the receiver has it.
+3. Introduce the purpose before details: what this is, why they are receiving it, and what they should do.
+4. Translate internal shorthand, feature names, technical terms, and team language into plain customer language. If a term must remain, explain it the first time.
+5. Preserve useful context when shortening. A shorter draft is worse when it forces the receiver to guess what a link, request, document, environment, or next step means.
+
+When the receiver's prior context is unknown, use the clearest plain-language explanation and assume they know nothing about the work so far.
 
 Before drafting clarification questions for a customer, separate:
 
@@ -26,9 +40,16 @@ Before drafting clarification questions for a customer, separate:
 
 Ask customers about intent and business rules, not implementation mechanics. For example: ask whether a group should be fixed or self-manageable, not whether it should be a tag, metafield, segment, or API rule.
 
-Keep the customer's own words for business concepts, then translate internally. If they say "groothandel", "collega's", "volle doos", or "laagste staffelprijs", use those words in the customer message instead of prematurely replacing them with technical terms.
+Use a receiver's own words for business concepts only when they personally used or received those words. Do not assume terminology from an internal discussion is shared customer context. If their wording is unknown, use plain language and briefly explain the concept.
 
 Avoid filler and softeners such as: "volgens mij", "misschien", "wellicht", "ik denk", "even" as a nervous habit, "zou eventueel kunnen", "naar mijn idee". Use uncertainty only when it is real.
+
+## Output Format
+
+- Present a requested customer draft in a fenced `text` code block so it is directly copyable.
+- Keep any explanation, status, or caveat outside the code block.
+- When providing multiple drafts, label them briefly and give each its own code block.
+- Follow a different format only when the user explicitly requests one.
 
 ## Channel Rules
 
@@ -46,6 +67,7 @@ Email:
 
 - Use a simple greeting: "Hey Naam", "Hi Naam", or "Hoi Naam".
 - First paragraph states why the mail exists.
+- Explain what any preview, document, request, or decision is before giving its link or details.
 - Use short headings or bullet lists for pricing, scope, work done, problem/solution, or next steps.
 - Include explicit numbers and dates.
 - Close with the concrete ask or default: "Laat me weten...", "Hoor graag of dat klopt", "Mocht ik voor [datum] niks horen, dan..."
@@ -103,7 +125,9 @@ Technical explanation:
 ## Draft Checklist
 
 - Is the first line immediately useful?
+- Could this receiver understand the message without access to our internal discussion?
+- Are unfamiliar links, terms, documents, and requests introduced in plain language?
 - Are dates, amounts, links, and owner/check requests explicit?
 - Is there a clear next step or default outcome?
-- Can 20% be removed without losing meaning?
+- Has only repetition or padding been removed, while useful context remains?
 - Does it sound like Sil, not like a generic account manager?
