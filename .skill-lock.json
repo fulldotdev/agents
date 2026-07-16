@@ -10,34 +10,6 @@
       "installedAt": "2026-06-10T14:54:43.968Z",
       "updatedAt": "2026-07-12T15:30:49.476Z"
     },
-    "frontend-design": {
-      "source": "anthropics/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/anthropics/skills.git",
-      "skillPath": "skills/frontend-design/SKILL.md",
-      "skillFolderHash": "0d5b74a14bdf3ebcd64f352d06376a2ef05ed296",
-      "pluginName": "example-skills",
-      "installedAt": "2026-06-10T14:56:22.631Z",
-      "updatedAt": "2026-06-10T14:56:22.631Z"
-    },
-    "grill-me": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/productivity/grill-me/SKILL.md",
-      "skillFolderHash": "8320e7b87f7b208f50ce165b1dd43d1e93c8e801",
-      "installedAt": "2026-06-10T14:57:20.639Z",
-      "updatedAt": "2026-07-12T15:31:08.215Z"
-    },
-    "github": {
-      "source": "steipete/clawdis",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/steipete/clawdis.git",
-      "skillPath": "skills/github/SKILL.md",
-      "skillFolderHash": "fab34dc9cb22cd950c4c8b3772df2000a7741b87",
-      "installedAt": "2026-06-11T09:50:12.871Z",
-      "updatedAt": "2026-07-12T15:31:06.259Z"
-    },
     "notion": {
       "source": "steipete/clawdis",
       "sourceType": "github",
@@ -235,15 +207,6 @@
       "installedAt": "2026-06-11T16:36:12.853Z",
       "updatedAt": "2026-06-11T16:36:12.853Z"
     },
-    "content-modeling-best-practices": {
-      "source": "sanity-io/agent-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/sanity-io/agent-toolkit.git",
-      "skillPath": "skills/content-modeling-best-practices/SKILL.md",
-      "skillFolderHash": "a9cdf383668a8c38871f75e8ef34ece0bb0d2d7e",
-      "installedAt": "2026-06-23T08:09:43.900Z",
-      "updatedAt": "2026-06-23T08:09:43.900Z"
-    },
     "sanity-best-practices": {
       "source": "sanity-io/agent-toolkit",
       "sourceType": "github",
@@ -252,15 +215,6 @@
       "skillFolderHash": "658e3f688efb133fc36a9b40d1f0b4fc677fae0d",
       "installedAt": "2026-06-23T08:09:43.903Z",
       "updatedAt": "2026-07-12T15:32:03.294Z"
-    },
-    "seo-aeo-best-practices": {
-      "source": "sanity-io/agent-toolkit",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/sanity-io/agent-toolkit.git",
-      "skillPath": "skills/seo-aeo-best-practices/SKILL.md",
-      "skillFolderHash": "b78a397999f979d85eeea8deb32656733672e9b3",
-      "installedAt": "2026-06-23T08:09:43.904Z",
-      "updatedAt": "2026-06-23T08:09:43.904Z"
     },
     "netlify-deploy": {
       "source": "netlify/context-and-tools",
