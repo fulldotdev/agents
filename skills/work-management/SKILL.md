@@ -1,16 +1,15 @@
 ---
-name: agency-work
-description: "Run Notion-backed agency work: triage sources, plan Monday-Sunday Sprints, execute Tasks/admin, and deliver customer work. Use for Notion Tasks, Projects, Customers, Sprints, Someday, agency triage/planning, customer previews/releases, or Productive/Moneybird work."
+name: work-management
+description: "Manage Notion-backed agency work: Tasks, Projects, Customers, Sprints, Someday, source triage, Monday-Sunday planning, admin, and Productive/Moneybird coordination. Use for our work system, direct Notion work updates, broad agency intake, weekly review, Sprint planning, prioritization, routing, statuses, hours, or commercial follow-up."
 ---
 
-# Agency Work
+# Work Management
 
-Use this as the single source of truth for agency work. Read the matching workflow reference before acting:
+Use this as the single source of truth for agency work management. Read the matching workflow reference before acting:
 
 - Broad Gmail, Slack, WhatsApp, calendar, meeting, Codex, or Notion intake: [triage.md](references/triage.md)
 - Weekly review, Productive reconciliation, system review, or Sprint planning: [planning.md](references/planning.md)
-- Customer preview, review, release, production change, or handoff: [delivery.md](references/delivery.md)
-- Normal Task execution or a direct Notion update: use this main skill plus the relevant domain skill; no workflow reference is required.
+- Normal Task, Project, or Customer management and direct Notion updates: use this main skill plus the relevant domain skill; no workflow reference is required.
 
 Load multiple references only when the request genuinely crosses workflows.
 
@@ -59,7 +58,7 @@ Projects own the shared outcome, scope, commercials, cross-Task decisions, and d
 - **Todo**: ready and executable.
 - **Doing**: actively being worked or ready for Sil's review.
 - **Waiting**: blocked on a person, dependency, decision, timing, customer, or vendor.
-- **Done**: actually completed and verified; customer delivery needs explicit completion evidence.
+- **Done**: actually completed and verified; customer work uses the completion evidence defined by `customer-work`.
 - **Canceled**: duplicate, superseded, moved to Someday, no longer executable, or explicitly dropped.
 
 Use due dates only for real deadlines or follow-up dates, never as historical guilt markers.
@@ -99,8 +98,8 @@ Use domain skills for domain rules:
 - `moneybird` for estimates, invoices, recurring billing, and finance safety.
 - `productive-io` for hours evidence and time-entry writes.
 - `monday-com` and `trackler-nl` for their read-only external context.
+- `customer-work` for scoped customer execution, customer-visible QA, preview, approval, release, and handoff.
 - `customer-communication` for customer-facing messages.
-- Project/platform skills for implementation.
 
 Before calling Moneybird or Productive during exploratory work, prove:
 
@@ -112,7 +111,7 @@ If any are missing, stop before external writes and return the exact blocker.
 
 ## Safety and completion
 
-Ask before sending customer/vendor messages, publishing Moneybird documents, changing unclear finance data, deploying production, deleting records/data, broad private-source scans, or changing automation schedules.
+Ask before sending customer/vendor messages, publishing Moneybird documents, changing unclear finance data, deleting records/data, broad private-source scans, or changing automation schedules.
 
 Verify work proportionally through tests, builds, browser checks, API readback, screenshots, document validation, or source confirmation. Leave only the durable result, verification, state, next action, and useful links in Notion; do not create diary noise.
 

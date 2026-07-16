@@ -14,7 +14,10 @@ from pathlib import Path
 MAX_ITEMS_PER_LANE = int(os.environ.get("TRIAGE_MAX_ITEMS_PER_LANE", "200"))
 MAX_ITEMS = int(os.environ.get("SPRINT_PLANNING_MAX_ITEMS", "250"))
 TEMP_ROOT = Path(
-    os.environ.get("AGENCY_WORK_TEMP_DIR", Path.home() / ".hermes" / "tmp" / "agency-work")
+    os.environ.get(
+        "WORK_MANAGEMENT_TEMP_DIR",
+        os.environ.get("AGENCY_WORK_TEMP_DIR", Path.home() / ".hermes" / "tmp" / "work-management"),
+    )
 ).expanduser()
 
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Customer Work"
+  short_description: "Execute and deliver scoped customer work"
+  default_prompt: "Use $customer-work to execute, verify, and deliver this customer task."

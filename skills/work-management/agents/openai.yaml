@@ -1,0 +1,4 @@
+interface:
+  display_name: "Work Management"
+  short_description: "Manage agency tasks, triage, and planning"
+  default_prompt: "Use $work-management to triage, plan, or manage this agency work."

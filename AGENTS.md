@@ -12,7 +12,8 @@
 - Customer drafts: use the `customer-communication` skill
 
 ## Tools
-- Use `agency-work` when the user references our Tasks, Projects, Customers, Sprints, Someday, Goals, Insights, Meetings, triage, planning, or customer delivery
+- Use `work-management` when the user references our Tasks, Projects, Customers, Sprints, Someday, Goals, Insights, Meetings, triage, planning, agency admin, or Productive/Moneybird coordination
+- Use `customer-work` when executing, QAing, previewing, reviewing, releasing, or handing off scoped customer work
 - Use `notion` for Notion API/CLI mechanics
 - Use Moneybird for estimates, invoices, recurring billing, and Moneybird records
 

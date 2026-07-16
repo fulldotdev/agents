@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Single public CLI for agency-work context collection."""
+"""Single public CLI for work-management context collection."""
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -101,7 +101,7 @@ def collect_incoming(after, before, args):
 
 def triage(args):
     after, before = window_from_args(args.after, args.before)
-    result = base_result("agency_work", "triage", after, before)
+    result = base_result("work_management", "triage", after, before)
     result.pop("items")
     result["groups"] = {}
     calls = {
@@ -128,7 +128,7 @@ def triage(args):
 
 def planning(args):
     after, before = window_from_args(args.after, args.before, require=True)
-    result = base_result("agency_work", "planning", after, before)
+    result = base_result("work_management", "planning", after, before)
     result.pop("items")
     with ThreadPoolExecutor(max_workers=2) as executor:
         work_future = executor.submit(notion.collect_planning, after, before, args.after, args.before, args.limit)

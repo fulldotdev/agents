@@ -9,11 +9,11 @@ Use this skill only for Productive.io hours/time-entry work. Do not broaden into
 
 ## Loop integration
 
-Productive.io is a domain skill, not the loop owner. When `agency-work` starts Productive work, this skill defines the Productive-specific evidence model, context collection, time-entry shape, and write safety.
+Productive.io is a domain skill, not the loop owner. When `work-management` starts Productive work, this skill defines the Productive-specific evidence model, context collection, time-entry shape, and write safety.
 
 The loop owns timing, sprint/project selection, thread orchestration, Notion writeback, and follow-up scheduling. This skill owns how Productive hours are inspected, reconstructed, proposed, created, updated, and reported.
 
-For Sprint work, use this skill for the Productive part and keep planning, routing, and Notion decisions in `agency-work`.
+For Sprint work, use this skill for the Productive part and keep planning, routing, and Notion decisions in `work-management`.
 
 ## Credentials
 
@@ -121,14 +121,14 @@ Use:
 
 ## Weekly hours loop
 
-Routine Productive hour reconstruction is driven by the `agency-work` planning workflow. The old standalone cron job named `productive-hours` was retired; do not assume it exists.
+Routine Productive hour reconstruction is driven by the `work-management` planning workflow. The old standalone cron job named `productive-hours` was retired; do not assume it exists.
 
 The skill name remains `productive-io`. `productive-hours` was only the old cron/job name.
 
 Expected loop setup:
 
 1. A visible Notion Task such as `Productive hours reconcile` owns the weekly Productive workstream.
-2. The `agency-work` workflow owns timing, writeback, and any follow-up Task creation.
+2. The `work-management` workflow owns timing, writeback, and any follow-up Task creation.
 3. Scope should come from the Task/Project/Sprint context, such as Small Giants, Teveo, Skantrae, Fayn, and the target Monday-Sunday week.
 4. The loop may register hours when evidence is good enough, then report a compact project-first summary so Sil can correct the split afterward.
 5. After completion, ensure the next weekly Productive Task exists in Notion unless a Notion recurring automation already created it.
