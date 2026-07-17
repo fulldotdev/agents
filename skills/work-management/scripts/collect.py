@@ -51,7 +51,7 @@ def collect_source(name, after, before, args, triage_context=False):
                 sources.append(error_obj(account, exc))
         return {"sources": sources, "ok": all(item.get("ok", True) for item in sources)}
     if name == "slack":
-        return slack.collect_result(after, before, args.query)
+        return slack.collect_result(after, before, args.query, getattr(args, "workspace", None))
     if name == "whatsapp":
         return {"items": whatsapp.collect(after, before)}
     if name == "calendar":
@@ -199,6 +199,7 @@ def build_parser():
     output_args(source_parser)
     source_parser.add_argument("--account", action="append")
     source_parser.add_argument("--query")
+    source_parser.add_argument("--workspace", help="Slack workspace slug, such as fulldotdev or small-giants")
     source_parser.add_argument("--context", action="store_true", help="include short context around Calendar window")
     source_parser.add_argument("--all", action="store_true", help="ignore time window for Codex")
     source_parser.add_argument("--include-archived", action="store_true")

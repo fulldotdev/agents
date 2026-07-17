@@ -52,7 +52,7 @@ Use the collected Notion picture to correct clear operational inconsistencies th
 - Check that Project status matches its real phase. Discovery may remain without an open Task. Planned and In Progress need executable work or an explicit decision; Paused only needs a deliberate hold.
 - Check active Customer status and relations when current work shows an inconsistency.
 - Check Someday only for items that are now clearly executable, duplicated, or no longer useful.
-- Check Sprint dates, relations, repeated routing friction, collector/schema failures, and stale automation or skill instructions.
+- Check Sprint dates, relations, and repeated routing friction in the Notion work records.
 
 Act only on current evidence. Do not rewrite healthy records, create cleanup work merely because something is old, or turn this into a separate maintenance exercise.
 

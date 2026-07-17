@@ -24,7 +24,7 @@ Read [references/api.md](references/api.md) before making API calls.
 
 ## Workflow
 
-1. Scope the workspace, channel/DM, people, topic, and time window. For cross-workspace triage, include every configured workspace; for a send, select one exact workspace.
+1. Scope the workspace, channel/DM, people, topic, and time window. Cross-workspace triage reads every configured workspace. For a focused read, use `collect.py source slack --workspace <slug>`; for a send, select one exact workspace.
 2. Load credentials from the approved user-level source and validate each workspace through `auth.test` without exposing tokens.
 3. Search only as broadly as the request requires. Resolve opaque channel and user IDs before drawing routing conclusions.
 4. Open the relevant channel history and full thread; search snippets alone are not sufficient evidence.

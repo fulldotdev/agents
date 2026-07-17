@@ -15,7 +15,6 @@ SLACK_ACTIVE_THREAD_LIMIT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_AC
 SLACK_REPLIES_LIMIT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_REPLIES_LIMIT", "50")))
 SLACK_WORKERS = max(1, int(os.environ.get("SLACK_WORKERS", "4")))
 SLACK_CONFIG_PATH = os.environ.get("SLACK_CONFIG_PATH")
-SLACK_DEFAULT_CONFIG_PATH = str(Path.home() / ".config" / "slack" / "config.env")
 SLACK_WORKSPACES_DIR = os.environ.get("SLACK_WORKSPACES_DIR") or str(Path.home() / ".config" / "slack" / "workspaces")
 _deadline = None
 _token_value = None
@@ -65,18 +64,25 @@ def load_config_env(path):
         values[key] = value
     return values
 
-def workspace_configs():
+def workspace_configs(selected=None):
     if SLACK_CONFIG_PATH:
         path = Path(SLACK_CONFIG_PATH)
-        return [{"slug": path.stem, "path": str(path), "values": load_config_env(path), "use_environment": True}]
-    workspace_paths = sorted(Path(SLACK_WORKSPACES_DIR).glob("*.env"))
-    if workspace_paths:
-        return [
-            {"slug": path.stem, "path": str(path), "values": load_config_env(path), "use_environment": False}
-            for path in workspace_paths
-        ]
-    path = Path(SLACK_DEFAULT_CONFIG_PATH)
-    return [{"slug": path.stem, "path": str(path), "values": load_config_env(path), "use_environment": True}]
+        configs = [{"slug": path.stem, "path": str(path), "values": load_config_env(path), "use_environment": True}]
+    else:
+        workspace_paths = sorted(Path(SLACK_WORKSPACES_DIR).glob("*.env"))
+        configs = (
+            [
+                {"slug": path.stem, "path": str(path), "values": load_config_env(path), "use_environment": False}
+                for path in workspace_paths
+            ]
+            if workspace_paths
+            else [{"slug": "environment", "path": None, "values": {}, "use_environment": True}]
+        )
+    if selected:
+        configs = [config for config in configs if config.get("slug") == selected]
+        if not configs:
+            raise ValueError(f"unknown Slack workspace: {selected}")
+    return configs
 
 def select_token(config):
     values = config.get("values") or {}
@@ -116,15 +122,17 @@ def api(method, params=None):
         str(SLACK_CONNECT_TIMEOUT_SECONDS),
         "--max-time",
         str(SLACK_API_TIMEOUT_SECONDS),
+        "--config",
+        "-",
         url,
-        "-H",
-        f"Authorization: Bearer {token()}",
     ]
+    curl_config = f'header = "Authorization: Bearer {token()}"\n'
     for attempt in range(3):
         check_deadline()
         try:
             p = subprocess.run(
                 cmd,
+                input=curl_config,
                 capture_output=True,
                 text=True,
                 timeout=SLACK_API_TIMEOUT_SECONDS + 2,
@@ -280,10 +288,10 @@ def collect_workspace(a,b,query,config):
     summary.update({"ok": not failures, "item_count": len(tagged) - len(failures)})
     return tagged, summary
 
-def collect_result(a,b,query=None):
+def collect_result(a,b,query=None,workspace=None):
     items = []
     workspaces = []
-    for config in workspace_configs():
+    for config in workspace_configs(workspace):
         try:
             workspace_items, summary = collect_workspace(a, b, query, config)
             items.extend(workspace_items)
@@ -301,13 +309,13 @@ def collect_result(a,b,query=None):
             workspaces.append({key: value for key, value in failure.items() if key != "query"})
     return {"ok": all(workspace.get("ok") for workspace in workspaces), "workspaces": workspaces, "items": items}
 
-def collect(a,b,query=None):
-    return collect_result(a, b, query)["items"]
+def collect(a,b,query=None,workspace=None):
+    return collect_result(a, b, query, workspace)["items"]
 
 def main():
-    p=argparse.ArgumentParser(); add_common_args(p); p.add_argument("--query"); args=p.parse_args()
+    p=argparse.ArgumentParser(); add_common_args(p); p.add_argument("--query"); p.add_argument("--workspace"); args=p.parse_args()
     a,b=window_from_args(args.after,args.before,require=not bool(args.query)); r=base_result("slack","dm_mentions_active_threads_all_workspaces",a,b)
-    try: r.update(collect_result(a,b,args.query))
+    try: r.update(collect_result(a,b,args.query,args.workspace))
     except Exception as exc: err=error_obj("slack",exc); r["ok"]=False; r["errors"].append(err)
     item_errors = [x for x in r.get("items") or [] if x.get("ok") is False]
     if item_errors:

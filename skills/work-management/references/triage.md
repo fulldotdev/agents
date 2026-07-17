@@ -5,10 +5,10 @@ Use for broad incoming triage across Gmail, Slack, WhatsApp, calendar, meetings,
 ## Run
 
 1. Determine one window:
-   - cron: previous successful checkpoint until the current run;
-   - manual without dates: last 24 hours;
+   - without explicit dates: yesterday 00:00 Europe/Amsterdam until now;
+   - with explicit dates: use the requested window;
    - use half-open windows: `after <= item < before`.
-2. Run `scripts/collect.py triage --after <iso/date> --before <iso/date> --format yaml`.
+2. Run `scripts/collect.py triage --format yaml`; add `--after` and `--before` only for an explicitly bounded window.
 3. Read all lane outputs together before deciding writes.
 4. Fetch full Notion pages only for specific routing or write decisions.
 
