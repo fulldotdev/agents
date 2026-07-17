@@ -46,7 +46,7 @@ Check open commercial loops through Notion and `moneybird`. Link existing docume
 
 ### 3. Active Projects
 
-For each Discovery, Planned, In Progress, or Paused Project, check that its status still matches the real phase and that an open Task owns the next movement. A Waiting Task counts when a concrete dependency is recorded. Create or link a Task only when the next movement is clear from current evidence; otherwise report the exact decision needed. Keep this a brief health check, not a separate cleanup exercise.
+For each Discovery, Planned, or In Progress Project, check that its status still matches the real phase and that an open Task owns the next movement. A Waiting Task counts when a concrete dependency is recorded. For Paused, only verify that the hold remains deliberate; do not create work until it resumes. Create or link a Task only when the next movement is clear from current evidence; otherwise report the exact decision needed. Keep this a brief health check, not a separate cleanup exercise.
 
 ### 4. Current system friction
 
@@ -87,7 +87,7 @@ Run autonomously: complete all in-scope, safe, evidence-backed planning actions.
 
 Planning may update Sprint bodies, link Tasks, create concrete planning or improvement Tasks, and correct clear low-risk statuses. Apply the main skill's approval gate to messages, documents, customer publishing, deletion, and structural database or template changes.
 
-Planning is complete when the previous Sprint is reviewed, Productive reconciliation is completed or explicitly blocked, commercial loops are resolved or routed, active Projects have a verified next movement or an explicit decision, current-week system friction is addressed or recorded, every weekly commitment is linked to the current Sprint, and every unavailable source has its practical consequence reported.
+Planning is complete when the previous Sprint is reviewed, Productive reconciliation is completed or explicitly blocked, commercial loops are resolved or routed, Discovery, Planned, and In Progress Projects have a verified next movement or an explicit decision, Paused Projects remain deliberate, current-week system friction is addressed or recorded, every weekly commitment is linked to the current Sprint, and every unavailable source has its practical consequence reported.
 
 Return one concise numbered list using `Review:`, `Hours:`, `Finance:`, `Plan:`, `Task:`, `Improvement:`, `Automation:`, `Cleaned:`, `Decision:`, `Blocked:`, or `Failed:`.
 
