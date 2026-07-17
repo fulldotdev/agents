@@ -1,6 +1,6 @@
 ---
 name: work-management
-description: "Route and maintain Notion-backed agency work. Use for Tasks, Projects, Customers, Sprints, Someday, direct Notion updates, source triage, weekly planning, monthly maintenance, prioritization, statuses, or Productive/Moneybird coordination tied to agency Tasks, Projects, or Customers."
+description: "Manage the Notion-backed work system. Use whenever Tasks, Projects, Customers, Sprints, Someday, triage, weekly planning, statuses, priorities, or work coordination with Productive or Moneybird are involved."
 ---
 
 # Work Management
@@ -30,6 +30,18 @@ Load multiple references only when the request genuinely crosses workflows.
 Tasks may link directly to a Customer. Use a Project when several Tasks contribute to one shared outcome or planned completion. Keep a larger coherent effort as one Task when a body checklist is enough to execute it.
 
 Projects own the shared outcome, scope, commercials, cross-Task decisions, and delivery history. Tasks own execution, evidence, and acceptance criteria.
+
+## Area
+
+Use Area to describe where a Task belongs. Choose the single Area that owns its primary outcome:
+
+- **Delivery**: execute or support committed customer work.
+- **Sales**: qualify a lead, define scope, prepare an offer, or win a commitment.
+- **Growth**: market Full.dev through content, positioning, partnerships, audience, or demand generation.
+- **Admin**: operate the business or work system, including finance, legal, tooling, and internal coordination.
+- **Personal**: non-business work.
+
+Choose Area from the work being done, not merely from the linked Customer or Project. For example, preparing a proposal is Sales; delivering the accepted proposal is Delivery.
 
 ## Routing
 
