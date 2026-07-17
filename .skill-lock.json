@@ -224,6 +224,16 @@
       "skillFolderHash": "d842ec59e4bbec2152d39f5699e90a2b294f2841",
       "installedAt": "2026-07-12T15:37:22.826Z",
       "updatedAt": "2026-07-12T15:37:22.826Z"
+    },
+    "writing-great-skills": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mattpocock/skills.git",
+      "skillPath": "skills/productivity/writing-great-skills/SKILL.md",
+      "skillFolderHash": "81d36946d48842f90358d8af54e3cdcc141f8e01",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-07-17T08:29:10.280Z",
+      "updatedAt": "2026-07-17T08:29:10.280Z"
     }
   },
   "dismissed": {
@@ -242,6 +252,7 @@
     "kimi-code-cli",
     "opencode",
     "warp",
-    "zed"
+    "zed",
+    "claude-code"
   ]
 }
