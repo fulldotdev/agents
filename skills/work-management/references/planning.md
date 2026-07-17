@@ -1,12 +1,12 @@
 # Planning
 
-Use for Sil's Monday agency loop: review the completed Monday-Sunday week, reconcile hours/admin, inspect operational friction, and prepare the current Monday-Sunday Sprint. Planning is Notion-first and does not run broad inbox triage or customer delivery.
+Use for Sil's Monday work loop: review the completed Monday-Sunday week, reconcile hours/admin, inspect operational friction, and prepare the current Monday-Sunday Sprint. Planning is Notion-first and does not run broad inbox triage or customer delivery.
 
 Normal automation cadence is Monday at 06:00 Europe/Amsterdam through the Hermes `sprint-planning` cron on `otis`. Actual automation metadata wins.
 
 ## Inputs
 
-Always inspect live Notion state. Run `scripts/collect.py planning --after <start> --before <end> --format yaml`. It collects recent Sprints, open and review-window Tasks, active Projects/Customers, and calendar constraints.
+Always inspect live Notion state. Run `scripts/collect.py planning --after <start> --before <end> --format yaml`. It collects recent Sprints, open and review-window Tasks, active Projects/Customers, Someday, and calendar constraints.
 
 Also gather current planning signals from `trackler-nl` and relevant Teveo/Fayn boards through `monday-com`. These sources remain read-only. Continue with other phases when one source is blocked and report the gap.
 
@@ -44,15 +44,19 @@ The planning loop owns weekly Productive reconciliation. Do not create recurring
 
 Check open commercial loops through Notion and `moneybird`. Link existing documents or create drafts only when scope, contact, price, VAT, and evidence are clear. Never send estimates/invoices without approval.
 
-### 3. Active Projects
+### 3. Database health
 
-For each Discovery, Planned, or In Progress Project, check that its status still matches the real phase and that an open Task owns the next movement. A Waiting Task counts when a concrete dependency is recorded. For Paused, only verify that the hold remains deliberate; do not create work until it resumes. Create or link a Task only when the next movement is clear from current evidence; otherwise report the exact decision needed. Keep this a brief health check, not a separate cleanup exercise.
+Use the collected Notion picture to correct clear operational inconsistencies that affect planning:
 
-### 4. Current system friction
+- Check Task status, Sprint commitment, real deadlines, duplicates, and owning Customer or Project where relevant. Todo without a Sprint is valid unscheduled work.
+- Check that Project status matches its real phase. Discovery may remain without an open Task. Planned and In Progress need executable work or an explicit decision; Paused only needs a deliberate hold.
+- Check active Customer status and relations when current work shows an inconsistency.
+- Check Someday only for items that are now clearly executable, duplicated, or no longer useful.
+- Check Sprint dates, relations, repeated routing friction, collector/schema failures, and stale automation or skill instructions.
 
-Address concrete system friction that blocks or materially affects the current week. Route broader Todo, Someday, skill, automation, and status cleanup to the monthly maintenance workflow.
+Act only on current evidence. Do not rewrite healthy records, create cleanup work merely because something is old, or turn this into a separate maintenance exercise.
 
-### 5. Plan
+### 4. Plan
 
 1. Fill the current Sprint body with focus, planned work, admin/hours, risks, decisions, and improvements.
 2. Include open Tasks due inside the Sprint unless Done, Canceled, or explicitly on hold.
@@ -87,7 +91,7 @@ Run autonomously: complete all in-scope, safe, evidence-backed planning actions.
 
 Planning may update Sprint bodies, link Tasks, create concrete planning or improvement Tasks, and correct clear low-risk statuses. Apply the main skill's approval gate to messages, documents, customer publishing, deletion, and structural database or template changes.
 
-Planning is complete when the previous Sprint is reviewed, Productive reconciliation is completed or explicitly blocked, commercial loops are resolved or routed, Discovery, Planned, and In Progress Projects have a verified next movement or an explicit decision, Paused Projects remain deliberate, current-week system friction is addressed or recorded, every weekly commitment is linked to the current Sprint, and every unavailable source has its practical consequence reported.
+Planning is complete when the previous Sprint is reviewed, Productive reconciliation is completed or explicitly blocked, commercial loops are resolved or routed, relevant database inconsistencies are corrected or reported, every weekly commitment is linked to the current Sprint, and every unavailable source has its practical consequence reported.
 
 Return one concise numbered list using `Review:`, `Hours:`, `Finance:`, `Plan:`, `Task:`, `Improvement:`, `Automation:`, `Cleaned:`, `Decision:`, `Blocked:`, or `Failed:`.
 

@@ -45,6 +45,7 @@ NOTION_PROJECTS_DATA_SOURCE_ID = os.environ.get("NOTION_PROJECTS_DATA_SOURCE_ID"
 NOTION_TASKS_DATA_SOURCE_ID = os.environ.get("NOTION_TASKS_DATA_SOURCE_ID", "1cb5979e-268c-80e9-bd7d-000b00ac4424")
 NOTION_MEETINGS_DATA_SOURCE_ID = os.environ.get("NOTION_MEETINGS_DATA_SOURCE_ID", "1cb5979e-268c-808d-888d-000bfa3a527c")
 NOTION_SPRINTS_DATA_SOURCE_ID = os.environ.get("NOTION_SPRINTS_DATA_SOURCE_ID", "3555979e-268c-807b-bdb4-000b86b48f90")
+NOTION_SOMEDAY_DATA_SOURCE_ID = os.environ.get("NOTION_SOMEDAY_DATA_SOURCE_ID", "8b6245be-419a-4203-97e4-f7660514c661")
 NOTION_VERSION = os.environ.get("NOTION_API_VERSION") or os.environ.get("NOTION_VERSION", "2026-03-11")
 
 
@@ -226,6 +227,13 @@ def sprint_item(row):
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row), "start": date_start(row, "Dates"),
         "end": date_end(row, "Dates"), "tasks": relation_ids(row, "Tasks"),
+    }
+
+
+def someday_item(row):
+    return {
+        "id": row.get("id"), "url": row.get("url"), "name": title(row),
+        "summary": plain_text(prop(row, "Summary")),
     }
 
 

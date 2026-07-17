@@ -5,13 +5,12 @@ description: "Manage the Notion-backed work system. Use whenever Tasks, Projects
 
 # Work Management
 
-This skill owns agency-work semantics. Live Notion owns current records and schema.
+This skill owns work-system semantics. Live Notion owns current records and schema.
 
 Read the matching workflow reference before acting:
 
 - Broad Gmail, Slack, WhatsApp, calendar, meeting, Codex, or Notion intake: [triage.md](references/triage.md)
 - Weekly review, Productive reconciliation, system review, or Sprint planning: [planning.md](references/planning.md)
-- Monthly Todo, Someday, status, Project, skill, and automation maintenance: [maintenance.md](references/maintenance.md)
 - Exact Notion property names, option names, relations, IDs, or write validation: [notion-schema.md](references/notion-schema.md)
 - Productive or Moneybird actions coordinated with agency records: [commercial-coordination.md](references/commercial-coordination.md)
 - Normal Task, Project, or Customer management and direct Notion updates: use this main skill plus the relevant domain skill.
@@ -35,13 +34,13 @@ Projects own the shared outcome, scope, commercials, cross-Task decisions, and d
 
 Use Area to describe where a Task belongs. Choose the single Area that owns its primary outcome:
 
-- **Delivery**: execute or support committed customer work.
+- **Delivery**: do work for customers, including implementation, support, coordination, QA, communication, and customer-specific operations.
 - **Sales**: qualify a lead, define scope, prepare an offer, or win a commitment.
-- **Growth**: market Full.dev through content, positioning, partnerships, audience, or demand generation.
+- **Growth**: grow Full.dev through marketing, positioning, partnerships, internal products, reusable assets, open-source work, or demand generation.
 - **Admin**: operate the business or work system, including finance, legal, tooling, and internal coordination.
 - **Personal**: non-business work.
 
-Choose Area from the work being done, not merely from the linked Customer or Project. For example, preparing a proposal is Sales; delivering the accepted proposal is Delivery.
+Choose Area from the primary outcome, not merely from the linked Customer or Project. Work intended to win new or expanded business is Sales; other work done for a customer is Delivery.
 
 ## Routing
 

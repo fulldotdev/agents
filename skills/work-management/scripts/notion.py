@@ -6,8 +6,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from common import (
     MAX_ITEMS, MAX_ITEMS_PER_LANE, NOTION_CUSTOMERS_DATA_SOURCE_ID,
     NOTION_PROJECTS_DATA_SOURCE_ID, NOTION_SPRINTS_DATA_SOURCE_ID,
-    NOTION_TASKS_DATA_SOURCE_ID, base_result, customer_item, error_obj,
-    limited_rows, notion_query, project_item, sprint_item, task_item,
+    NOTION_SOMEDAY_DATA_SOURCE_ID, NOTION_TASKS_DATA_SOURCE_ID, base_result,
+    customer_item, error_obj, limited_rows, notion_query, project_item,
+    someday_item, sprint_item, task_item,
 )
 
 CUSTOMER_STATUSES = ["Prospect", "Active"]
@@ -83,6 +84,11 @@ def recent_sprints(limit=MAX_ITEMS):
     return [sprint_item(row) for row in limited_rows(data, limit)]
 
 
+def someday(limit=MAX_ITEMS):
+    data = notion_query(NOTION_SOMEDAY_DATA_SOURCE_ID, {"page_size": limit})
+    return [someday_item(row) for row in limited_rows(data, limit)]
+
+
 def collect_group(lane, mode, calls, after=None, before=None):
     result = base_result(lane, mode, after, before)
     result.pop("items")
@@ -117,4 +123,5 @@ def collect_planning(after, before, after_text, before_text, limit=MAX_ITEMS):
         "review_tasks": lambda: review_tasks(after_text, before_text, limit),
         "active_customers": lambda: active_customers(limit),
         "active_projects": lambda: active_projects(limit, include_paused=True),
+        "someday": lambda: someday(limit),
     }, after, before)

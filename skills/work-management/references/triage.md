@@ -45,11 +45,11 @@ If media cannot be downloaded, read, or transcribed, report `Failed:` or `Blocke
 
 Apply the main skill's routing, status, body, and source-trace rules. Additionally:
 
-1. Create a Task for confirmed agency execution or an explicitly agreed next action. Keep questions, proposals, vague ideas, and unclear ownership as context or an explicit blocker.
+1. Create a Task for confirmed execution or an explicitly agreed next action. Keep questions, proposals, vague ideas, and unclear ownership as context or an explicit blocker.
 2. Batch repeated admin work when timing, owner, risk, and execution path match.
 3. Add a new Task to the current Sprint for near-term urgency, an active commitment, an in-Sprint due date, or direct follow-up before planning.
 4. Capture version/phase and sales-to-delivery transitions on the Project and affected Tasks. Create a new version from confirmed intent.
-5. Keep monday-backed work in monday.com. Use monday context read-only for triage and reporting; store selected context in the owning agency record without creating copied tickets or sprint wrappers.
+5. Keep monday-backed work in monday.com. Use monday context read-only for triage and reporting; store selected context in the owning work record without creating copied tickets or sprint wrappers.
 
 Store synthesized execution facts in the main skill's body structure. Keep full messages and transcripts at their reopenable sources, including relevant Slack, WhatsApp, Gmail, meeting, file, preview, finance, Discord/Codex, and repo or branch references.
 
@@ -58,7 +58,7 @@ Store synthesized execution facts in the main skill's body structure. Keep full 
 - **Gmail**: decide keep/archive for every collected inbox thread. Archive only when no reply, Task, decision, payment, approval, clarification, or execution action remains. Keep threads linked to open work, drafted-but-unsent replies, and Sil/customer/vendor follow-up in Inbox; capturing context in Notion alone is not enough to archive.
 - **Drafts**: draft email or Slack when useful and low risk. Keep customer messages as drafts until explicit send approval, and keep the source thread in Inbox until the reply is sent and no action remains.
 - **Calendar/meetings**: capture explicit decisions, blockers, and confirmed Sil-owned actions; preserve ambiguity instead of assigning work by default.
-- **Unclear**: keep non-executable input as source context and record the exact missing decision. Create a Todo only when a concrete decision or agency action is executable.
+- **Unclear**: keep non-executable input as source context and record the exact missing decision. Create a Todo only when a concrete decision or action is executable.
 
 Archive full Gmail threads with:
 

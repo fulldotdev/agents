@@ -171,7 +171,7 @@ def source(args):
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(description="Collect agency triage, planning, or one source.")
+    parser = argparse.ArgumentParser(description="Collect work triage, planning, or one source.")
     commands = parser.add_subparsers(dest="command", required=True)
 
     triage_parser = commands.add_parser("triage", help="collect incoming lanes plus Notion work context")
