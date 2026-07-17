@@ -1,127 +1,43 @@
 ---
 name: moneybird
-description: Use Moneybird through the Moneybird MCP via mcporter, including shaping and validating estimates, invoices, recurring lines, and other Moneybird-facing commercial documents. Use when working in Moneybird or when the user mentions offers, estimates, invoices, recurring packages, pricing structure, option layout, or finance-document cleanup.
+description: Inspect, draft, create, update, validate, or link Moneybird estimates, invoices, recurring billing, contacts, and commercial line structures through the Moneybird MCP. Use for offers, invoices, pricing, VAT/scope checks, recurring packages, finance-document cleanup, or work-management commercial reconciliation.
 ---
 
 # Moneybird
 
-Use this for both Moneybird ops and Moneybird-facing commercial docs.
+## Ownership
 
-## Loop integration
+This skill owns Moneybird evidence, request shape, commercial-document quality, write safety, verification, and direct document links. It does not own weekly scheduling or delivery planning.
 
-Moneybird is a domain skill, not the loop owner. When `work-management` starts Moneybird work, this skill defines the Moneybird-specific request shape, commercial quality bar, evidence requirements, and write safety.
+When invoked by `work-management`, the parent workflow owns the Notion Task/Project, timing, routing, and follow-up. This skill may inspect live state, link an existing match, or prepare a concept when the evidence is clear.
 
-The loop owns timing, thread orchestration, Notion task selection, and follow-up scheduling. This skill owns whether the Moneybird action is safe and how to perform it.
+## References
 
-Allowed loop-driven actions when evidence is clear:
+- Read [references/operations.md](references/operations.md) for MCP calls, payloads, IDs, URLs, and Moneybird field conventions.
+- Read [references/documents.md](references/documents.md) when drafting or revising offer/invoice structure, pricing lines, options, or recurring packages.
 
-- prepare a concept estimate/offerte,
-- prepare a concept sales invoice/factuur,
-- sync/link live Moneybird status back to Notion,
-- link existing matching Moneybird documents instead of creating duplicates,
-- use prior customer/project documents as reference for wording, rates, VAT, and structure.
+## Workflow
 
-Ask before external sending/publishing, destructive cleanup, rejected/canceled status changes, or creating/changing finance documents when customer, contact, amount, VAT, scope, rate, or acceptance evidence is unclear.
+1. Identify the administration, contact, document type, owning project/scope, period, currency, VAT, rates, and whether the action is read-only, draft, update, or send.
+2. Inspect live contacts and related documents before creating anything. Prefer linking a matching document over creating a duplicate.
+3. Use prior customer/project documents only as evidence; preserve explicitly agreed rates, fixed lines, IDs, and titles.
+4. For a draft or edit, apply the commercial quality rules in `references/documents.md` and show any material uncertainty instead of hiding it in wording.
+5. Use exact live IDs and the complete request envelope from `references/operations.md` for a write.
+6. Read the document back after creation or update and verify contact, type, period, VAT, amounts, line order, optionality, and total.
+7. Return the direct Moneybird app URL and the remaining approval or follow-up action.
 
-## Quick start
-- Endpoint: `https://moneybird.com/mcp/v1/read_write`
-- Use `mcporter` with the URL directly.
-- Inspect tool schema when unsure.
-- Prefer exact IDs for contacts, projects, invoices, and documents.
-- Do not guess write actions.
-- After create/update, return direct Moneybird app URLs.
+## Approval boundary
 
-## Write rules
-- For create/update writes, send one full JSON payload in `--args`.
-- For estimates, use `{"estimate": {...}}`.
-- Keep `details_attributes` as a JSON array.
-- Avoid forms like `estimate.contact_id=...` or `estimate:=...`.
-- Reuse previously working request shapes.
-- If a write fails unexpectedly, suspect request shape first.
+Ask before external sending/publishing, destructive historical cleanup, rejected/canceled status changes, or removing ambiguous lines. A concept document may be created during an approved workflow only when customer, contact, scope, price/rate, VAT, period, and evidence are unambiguous; otherwise return the proposed structure and exact missing decision.
 
-Example:
-```bash
-mcporter call https://moneybird.com/mcp/v1/read_write.create_estimate \
-  --args '{"estimate":{"contact_id":"<contact_id>","details_attributes":[{"description":"...","amount":"5 uur","price":"90.0"}]}}' \
-  --output json
-```
+Push back when work is clearly underpriced, a shared cost is duplicated, alternatives lack a real tradeoff, or wording conceals a scope or pricing problem.
 
-## Document rules
-- Keep docs short, direct, and commercially believable.
-- Prefer a few strong lines over many weak fragments.
-- Preserve agreed rates, IDs, titles, and fixed billing lines exactly.
-- Do not silently normalize a customer-specific rate.
-- Separate:
-  - already billed / already covered work
-  - one-off work
-  - recurring service
-  - shared infra/admin work
-  - per-company work
-- If one cost is shared across brands or companies, prefer a separate shared document.
-- If a line looks underpriced, fix scope, hours, or rate. Do not hide it in vague copy.
-- Real alternatives must be labeled `Optie 1`, `Optie 2`, etc.
+## Work-management handoff
 
-## Structure and copy
-- One-off lines above recurring lines.
-- Monthly packages at the bottom.
-- Default category labels:
-  - `Eenmalige werkzaamheden`
-  - `Doorlopende service`
-- Default cleaned-up line style:
-  - heading in bold: `**...**`
-  - no blank line under the heading
-  - one specific short paragraph with scope and billing basis
-  - optional `Kenmerken:` bullets
-  - optional `Inbegrepen:` bullets
-- Do not add decorative intro text above package headings.
-- Keep Dutch copy crisp.
-- Avoid filler, hedging, and generic AI phrasing.
-- Use `Kenmerken:` for what the line is.
-- Use `Inbegrepen:` for explicit included scope.
-- If two lines are easy to confuse, sharpen the distinction in the first sentence.
-- Use the Moneybird period field for dates; make descriptions explain scope, corrections, and calculation basis.
-- Always include the unit in invoice quantities, e.g. `37 uur`, `4 weken`, `per maand`.
-- For multi-line SOW invoices, avoid repeated boilerplate. Name the workstream and mention its driver, e.g. `9 uur per week`, `4 uur per week`, or `9 uur per twee weken`.
+Add the direct Moneybird URL inline to the relevant Notion Task context rather than a separate `References` property. A sent estimate for real commercial scope belongs to a Project-linked sales/follow-up Task.
 
-## Moneybird conventions
-- Prefer direct app URLs over public/external URLs.
-- For proposals/estimates and invoices, add the Moneybird URL inline in the related Notion task body on the relevant context/decision bullet when available. Do not use a separate Notion `References` property.
-- When an estimate is sent for real commercial scope, link the quote/follow-up Task to a Notion Project.
-- When an accepted estimate becomes delivery work, finish the sales Task and create or link the concrete Delivery Task(s) under that Project. Keep the same Task only when it was already the delivery work package rather than quote/admin follow-up.
-- Link templates:
-  - Estimate: `https://moneybird.com/<administration_id>/estimates/<estimate_id>`
-  - Sales invoice: `https://moneybird.com/<administration_id>/sales_invoices/<sales_invoice_id>`
-  - Recurring sales invoice: `https://moneybird.com/<administration_id>/recurring_sales_invoices/<recurring_sales_invoice_id>`
-  - Contact: `https://moneybird.com/<administration_id>/contacts/<contact_id>`
-- For recurring invoice periods, use the last day of the month when monthly billing is intended.
-- For monthly packages and amounts, use `per maand` as the quantity.
-- For partial hours, use clock format:
-  - `2:30 uur` not `2,5 uur`
-  - `2:15 uur` not `2,25 uur`
-  - `2:45 uur` not `2,75 uur`
-- Update related products and estimates consistently when shared copy is intentional.
-- When changing structure, verify detail ordering.
-- Use fewer, stronger edits instead of many cosmetic edits.
-- Optional vs mandatory should reflect real sales intent.
+When an estimate is accepted, finish the sales Task and create or link the concrete Delivery Task(s) under that Project. Keep the original Task only if it was already the delivery work package.
 
-## Final check
-- option lines clear
-- recurring lines at bottom
-- shared vs per-company costs split correctly
-- headings consistent
-- pricing believable
-- already-billed work excluded
-- related offers still aligned
+## Completion
 
-## Push back / ask first
-Push back when:
-- work is obviously underpriced
-- a shared cost is duplicated across offers
-- options lack real tradeoffs
-- wording hides a pricing or structure problem
-
-Ask before:
-- destructive cleanup of historical finance docs
-- external sending/publishing
-- creating/changing finance docs unless explicitly requested or required by a high-confidence accepted-proposal handoff
-- removing lines when intent is unclear
+The operation is complete when the live document was inspected, duplicates were ruled out, every changed field and total was read back, the direct app URL was returned, and external sending is either explicitly approved and verified or clearly left as the next approval step.
