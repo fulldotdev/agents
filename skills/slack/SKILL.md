@@ -24,8 +24,8 @@ Read [references/api.md](references/api.md) before making API calls.
 
 ## Workflow
 
-1. Scope the workspace, channel/DM, people, topic, and time window.
-2. Load credentials from the approved user-level source and validate auth without exposing tokens.
+1. Scope the workspace, channel/DM, people, topic, and time window. For cross-workspace triage, include every configured workspace; for a send, select one exact workspace.
+2. Load credentials from the approved user-level source and validate each workspace through `auth.test` without exposing tokens.
 3. Search only as broadly as the request requires. Resolve opaque channel and user IDs before drawing routing conclusions.
 4. Open the relevant channel history and full thread; search snippets alone are not sufficient evidence.
 5. Preserve message timestamps and permalinks for facts that may need to be reopened.
@@ -42,4 +42,4 @@ Read [references/api.md](references/api.md) before making API calls.
 
 ## Completion
 
-A read is complete when the relevant history and full threads were inspected or the exact access gap was reported, and material findings have reopenable permalinks. A send is complete only when channel, text, thread/broadcast intent, and API success were verified.
+A read is complete when every selected workspace was collected or has an exact access gap, relevant history and full threads were inspected, and material findings have reopenable permalinks. A send is complete only when workspace, channel, text, thread/broadcast intent, and API success were verified.

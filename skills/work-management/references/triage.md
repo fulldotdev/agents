@@ -21,6 +21,7 @@ Normal automation cadence is 07:00 and 17:00 Europe/Amsterdam through the Hermes
 All lanes are required: Gmail, Slack, WhatsApp, Calendar, Meetings, Codex, Customers, Projects, and Tasks.
 
 - A lane failure does not stop other collection, but blocks writes that depend on the missing lane. Report the practical consequence.
+- Slack collection covers every configured workspace and preserves workspace name, ID, URL, and slug on each item; a failure in one workspace must not hide results from another.
 - Treat collector output as compact hints, not complete schema or full page context.
 - Prefer meeting `body_excerpt`; fetch a transcript only when it can change a decision or write.
 - Calendar includes a small context window around the triage window; do not collapse recurring instances.

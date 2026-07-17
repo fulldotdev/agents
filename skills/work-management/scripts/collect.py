@@ -51,7 +51,7 @@ def collect_source(name, after, before, args, triage_context=False):
                 sources.append(error_obj(account, exc))
         return {"sources": sources, "ok": all(item.get("ok", True) for item in sources)}
     if name == "slack":
-        return {"items": slack.collect(after, before, args.query)}
+        return slack.collect_result(after, before, args.query)
     if name == "whatsapp":
         return {"items": whatsapp.collect(after, before)}
     if name == "calendar":

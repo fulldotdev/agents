@@ -14,9 +14,13 @@ SLACK_CONVERSATION_LIMIT = min(200, int(os.environ.get("SLACK_CONVERSATION_LIMIT
 SLACK_ACTIVE_THREAD_LIMIT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_ACTIVE_THREAD_LIMIT", "25")))
 SLACK_REPLIES_LIMIT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_REPLIES_LIMIT", "50")))
 SLACK_WORKERS = max(1, int(os.environ.get("SLACK_WORKERS", "4")))
-SLACK_CONFIG_PATH = os.environ.get("SLACK_CONFIG_PATH") or str(Path.home() / ".config" / "slack" / "config.env")
+SLACK_CONFIG_PATH = os.environ.get("SLACK_CONFIG_PATH")
+SLACK_DEFAULT_CONFIG_PATH = str(Path.home() / ".config" / "slack" / "config.env")
+SLACK_WORKSPACES_DIR = os.environ.get("SLACK_WORKSPACES_DIR") or str(Path.home() / ".config" / "slack" / "workspaces")
 _deadline = None
+_token_value = None
 _users = {}
+_workspace = {}
 
 def user_display(user_id):
     user = _users.get(user_id) or {}
@@ -41,8 +45,8 @@ def load_users():
         if not cursor:
             return users
 
-def load_config_env():
-    cfg = Path(SLACK_CONFIG_PATH)
+def load_config_env(path):
+    cfg = Path(path)
     if not cfg.exists():
         return {}
     values = {}
@@ -61,13 +65,42 @@ def load_config_env():
         values[key] = value
     return values
 
-def token():
-    cfg = load_config_env()
+def workspace_configs():
+    if SLACK_CONFIG_PATH:
+        path = Path(SLACK_CONFIG_PATH)
+        return [{"slug": path.stem, "path": str(path), "values": load_config_env(path), "use_environment": True}]
+    workspace_paths = sorted(Path(SLACK_WORKSPACES_DIR).glob("*.env"))
+    if workspace_paths:
+        return [
+            {"slug": path.stem, "path": str(path), "values": load_config_env(path), "use_environment": False}
+            for path in workspace_paths
+        ]
+    path = Path(SLACK_DEFAULT_CONFIG_PATH)
+    return [{"slug": path.stem, "path": str(path), "values": load_config_env(path), "use_environment": True}]
+
+def select_token(config):
+    values = config.get("values") or {}
     for key in ("SLACK_USER_TOKEN", "SLACK_BOT_TOKEN", "SLACK_USER_TOKEN_READONLY"):
-        value = os.environ.get(key) or cfg.get(key)
-        if value and value.strip():
-            return value.strip()
-    raise RuntimeError("missing slack token")
+        candidates = [values.get(key)]
+        if config.get("use_environment"):
+            candidates.insert(0, os.environ.get(key))
+        for value in candidates:
+            if value and value.strip():
+                return value.strip()
+    raise RuntimeError(f"missing slack token for workspace {config.get('slug')}")
+
+def token():
+    if not _token_value:
+        raise RuntimeError("missing active slack token")
+    return _token_value
+
+def tag_item(item):
+    if not isinstance(item, dict):
+        return item
+    item.update({key: value for key, value in _workspace.items() if value})
+    for reply in item.get("thread_replies") or []:
+        tag_item(reply)
+    return item
 
 def check_deadline():
     if _deadline and time.monotonic() > _deadline:
@@ -112,7 +145,6 @@ def api(method, params=None):
             continue
         raise RuntimeError(f"slack {method} failed: {data.get('error','unknown error')}")
 
-def me(): return api("auth.test").get("user_id")
 def in_window(msg,a,b):
     if not isinstance(msg, dict): return False
     try: ts = float(msg.get("ts") or 0)
@@ -217,27 +249,65 @@ def active_threads(uid,a,b):
                 items.append({"ok": False, "query": "active_thread_replies", "error": str(exc), "channel_id": ch, "thread_ts": ts})
     return items[:MAX_ITEMS_PER_LANE]
 
-def collect(a,b,query=None):
-    global _deadline, _users
+def collect_workspace(a,b,query,config):
+    global _deadline, _token_value, _users, _workspace
     _deadline = time.monotonic() + SLACK_COLLECT_TIMEOUT_SECONDS
+    _token_value = select_token(config)
+    _workspace = {
+        "workspace_slug": config.get("slug"),
+        "workspace_name": (config.get("values") or {}).get("SLACK_WORKSPACE_NAME") or config.get("slug"),
+    }
+    identity = api("auth.test")
+    _workspace.update({
+        "workspace_name": identity.get("team") or _workspace["workspace_name"],
+        "workspace_id": identity.get("team_id"),
+        "workspace_url": identity.get("url"),
+    })
     _users = load_users()
-    uid = None if query else me()
+    uid = None if query else identity.get("user_id")
     qs = [query] if query else [f"<@{uid}> after:{a.date().isoformat()} before:{b.date().isoformat()}", f"from:<@{uid}> after:{a.date().isoformat()} before:{b.date().isoformat()}"]
     items = []
     for q in qs:
         try: items.extend(search(q,a,b,include_replies=False))
         except Exception as exc: items.append({"ok": False, "query": q, "error": str(exc)})
-    if query:
-        return items[:MAX_ITEMS_PER_LANE]
-    for fn,name in ((dm_history,"dm_history"),(lambda x,y: active_threads(uid,x,y),"active_thread_replies")):
-        try: items.extend(fn(a,b))
-        except Exception as exc: items.append({"ok": False, "query": name, "error": str(exc)})
-    return items[:MAX_ITEMS_PER_LANE]
+    if not query:
+        for fn,name in ((dm_history,"dm_history"),(lambda x,y: active_threads(uid,x,y),"active_thread_replies")):
+            try: items.extend(fn(a,b))
+            except Exception as exc: items.append({"ok": False, "query": name, "error": str(exc)})
+    tagged = [tag_item(item) for item in items[:MAX_ITEMS_PER_LANE]]
+    failures = [item for item in tagged if item.get("ok") is False]
+    summary = dict(_workspace)
+    summary.update({"ok": not failures, "item_count": len(tagged) - len(failures)})
+    return tagged, summary
+
+def collect_result(a,b,query=None):
+    items = []
+    workspaces = []
+    for config in workspace_configs():
+        try:
+            workspace_items, summary = collect_workspace(a, b, query, config)
+            items.extend(workspace_items)
+            workspaces.append(summary)
+        except Exception as exc:
+            values = config.get("values") or {}
+            failure = {
+                "ok": False,
+                "query": "workspace",
+                "workspace_slug": config.get("slug"),
+                "workspace_name": values.get("SLACK_WORKSPACE_NAME") or config.get("slug"),
+                "error": str(exc),
+            }
+            items.append(failure)
+            workspaces.append({key: value for key, value in failure.items() if key != "query"})
+    return {"ok": all(workspace.get("ok") for workspace in workspaces), "workspaces": workspaces, "items": items}
+
+def collect(a,b,query=None):
+    return collect_result(a, b, query)["items"]
 
 def main():
     p=argparse.ArgumentParser(); add_common_args(p); p.add_argument("--query"); args=p.parse_args()
-    a,b=window_from_args(args.after,args.before,require=not bool(args.query)); r=base_result("slack","dm_mentions_active_threads",a,b)
-    try: r["items"]=collect(a,b,args.query)
+    a,b=window_from_args(args.after,args.before,require=not bool(args.query)); r=base_result("slack","dm_mentions_active_threads_all_workspaces",a,b)
+    try: r.update(collect_result(a,b,args.query))
     except Exception as exc: err=error_obj("slack",exc); r["ok"]=False; r["errors"].append(err)
     item_errors = [x for x in r.get("items") or [] if x.get("ok") is False]
     if item_errors:
