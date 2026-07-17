@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shared Dev Server"
+  short_description: "Reuse and clean up project dev servers"
+  default_prompt: "Use $shared-dev-server to start or reuse this project’s dev server."
