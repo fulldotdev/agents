@@ -2,6 +2,8 @@
 
 Use for Sil's Monday agency loop: review the completed Monday-Sunday week, reconcile hours/admin, inspect operational friction, and prepare the current Monday-Sunday Sprint. Planning is Notion-first and does not run broad inbox triage or customer delivery.
 
+Normal automation cadence is Monday at 06:00 Europe/Amsterdam through the Hermes `sprint-planning` cron on `otis`. Actual automation metadata wins.
+
 ## Inputs
 
 Always inspect live Notion state. Run `scripts/collect.py planning --after <start> --before <end> --format yaml`. It collects recent Sprints, open and review-window Tasks, active Projects/Customers, and calendar constraints.
@@ -42,18 +44,18 @@ The planning loop owns weekly Productive reconciliation. Do not create recurring
 
 Check open commercial loops through Notion and `moneybird`. Link existing documents or create drafts only when scope, contact, price, VAT, and evidence are clear. Never send estimates/invoices without approval.
 
-### 3. Improve the system
+### 3. Current system friction
 
-Act only on concrete repeated friction: duplicate/stale Tasks, bloated bodies, broken routing, stale automation/skill references, recurring access/schema blockers, or clearly obsolete generated clutter. Create a visible improvement Task only when it represents real work for the current Sprint.
+Address concrete system friction that blocks or materially affects the current week. Route broader Todo, Someday, Project, skill, automation, and status cleanup to the monthly maintenance workflow.
 
 ### 4. Plan
 
 1. Fill the current Sprint body with focus, planned work, admin/hours, risks, decisions, and improvements.
 2. Include open Tasks due inside the Sprint unless Done, Canceled, or explicitly on hold.
-3. Prefer hard commitments, active Projects, Doing/review work, actionable Waiting items, due-soon work, and Tasks with clear next actions.
-4. Promote ready Backlog/Triage work only when it should happen this week. Leave non-urgent work in Backlog and vague ideas in Someday.
-5. Do not manually roll unfinished work solely because it is unfinished; include it only when it needs a planning decision.
-6. Do not overload the Sprint. If everything is important, the plan is fake.
+3. Prefer hard commitments, active Projects, Doing work, actionable Waiting items, due-soon work, and Tasks with clear next actions.
+4. Add Todo work to the Sprint when committing it for completion this week. Keep executable uncommitted work as Todo without a Sprint and vague ideas in Someday.
+5. Recommit unfinished work deliberately; Sprint rollover is a planning decision.
+6. Include every Task that must be completed this week. Apply no numeric capacity limit.
 
 Preferred plan:
 
@@ -77,9 +79,11 @@ Preferred plan:
 
 ## Safety and report
 
-Run autonomously: complete all in-scope, safe, evidence-backed planning actions without asking for normal operational permission. Use `Decision:` or `Blocked:` only when a hard approval gate or missing evidence prevents action.
+Run autonomously: complete all in-scope, safe, evidence-backed planning actions. Use `Decision:` or `Blocked:` when a hard approval gate or missing evidence prevents action.
 
-Planning may update Sprint bodies, link Tasks, create concrete planning/improvement Tasks, and correct clear low-risk statuses. It may not send messages/documents, publish customer work, delete records, or restructure databases/templates without approval.
+Planning may update Sprint bodies, link Tasks, create concrete planning or improvement Tasks, and correct clear low-risk statuses. Apply the main skill's approval gate to messages, documents, customer publishing, deletion, and structural database or template changes.
+
+Planning is complete when the previous Sprint is reviewed, Productive reconciliation is completed or explicitly blocked, commercial loops are resolved or routed, current-week system friction is addressed or recorded, every weekly commitment is linked to the current Sprint, and every unavailable source has its practical consequence reported.
 
 Return one concise numbered list using `Review:`, `Hours:`, `Finance:`, `Plan:`, `Task:`, `Improvement:`, `Automation:`, `Cleaned:`, `Decision:`, `Blocked:`, or `Failed:`.
 
