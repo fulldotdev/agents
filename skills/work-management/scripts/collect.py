@@ -187,7 +187,7 @@ def build_parser():
     triage_parser.add_argument("--detail-events", type=int, default=codex.DEFAULT_DETAIL_EVENTS)
 
 
-    planning_parser = commands.add_parser("planning", help="collect Sprint review and planning context")
+    planning_parser = commands.add_parser("planning", help="collect Sprint review, database health, and planning context")
     window_args(planning_parser, required=True)
     output_args(planning_parser)
     planning_parser.add_argument("--account", action="append")

@@ -1,6 +1,6 @@
 # Planning
 
-Use for Sil's Monday work loop: review the completed Monday-Sunday week, reconcile hours/admin, inspect operational friction, and prepare the current Monday-Sunday Sprint. Planning is Notion-first and does not run broad inbox triage or customer delivery.
+Use for Sil's Monday work loop: review the completed Monday-Sunday week, reconcile hours/admin, check Notion database health, and prepare the current Monday-Sunday Sprint. Planning is Notion-first and does not run broad inbox triage or customer delivery.
 
 Normal automation cadence is Monday at 06:00 Europe/Amsterdam through the Hermes `sprint-planning` cron on `otis`. Actual automation metadata wins.
 

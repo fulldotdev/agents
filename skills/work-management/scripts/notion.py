@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Notion work-context queries for triage and Sprint planning."""
+"""Notion work-context queries for triage and weekly planning."""
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -117,7 +117,7 @@ def collect_work_context(after=None, before=None, limit=MAX_ITEMS_PER_LANE):
 
 
 def collect_planning(after, before, after_text, before_text, limit=MAX_ITEMS):
-    return collect_group("planning", "sprint_review_and_planning_context", {
+    return collect_group("planning", "sprint_review_database_health_and_planning", {
         "sprints": lambda: recent_sprints(limit),
         "open_tasks": lambda: open_tasks(limit),
         "review_tasks": lambda: review_tasks(after_text, before_text, limit),
