@@ -10,7 +10,7 @@ Apply only the channel used by the customer conversation.
 - Use emojis sparingly: ✅, 👍🏻, 👌🏻, 💪🏻.
 - Put the action or status first, followed by the customer-usable link or detail.
 - Include the preview URL in the same message whenever calling something a preview.
-- Translate internal validation into customer-visible evidence, such as "alles mobiel en desktop nagelopen". Retain implementation terms when the customer explicitly requests technical detail.
+- Mention validation or implementation evidence only when the receiver requested it or when it changes what they need to understand, trust, or do. Treat routine delivery checks as implicit in a completed status update.
 
 ## Email
 

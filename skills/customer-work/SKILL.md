@@ -6,10 +6,10 @@ description: "Gate scoped customer delivery through context, preview, approval, 
 # Customer Work
 
 1. **Scope gate.** Read the owning Task and relevant Project or Customer through `work-management`. The gate passes when the agreed outcome, exhaustive acceptance checklist, delivery target, approval rule, and authorization are explicit. Return the exact missing boundary before execution when the gate does not pass.
-2. **Preview gate.** Complete or inspect the agreed scope, then verify every acceptance item against the actual preview or customer-visible environment. Record evidence for each item. The gate passes when every item passes or each exception is explicitly reported.
-3. **Approval gate.** When release or handoff requires approval, record the approver, source, date, target, and approved scope through `work-management`, and set the Task to `Waiting`. The gate passes when the approved scope and target are unambiguous.
-4. **Release gate.** Release or hand off the approved scope, then rerun the complete acceptance checklist on the final customer-visible result. The gate passes when every item passes in the delivery target.
-5. **Closeout gate.** Write the result, evidence, useful links, and resulting state through `work-management`. Mark `Done` when every acceptance item passes and the agreed delivery outcome is confirmed.
+2. **Local review gate.** Implement the agreed scope locally and keep the code changes uncommitted and unpushed. Verify every acceptance item locally, provide a localhost URL, and set the Task to `Waiting` for review. The gate passes only after the user explicitly approves the local result.
+3. **Preview gate.** After local approval, commit and push the approved changes to the repository's preview branch or create the agreed shared preview. Verify the complete acceptance checklist on that preview, record the URL and evidence through `work-management`, and request explicit approval for the production target. The gate passes only after that preview approval.
+4. **Release gate.** Merge or release only the preview-approved commit and scope to the production branch or target. Rerun the complete acceptance checklist on the final customer-visible result.
+5. **Closeout gate.** Write the result, evidence, useful links, approvals, and resulting state through `work-management`. Mark `Done` when every acceptance item passes and the agreed delivery outcome is confirmed.
 
 `work-management` owns Task, Project, and Customer context and state. This skill owns execution and delivery gates.
 
