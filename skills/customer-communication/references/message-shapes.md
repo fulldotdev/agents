@@ -8,6 +8,7 @@ Apply only the shape matching the requested message.
 2. Add the relevant link when there is something to view, especially a preview.
 3. Mention at most one caveat when it changes the receiver's understanding or action.
 4. Ask for a check when the receiver needs to confirm something.
+5. Stop after the last relevant result or action. Do not add a concluding sentence that merely repeats success, reassures about unrelated safety, or mentions a later deadline that requires no action now.
 
 ## Scope or pushback
 

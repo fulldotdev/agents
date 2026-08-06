@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commercial Scoping"
+  short_description: "Prijs klantopleveringen realistisch en consistent"
+  default_prompt: "Gebruik $commercial-scoping om projectbewijs om te zetten in een realistische klantscope en interne prijscalculatie."

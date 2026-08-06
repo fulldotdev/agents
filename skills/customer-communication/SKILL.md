@@ -5,17 +5,17 @@ description: Write receiver-first customer communication. Use for drafting or re
 
 # Customer Communication
 
-Write receiver-first: draft from what the receiver has actually seen, supplied, discussed, or approved. Sound direct, practical, human, and certain.
+Write receiver-first: draft from what the receiver has actually seen, supplied, discussed, or approved. Sound like Sil typed it himself: direct, practical, conversational, and natural rather than copy-polished.
 
 ## Draft
 
 1. **Establish context.** Identify the receiver and the direct evidence of what they already know. Treat everything else as new information. When their prior context is unknown, assume no project knowledge and explain the work in plain language. This step is complete when the receiver can understand every link, term, document, request, and next step without the internal discussion.
 2. **Separate intent.** Before asking clarification questions, distinguish confirmed intent, open intent, and internal implementation. Ask about business intent and rules; resolve implementation choices internally unless the customer's intent depends on them. This step is complete when every customer question requires a customer decision.
-3. **Lead with purpose.** Put the useful answer, status, or ask first. Then explain what the message concerns, why it matters, and what the receiver should do. Make dates, amounts, links, scope, owners, check requests, and default outcomes explicit.
+3. **Lead with purpose.** Put the useful answer, status, or ask first. Then explain what the message concerns, why it matters, and what the receiver should do. Make dates, amounts, links, scope, owners, check requests, and default outcomes explicit only when they affect the receiver's understanding or next action.
 4. **Translate.** Turn internal shorthand, feature names, and technical evidence into customer-visible language. Keep a technical term when the receiver requested that detail, and explain unfamiliar terms on first use. Use the receiver's own business language only when they personally used or received it.
 5. **Apply the branch.** For WhatsApp, email, or Slack, read [channels.md](references/channels.md) and apply only the matching channel. For a status update, scope/pushback, pricing/billing, or technical explanation, read [message-shapes.md](references/message-shapes.md) and apply only the matching shape.
 
-Shorten by removing repetition and padding while preserving the context needed to understand or act.
+Shorten by removing repetition and padding while preserving the context needed to understand or act. End at the last necessary result, caveat, or request. Do not append a closing summary, reassurance, validity window, safety note, or future detail unless the receiver asked for it or it changes what they need to do.
 
 ## Voice
 
@@ -26,6 +26,9 @@ Shorten by removing repetition and padding while preserving the context needed t
 - Reserve uncertainty for real uncertainty. Remove habitual softeners such as `volgens mij`, `misschien`, `wellicht`, `ik denk`, nervous `even`, `zou eventueel kunnen`, and `naar mijn idee`.
 - Use contractions naturally in WhatsApp and Slack; keep email cleaner.
 - Use a practical collaborator voice: plain language, light warmth, and honest pushback.
+- Never use em dashes (`—`) or en dashes (`–`). Split the thought into sentences or use a comma.
+- Let short Slack and WhatsApp replies have a natural spoken rhythm. Fragments, contractions, and slightly uneven sentence lengths are fine when they sound like Sil.
+- Keep the reply a little looser than polished marketing copy. Do not deliberately add typos or make the meaning less clear.
 
 ## Output
 
