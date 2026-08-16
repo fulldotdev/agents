@@ -20,7 +20,7 @@ Apply only the channel used by the customer conversation.
 - Use short headings or bullets for pricing, scope, completed work, problem/solution, or next steps.
 - Include explicit numbers and dates.
 - Close with the concrete ask or default: "Laat me weten...", "Hoor graag of dat klopt", or "Mocht ik voor [datum] niks horen, dan..."
-- Use `[~ Sil Veltman](https://full.dev/contact)` as the signature when appropriate.
+- Keep replies unsigned; rely on the mailbox’s configured signature if one is needed. Add a written sign-off only when the user explicitly asks for one.
 
 ## Slack
 

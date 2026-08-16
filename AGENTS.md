@@ -22,3 +22,5 @@
 - Follow repository-specific branch rules. Otherwise continue the current task branch; use `preview` for normal work when available and `main` for production. On Teveo/Fayn Shopify projects, default to `main`.
 - Only use worktrees when user specifically asks for them.
 - Verify through the relevant local or preview environment; when done, provide URL(s).
+- For Netlify projects, use the repository-linked Netlify site; verify `.netlify/state.json` matches the repo's real site before deploys or preview URLs.
+- For visual changes, validate with screenshots in the target environment and iterate until the screenshot matches the intended result.

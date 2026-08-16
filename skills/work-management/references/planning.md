@@ -1,102 +1,52 @@
 # Planning
 
-Use for Sil's Monday work loop: review the completed Monday-Sunday week, reconcile hours/admin, check Notion database health, and prepare the current Monday-Sunday Sprint. Planning is Notion-first and does not run broad inbox triage or customer delivery.
+Use for Sil's minimal Monday work reset. The goal is only to make live Task statuses accurate and commit the right Tasks to the current Monday-Sunday Sprint.
 
-Normal automation cadence is Monday at 06:00 Europe/Amsterdam through the Hermes `work-planning` cron on `otis`. Actual automation metadata wins.
+Normal automation cadence is Monday at 06:00 Europe/Amsterdam through the Hermes `work-planning` cron. Actual automation metadata wins.
 
-## Inputs
+## Scope
 
-Always inspect live Notion state. Run `scripts/collect.py planning --after <start> --before <end> --format yaml`. It collects recent Sprints, open and review-window Tasks, active Projects/Customers, Someday, and calendar constraints.
+Inspect live Notion only:
 
-Also gather current planning signals from `trackler-nl` and relevant Teveo/Fayn boards through `monday-com`. These sources remain read-only. Continue with other phases when one source is blocked and report the gap.
+- the current Sprint;
+- open Tasks and their authoritative `Status`;
+- Tasks related to the previous or current Sprint;
+- hard due dates inside the current week;
+- concrete `Waiting` blockers that affect this week's work.
 
-At the beginning, start a bounded Trackler/business-coach subagent. Inspect recent coach communication and especially Sil's weekplanner/schrift photos. Extract practical review and planning signals, decisions, commitments, blockers, and improvement ideas. If access is blocked, report `Blocked: Trackler login/session required` and continue.
-
-When entering weekly planning, start a bounded monday.com subagent. Inspect relevant Teveo/Fayn sprint and backlog context, always using the `Main table` first as source of truth. Return concrete ticket findings and Notion planning/writeback suggestions. Use other optional subagents only for bounded independent checks that feed the current run; never use them for broad inbox collection.
-
-Do not run broad inbox triage during planning. Use source context already linked in Notion and recent triage outputs only as pattern evidence. If fresh inbox context is essential, run triage as a separate labelled phase only when explicitly requested.
+Do not run broad inbox, calendar, Trackler, monday.com, Productive, Moneybird, Customer, Project, Someday, database-health, or personal-review scans. Do not write Sprint reviews or planning narratives. Handle those workflows separately when explicitly requested.
 
 ## Workflow
 
-### 1. Review
+1. Resolve the current Sprint and its Monday-Sunday dates from live Notion. Notion creates and advances Sprint pages automatically: never create, duplicate, date, rename, close, or otherwise manage Sprint pages manually. If the expected current Sprint is missing or ambiguous, report the blocker instead of creating one.
+2. Inspect relevant open Tasks and read full pages only when needed for a safe status or Sprint decision.
+3. Correct only clearly wrong Status properties from direct evidence or an explicit user decision:
+   - `Todo`: executable but not started;
+   - `Doing`: started and unfinished;
+   - `Waiting`: blocked by a concrete dependency;
+   - `Done`: completed and verified;
+   - `Canceled`: explicitly dropped, superseded, externally owned, or duplicate.
+   The Status property is the sole source of truth. Never maintain a body `State` or status label; keep blocker and progress facts in normal body context.
+4. Put every explicit commitment to substantial work this week in the current Sprint. Include active `Doing` work, hard due dates inside the week, and consciously committed `Todo` work. Prefer completion within the week, but allow an external delivery just after Sunday when execution is deliberately scheduled this week.
+5. Recommit unfinished work deliberately; do not roll everything forward automatically. Todo without a Sprint remains valid unscheduled work.
+6. Do not add work merely because it is urgent or due next week. Check only whether a hard deadline or concrete `Waiting` blocker would otherwise disappear from view.
 
-Inspect the previous Sprint, linked Tasks, completed/canceled/status-changed work, carry-over decisions, blockers, and meaningful Project/Customer movement.
+Do not create new Tasks, alter Projects or Customers, reconcile hours or finance, rewrite healthy records, or broaden the run beyond statuses and Sprint membership unless explicitly requested.
 
-Write a compact review:
+## Report
 
-```md
-## Review
-
-- Completed: ...
-- Carried over: ...
-- Blocked/waiting: ...
-- Notable changes: ...
-- Hours/admin: ...
-```
-
-Keep this practical; no personal reflection or energy journaling.
-
-### 2. Hours and commercials
-
-Use `productive-io` to reconcile the previous week when evidence is strong enough. Prefer filling gaps over changing existing entries; never delete entries without explicit approval.
-
-The planning loop owns weekly Productive reconciliation. Do not create recurring `Productive hours reconcile` Tasks. When evidence or IDs are insufficient, record the blocker on the owning Sprint/admin context.
-
-Check open commercial loops through Notion and `moneybird`. Link existing documents or create drafts only when scope, contact, price, VAT, and evidence are clear. Never send estimates/invoices without approval.
-
-### 3. Database health
-
-Use the collected Notion picture to correct clear operational inconsistencies that affect planning:
-
-- Check Task status, Sprint commitment, real deadlines, duplicates, and owning Customer or Project where relevant. Todo without a Sprint is valid unscheduled work.
-- Check that Project status matches its real phase. Discovery may remain without an open Task. Planned and In Progress need executable work or an explicit decision; Paused only needs a deliberate hold.
-- Check active Customer status and relations when current work shows an inconsistency.
-- Check Someday only for items that are now clearly executable, duplicated, or no longer useful.
-- Check Sprint dates, relations, and repeated routing friction in the Notion work records.
-
-Act only on current evidence. Do not rewrite healthy records, create cleanup work merely because something is old, or turn this into a separate maintenance exercise.
-
-### 4. Plan
-
-1. Fill the current Sprint body with focus, planned work, admin/hours, risks, decisions, and improvements.
-2. Include open Tasks due inside the Sprint unless Done, Canceled, or explicitly on hold.
-3. Prefer hard commitments, active Projects, Doing work, actionable Waiting items, due-soon work, and Tasks with clear next actions.
-4. Add Todo work to the Sprint when committing it for completion this week. Keep executable uncommitted work as Todo without a Sprint and vague ideas in Someday.
-5. Recommit unfinished work deliberately; Sprint rollover is a planning decision.
-6. Include every Task that must be completed this week. Apply no numeric capacity limit.
-
-Preferred plan:
+Return one compact numbered list. One line equals one concrete Task change or blocker. Every Task name must link to its Notion page. Use the same structure as triage:
 
 ```md
-## Plan
-
-- Focus: ...
-- Planned: ...
-- Admin/hours: ...
-- Watch: ...
-- Improvements: ...
+1. **Task updated** — [Productive-uren fixen](url) — Status corrected to `Doing`.
+2. **Task planned** — [Teveo sprint 14](url) — Moved into Sprint 15.
+3. **Blocked** — [Send estimate](url) — Waiting on the confirmed scope before Friday.
 ```
 
-## Recurring work
-
-- **Teveo/Fayn**: use one sprint Task linked directly to the matching Customer and Sil's Sprint. Individual monday tickets stay in monday; capture selected tickets and state in the sprint Task body. Do not create or link a Project merely because work belongs to a client sprint.
-- **Teveo**: name the Task `Teveo sprint N` and infer numbering from previous Tasks.
-- **Fayn**: update existing sprint work. Create new Fayn sprint work only when explicitly requested; do not use theme versions as sprint names.
-- **Someday**: promote only when a concrete action/outcome or durable Project exists.
-- Notion normally opens/closes Sprint pages automatically. Create a missing Sprint only when live schema makes safe creation clear.
-
-## Safety and report
-
-Run autonomously: complete all in-scope, safe, evidence-backed planning actions. Use `Decision:` or `Blocked:` when a hard approval gate or missing evidence prevents action.
-
-Planning may update Sprint bodies, link Tasks, create concrete planning or improvement Tasks, and correct clear low-risk statuses. Apply the main skill's approval gate to messages, documents, customer publishing, deletion, and structural database or template changes.
-
-Planning is complete when the previous Sprint is reviewed, Productive reconciliation is completed or explicitly blocked, commercial loops are resolved or routed, relevant database inconsistencies are corrected or reported, every weekly commitment is linked to the current Sprint, and every unavailable source has its practical consequence reported.
-
-Return one concise numbered list using `Review:`, `Hours:`, `Finance:`, `Plan:`, `Task:`, `Improvement:`, `Automation:`, `Cleaned:`, `Decision:`, `Blocked:`, or `Failed:`.
+Use only concise labels such as `Task updated`, `Task planned`, `Task removed`, `Blocked`, or `Failed`. Keep the description to one short sentence. Omit reviews, totals, unchanged facts, implementation detail, source metadata, and headings.
 
 If nothing changed:
 
 ```md
-1. Planning: no changes needed.
+1. **Planning** — No changes needed.
 ```

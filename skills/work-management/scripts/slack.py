@@ -11,7 +11,6 @@ SLACK_COLLECT_TIMEOUT_SECONDS = float(os.environ.get("SLACK_COLLECT_TIMEOUT_SECO
 SLACK_SEARCH_COUNT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_SEARCH_COUNT", "25")))
 SLACK_HISTORY_LIMIT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_HISTORY_LIMIT", "50")))
 SLACK_CONVERSATION_LIMIT = min(200, int(os.environ.get("SLACK_CONVERSATION_LIMIT", "100")))
-SLACK_ACTIVE_THREAD_LIMIT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_ACTIVE_THREAD_LIMIT", "25")))
 SLACK_REPLIES_LIMIT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_REPLIES_LIMIT", "50")))
 SLACK_WORKERS = max(1, int(os.environ.get("SLACK_WORKERS", "4")))
 SLACK_CONFIG_PATH = os.environ.get("SLACK_CONFIG_PATH")
@@ -234,29 +233,6 @@ def dm_history(a,b):
             except Exception as exc: items.append({"ok": False, "query": "dm_history", "error": str(exc)})
     return items[:MAX_ITEMS_PER_LANE]
 
-def active_threads(uid,a,b):
-    roots = slack_search_messages(f"from:<@{uid}> before:{b.date().isoformat()}")[:SLACK_ACTIVE_THREAD_LIMIT]
-    seen, items, jobs = set(), [], []
-    for r in roots:
-        root_ts = thread_root_ts(r)
-        key = (channel_id(r), root_ts)
-        if not key[0] or not key[1] or key in seen: continue
-        seen.add(key)
-        raw_channel = r.get("channel") if isinstance(r.get("channel"), dict) else {}
-        raw_channel_name = raw_channel.get("name")
-        channel_name = user_display(raw_channel_name) if raw_channel_name in _users else raw_channel_name
-        jobs.append((key[0], key[1], r.get("permalink"), channel_name))
-    with ThreadPoolExecutor(max_workers=min(SLACK_WORKERS, max(1, len(jobs)))) as executor:
-        futures = {executor.submit(replies, ch, ts, a, b, channel_name):(ch, ts, url, channel_name) for ch, ts, url, channel_name in jobs}
-        for future in as_completed(futures):
-            ch, ts, url, channel_name = futures[future]
-            try:
-                rs = future.result()
-                if rs: items.append({"channel_id": ch, "channel_name": channel_name, "thread_ts": ts, "url": url, "reason": "sil_active_thread", "thread_replies": rs})
-            except Exception as exc:
-                items.append({"ok": False, "query": "active_thread_replies", "error": str(exc), "channel_id": ch, "thread_ts": ts})
-    return items[:MAX_ITEMS_PER_LANE]
-
 def collect_workspace(a,b,query,config):
     global _deadline, _token_value, _users, _workspace
     _deadline = time.monotonic() + SLACK_COLLECT_TIMEOUT_SECONDS
@@ -279,9 +255,8 @@ def collect_workspace(a,b,query,config):
         try: items.extend(search(q,a,b,include_replies=False))
         except Exception as exc: items.append({"ok": False, "query": q, "error": str(exc)})
     if not query:
-        for fn,name in ((dm_history,"dm_history"),(lambda x,y: active_threads(uid,x,y),"active_thread_replies")):
-            try: items.extend(fn(a,b))
-            except Exception as exc: items.append({"ok": False, "query": name, "error": str(exc)})
+        try: items.extend(dm_history(a,b))
+        except Exception as exc: items.append({"ok": False, "query": "dm_history", "error": str(exc)})
     tagged = [tag_item(item) for item in items[:MAX_ITEMS_PER_LANE]]
     failures = [item for item in tagged if item.get("ok") is False]
     summary = dict(_workspace)
@@ -314,7 +289,7 @@ def collect(a,b,query=None,workspace=None):
 
 def main():
     p=argparse.ArgumentParser(); add_common_args(p); p.add_argument("--query"); p.add_argument("--workspace"); args=p.parse_args()
-    a,b=window_from_args(args.after,args.before,require=not bool(args.query)); r=base_result("slack","dm_mentions_active_threads_all_workspaces",a,b)
+    a,b=window_from_args(args.after,args.before,require=not bool(args.query)); r=base_result("slack","dm_mentions_sent_all_workspaces",a,b)
     try: r.update(collect_result(a,b,args.query,args.workspace))
     except Exception as exc: err=error_obj("slack",exc); r["ok"]=False; r["errors"].append(err)
     item_errors = [x for x in r.get("items") or [] if x.get("ok") is False]
