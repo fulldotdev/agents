@@ -13,6 +13,6 @@ Use live Notion metadata as the authority for exact property names, option names
 - **Goals** `collection://2005979e-268c-80d1-8ecf-000b841762a2`
 - **Sprints** `collection://3555979e-268c-807b-bdb4-000b86b48f90`
 
-Documents use `Type` (`Copy`, `Brief`, `Scope`, `Spec`, `Research`, `Draft`, `Reference`), `Status` (`Draft`, `Review`, `Final`, `Archived`), optional `Source URL`, and bidirectional `Tasks`, `Projects`, and `Companies` relations. Store mutable Notion-native content in the page body; use `Source URL` as the canonical location for external documents.
+Documents use only `Name`, optional `Source URL`, automatic `Created` and `Edited`, and bidirectional `Tasks`, `Projects`, and `Companies` relations. Store mutable Notion-native content in the page body; use `Source URL` as the canonical location for external documents.
 
 Tasks use `Area` to identify the owning work domain: `Delivery`, `Sales`, `Growth`, `Admin`, or `Personal`.

@@ -91,8 +91,6 @@ Use `Documents` for mutable authored work products and for indexing external doc
 Keep the schema minimal:
 
 - `Name`
-- `Type`: `Copy`, `Brief`, `Scope`, `Spec`, `Research`, `Draft`, or `Reference`
-- `Status`: `Draft`, `Review`, `Final`, or `Archived`
 - bidirectional `Tasks`, `Projects`, and `Companies` relations
 - optional `Source URL`
 - automatic `Created` and `Edited`

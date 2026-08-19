@@ -13,7 +13,7 @@ Rules:
 - Process explicit correction or supersession entries before summarizing older entries.
 - Do not treat an older superseded claim as current.
 - Do not claim to have read linked sources; summarize only the source-grounded information captured in the Timeline.
-- You may mention the titles of pages in the `Documents` relation when useful. Do not summarize a linked Document body or use its mutable contents as evidence; mention its document status only when a Timeline event states it explicitly.
+- You may mention the titles of pages in the `Documents` relation when useful. Do not summarize a linked Document body or use its mutable contents as evidence.
 - Preserve uncertainty such as “concept”, “not tested”, “reported by the PR”, “scheduled”, or “unknown”.
 - Phrase volatile information as a dated observation rather than a timeless fact.
 - Mention an unknown only when it materially limits understanding or execution.
