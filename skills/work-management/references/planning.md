@@ -26,7 +26,7 @@ Do not run broad inbox, calendar, Trackler, monday.com, Productive, Moneybird, C
    - `Waiting`: blocked by a concrete dependency;
    - `Done`: completed and verified;
    - `Canceled`: explicitly dropped, superseded, externally owned, or duplicate.
-   The Status property is the sole source of truth. Never maintain a body `State` or status label; keep blocker and progress facts in normal body context.
+   The Status property is the sole source of truth. Never maintain a body `State` or status label. Append blocker, progress, decision, and verification facts only as direct source-specific Timeline events under the main skill's rules; do not infer them from missing context.
 4. Put every explicit commitment to substantial work this week in the current Sprint. Include active `Doing` work, hard due dates inside the week, and consciously committed `Todo` work. Prefer completion within the week, but allow an external delivery just after Sunday when execution is deliberately scheduled this week.
 5. Recommit unfinished work deliberately; do not roll everything forward automatically. Todo without a Sprint remains valid unscheduled work.
 6. Do not add work merely because it is urgent or due next week. Check only whether a hard deadline or concrete `Waiting` blocker would otherwise disappear from view.

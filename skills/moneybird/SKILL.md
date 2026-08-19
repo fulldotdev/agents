@@ -34,7 +34,7 @@ Push back when work is clearly underpriced, a shared cost is duplicated, alterna
 
 ## Work-management handoff
 
-Add the direct Moneybird URL inline to the relevant Notion Task context rather than a separate `References` property. A sent estimate for real commercial scope belongs to a Project-linked sales/follow-up Task.
+Append Moneybird facts to the relevant Notion Task as a source-specific Timeline event under `work-management`, with the direct Moneybird URL as the primary source. Do not create a separate `References` property or synthesize unsupported commercial context. A sent estimate for real commercial scope belongs to a Project-linked sales/follow-up Task.
 
 When an estimate is accepted, finish the sales Task and create or link the concrete Delivery Task(s) under that Project. Keep the original Task only if it was already the delivery work package.
 

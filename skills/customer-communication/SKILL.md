@@ -23,7 +23,7 @@ Shorten by removing repetition and padding while preserving the context needed t
 - Use `je` and `jullie` naturally.
 - Keep apologies rare and concrete: "Sorry zie t nu pas, staat over 10 min online."
 - Use at most one brief thank-you.
-- Reserve uncertainty for real uncertainty. Remove habitual softeners such as `volgens mij`, `misschien`, `wellicht`, `ik denk`, nervous `even`, `zou eventueel kunnen`, and `naar mijn idee`.
+- Reserve uncertainty for real uncertainty. Remove habitual softeners such as `volgens mij`, `misschien`, `wellicht`, `ik denk`, nervous `even`, `zou eventueel kunnen`, and `naar mijn idee`. Also remove weak framing such as `kleine update`, `even een update`, and `kort berichtje`; start directly with the update or result.
 - Use contractions naturally in WhatsApp and Slack; keep email cleaner.
 - Use a practical collaborator voice: plain language, light warmth, and honest pushback.
 - Never use em dashes (`—`) or en dashes (`–`). Split the thought into sentences or use a comma.
