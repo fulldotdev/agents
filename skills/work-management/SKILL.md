@@ -27,6 +27,7 @@ Load multiple references only when the request genuinely crosses workflows.
 - **Goal**: an accepted desired outcome or durable personal/business result. Use Goal status `Backlog` when the outcome is real but has no active horizon or execution plan; move it to `3 maanden`, `1 jaar`, or another horizon only when consciously activated.
 - **Someday**: non-executable maybe-later idea, vague exploration, or possible action that is not yet an accepted outcome.
 - **Source**: message, email, meeting, file, link, attachment, quote, decision, blocker, requirement, or other evidence. A Source provides context; executable work requires a routed outcome.
+- **Document**: a findable authored work product or external-document index entry, such as copy, a brief, scope, spec, research note, draft, or designed asset. Mutable content belongs in the Document page or its `Source URL`; link it to Tasks, Projects, and Companies instead of embedding it in a Task body.
 
 Tasks may link directly to a Customer. One Customer may own multiple Projects when the commercial or delivery scopes have independent outcomes or completion points. Keep several actions in one Task when they belong to the same stakeholder, concrete outcome or deliverable, and short execution window. Split work when the stakeholder changes, an outcome can be completed independently, or it has its own blocker, approval, or deliverable. Use a Project when one broader outcome needs multiple Tasks or is likely to span more than about one week.
 
@@ -49,7 +50,7 @@ Choose Area from the primary outcome, not merely from the linked Customer or Pro
 1. Read the target item's full properties, Markdown body, and relevant source context before deciding or writing.
 2. Route to an existing active Task, Project or Customer context, a new Task, a new Project plus first Task, Someday, or no action.
 3. Reuse an active Task only when the incoming work belongs to the same stakeholder, concrete outcome or deliverable, and short execution window.
-4. Add tightly related calls, preparation, documents, follow-up, blockers, preferences, and files to that Task instead of creating action-level duplicates.
+4. Add tightly related calls, preparation, follow-up, blockers, preferences, and source files to that Task instead of creating action-level duplicates. Put mutable authored work products such as copy, briefs, scopes, specs, research, drafts, and designed assets in `Documents`; link them to the Task and append only source-grounded document update events to the Task Timeline.
 5. Split a separate Task when the stakeholder changes or the work has an independently completable outcome, deliverable, blocker, or approval. Group related Tasks in a Project when the broader outcome has multiple work items or is likely to span more than about one week.
 6. Treat Tasks completed before today as closure records. Create a related follow-up Task only when genuinely new execution actually arrives; do not keep or create dormant Tasks for hypothetical future requests.
 7. Create a Task for Sil only when Sil owns a concrete action, decision, deliverable, or follow-up. Work owned by another person belongs in Project or source context until Sil receives an executable responsibility.
@@ -82,6 +83,23 @@ Use due dates for real deadlines and follow-up dates.
 - **Canceled**: the Project is explicitly stopped.
 
 Move Discovery to Planned when a concrete delivery commitment or approval exists.
+
+## Documents
+
+Use `Documents` for mutable authored work products and for indexing external documents that must be findable. The database is hybrid: keep Notion-native work in the Document body; for Google Docs, Drive, Figma, or another canonical external file, keep the Document body minimal and set `Source URL` to the canonical location. Never duplicate an external document merely to make it searchable.
+
+Keep the schema minimal:
+
+- `Name`
+- `Type`: `Copy`, `Brief`, `Scope`, `Spec`, `Research`, `Draft`, or `Reference`
+- `Status`: `Draft`, `Review`, `Final`, or `Archived`
+- bidirectional `Tasks`, `Projects`, and `Companies` relations
+- optional `Source URL`
+- automatic `Created` and `Edited`
+
+A Task relation exposes the document title without fetching the body. Store full copy, evolving requirements, long research, designs, and attached assets in the Document, not in the Task. The Task Timeline records only direct document lifecycle events such as creation, a meaningful update, review, approval, publication, or archival. Each event links the exact Document or external source and summarizes the direct delta in one or two compact bullets. Do not copy the complete Document content into the Timeline, treat a mutable Document body as historical proof for earlier states, or use the Task as the source for its own Document claims.
+
+When a mutable artifact is currently embedded in a Task, create and relate a Document, preserve its content and files there, verify the relation and artifacts, and only then replace the Task content with a compact Timeline event. Preserve Task properties and never hand-edit the AI Summary.
 
 ## Timeline bodies
 

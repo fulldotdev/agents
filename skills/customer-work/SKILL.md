@@ -11,6 +11,8 @@ description: "Gate scoped customer delivery through context, preview, approval, 
 4. **Release gate.** Merge or release only the preview-approved commit and scope to the production branch or target. Rerun all source-grounded acceptance conditions on the final customer-visible result and append the direct release evidence as a source-specific Timeline event.
 5. **Closeout gate.** Append the result, evidence, useful links, approvals, and resulting state only as source-specific Timeline events through `work-management`. Mark `Done` when every source-grounded acceptance condition passes and the agreed delivery outcome is confirmed. Never create or restore Task body sections such as `Next`, `Done when`, `Context`, `State`, `References`, `Delivery plan`, `Local review`, or acceptance checklists; derive them at read time from Timeline events and live sources.
 
-`work-management` owns Task, Project, and Customer context and state. This skill owns execution and delivery gates.
+For mutable authored deliverables such as copy, briefs, scopes, specifications, research, or designed assets, create or reuse a related `Documents` record through `work-management`. Keep the full work product and attachments in that Document or its canonical external `Source URL`; keep the Task body limited to source-grounded lifecycle and delta events that link the Document. Never paste the complete mutable artifact into the Task Timeline.
+
+`work-management` owns Task, Project, Customer, and Document context and state. This skill owns execution and delivery gates.
 
 `customer-communication` owns the content and output format of customer-facing drafts and updates.
