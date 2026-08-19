@@ -51,7 +51,7 @@ If media cannot be downloaded, resized, read, or transcribed, report `Failed:` o
 Apply the main skill's routing, status, body, and source-trace rules. Additionally:
 
 1. Create a Task only for confirmed execution that forms a compact work package, not for every message, call, or next action.
-2. Route new input into an existing Task when it belongs to the same stakeholder, concrete outcome or deliverable, and short execution window. Update that Task's `## Next`, checklist, context, and references as the work progresses.
+2. Route new input into an existing Task when it belongs to the same stakeholder, concrete outcome or deliverable, and short execution window. Append one source-faithful Timeline event using the main skill’s native date, primary source/locator, short description, and direct facts. Do not regenerate `Next`, checklists, context summaries, criteria, or separate references.
 3. Split a new Task when the stakeholder changes or the work has an independently completable outcome, deliverable, blocker, or approval. Do not merge communications with different people merely because they relate to the same customer or opportunity.
 4. Use a Project when the broader outcome needs multiple Tasks or is likely to span more than about one week. Do not make Tasks indefinite operational buckets; bound recurring work by period or result.
 5. Keep Task titles compact and focused on the work package. Prefer English unless the work is clearly conducted in Dutch; then use Dutch.
@@ -65,7 +65,7 @@ Apply the main skill's routing, status, body, and source-trace rules. Additional
 13. Capture version/phase and sales-to-delivery transitions on the Project and affected Tasks. Create a new version from confirmed intent.
 14. Keep individual monday-backed tickets in monday.com. Do not copy ticket details into Notion. A bounded weekly Notion Task may represent Sil's personal Fayn or TEVEO delivery commitment across those tickets; monday remains the execution-detail source.
 
-Store synthesized execution facts in the main skill's body structure. Keep full messages and transcripts at their reopenable sources, including relevant Slack, WhatsApp, Gmail, meeting, file, preview, finance, Discord/Codex, and repo or branch references.
+Store direct execution facts as separate source-specific Timeline events using the main skill's body format. Keep full messages and transcripts at their reopenable sources, including relevant Slack, WhatsApp, Gmail, meeting, file, preview, finance, Discord/Codex, and repo or branch references. Never turn a plausible synthesis or absent detail into a Task fact.
 
 ## Lane actions
 

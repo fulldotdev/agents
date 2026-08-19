@@ -201,7 +201,8 @@ def customer_item(row):
 def project_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
-        "status": status_value(row), "summary": plain_text(prop(row, "Summary")),
+        "status": status_value(row),
+        "ai_generated_summary_non_evidence": plain_text(prop(row, "Summary")),
         "customers": relation_ids(row, "Customers"), "contacts": relation_ids(row, "Contacts"),
         "github_repo_urls": rollup_urls(row, "Github Repo URL"),
         "tasks": relation_ids(row, "Tasks"), "meetings": relation_ids(row, "Meetings"),
@@ -214,7 +215,8 @@ def task_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row), "area": select_value(row, "Area"),
-        "summary": plain_text(prop(row, "Summary")), "customer": relation_ids(row, "Customer"),
+        "ai_generated_summary_non_evidence": plain_text(prop(row, "Summary")),
+        "customer": relation_ids(row, "Customer"),
         "project": relation_ids(row, "Project"), "project_contacts": rollup_relation_ids(row, "Project Contacts"),
         "sprint": relation_ids(row, "Sprint"), "meetings": relation_ids(row, "Meetings"),
         "due": date_start(row, "Due"), "edited": prop_time(row, "Edited"),
@@ -233,7 +235,7 @@ def sprint_item(row):
 def someday_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
-        "summary": plain_text(prop(row, "Summary")),
+        "ai_generated_summary_non_evidence": plain_text(prop(row, "Summary")),
     }
 
 
