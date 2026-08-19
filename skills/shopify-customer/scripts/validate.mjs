@@ -17359,6 +17359,18 @@ var SHOPIFY_APIS = defineApis({
       context: "creating a product"
     }
   },
+  shopifyql: {
+    displayName: "ShopifyQL",
+    versioned: true,
+    description: 'Answer a merchant\'s **analytics and reporting** questions with **ShopifyQL** \u2014 Shopify\'s query language for aggregated store metrics that the Admin GraphQL API cannot compute. Choose this (not `admin`) whenever the ask is for **numbers, totals, trends, or breakdowns** rather than fetching or mutating individual records: including but not limited to total/gross/net sales and revenue, order counts, average order value, refunds, quantity sold, sessions, conversion rate, and traffic \u2014 sliced by product, channel, region, or customer, trended over time, or compared period-over-period. Examples: "total sales last 7 days", "orders by sales channel this month", "top products by revenue", "conversion rate this week", "sales this year vs last year". This topic covers writing the ShopifyQL query; if the merchant wants to run it against their store, execution is handed off to `use-shopify-cli`. Not for general Admin GraphQL record operations \u2014 fetching or mutating individual resources (use `admin`).',
+    category: APICategory.GUIDANCE,
+    visibility: Visibility.PUBLIC,
+    exampleVectorStoreQuery: {
+      query: "ShopifyQL total sales over time",
+      context: "querying aggregated store analytics with ShopifyQL"
+    },
+    compatibility: "Claude Code, Claude Desktop, Cursor"
+  },
   "storefront-graphql": {
     displayName: "Storefront GraphQL API",
     versioned: true,
@@ -17728,26 +17740,45 @@ var SHOPIFY_APIS = defineApis({
 
 // src/data/supported-versions-schema.json
 var supported_versions_schema_default = {
-  admin: [
+  shopifyql: [
     {
-      name: "unstable"
-    },
-    {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
+    }
+  ],
+  admin: [
+    {
+      name: "unstable"
     },
     {
-      name: "2025-07"
+      name: "2026-10",
+      releaseCandidate: true
+    },
+    {
+      name: "2026-07",
+      latestVersion: true
+    },
+    {
+      name: "2026-04"
+    },
+    {
+      name: "2026-01"
+    },
+    {
+      name: "2025-10"
     }
   ],
   "storefront-graphql": [
@@ -17755,21 +17786,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   partner: [
@@ -17778,11 +17809,10 @@ var supported_versions_schema_default = {
     },
     {
       name: "2026-07",
-      releaseCandidate: true
+      latestVersion: true
     },
     {
-      name: "2026-04",
-      latestVersion: true
+      name: "2026-04"
     },
     {
       name: "2026-01"
@@ -17799,21 +17829,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   "payments-apps": [
@@ -17821,32 +17851,31 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   "polaris-app-home": [],
   "polaris-admin-extensions": [
     {
       name: "2026-04",
-      releaseCandidate: true
+      latestVersion: true
     },
     {
-      name: "2026-01",
-      latestVersion: true
+      name: "2026-01"
     },
     {
       name: "2025-10"
@@ -17858,11 +17887,10 @@ var supported_versions_schema_default = {
   "polaris-checkout-extensions": [
     {
       name: "2026-07",
-      releaseCandidate: true
+      latestVersion: true
     },
     {
-      name: "2026-04",
-      latestVersion: true
+      name: "2026-04"
     },
     {
       name: "2026-01"
@@ -17877,11 +17905,10 @@ var supported_versions_schema_default = {
   "polaris-customer-account-extensions": [
     {
       name: "2026-07",
-      releaseCandidate: true
+      latestVersion: true
     },
     {
-      name: "2026-04",
-      latestVersion: true
+      name: "2026-04"
     },
     {
       name: "2026-01"
@@ -17896,11 +17923,10 @@ var supported_versions_schema_default = {
   "pos-ui": [
     {
       name: "2026-07",
-      releaseCandidate: true
+      latestVersion: true
     },
     {
-      name: "2026-04",
-      latestVersion: true
+      name: "2026-04"
     },
     {
       name: "2026-01"
@@ -17933,21 +17959,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   functions_cart_transform: [
@@ -17955,21 +17981,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   functions_delivery_customization: [
@@ -17977,21 +18003,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   functions_discount: [
@@ -17999,21 +18025,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   functions_discounts_allocator: [
@@ -18027,21 +18053,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   functions_local_pickup_delivery_option_generator: [
@@ -18055,21 +18081,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   functions_order_routing_location_rule: [
@@ -18077,21 +18103,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   functions_payment_customization: [
@@ -18099,21 +18125,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   functions_pickup_point_delivery_option_generator: [
@@ -18127,21 +18153,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ],
   functions_shipping_discounts: [
@@ -18149,21 +18175,21 @@ var supported_versions_schema_default = {
       name: "unstable"
     },
     {
-      name: "2026-07",
+      name: "2026-10",
       releaseCandidate: true
     },
     {
-      name: "2026-04",
+      name: "2026-07",
       latestVersion: true
+    },
+    {
+      name: "2026-04"
     },
     {
       name: "2026-01"
     },
     {
       name: "2025-10"
-    },
-    {
-      name: "2025-07"
     }
   ]
 };
@@ -18947,7 +18973,7 @@ async function reportValidation(toolName, result, context, metadata) {
         tool: toolName,
         parameters: {
           skill: "shopify-customer",
-          skillVersion: "1.12.1",
+          skillVersion: "1.12.3",
           ...truncatedUserPrompt !== void 0 && {
             user_prompt: truncatedUserPrompt
           },
@@ -18963,7 +18989,7 @@ async function reportValidation(toolName, result, context, metadata) {
         ...nonEmptyUsageMetadata(metadata)
       }),
       instrumentation: {
-        packageVersion: "1.12.1",
+        packageVersion: "1.12.3",
         timestamp: (/* @__PURE__ */ new Date()).toISOString()
       }
     });
