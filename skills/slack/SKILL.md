@@ -30,8 +30,18 @@ Read [references/api.md](references/api.md) before making API calls.
 4. Open the relevant channel history and full thread; search snippets alone are not sufficient evidence.
 5. Preserve message timestamps and permalinks for facts that may need to be reopened.
 6. Summarize decisions, commitments, blockers, unanswered questions, and useful next actions rather than dumping raw private messages.
-7. For a draft, return text in the response or a temporary local file. Send only when the user explicitly requests or approves that exact message and destination.
-8. After sending, verify the API response and return the permalink when available.
+7. For a native Slack draft, first resolve the exact workspace and channel/DM/thread, then preview the exact destination and text unless the user has already authorized them. Create it with the bundled helper:
+
+   ```bash
+   python3 ~/.agents/skills/slack/scripts/create_draft.py \
+     --workspace <slug> \
+     --channel <C_OR_G_OR_D_ID> \
+     --text-file <path-or->
+   ```
+
+   Use `--thread-ts <timestamp>` for a thread draft and `--broadcast` only when explicitly requested. Use `--dry-run` to validate without creating anything. The helper uses the workspace's existing `SLACK_USER_TOKEN` (`xoxp`), calls `auth.test`, creates the native unsent draft through `drafts.create`, and prints only safe metadata. Do not use browser-session `xoxc`/`xoxd` credentials for normal draft creation. If the undocumented endpoint fails, retain the draft in the response or a temporary local file.
+8. Send a message only when the user explicitly requests or approves that exact message and destination.
+9. After sending, verify the API response and return the permalink when available.
 
 ## Safety
 
@@ -42,4 +52,4 @@ Read [references/api.md](references/api.md) before making API calls.
 
 ## Completion
 
-A read is complete when every selected workspace was collected or has an exact access gap, relevant history and full threads were inspected, and material findings have reopenable permalinks. A send is complete only when workspace, channel, text, thread/broadcast intent, and API success were verified.
+A read is complete when every selected workspace was collected or has an exact access gap, relevant history and full threads were inspected, and material findings have reopenable permalinks. A native draft creation is complete when `drafts.create` returns `ok: true`, the response includes a draft ID, and the workspace/destination/manage URL are reported; do not claim `drafts.list` verification with an `xoxp` token because Slack rejects that token type. A send is complete only when workspace, channel, text, thread/broadcast intent, API success, and permalink were verified.
