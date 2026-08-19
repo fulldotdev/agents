@@ -280,6 +280,51 @@
       "skillFolderHash": "201239763f7418d8a7f28624a2182d9401729967",
       "installedAt": "2026-08-19T12:06:57.870Z",
       "updatedAt": "2026-08-19T12:06:57.870Z"
+    },
+    "agent-email-inbox": {
+      "source": "resend/resend-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/resend/resend-skills.git",
+      "skillPath": "skills/agent-email-inbox/SKILL.md",
+      "skillFolderHash": "a0673ac4ddf2e735e334bc06698184166e4bd304",
+      "installedAt": "2026-08-19T12:23:31.241Z",
+      "updatedAt": "2026-08-19T12:23:31.241Z"
+    },
+    "email-best-practices": {
+      "source": "resend/resend-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/resend/resend-skills.git",
+      "skillPath": "skills/email-best-practices/SKILL.md",
+      "skillFolderHash": "81faa7841e9634778d43a5357c6798db1309aee5",
+      "installedAt": "2026-08-19T12:23:31.242Z",
+      "updatedAt": "2026-08-19T12:23:31.242Z"
+    },
+    "react-email": {
+      "source": "resend/resend-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/resend/resend-skills.git",
+      "skillPath": "skills/react-email/SKILL.md",
+      "skillFolderHash": "d8d5f60e88b16004b64f490d0e11ce2e80755483",
+      "installedAt": "2026-08-19T12:23:31.242Z",
+      "updatedAt": "2026-08-19T12:23:31.242Z"
+    },
+    "resend": {
+      "source": "resend/resend-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/resend/resend-skills.git",
+      "skillPath": "skills/resend/SKILL.md",
+      "skillFolderHash": "6e7c53981bbde67da662dc86b9fc30ca733ff41c",
+      "installedAt": "2026-08-19T12:23:31.243Z",
+      "updatedAt": "2026-08-19T12:23:31.243Z"
+    },
+    "resend-cli": {
+      "source": "resend/resend-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/resend/resend-skills.git",
+      "skillPath": "skills/resend-cli/SKILL.md",
+      "skillFolderHash": "c3131b4dae94cd1fb97db55ee508af59d2c46d12",
+      "installedAt": "2026-08-19T12:23:31.243Z",
+      "updatedAt": "2026-08-19T12:23:31.243Z"
     }
   },
   "dismissed": {
