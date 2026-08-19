@@ -32,7 +32,7 @@ Prefer these internal URLs over public/external variants.
 
 - For monthly recurring periods, use the last day of the month when monthly billing is intended.
 - Use `per maand` as the quantity for monthly packages and amounts.
-- Include the unit in all quantities, such as `37 uur`, `4 weken`, or `per maand`.
-- Express partial hours in clock format: `2:30 uur`, `2:15 uur`, or `2:45 uur`.
+- For fixed-price estimates and invoices derived from hours, keep the hours and rate internal. Set the customer-visible quantity to `1` and the price to the calculated line total.
+- Use hour quantities only for explicitly time-based billing or when the user requests them. Express partial hours in clock format, such as `2:30 uur`.
 - Use the period field for dates; use descriptions for scope, corrections, and calculation basis.
 - Update related products and estimates together only when their copy is intentionally shared, then verify both live records.

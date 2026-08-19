@@ -1,0 +1,4 @@
+interface:
+  display_name: "Video Editing"
+  short_description: "Edit existing footage locally on Otis"
+  default_prompt: "Use $video-editing to turn my existing footage into a polished edited video."
