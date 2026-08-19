@@ -2,7 +2,7 @@
 
 ## Setup
 
-> **Check current versions before pinning.** Knowledge cutoffs lag behind npm, and guessing a version tends to fail (`npm install` rejects it, or worse, installs something incompatible). Before pinning `@netlify/vite-plugin-tanstack-start`, `@tanstack/react-start`, `vite`, or any other package in `package.json`, run `npm view <pkg> version` to get the current `latest`. Or omit explicit pins and let `npm install` pick them up.
+> **Check current versions before pinning.** Knowledge cutoffs lag behind npm, and guessing a version tends to fail (`npm install` rejects it, or worse, installs something incompatible). Before pinning `@netlify/vite-plugin-tanstack-start`, `@tanstack/react-start`, `vite`, or any other package in `package.json`, run `npm view <pkg> version` to get the current `latest`. Or omit explicit pins and let `npm install` pick them up. If that check itself fails (no network, registry unreachable), still don't fall back to a guessed exact pin — install without a version (or with `@latest`) and tell the user live verification wasn't possible so they should confirm the installed versions. Never present an unverified `x.y.z` as the current release.
 
 TanStack Start uses the `@netlify/vite-plugin-tanstack-start` plugin for deployment.
 
@@ -54,7 +54,7 @@ const getItems = createServerFn({ method: "GET" }).handler(async () => {
 npm run dev    # vite dev — full Netlify platform emulation
 ```
 
-The plugin emulates the production Netlify platform locally, exposing Functions, Edge Functions, Blobs, the Cache API, Image CDN, redirects, rewrites, headers, and environment variables — without needing `netlify dev`.
+The plugin emulates the production Netlify platform locally, exposing Functions, Edge Functions, Blobs, Database, the Cache API, Image CDN, redirects, rewrites, headers, environment variables, and AI Gateway — without needing `netlify dev`.
 
 ## Build and Deploy
 

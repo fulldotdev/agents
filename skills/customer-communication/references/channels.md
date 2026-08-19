@@ -8,7 +8,7 @@ Apply only the channel used by the customer conversation.
 - Use fragments when natural: "Staat online", "is gefixt", "kan ik fixen", "begin volgende week".
 - Use Dutch shorthand when it fits Sil: `ff`, `t`, `idd`, `sws`, `isgoed`, `rdy`.
 - Use emojis sparingly: ✅, 👍🏻, 👌🏻, 💪🏻.
-- Put the action or status first, followed by the customer-usable link or detail.
+- Put the action or status first only when the message starts a fresh update. In an active exchange, open by continuing the most recent relevant message and introduce the result from that shared context.
 - Include the preview URL in the same message whenever calling something a preview.
 - Mention validation or implementation evidence only when the receiver requested it or when it changes what they need to understand, trust, or do. Treat routine delivery checks as implicit in a completed status update.
 
