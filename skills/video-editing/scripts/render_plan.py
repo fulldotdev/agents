@@ -12,8 +12,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-FFMPEG = "/opt/homebrew/bin/ffmpeg"
-FFPROBE = "/opt/homebrew/bin/ffprobe"
+FFMPEG = "/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg"
+FFPROBE = "/opt/homebrew/opt/ffmpeg-full/bin/ffprobe"
 
 
 def resolve(root: Path, value: str) -> Path:
@@ -50,6 +50,53 @@ def bounded(value: object, name: str, lower: float, upper: float) -> float:
     if not lower <= number <= upper:
         raise ValueError(f"{name} must be between {lower} and {upper}")
     return number
+
+
+def zoom_expression(events: object, duration: float, fps: float, clip_index: int) -> str:
+    if events is None:
+        return "1"
+    if not isinstance(events, list):
+        raise ValueError(f"clips[{clip_index}].zoom_events must be a list")
+
+    pulses: list[str] = []
+    previous_end = 0.0
+    for event_index, event in enumerate(events):
+        if not isinstance(event, dict):
+            raise ValueError(
+                f"clips[{clip_index}].zoom_events[{event_index}] must be an object"
+            )
+        prefix = f"clips[{clip_index}].zoom_events[{event_index}]"
+        start = float(event.get("start", 0))
+        scale = bounded(event.get("scale", 1.12), f"{prefix}.scale", 1.0, 1.25)
+        ease_in = float(event.get("ease_in", 1.4))
+        hold = float(event.get("hold", 0.6))
+        ease_out = float(event.get("ease_out", 1.8))
+        if start < 0 or ease_in <= 0 or hold < 0 or ease_out <= 0:
+            raise ValueError(f"Invalid timing in {prefix}")
+        end = start + ease_in + hold + ease_out
+        if start < previous_end:
+            raise ValueError(f"Overlapping zoom events in clip {clip_index}")
+        if end > duration + (1 / fps):
+            raise ValueError(f"{prefix} ends after its clip")
+        previous_end = end
+
+        start_frame = round(start * fps)
+        in_frames = max(1, round(ease_in * fps))
+        hold_frames = max(0, round(hold * fps))
+        out_frames = max(1, round(ease_out * fps))
+        peak_frame = start_frame + in_frames
+        out_frame = peak_frame + hold_frames
+        end_frame = out_frame + out_frames
+        pulse = (
+            f"if(between(on,{start_frame},{end_frame}),"
+            f"if(lt(on,{peak_frame}),"
+            f"0.5-0.5*cos(PI*(on-{start_frame})/{in_frames}),"
+            f"if(lt(on,{out_frame}),1,"
+            f"0.5+0.5*cos(PI*(on-{out_frame})/{out_frames}))),0)"
+        )
+        pulses.append(f"{scale - 1:.6f}*({pulse})")
+
+    return "1" if not pulses else "1+" + "+".join(pulses)
 
 
 def build(plan: dict, root: Path, output_override: Path | None) -> tuple[list[str], Path]:
@@ -95,16 +142,48 @@ def build(plan: dict, root: Path, output_override: Path | None) -> tuple[list[st
         zoom = bounded(clip.get("zoom", 1.0), f"clips[{index}].zoom", 1.0, 1.25)
         pos_x = bounded(clip.get("position_x", 0.5), f"clips[{index}].position_x", 0.0, 1.0)
         pos_y = bounded(clip.get("position_y", 0.5), f"clips[{index}].position_y", 0.0, 1.0)
-        scaled_w = round(width * zoom / 2) * 2
-        scaled_h = round(height * zoom / 2) * 2
-        video_filters = [
-            f"scale={scaled_w}:{scaled_h}:force_original_aspect_ratio=increase",
-            f"crop={width}:{height}:x=(iw-ow)*{pos_x:.6f}:y=(ih-oh)*{pos_y:.6f}",
-            "setsar=1",
-            f"fps={fps:g}",
-            "format=yuv420p",
-            "setpts=PTS-STARTPTS",
-        ]
+        events = clip.get("zoom_events")
+        expression = zoom_expression(events, duration, fps, index)
+        if expression != "1":
+            work_width = width * 2
+            work_height = height * 2
+            scaled_w = round(work_width * zoom / 2) * 2
+            scaled_h = round(work_height * zoom / 2) * 2
+            anchor_x = bounded(
+                clip.get("zoom_anchor_x", 0.5),
+                f"clips[{index}].zoom_anchor_x",
+                0.0,
+                1.0,
+            )
+            anchor_y = bounded(
+                clip.get("zoom_anchor_y", 0.5),
+                f"clips[{index}].zoom_anchor_y",
+                0.0,
+                1.0,
+            )
+            video_filters = [
+                f"scale={scaled_w}:{scaled_h}:force_original_aspect_ratio=increase:flags=lanczos",
+                f"crop={work_width}:{work_height}:x=(iw-ow)*{pos_x:.6f}:y=(ih-oh)*{pos_y:.6f}",
+                f"zoompan=z='{expression}':"
+                f"x='iw*{anchor_x:.6f}-iw*{anchor_x:.6f}/zoom':"
+                f"y='ih*{anchor_y:.6f}-ih*{anchor_y:.6f}/zoom':"
+                f"d=1:s={work_width}x{work_height}:fps={fps:g}",
+                f"scale={width}:{height}:flags=lanczos:out_range=tv",
+                "setsar=1",
+                "format=yuv420p",
+                "setpts=PTS-STARTPTS",
+            ]
+        else:
+            scaled_w = round(width * zoom / 2) * 2
+            scaled_h = round(height * zoom / 2) * 2
+            video_filters = [
+                f"scale={scaled_w}:{scaled_h}:force_original_aspect_ratio=increase:flags=lanczos",
+                f"crop={width}:{height}:x=(iw-ow)*{pos_x:.6f}:y=(ih-oh)*{pos_y:.6f}",
+                "setsar=1",
+                f"fps={fps:g}",
+                "format=yuv420p",
+                "setpts=PTS-STARTPTS",
+            ]
         fade_in = float(clip.get("fade_in", 0))
         fade_out = float(clip.get("fade_out", 0))
         if fade_in < 0 or fade_out < 0 or fade_in + fade_out >= duration:
@@ -118,6 +197,8 @@ def build(plan: dict, root: Path, output_override: Path | None) -> tuple[list[st
         audio_filters = [
             "aresample=48000",
             "aformat=sample_fmts=fltp:channel_layouts=stereo",
+            f"afade=t=in:st=0:d={min(0.006, duration / 4):.6f}",
+            f"afade=t=out:st={max(0, duration - min(0.006, duration / 4)):.6f}:d={min(0.006, duration / 4):.6f}",
             "asetpts=PTS-STARTPTS",
         ]
         gain = float(clip.get("audio_gain_db", 0))
@@ -139,7 +220,7 @@ def build(plan: dict, root: Path, output_override: Path | None) -> tuple[list[st
 
     audio_cfg = plan.get("audio") or {}
     audio_label = "acat"
-    if audio_cfg.get("loudnorm", True):
+    if audio_cfg.get("loudnorm", False):
         target_i = float(audio_cfg.get("target_i", -16))
         target_tp = float(audio_cfg.get("target_tp", -1.5))
         target_lra = float(audio_cfg.get("target_lra", 11))
@@ -154,19 +235,22 @@ def build(plan: dict, root: Path, output_override: Path | None) -> tuple[list[st
         caption_path = resolve(root, str(captions.get("path", "")))
         if not caption_path.is_file():
             raise ValueError(f"Caption file does not exist: {caption_path}")
-        style_parts = {
-            "FontName": captions.get("font_name", "Arial"),
-            "FontSize": int(captions.get("font_size", 42)),
-            "MarginV": int(captions.get("margin_v", 90)),
-            "Outline": int(captions.get("outline", 3)),
-            "Shadow": int(captions.get("shadow", 0)),
-            "Alignment": int(captions.get("alignment", 2)),
-        }
-        style = ",".join(f"{key}={value}" for key, value in style_parts.items())
-        filters.append(
-            f"[vcat]subtitles=filename='{escape_filter_path(caption_path)}':"
-            f"force_style='{style}'[vout]"
-        )
+        if caption_path.suffix.lower() == ".ass":
+            filters.append(f"[vcat]ass=filename='{escape_filter_path(caption_path)}'[vout]")
+        else:
+            style_parts = {
+                "FontName": captions.get("font_name", "Arial"),
+                "FontSize": int(captions.get("font_size", 42)),
+                "MarginV": int(captions.get("margin_v", 90)),
+                "Outline": int(captions.get("outline", 3)),
+                "Shadow": int(captions.get("shadow", 0)),
+                "Alignment": int(captions.get("alignment", 2)),
+            }
+            style = ",".join(f"{key}={value}" for key, value in style_parts.items())
+            filters.append(
+                f"[vcat]subtitles=filename='{escape_filter_path(caption_path)}':"
+                f"force_style='{style}'[vout]"
+            )
         video_label = "vout"
 
     if output.resolve() in source_paths:
@@ -199,6 +283,14 @@ def build(plan: dict, root: Path, output_override: Path | None) -> tuple[list[st
             "48000",
             "-b:a",
             str(output_cfg.get("audio_bitrate", "192k")),
+            "-color_range",
+            str(output_cfg.get("color_range", "tv")),
+            "-colorspace",
+            str(output_cfg.get("colorspace", "bt709")),
+            "-color_trc",
+            str(output_cfg.get("color_trc", "bt709")),
+            "-color_primaries",
+            str(output_cfg.get("color_primaries", "bt709")),
             "-movflags",
             "+faststart",
             str(output),

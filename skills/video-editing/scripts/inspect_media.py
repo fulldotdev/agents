@@ -11,8 +11,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-FFMPEG = "/opt/homebrew/bin/ffmpeg"
-FFPROBE = "/opt/homebrew/bin/ffprobe"
+FFMPEG = "/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg"
+FFPROBE = "/opt/homebrew/opt/ffmpeg-full/bin/ffprobe"
 
 
 def run(command: list[str]) -> subprocess.CompletedProcess[str]:
