@@ -1,6 +1,6 @@
 ---
 name: ssh
-description: Safely inspect and operate configured SSH hosts, especially the Mac mini alias `otis`. Use when the user asks to SSH into a machine, run remote commands, inspect or sync a remote repository, copy files over SSH, or verify remote state.
+description: Use when work must run on a configured SSH host, especially Otis, including remote commands, repository inspection or sync, file transfer, and remote-state verification.
 ---
 
 # SSH

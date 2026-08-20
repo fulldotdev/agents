@@ -6,7 +6,7 @@ For multi-workspace reads, store one file per workspace under `~/.config/slack/w
 
 Set `SLACK_CONFIG_PATH` only when intentionally selecting one config file. If no workspace files exist, exported environment variables are the fallback.
 
-Use `--workspace <slug>` on the work-management source collector for a focused read. Omit it during triage so every workspace is collected.
+Use `--workspace <slug>` on the work-triage source collector for a focused read. Omit it during triage so every workspace is collected.
 
 Token roles:
 
@@ -30,12 +30,15 @@ Useful endpoints:
 - `conversations.history` — read channel or DM history.
 - `conversations.replies` — read the complete thread using channel ID and parent timestamp.
 - `chat.getPermalink` — create a reopenable source link.
+- `drafts.create` — create a native unsent draft through the bundled helper and an `xoxp` user token; this endpoint is undocumented and may change.
 - `chat.postMessage` — send only after explicit request or approval.
 
 Paginate until the requested time window or relevant thread is complete. Inspect the returned `ok` and `error` fields for every call.
 
-## Send payload
+## Draft and send payloads
 
-Send one JSON object containing `channel` and `text`. Add `thread_ts` for a reply. Add `reply_broadcast: true` only when explicitly requested. Slack has no normal Web API saved-draft endpoint, so drafts remain in the response or a temporary local file until approved.
+Create native drafts with `scripts/create_draft.py`. The helper validates the workspace and destination, builds Slack rich-text blocks, calls `drafts.create`, and returns only safe draft metadata. If the undocumented endpoint fails, retain the proposed draft in the response or a temporary local file for approval rather than sending it.
+
+Sending is separate from draft creation. For `chat.postMessage`, send one JSON object containing `channel` and `text`. Add `thread_ts` for a reply and `reply_broadcast: true` only when explicitly requested.
 
 After sending, retain the returned channel and timestamp, call `chat.getPermalink`, and report the link without exposing unrelated response data.

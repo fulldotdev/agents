@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Google Calendar collector shared by triage and Sprint planning."""
+"""Google Calendar collector for work triage."""
 
 import os
 from datetime import timedelta

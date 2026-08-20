@@ -1,0 +1,4 @@
+interface:
+  display_name: "Work Triage"
+  short_description: "Route recurring work intake and feedback"
+  default_prompt: "Use $work-triage to collect and route new work without executing delivery."

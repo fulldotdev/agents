@@ -1,4 +1,4 @@
 interface:
   display_name: "Work Management"
-  short_description: "Manage Notion work, triage, and planning"
-  default_prompt: "Use $work-management to route, plan, or manage this work in Notion."
+  short_description: "Manage Notion work records and routing"
+  default_prompt: "Use $work-management to route or update this work in Notion."

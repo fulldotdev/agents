@@ -1,3 +1,5 @@
+"""WhatsApp media recovery tests for work-triage."""
+
 import contextlib
 import os
 import sys

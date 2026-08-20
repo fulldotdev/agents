@@ -1,5 +1,9 @@
 .DS_Store
 node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
 
 # Generated/private collector state; skills should commit code and docs only.
 skills/**/state/

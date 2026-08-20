@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# WhatsApp collection for work-triage.
 import argparse
 import contextlib
 import fcntl
@@ -17,7 +18,7 @@ DIRECT_LOCK_WAIT = "2s"
 RECOVERY_LOCK_WAIT = "15s"
 SERVICE_WAIT_SECONDS = 20
 RECOVERY_SERIALIZATION_TIMEOUT_SECONDS = 60
-RECOVERY_LOCK_NAME = ".work-management-media-recovery.lock"
+RECOVERY_LOCK_NAME = ".work-triage-media-recovery.lock"
 
 
 class MediaRecoveryError(RuntimeError):

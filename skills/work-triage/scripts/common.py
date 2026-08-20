@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared collector configuration, command, time, Notion, and output helpers."""
+"""Shared work-triage collector helpers."""
 
 import argparse
 import json
@@ -12,22 +12,32 @@ from datetime import datetime, time, timezone
 from pathlib import Path
 
 MAX_ITEMS_PER_LANE = int(os.environ.get("TRIAGE_MAX_ITEMS_PER_LANE", "200"))
-MAX_ITEMS = int(os.environ.get("SPRINT_PLANNING_MAX_ITEMS", "250"))
 TEMP_ROOT = Path(
-    os.environ.get("WORK_MANAGEMENT_TEMP_DIR", Path.home() / ".hermes" / "tmp" / "work-management")
+    os.environ.get("WORK_TRIAGE_TEMP_DIR")
+    or os.environ.get("WORK_MANAGEMENT_TEMP_DIR")
+    or Path.home() / ".hermes" / "tmp" / "work-triage"
 ).expanduser()
+LEGACY_TEMP_ROOT = Path.home() / ".hermes" / "tmp" / "work-management"
 
 
-def create_run_dir():
-    """Create bounded per-run scratch space and remove leftovers older than 24h."""
-    TEMP_ROOT.mkdir(parents=True, exist_ok=True)
+def cleanup_run_root(root):
+    """Remove collector scratch entries older than 24 hours."""
+    if not root.exists():
+        return
     cutoff = time_module.time() - 86400
-    for child in TEMP_ROOT.iterdir():
+    for child in root.iterdir():
         try:
             if child.stat().st_mtime < cutoff:
                 shutil.rmtree(child) if child.is_dir() else child.unlink()
         except FileNotFoundError:
             pass
+
+
+def create_run_dir():
+    """Create bounded per-run scratch space and clean current and legacy roots."""
+    TEMP_ROOT.mkdir(parents=True, exist_ok=True)
+    for root in dict.fromkeys((TEMP_ROOT, LEGACY_TEMP_ROOT)):
+        cleanup_run_root(root)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     run_dir = TEMP_ROOT / f"{stamp}-{os.getpid()}"
     run_dir.mkdir(parents=True, exist_ok=False)
@@ -45,7 +55,6 @@ NOTION_PROJECTS_DATA_SOURCE_ID = os.environ.get("NOTION_PROJECTS_DATA_SOURCE_ID"
 NOTION_TASKS_DATA_SOURCE_ID = os.environ.get("NOTION_TASKS_DATA_SOURCE_ID", "1cb5979e-268c-80e9-bd7d-000b00ac4424")
 NOTION_MEETINGS_DATA_SOURCE_ID = os.environ.get("NOTION_MEETINGS_DATA_SOURCE_ID", "1cb5979e-268c-808d-888d-000bfa3a527c")
 NOTION_SPRINTS_DATA_SOURCE_ID = os.environ.get("NOTION_SPRINTS_DATA_SOURCE_ID", "3555979e-268c-807b-bdb4-000b86b48f90")
-NOTION_SOMEDAY_DATA_SOURCE_ID = os.environ.get("NOTION_SOMEDAY_DATA_SOURCE_ID", "8b6245be-419a-4203-97e4-f7660514c661")
 NOTION_VERSION = os.environ.get("NOTION_API_VERSION") or os.environ.get("NOTION_VERSION", "2026-03-11")
 
 
@@ -120,6 +129,13 @@ def notion_blocks(page_id, page_size=100):
     ]).get("results", [])
 
 
+def notion_block(block_id):
+    return json_cmd([
+        "ntn", "api", f"v1/blocks/{block_id}",
+        "--notion-version", NOTION_VERSION,
+    ])
+
+
 def prop(row, name):
     return (row.get("properties") or {}).get(name) or {}
 
@@ -171,10 +187,6 @@ def date_start(row, name):
     return (prop(row, name).get("date") or {}).get("start")
 
 
-def date_end(row, name):
-    return (prop(row, name).get("date") or {}).get("end")
-
-
 def url_value(row, name):
     return prop(row, name).get("url")
 
@@ -221,21 +233,6 @@ def task_item(row):
         "sprint": relation_ids(row, "Sprint"), "meetings": relation_ids(row, "Meetings"),
         "due": date_start(row, "Due"), "edited": prop_time(row, "Edited"),
         "created": prop_time(row, "Created"),
-    }
-
-
-def sprint_item(row):
-    return {
-        "id": row.get("id"), "url": row.get("url"), "name": title(row),
-        "status": status_value(row), "start": date_start(row, "Dates"),
-        "end": date_end(row, "Dates"), "tasks": relation_ids(row, "Tasks"),
-    }
-
-
-def someday_item(row):
-    return {
-        "id": row.get("id"), "url": row.get("url"), "name": title(row),
-        "ai_generated_summary_non_evidence": plain_text(prop(row, "Summary")),
     }
 
 

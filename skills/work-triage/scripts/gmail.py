@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Gmail collection for work-triage.
 import argparse, base64, shutil
 from datetime import timezone
 from email.utils import parsedate_to_datetime

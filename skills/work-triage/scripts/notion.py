@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
-"""Notion work-context queries for triage and weekly planning."""
+"""Notion work-context queries for triage."""
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from common import (
-    MAX_ITEMS, MAX_ITEMS_PER_LANE, NOTION_CUSTOMERS_DATA_SOURCE_ID,
+    MAX_ITEMS_PER_LANE, NOTION_CUSTOMERS_DATA_SOURCE_ID,
     NOTION_PROJECTS_DATA_SOURCE_ID, NOTION_SPRINTS_DATA_SOURCE_ID,
-    NOTION_SOMEDAY_DATA_SOURCE_ID, NOTION_TASKS_DATA_SOURCE_ID, base_result,
-    customer_item, error_obj, limited_rows, notion_query, project_item,
-    someday_item, sprint_item, task_item,
+    NOTION_TASKS_DATA_SOURCE_ID, base_result, customer_item, error_obj,
+    in_window_value, limited_rows, notion_query, parse_iso, project_item,
+    task_item,
 )
 
 CUSTOMER_STATUSES = ["Prospect", "Active"]
 TRIAGE_PROJECT_STATUSES = ["Discovery", "Planned", "In Progress"]
-PLANNING_PROJECT_STATUSES = TRIAGE_PROJECT_STATUSES + ["Paused"]
 OPEN_TASK_STATUSES = ["Todo", "Doing", "Waiting"]
 TRIAGE_TASK_STATUSES = OPEN_TASK_STATUSES
 
@@ -35,9 +34,8 @@ def active_customers(limit=MAX_ITEMS_PER_LANE):
     return query_items(NOTION_CUSTOMERS_DATA_SOURCE_ID, customer_item, CUSTOMER_STATUSES, limit)
 
 
-def active_projects(limit=MAX_ITEMS_PER_LANE, include_paused=False):
-    statuses = PLANNING_PROJECT_STATUSES if include_paused else TRIAGE_PROJECT_STATUSES
-    return query_items(NOTION_PROJECTS_DATA_SOURCE_ID, project_item, statuses, limit)
+def active_projects(limit=MAX_ITEMS_PER_LANE):
+    return query_items(NOTION_PROJECTS_DATA_SOURCE_ID, project_item, TRIAGE_PROJECT_STATUSES, limit)
 
 
 def current_sprint_id():
@@ -61,32 +59,15 @@ def triage_tasks(limit=MAX_ITEMS_PER_LANE):
     return [task_item(row) for row in limited_rows(data, limit)]
 
 
-def open_tasks(limit=MAX_ITEMS):
-    return query_items(
-        NOTION_TASKS_DATA_SOURCE_ID, task_item, OPEN_TASK_STATUSES, limit,
-        [{"property": "Due", "direction": "ascending"}, {"property": "Edited", "direction": "descending"}],
-    )
-
-
-def review_tasks(after, before, limit=MAX_ITEMS):
-    data = notion_query(NOTION_TASKS_DATA_SOURCE_ID, {
+def changed_items(data_source_id, item_fn, after, before, limit):
+    data = notion_query(data_source_id, {
         "filter": {"property": "Edited", "last_edited_time": {"on_or_after": after, "before": before}},
         "sorts": [{"property": "Edited", "direction": "descending"}],
         "page_size": limit,
     })
-    return [task_item(row) for row in limited_rows(data, limit)]
-
-
-def recent_sprints(limit=MAX_ITEMS):
-    data = notion_query(NOTION_SPRINTS_DATA_SOURCE_ID, {
-        "sorts": [{"property": "Dates", "direction": "descending"}], "page_size": limit,
-    })
-    return [sprint_item(row) for row in limited_rows(data, limit)]
-
-
-def someday(limit=MAX_ITEMS):
-    data = notion_query(NOTION_SOMEDAY_DATA_SOURCE_ID, {"page_size": limit})
-    return [someday_item(row) for row in limited_rows(data, limit)]
+    items = [item_fn(row) for row in limited_rows(data, limit)]
+    after_dt, before_dt = parse_iso(after), parse_iso(before)
+    return [item for item in items if in_window_value(item.get("edited") or item.get("created"), after_dt, before_dt)]
 
 
 def collect_group(lane, mode, calls, after=None, before=None):
@@ -116,12 +97,9 @@ def collect_work_context(after=None, before=None, limit=MAX_ITEMS_PER_LANE):
     }, after, before)
 
 
-def collect_planning(after, before, after_text, before_text, limit=MAX_ITEMS):
-    return collect_group("planning", "sprint_review_database_health_and_planning", {
-        "sprints": lambda: recent_sprints(limit),
-        "open_tasks": lambda: open_tasks(limit),
-        "review_tasks": lambda: review_tasks(after_text, before_text, limit),
-        "active_customers": lambda: active_customers(limit),
-        "active_projects": lambda: active_projects(limit, include_paused=True),
-        "someday": lambda: someday(limit),
+def collect_changed_work_context(after, before, after_text, before_text, limit=MAX_ITEMS_PER_LANE):
+    return collect_group("work_context", "changed_customers_projects_tasks", {
+        "customers": lambda: changed_items(NOTION_CUSTOMERS_DATA_SOURCE_ID, customer_item, after_text, before_text, limit),
+        "projects": lambda: changed_items(NOTION_PROJECTS_DATA_SOURCE_ID, project_item, after_text, before_text, limit),
+        "tasks": lambda: changed_items(NOTION_TASKS_DATA_SOURCE_ID, task_item, after_text, before_text, limit),
     }, after, before)

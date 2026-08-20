@@ -1,26 +1,20 @@
-# Message Shapes
+# Message shapes
 
 Apply only the shape matching the requested message.
 
 ## Status update
 
-1. Choose the opening from the surrounding conversation. In a fresh update, state the result directly: "Staat online ✅", "Is gefixt", or "Preview staat klaar". In an active exchange, connect the result to what was just discussed instead of restarting the conversation.
-2. Add the relevant link when there is something to view, especially a preview.
-3. Mention at most one customer-visible caveat when it changes the receiver's understanding or action. Internal safeguards, permissions, deployment targets, tool state, and user-assistant working agreements do not qualify as customer-visible caveats.
-4. Ask for a check when the receiver needs to confirm something.
-5. Stop after the last relevant result or action. Do not add a concluding sentence that merely repeats success, reassures about unrelated safety, or mentions a later deadline that requires no action now.
+For a fresh update, open with the result: "Staat online ✅", "Is gefixt", or "Preview staat klaar". In an active exchange, connect it to the last message instead.
 
-Opening examples:
+- Include the link when there is something to review, especially a preview.
+- Ask for a check only when the receiver needs to confirm something.
+- Mention one customer-visible caveat when it changes that review or action.
 
-- Fresh update: "Preview staat klaar."
-- Continuation after a recent progress message: "De laatste layoutfixes zijn verwerkt."
+Continuation example: "De laatste layoutfixes zijn verwerkt."
 
 ## Scope or pushback
 
-1. Acknowledge the existing work or request.
-2. State the hard part plainly.
-3. Explain the practical implication.
-4. Suggest a decision, call, or smaller first step.
+State the constraint and its practical effect, then suggest a decision, call, or smaller first step. Acknowledge useful customer input when it affects that explanation.
 
 Example shape:
 
@@ -28,14 +22,10 @@ Example shape:
 
 ## Pricing or billing
 
-1. State the change or recommendation.
-2. Give the numbers.
-3. Explain the practical reason in one short paragraph.
-4. State the default outcome and response date.
+Use confirmed numbers and scope. If they still need to be calculated or reconciled, use `commercial-scoping` first.
+
+State the change or recommendation, the numbers, the practical reason, and any default outcome or response date.
 
 ## Technical explanation
 
-1. Explain the problem in plain customer language.
-2. Give one concrete example.
-3. Explain the solution.
-4. State what the customer should do or check.
+Explain the problem and solution in the customer's workflow. Include technical detail only when it helps the customer decide, act, or check the result. Use one concrete example when the explanation would otherwise stay abstract.

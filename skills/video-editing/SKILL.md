@@ -1,6 +1,6 @@
 ---
 name: video-editing
-description: Edit existing recorded video footage on the Apple Silicon worker `otis` through SSH. Use when Codex must inspect, transcribe, trim, reorder, combine, reframe, caption, lightly zoom or fade, normalize audio, preview, QA, render, or deliver real source videos without generating replacement footage. Supports talking-head videos, multiple takes, reels/shorts, and longer 16:9 edits using Faster-Whisper and FFmpeg Full.
+description: Use when editing supplied video footage on Otis, including transcription, cuts, reframing, captions, audio cleanup, previews, QA, or final rendering. Do not use it to generate replacement footage.
 ---
 
 # Video Editing

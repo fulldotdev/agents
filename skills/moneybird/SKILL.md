@@ -1,15 +1,15 @@
 ---
 name: moneybird
-description: Inspect, draft, create, update, validate, or link Moneybird estimates, invoices, recurring billing, contacts, and commercial line structures through the Moneybird MCP. Use for offers, invoices, pricing, VAT/scope checks, recurring packages, finance-document cleanup, or work-management commercial reconciliation.
+description: Use when a Moneybird estimate, invoice, recurring billing record, contact, VAT setup, or commercial line must be inspected, drafted, changed, validated, or linked. Use commercial-scoping to decide scope or price.
 ---
 
 # Moneybird
 
 ## Ownership
 
-This skill owns Moneybird evidence, request shape, commercial-document quality, write safety, verification, and direct document links. It does not own weekly scheduling or delivery planning.
+This skill owns Moneybird evidence, request shape, document quality, write safety, verification, and direct links. It does not own weekly scheduling or delivery planning.
 
-When invoked by `work-management`, the parent workflow owns the Notion Task/Project, timing, routing, and follow-up. This skill may inspect live state, link an existing match, or prepare a concept when the evidence is clear.
+When `work-management` calls this skill, it owns the Notion record, timing, routing, and follow-up. This skill may inspect live state, link a match, or prepare a concept when the evidence is clear.
 
 ## References
 
@@ -19,25 +19,25 @@ When invoked by `work-management`, the parent workflow owns the Notion Task/Proj
 ## Workflow
 
 1. Identify the administration, contact, document type, owning project/scope, period, currency, VAT, rates, and whether the action is read-only, draft, update, or send.
-2. Inspect live contacts and related documents before creating anything. Prefer linking a matching document over creating a duplicate.
+2. Inspect live contacts and related documents before creating anything. Link a match instead of creating a duplicate.
 3. Use prior customer/project documents only as evidence; preserve explicitly agreed rates, fixed lines, IDs, and titles.
-4. For a draft or edit, apply the commercial quality rules in `references/documents.md` and show any material uncertainty instead of hiding it in wording.
+4. For a draft or edit, apply `references/documents.md`. State material uncertainty plainly.
 5. Use exact live IDs and the complete request envelope from `references/operations.md` for a write.
-6. Read the document back after creation or update and verify contact, type, period, VAT, amounts, line order, optionality, and total.
+6. After a write, read the document back. Verify its contact, type, period, VAT, amounts, line order, optionality, and total.
 7. Return the direct Moneybird app URL and the remaining approval or follow-up action.
 
 ## Approval boundary
 
-Ask before external sending/publishing, destructive historical cleanup, rejected/canceled status changes, or removing ambiguous lines. A concept document may be created during an approved workflow only when customer, contact, scope, price/rate, VAT, period, and evidence are unambiguous; otherwise return the proposed structure and exact missing decision.
+Ask before sending or publishing, destructive history cleanup, rejected or canceled status changes, or removing unclear lines. Create a concept during an approved workflow only when the customer, contact, scope, price or rate, VAT, period, and evidence are clear. Otherwise return the proposed structure and exact missing decision.
 
 Push back when work is clearly underpriced, a shared cost is duplicated, alternatives lack a real tradeoff, or wording conceals a scope or pricing problem.
 
 ## Work-management handoff
 
-Append Moneybird facts to the relevant Notion Task as a source-specific Timeline event under `work-management`, with the direct Moneybird URL as the primary source. Do not create a separate `References` property or synthesize unsupported commercial context. A sent estimate for real commercial scope belongs to a Project-linked sales/follow-up Task.
+Under `work-management`, add Moneybird facts to the relevant Task as a source-specific Timeline event. Use the direct Moneybird URL as its source. Do not add a `References` property or unsupported commercial context. A sent estimate for real scope belongs to a Project-linked sales or follow-up Task.
 
-When an estimate is accepted, finish the sales Task and create or link the concrete Delivery Task(s) under that Project. Keep the original Task only if it was already the delivery work package.
+When an estimate is accepted, finish the sales Task and create or link its Delivery Tasks. Keep the original Task only if it already was the delivery work package.
 
 ## Completion
 
-The operation is complete when the live document was inspected, duplicates were ruled out, every changed field and total was read back, the direct app URL was returned, and external sending is either explicitly approved and verified or clearly left as the next approval step.
+The operation is complete after the live document is inspected, duplicates are ruled out, changed fields and totals are read back, and the direct app URL is returned. External sending must be approved and verified or named as the next step.

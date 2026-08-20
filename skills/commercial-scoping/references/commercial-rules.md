@@ -44,6 +44,27 @@ Examples:
 
 If either answer changes the price materially, show a provisional price, alternative, or separate follow-up scope.
 
+## Change control
+
+Maintain a price-change ledger during every revision:
+
+| Field | Required value |
+|---|---|
+| Changed at | Exact timestamp and timezone when available |
+| Baseline | Version or document presented before the change |
+| Category | Customer-facing category |
+| Previous | Previous price and internal effort |
+| Proposed | Proposed price and internal effort |
+| Source | Meeting, Slack, ticket, historical evidence, user decision, or agent recommendation |
+| Status | Proposed, user-approved, customer-presented, superseded, or removed |
+| Reason | One concrete sentence |
+
+- Label an agent risk adjustment as a proposal until the user explicitly approves it.
+- Do not attribute an internally proposed change to a meeting or customer source.
+- When the user asks what changed after a call, compare timestamps against the exact version presented in that call.
+- Preserve earlier presented values after later revisions so the commercial sequence can be reconstructed.
+- Reconcile the ledger, customer document, and internal calculation after every approved price change.
+
 ## Documents
 
 Customer version:

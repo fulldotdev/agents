@@ -1,6 +1,6 @@
 ---
 name: commercial-scoping
-description: "Build, review, price, and revise commercial customer scopes from historical estimates, invoices, actual hours, project records, designs, code state, meetings, and Slack decisions. Use for offertebedragen, fixed-price delivery scopes, scope-versus-actual calibration, v1/v2 decisions, price changes after calls, or customer and internal scope documents."
+description: "Use when a customer scope or price must be created, checked against actual hours or delivered work, or revised after new evidence. Includes offertebedragen, fixed-price scopes, v1/v2 splits, and price changes after calls."
 ---
 
 # Commercial Scoping
@@ -34,29 +34,6 @@ Produce a defensible customer price and a traceable internal calculation. Ground
 - Keep a risk allowance inside the affected deliverable instead of selling generic feedback or contingency rounds.
 - Make integration and cloud assumptions explicit when they can change the implementation path.
 - Prefer one category price over separately priced technical actions. Price a subitem separately only when it is independently optional or independently deliverable.
-
-## Change control
-
-Maintain a price-change ledger during every revision:
-
-| Field | Required value |
-|---|---|
-| Changed at | Exact timestamp and timezone when available |
-| Baseline | Version or document presented before the change |
-| Category | Customer-facing category |
-| Previous | Previous price and internal effort |
-| Proposed | Proposed price and internal effort |
-| Source | Meeting, Slack, ticket, historical evidence, user decision, or agent recommendation |
-| Status | Proposed, user-approved, customer-presented, superseded, or removed |
-| Reason | One concrete sentence |
-
-Apply these rules:
-
-- Label an agent risk adjustment as a proposal until the user explicitly approves it.
-- Do not attribute an internally proposed change to a meeting or customer source.
-- When the user asks what changed after a call, compare timestamps against the exact version presented in that call.
-- Preserve earlier presented values even after later revisions so the commercial sequence can be reconstructed.
-- Reconcile the ledger, customer document, and internal calculation after every approved price change.
 
 ## Output
 
