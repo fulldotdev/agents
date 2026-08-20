@@ -58,12 +58,14 @@ Read the `ssh` skill before operating Otis. Use lowered process priority and one
 ### Semantic zooms
 
 - A zoom is an emphasis mark, not background motion. Approved examples may use almost none.
-- Use one on a thesis, reframing, reveal, payoff, or short conclusion. Skip examples, lists, transitions, filler, and weak passages.
-- Skip the zoom when a hard cut, posture change, or large gesture already supplies emphasis. Never run one across a hard cut.
+- Prefer a slow push-in when a new subject or distinct argument begins. A thesis, reframing, reveal, or payoff can also justify one. Skip examples, lists, filler, and weak passages.
+- Skip the zoom when a posture change or large gesture already supplies emphasis.
 - As a default, allow at most one zoom below 90 seconds, normally one below 150 seconds, and two or three below 220 seconds. Keep roughly 35 seconds between them. Break this only when the content clearly has separate chapters.
-- Start about `1.2` to `1.5` seconds before the key words. Ease to about `1.12`, hold about `0.6` seconds, then ease back over about `1.8` seconds. Return fully to the baseline crop.
+- Ease from `1.0` to about `1.12` over roughly `3` to `4` seconds. Then keep the tighter framing for the rest of that thought.
+- Reset to the baseline crop on the next meaningful hard cut. The cut hides the reset and makes the two scales read as deliberate camera framings. Do not automatically zoom out a few seconds after zooming in.
+- Choose a moment whose next cut arrives naturally. Avoid holding the tighter crop for a long, unrelated passage. Use a slow eased return only when no suitable cut exists and the content clearly calls for one.
 - Use cosine or equivalent easing. Calculate moving zooms at twice the delivery resolution and downscale so motion does not step.
-- Review baseline, peak, and return frames for every zoom. A compact montage of only zoom windows is the fastest approval artifact.
+- Review baseline, movement, held framing, and the reset after the cut. A compact montage of only zoom windows is the fastest approval artifact.
 
 ### Color
 

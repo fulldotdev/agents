@@ -68,12 +68,25 @@ def zoom_expression(events: object, duration: float, fps: float, clip_index: int
         prefix = f"clips[{clip_index}].zoom_events[{event_index}]"
         start = float(event.get("start", 0))
         scale = bounded(event.get("scale", 1.12), f"{prefix}.scale", 1.0, 1.25)
-        ease_in = float(event.get("ease_in", 1.4))
-        hold = float(event.get("hold", 0.6))
-        ease_out = float(event.get("ease_out", 1.8))
-        if start < 0 or ease_in <= 0 or hold < 0 or ease_out <= 0:
+        ease_in = float(event.get("ease_in", 3.5))
+        reset = str(event.get("reset", "cut"))
+        if reset not in {"cut", "ease_out"}:
+            raise ValueError(f"{prefix}.reset must be cut or ease_out")
+        if start < 0 or ease_in <= 0:
             raise ValueError(f"Invalid timing in {prefix}")
-        end = start + ease_in + hold + ease_out
+        peak = start + ease_in
+        if peak > duration + (1 / fps):
+            raise ValueError(f"{prefix} reaches its peak after its clip")
+        if reset == "cut":
+            if event_index != len(events) - 1:
+                raise ValueError(f"A cut-reset zoom must be the final event in clip {clip_index}")
+            end = duration
+        else:
+            hold = float(event.get("hold", 0.6))
+            ease_out = float(event.get("ease_out", 1.8))
+            if hold < 0 or ease_out <= 0:
+                raise ValueError(f"Invalid timing in {prefix}")
+            end = peak + hold + ease_out
         if start < previous_end:
             raise ValueError(f"Overlapping zoom events in clip {clip_index}")
         if end > duration + (1 / fps):
@@ -82,18 +95,25 @@ def zoom_expression(events: object, duration: float, fps: float, clip_index: int
 
         start_frame = round(start * fps)
         in_frames = max(1, round(ease_in * fps))
-        hold_frames = max(0, round(hold * fps))
-        out_frames = max(1, round(ease_out * fps))
         peak_frame = start_frame + in_frames
-        out_frame = peak_frame + hold_frames
-        end_frame = out_frame + out_frames
-        pulse = (
-            f"if(between(on,{start_frame},{end_frame}),"
-            f"if(lt(on,{peak_frame}),"
-            f"0.5-0.5*cos(PI*(on-{start_frame})/{in_frames}),"
-            f"if(lt(on,{out_frame}),1,"
-            f"0.5+0.5*cos(PI*(on-{out_frame})/{out_frames}))),0)"
-        )
+        if reset == "cut":
+            pulse = (
+                f"if(lt(on,{start_frame}),0,"
+                f"if(lt(on,{peak_frame}),"
+                f"0.5-0.5*cos(PI*(on-{start_frame})/{in_frames}),1))"
+            )
+        else:
+            hold_frames = max(0, round(hold * fps))
+            out_frames = max(1, round(ease_out * fps))
+            out_frame = peak_frame + hold_frames
+            end_frame = out_frame + out_frames
+            pulse = (
+                f"if(between(on,{start_frame},{end_frame}),"
+                f"if(lt(on,{peak_frame}),"
+                f"0.5-0.5*cos(PI*(on-{start_frame})/{in_frames}),"
+                f"if(lt(on,{out_frame}),1,"
+                f"0.5+0.5*cos(PI*(on-{out_frame})/{out_frames}))),0)"
+            )
         pulses.append(f"{scale - 1:.6f}*({pulse})")
 
     return "1" if not pulses else "1+" + "+".join(pulses)

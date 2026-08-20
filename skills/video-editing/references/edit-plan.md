@@ -28,9 +28,8 @@ Use UTF-8 JSON. Resolve relative paths against the job root passed with `--root`
         {
           "start": 1.2,
           "scale": 1.12,
-          "ease_in": 1.4,
-          "hold": 0.6,
-          "ease_out": 1.8,
+          "ease_in": 3.5,
+          "reset": "cut",
           "reason": "The sentence states the central conclusion"
         }
       ]
@@ -79,7 +78,9 @@ Use UTF-8 JSON. Resolve relative paths against the job root passed with `--root`
 - `fade_in` / `fade_out` — optional fade-to/from-black duration in seconds. Keep shorter than half the clip.
 - `audio_gain_db` — optional per-clip audio gain in dB.
 
-Each zoom event accepts `start`, `scale`, `ease_in`, `hold`, `ease_out`, and an optional human-readable `reason`. Defaults are `1.12`, `1.4`, `0.6`, and `1.8` seconds. The renderer uses cosine easing, works at twice the output resolution, and downsamples for smooth motion.
+Each zoom event accepts `start`, `scale`, `ease_in`, `reset`, and an optional human-readable `reason`. Defaults are `1.12`, `3.5` seconds, and `reset: "cut"`. Cut-reset events hold their scale to the end of the clip, so use at most one in that clip. The next clip starts at the baseline crop.
+
+Set `reset` to `"ease_out"` only when no suitable cut exists. Such an event also accepts `hold` and `ease_out`, defaulting to `0.6` and `1.8` seconds. The renderer uses cosine easing, works at twice the output resolution, and downsamples for smooth motion.
 
 Every clip must contain a video stream. Missing audio is replaced with silence so concatenation remains stable. The renderer applies 6 ms audio fades around joins to prevent clicks.
 
