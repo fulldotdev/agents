@@ -5,8 +5,8 @@ Use live Notion metadata as the authority for exact property names, option names
 - **Tasks** `collection://1cb5979e-268c-80e9-bd7d-000b00ac4424`
 - **Documents** `collection://ff6254a8-63f6-42c4-842e-f8f357f3aa5d` — database `231186e2-3735-4e04-8568-fe56136d637b`; hybrid index for Notion-native and external documents; bidirectional relations to Tasks, Projects, and Companies
 - **Projects** `collection://4f5bd6fe-452e-4fbc-bcf8-cfcc2d19a2ae`
-- **Companies** (formerly Customers; existing Task/Project/Meeting relation properties may still be named Customer/Customers) `collection://2635979e-268c-8191-b322-000bd3109d1c`
-- **Persons** `collection://3355979e-268c-80b5-abe9-000b0148c40b` — minimal external-contact CRM related bidirectionally to Companies
+- **Companies** `collection://2635979e-268c-8191-b322-000bd3109d1c`
+- **Persons** `collection://3355979e-268c-80b5-abe9-000b0148c40b` — researched or durable person context that does not belong in Google Contacts, related bidirectionally to Companies
 - **Meetings** `collection://1cb5979e-268c-808d-888d-000bfa3a527c`
 - **Someday** `collection://8b6245be-419a-4203-97e4-f7660514c661`
 - **Insights** `collection://1d65979e-268c-80a9-9f26-000bcfb57574`

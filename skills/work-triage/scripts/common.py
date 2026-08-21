@@ -50,7 +50,10 @@ ATTACHMENTS_DIR = RUN_DIR / "attachments"
 DEFAULT_GMAIL_ACCOUNTS = ["sil@full.dev", "silveltman@gmail.com"]
 DEFAULT_CALENDAR_ACCOUNTS = ["sil@full.dev", "silveltman@gmail.com"]
 
-NOTION_CUSTOMERS_DATA_SOURCE_ID = os.environ.get("NOTION_CUSTOMERS_DATA_SOURCE_ID", "2635979e-268c-8191-b322-000bd3109d1c")
+NOTION_COMPANIES_DATA_SOURCE_ID = os.environ.get(
+    "NOTION_COMPANIES_DATA_SOURCE_ID",
+    os.environ.get("NOTION_CUSTOMERS_DATA_SOURCE_ID", "2635979e-268c-8191-b322-000bd3109d1c"),
+)
 NOTION_PROJECTS_DATA_SOURCE_ID = os.environ.get("NOTION_PROJECTS_DATA_SOURCE_ID", "4f5bd6fe-452e-4fbc-bcf8-cfcc2d19a2ae")
 NOTION_TASKS_DATA_SOURCE_ID = os.environ.get("NOTION_TASKS_DATA_SOURCE_ID", "1cb5979e-268c-80e9-bd7d-000b00ac4424")
 NOTION_MEETINGS_DATA_SOURCE_ID = os.environ.get("NOTION_MEETINGS_DATA_SOURCE_ID", "1cb5979e-268c-808d-888d-000bfa3a527c")
@@ -165,13 +168,6 @@ def multi_select_names(row, name):
     return [item.get("name") for item in prop(row, name).get("multi_select", []) if item.get("name")]
 
 
-def rollup_relation_ids(row, name):
-    ids = []
-    for value in (prop(row, name).get("rollup") or {}).get("array") or []:
-        ids.extend(item.get("id") for item in value.get("relation", []) if item.get("id"))
-    return ids
-
-
 def rollup_urls(row, name):
     urls = []
     for value in (prop(row, name).get("rollup") or {}).get("array") or []:
@@ -200,12 +196,13 @@ def row_item(row):
     return {"id": row.get("id"), "url": row.get("url"), "properties": row.get("properties", {})}
 
 
-def customer_item(row):
+def company_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row), "domain": url_value(row, "Domain"),
         "github_repo_url": url_value(row, "GitHub Repo URL"),
-        "contacts": multi_select_names(row, "Contacts"),
+        "google_contacts": multi_select_names(row, "Google contacts"),
+        "persons": relation_ids(row, "Persons"),
         "edited": prop_time(row, "Edited"), "created": prop_time(row, "Created"),
     }
 
@@ -215,7 +212,7 @@ def project_item(row):
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row),
         "ai_generated_summary_non_evidence": plain_text(prop(row, "Summary")),
-        "customers": relation_ids(row, "Customers"), "contacts": relation_ids(row, "Contacts"),
+        "companies": relation_ids(row, "Companies"),
         "github_repo_urls": rollup_urls(row, "Github Repo URL"),
         "tasks": relation_ids(row, "Tasks"), "meetings": relation_ids(row, "Meetings"),
         "start": date_start(row, "Start"), "end": date_start(row, "End"),
@@ -228,8 +225,8 @@ def task_item(row):
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row), "area": select_value(row, "Area"),
         "ai_generated_summary_non_evidence": plain_text(prop(row, "Summary")),
-        "customer": relation_ids(row, "Customer"),
-        "project": relation_ids(row, "Project"), "project_contacts": rollup_relation_ids(row, "Project Contacts"),
+        "companies": relation_ids(row, "Companies"),
+        "project": relation_ids(row, "Project"),
         "sprint": relation_ids(row, "Sprint"), "meetings": relation_ids(row, "Meetings"),
         "due": date_start(row, "Due"), "edited": prop_time(row, "Edited"),
         "created": prop_time(row, "Created"),

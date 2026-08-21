@@ -12,14 +12,15 @@ Load only the detail needed for the current operation:
 - Before writing or interpreting a Task body, read [references/timeline.md](references/timeline.md).
 - Before creating, moving, or indexing mutable authored work, read [references/documents.md](references/documents.md).
 - Before exact Notion property writes, read [references/notion-schema.md](references/notion-schema.md).
-- For Productive or Moneybird actions connected to a work record, read [references/commercial-coordination.md](references/commercial-coordination.md) and use the owning domain skill.
+- For Moneybird actions connected to a work record, read [references/commercial-coordination.md](references/commercial-coordination.md) and use the `moneybird` skill.
 - For a stale Notion AI Task Summary, read [references/summary-prompt.md](references/summary-prompt.md).
 
 ## Model
 
 - **Task**: executable work for one stakeholder and one outcome. It normally takes hours to a few days and less than one week.
 - **Project**: a confirmed outcome with several independent Tasks or more than about one week of work.
-- **Company**: an identifiable organization with reusable sales, delivery, finance, or relationship context. Notion may still use the property names `Customer` or `Customers`.
+- **Company**: an identifiable organization with reusable sales, delivery, finance, or relationship context.
+- **Person**: someone whose relationship context is worth retaining even when they are not in Google Contacts. Use Google Contacts as the address book; use Persons for researched or durable context that does not belong there.
 - **Sprint**: a Monday to Sunday commitment. Add a Task only when Sil commits to substantial work that week. Todo without a Sprint is valid unscheduled work.
 - **Goal**: an accepted long-term outcome. Keep it in `Backlog` until Sil activates it for a time horizon.
 - **Someday**: a vague or maybe-later idea that is not executable yet.
@@ -71,7 +72,6 @@ Project statuses are `Discovery`, `Planned`, `In Progress`, `Paused`, `Completed
 ## Ownership and approval
 
 - Moneybird owns financial documents and open balances; Rabobank owns observed receipts.
-- Productive owns hours evidence and time entries.
 - monday.com owns individual customer execution tickets.
 - `work-execution` owns scoped implementation, verification, previews, release, and handoff. Its customer rules own customer-visible approval boundaries.
 - Customer-communication owns customer-facing messages and their format.

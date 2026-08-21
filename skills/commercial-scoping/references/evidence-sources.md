@@ -20,22 +20,17 @@ Use the smallest source set that can answer the request reliably. For a full his
    - Distinguish quoted, invoiced, credited, and paid amounts.
    - Use invoice lines as evidence of what was sold, not proof that every line consumed the same effort.
 
-4. **Productive**
-   - Inspect actual time by project, service, person, and date with `productive-io`.
-   - Compare actual hours with the matching estimate period and exclude unrelated maintenance or support.
-   - Note missing or unusually broad time entries as confidence limits.
-
-5. **Slack**
+4. **Slack**
    - Search the relevant workspace, DMs, channels, and full threads with `slack`.
    - Include standalone Small Giants scopes that never reached monday.com.
    - Preserve sender, timestamp, and permalink for price or scope decisions.
 
-6. **Figma**
+5. **Figma**
    - Locate the supplied design and relevant nodes with `figma`.
    - Determine whether the design is complete, partial, absent, or only a visual reference.
    - Do not expose `incl. design` in customer wording unless requested, but account for missing design work internally.
 
-7. **Code, CMS, and preview**
+6. **Code, CMS, and preview**
    - Inspect current implementation state before pricing.
    - Confirm which layouts, blocks, components, queries, routes, schemas, integrations, and environments already exist.
    - Reuse existing foundations in the estimate and state where reuse lowers effort.
@@ -44,14 +39,14 @@ Use the smallest source set that can answer the request reliably. For a full his
 
 Build an internal matrix for each proposed deliverable:
 
-| Deliverable | Historical estimate | Actual effort | Current reusable state | New effort | Uncertainty | Sources |
-|---|---:|---:|---|---:|---|---|
+| Deliverable | Historical scope | Verified delivered state | Current reusable state | New effort | Uncertainty | Sources |
+|---|---|---|---|---:|---|---|
 
 Prefer evidence in this order when sources disagree:
 
 1. current verified implementation and current written agreement;
 2. explicit recent customer or stakeholder decision;
-3. matched actual hours and invoices;
+3. matched invoices and verified delivered work;
 4. older estimates and analogous work;
 5. unsupported inference.
 

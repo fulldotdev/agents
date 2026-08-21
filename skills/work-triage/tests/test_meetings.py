@@ -48,6 +48,29 @@ class MeetingTests(unittest.TestCase):
             "transcript_revision": "2026-08-20T11:25:00Z",
         }])
 
+    def test_collector_uses_companies_relation(self):
+        row = {"id": "meeting", "properties": {
+            "When": {"date": {"start": "2026-08-20T10:00:00Z"}},
+            "Created": {"created_time": "2026-08-20T09:55:00Z"},
+            "Edited": {"last_edited_time": "2026-08-20T11:25:00Z"},
+            "Companies": {"type": "relation", "relation": [{"id": "company"}]},
+        }}
+        original_query = meetings.notion_query
+        original_blocks = meetings.blocks
+        meetings.notion_query = lambda *_args, **_kwargs: {"results": [row]}
+        meetings.blocks = lambda _page_id: []
+        try:
+            result = meetings.collect(
+                datetime(2026, 8, 20, 9, tzinfo=timezone.utc),
+                datetime(2026, 8, 20, 12, tzinfo=timezone.utc),
+            )
+        finally:
+            meetings.notion_query = original_query
+            meetings.blocks = original_blocks
+
+        self.assertEqual(result[0]["companies"], ["company"])
+        self.assertNotIn("customers", result[0])
+
 
 if __name__ == "__main__":
     unittest.main()

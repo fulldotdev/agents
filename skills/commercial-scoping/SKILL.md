@@ -14,7 +14,7 @@ Produce a defensible customer price and a traceable internal calculation. Ground
 3. Gather the evidence needed for the requested confidence level. For historical or multi-source work, read [evidence-sources.md](references/evidence-sources.md).
 4. Inspect what already exists in tickets, code, preview, CMS, Figma, deployments, and recorded work. Remove completed work and reused foundations from the new estimate.
 5. Decompose the remaining outcome into customer-recognizable categories and smaller internal subitems. Apply [commercial-rules.md](references/commercial-rules.md).
-6. Estimate internal effort first. Compare analogous historical estimates with Productive actuals, invoices, and delivered state. Explain material deviations from those analogues.
+6. Estimate internal effort first. Compare analogous historical estimates with invoices and verified delivered state. Explain material deviations from those analogues. Use Productive hours only when Sil explicitly asks for them.
 7. Convert effort to price using the engagement's verified rate. For Skantrae through Small Giants, use €100/hour when that remains the agreed rate; verify other engagements instead of carrying this rate across customers.
 8. Classify uncertainty as one of:
    - known and included;
@@ -30,7 +30,7 @@ Produce a defensible customer price and a traceable internal calculation. Ground
 
 - Price deliverable outcomes. Include normal implementation, coordination, feedback processing, testing, and release inside each deliverable.
 - Treat defects in already agreed or delivered behavior as corrective work without an added commercial line. Treat new or broadened behavior as v1, v2, or a separately priced option.
-- Use historical actuals as calibration, not as an automatic multiplier. Adjust for reuse, code familiarity, supplied designs, data readiness, environments, and integration uncertainty.
+- Use verified historical delivery evidence as calibration, not as an automatic multiplier. Adjust for reuse, code familiarity, supplied designs, data readiness, environments, and integration uncertainty.
 - Keep a risk allowance inside the affected deliverable instead of selling generic feedback or contingency rounds.
 - Make integration and cloud assumptions explicit when they can change the implementation path.
 - Prefer one category price over separately priced technical actions. Price a subitem separately only when it is independently optional or independently deliverable.
@@ -43,7 +43,7 @@ Lead with the recommended total and whether it is sharp, realistic, or conservat
 2. included subitems;
 3. material open points;
 4. v1/v2 classification when relevant;
-5. comparison with historical estimates and actuals;
+5. comparison with relevant historical scopes and delivered work;
 6. the exact changes from the last presented version.
 
 Use euros in customer-facing scopes unless the user requests hours. Keep internal hours available for calculation and audit. End the customer document at the total table unless the user explicitly requests notes below it.

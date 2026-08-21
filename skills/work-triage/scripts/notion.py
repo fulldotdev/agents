@@ -4,14 +4,14 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from common import (
-    MAX_ITEMS_PER_LANE, NOTION_CUSTOMERS_DATA_SOURCE_ID,
+    MAX_ITEMS_PER_LANE, NOTION_COMPANIES_DATA_SOURCE_ID,
     NOTION_PROJECTS_DATA_SOURCE_ID, NOTION_SPRINTS_DATA_SOURCE_ID,
-    NOTION_TASKS_DATA_SOURCE_ID, base_result, customer_item, error_obj,
+    NOTION_TASKS_DATA_SOURCE_ID, base_result, company_item, error_obj,
     in_window_value, limited_rows, notion_query, parse_iso, project_item,
     task_item,
 )
 
-CUSTOMER_STATUSES = ["Prospect", "Active"]
+COMPANY_STATUSES = ["Prospect", "Active"]
 TRIAGE_PROJECT_STATUSES = ["Discovery", "Planned", "In Progress"]
 OPEN_TASK_STATUSES = ["Todo", "Doing", "Waiting"]
 TRIAGE_TASK_STATUSES = OPEN_TASK_STATUSES
@@ -30,8 +30,8 @@ def query_items(data_source_id, item_fn, statuses, limit, sorts=None):
     return [item_fn(row) for row in limited_rows(data, limit)]
 
 
-def active_customers(limit=MAX_ITEMS_PER_LANE):
-    return query_items(NOTION_CUSTOMERS_DATA_SOURCE_ID, customer_item, CUSTOMER_STATUSES, limit)
+def active_companies(limit=MAX_ITEMS_PER_LANE):
+    return query_items(NOTION_COMPANIES_DATA_SOURCE_ID, company_item, COMPANY_STATUSES, limit)
 
 
 def active_projects(limit=MAX_ITEMS_PER_LANE):
@@ -90,16 +90,16 @@ def collect_group(lane, mode, calls, after=None, before=None):
 
 
 def collect_work_context(after=None, before=None, limit=MAX_ITEMS_PER_LANE):
-    return collect_group("work_context", "customers_projects_active_tasks_active_or_current_sprint", {
-        "customers": lambda: active_customers(limit),
+    return collect_group("work_context", "companies_projects_active_tasks_active_or_current_sprint", {
+        "companies": lambda: active_companies(limit),
         "projects": lambda: active_projects(limit),
         "tasks": lambda: triage_tasks(limit),
     }, after, before)
 
 
 def collect_changed_work_context(after, before, after_text, before_text, limit=MAX_ITEMS_PER_LANE):
-    return collect_group("work_context", "changed_customers_projects_tasks", {
-        "customers": lambda: changed_items(NOTION_CUSTOMERS_DATA_SOURCE_ID, customer_item, after_text, before_text, limit),
+    return collect_group("work_context", "changed_companies_projects_tasks", {
+        "companies": lambda: changed_items(NOTION_COMPANIES_DATA_SOURCE_ID, company_item, after_text, before_text, limit),
         "projects": lambda: changed_items(NOTION_PROJECTS_DATA_SOURCE_ID, project_item, after_text, before_text, limit),
         "tasks": lambda: changed_items(NOTION_TASKS_DATA_SOURCE_ID, task_item, after_text, before_text, limit),
     }, after, before)

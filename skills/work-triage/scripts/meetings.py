@@ -112,7 +112,7 @@ def collect(a,b):
             continue
         item=row_item(row)
         item["when"] = meeting_date(row)
-        item["customers"] = relation_ids(row, "Customers")
+        item["companies"] = relation_ids(row, "Companies")
         item["projects"] = relation_ids(row, "Projects")
         item["tasks"] = relation_ids(row, "Tasks")
         try:
