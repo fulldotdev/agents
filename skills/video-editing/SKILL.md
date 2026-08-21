@@ -15,6 +15,7 @@ Edit supplied footage non-destructively on `otis`. Use Faster-Whisper for transc
 - FFprobe: `/opt/homebrew/opt/ffmpeg-full/bin/ffprobe`
 - Python with Faster-Whisper: `/Users/otis/.hermes/hermes-agent/venv/bin/python`
 - Remote skill: `/Users/otis/.agents/skills/video-editing`
+- Shared handoff root on both Macs: `~/Google Drive/My Drive/Video Edits`, containing `inbox`, `review`, and `final`. Google Drive syncs these folders automatically.
 - Transcription model: `small` for normal work, `base` for rough drafts, and `large-v3` when final accuracy warrants the time and storage.
 
 Read the `ssh` skill before operating Otis. Use lowered process priority and one render at a time so Hermes stays responsive.
@@ -24,7 +25,7 @@ Read [references/commands.md](references/commands.md) when creating a job or run
 ## Workflow
 
 1. Resolve every source and destination path. Check disk, media metadata, tool versions, and any existing job state. Never overwrite or delete an original.
-2. Create a unique job with `source`, `work`, and `output` directories. Transfer sources with `rsync` without `--delete`.
+2. Create a unique job with `source`, `work`, and `output` directories. Transfer sources with `rsync` without `--delete`. If a source arrives in Drive `inbox`, copy it into the job before processing; never edit or render from a streamed Drive file.
 3. Run `scripts/inspect_media.py`. Inspect its manifest, overview sheet, denser text-scan sheet, and proxy before choosing content or framing. Map existing burned text, letterbox or pillarbox bars, logos, the face and shoulder envelope, hand gestures, and important props. Treat a near-silent audio warning as a stop signal for automatic captions.
 4. Transcribe each speaking source separately with `scripts/transcribe.py`. Keep JSON, TXT, and SRT. Read transcript warnings and sanity-check that the text is real language before authoring. Correct names, punctuation, wording, and caption breaks against the audio. Retry once with a larger model when confidence or language detection is poor; never caption confident-looking gibberish.
 5. Study the user's approved or published examples when available. Compare cut density, framing, captions, skin tone, background color, motion, and audio. Treat them as the style target, not generic social-video conventions.
@@ -32,7 +33,7 @@ Read [references/commands.md](references/commands.md) when creating a job or run
 7. Calibrate style cheaply. Start with stills and contact sheets for crop, grade, and caption placement. Render motion only for cuts, zooms, lip sync, and audio. For a repeated effect, make one compact review containing only the proposed moments. Do not render a whole batch to discover a static layout problem.
 8. After style approval, render one complete low-resolution preview from the original sources. Inspect video, audio, cuts, framing, captions, color, motion, and lip sync.
 9. Render finals from the originals. For Sil's social deliverables, always include a `1080x1920` portrait version. Keep or add landscape when the requested use needs it.
-10. Run `scripts/qa_media.py` on every final. Fully decode it, probe it, and inspect the generated cut, zoom, manual, contact, and caption sheets. Transfer or upload only when authorized. Verify size and checksum after transfer. Remove job files only after confirmed delivery and explicit deletion approval.
+10. Run `scripts/qa_media.py` on every final. Fully decode it, probe it, and inspect the generated cut, zoom, manual, contact, and caption sheets. Transfer or upload only when authorized. Put approved review renders in Drive `review` and final deliverables in Drive `final`, then verify sync on both machines by size and checksum. Remove job files only after confirmed delivery and explicit deletion approval.
 
 ## Editorial standard for social talking heads
 

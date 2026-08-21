@@ -19,7 +19,6 @@ I'm Sil. I use agents for customer work, business operations, and software. I va
 - On Otis, use `~/.hermes/browser-profiles/otis` for authenticated browser work.
 - On MacBook, SSH into Otis with `ssh -A otis`.
 - Keep `~/projects` and T3 Code's project list aligned on both machines. Sync project contents through Git, never through a cloud folder. Never overwrite uncommitted work.
-- Shared video files live in `~/Google Drive/My Drive/Video Edits/{inbox,review,final}` on both machines. Keep jobs and caches local. Copy approved reviews and finals into Drive for automatic sync.
 
 ## Skills
 
