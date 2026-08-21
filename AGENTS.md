@@ -1,20 +1,25 @@
 # AGENTS.md
 
-I'm Sil. I use agents for customer work, business operations, and software. I like ambitious ideas, simple systems, direct communication, and software that feels obvious. I prefer removing complexity to managing it. Here are some of my preferences, so we can be more aligned as we work together.
+I'm Sil. I use agents for customer work, business operations, and software. I value ambitious ideas, simple systems, direct communication, and software that feels obvious. I prefer removing complexity to managing it. These preferences help us stay aligned.
+
+## General
+
+- Never add or change this file without my explicit request.
 
 ## Communication
 
-- Be extremely clear, consise, direct and willing to push back.
+- Be extremely clear, concise, direct, and willing to push back.
 - Ask before destructive, irreversible, or privacy-sensitive actions.
 - If you lack access or permission, do not guess. State the exact blocker and what I need to do.
 - Prefer numbered lists when asking for feedback. Use bullet points for context.
 
 ## Environments
 
-- We work on my personal Macbook and on a remote always-on Mac Mini named Otis.
+- We work on my personal MacBook and a remote, always-on Mac mini named Otis.
 - On Otis, use `~/.hermes/browser-profiles/otis` for authenticated browser work.
-- On Macbook, you can ssh into otis with `ssh -A otis`.
-- Keep projects in `~/projects` and T3 Code's project list aligned on both machines. Sync project contents through Git, never through a cloud folder, and never overwrite uncommitted work.
+- On MacBook, SSH into Otis with `ssh -A otis`.
+- Keep `~/projects` and T3 Code's project list aligned on both machines. Sync project contents through Git, never through a cloud folder. Never overwrite uncommitted work.
+- Shared video files live in `~/Google Drive/My Drive/Video Edits/{inbox,review,final}` on both machines. Keep jobs and caches local. Copy approved reviews and finals into Drive for automatic sync.
 
 ## Skills
 
@@ -23,23 +28,23 @@ I'm Sil. I use agents for customer work, business operations, and software. I li
 
 ## Coding
 
-- Don't be scared to propose bold ideas if they can meaningfully benefit our work.
+- Propose bold ideas when they can meaningfully improve our work.
 - Choose the simplest solution that works.
 - KISS over DRY. Avoid over-engineering, over-optimizing, and over-abstracting.
-- Stick to best practices according to docs and official guidance.
-- Group files by file-type, not by feature. Avoid deep nesting, the flatter the better.
+- Follow official docs and established best practices.
+- Group files by file type, not by feature. Avoid deep nesting. Flatter is better.
 - Use kebab-case for all files and folders.
-- Typesafety is useful, take advantage of it.
-- `any` is the enemy. Inferred types are our friend. Our systems should adapt to changes, instead of requiring changes everywhere.
+- Use type safety.
+- `any` is the enemy. Prefer inference. Systems should adapt to changes without requiring edits everywhere.
 - If your TS code looks like a Python dev wrote it, it is bad TS code.
 - Avoid one-line functions that are just casting wrappers.
 - Write TypeScript in ways that Matt Pocock and Theo T3 would be proud of.
-- If not already specified in project, I generally like to use the following tech:
-  - For content-driven sites: Astro, Markdown with content-collections, Tailwind, shadcn/ui, fulldev/ui, React, zod, pnpm
-  - For webapps: Vite+, Drizzle for relational data or Convex for reactive data, Tailwind, shadcn/ui, Tanstack libraries, Clerk or WorkOS when B2B/enterprise, Resend with React Email, Stripe, pnpm
-  - We also build ecommerce in Shopify
+- When a project does not specify a stack, I prefer:
+  - Content-driven sites: Astro, Markdown with content collections, Tailwind, shadcn/ui, fulldev/ui, React, Zod, pnpm
+  - Web apps: Vite+, Drizzle for relational data or Convex for reactive data, Tailwind, shadcn/ui, TanStack libraries, Clerk or WorkOS for B2B or enterprise, Resend with React Email, Stripe, pnpm
+  - E-commerce: Shopify
 
-# Sub/multi agents
+## Multi-agent work
 
 - Do not spawn subagents or a multi-agent panel for work a single agent finishes in one pass. Delegation is for breadth or adversarial review, not for ordinary tasks.
 - When several agents do work in parallel, state file ownership up front so they do not collide.
@@ -48,22 +53,23 @@ I'm Sil. I use agents for customer work, business operations, and software. I li
 
 - Questions, reviews, explanations, and diagnoses are read-only unless I ask for changes.
 - Do not turn a small request into a cleanup, migration, redesign, or new system.
-- For client work, staying within scope is especially important. If you see a scope creep, point it out.
+- For client work, staying within scope is especially important. Point out scope creep.
+- Do not add tests, logging, or analytics unless requested or already in scope. Point out when they would help.
 
 ## Visual taste
 
 - Follow the existing design system, brand, source design, and product.
 - Do not edit real components first.
-- Avoid generic AI design, like overusing gradients, overlines, etc. Information-dense, no decorative card/pill chrome, no light-gray subtitle lines above sections. Minimal copy. No em dashes.
+- Avoid generic AI design: excessive gradients, overlines, decorative cards or pills, and light-gray subtitle lines above sections. Prefer dense information, minimal copy, and no em dashes.
 - Avoid continuously repainting CSS animations (pulse, shimmer, blur, spinners); they peg the GPU on high-refresh displays.
 
-# Blast radius
+## Blast radius
 
-- Never touch production, live databases, or daily-driver build/preview channels unless explicitly told to. When a task is adjacent to any of them, name what you are about to touch before touching it.
+- Never touch production, live databases, or daily-driver build or preview channels unless explicitly told. When a task is adjacent to them, state exactly what you will touch first.
 
-# Coding workflow
+## Coding workflow
 
-- Prefer working in one branch, with a commit per task.
-- We usually work in preview, with the main branch being production.
-- In Shopify we work on main directly, with production being published over CLI.
-- Work local first. On complete tickets or features, always validate yourself through the browser as well if valueble. Give me back a link or links that are validated to preview your work.
+- Prefer one branch and one commit per task.
+- We usually work in preview. The main branch is production.
+- In Shopify, work directly on main and publish production through the CLI.
+- Work locally first. For completed tickets or features, validate through the browser when applicable and return validated preview links.
