@@ -33,7 +33,7 @@ I'm Sil. I use agents for customer work, business operations, and software. I li
   - For webapps: Vite+, Drizzle for relational data or Convex for reactive data, Tailwind, shadcn/ui, Tanstack libraries, Clerk or WorkOS when B2B/enterprise, Resend with React Email, Stripe, pnpm
   - We also build ecommerce in Shopify
 
-# Match ceremony to the task
+# Sub/multi agents
 
 - Do not spawn subagents or a multi-agent panel for work a single agent finishes in one pass. Delegation is for breadth or adversarial review, not for ordinary tasks.
 - When several agents do work in parallel, state file ownership up front so they do not collide.
@@ -55,8 +55,9 @@ I'm Sil. I use agents for customer work, business operations, and software. I li
 
 - Never touch production, live databases, or daily-driver build/preview channels unless explicitly told to. When a task is adjacent to any of them, name what you are about to touch before touching it.
 
-# Branching workflow
+# Coding workflow
 
 - Prefer working in one branch, with a commit per task.
 - We usually work in preview, with the main branch being production.
 - In Shopify we work on main directly, with production being published over CLI.
+- Work local first. On complete tickets or features, always validate yourself through the browser as well if valueble. Give me back a link or links that are validated to preview your work.
