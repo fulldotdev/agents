@@ -62,7 +62,13 @@ Use UTF-8 JSON. Resolve relative paths against the job root passed with `--root`
     "outline": 3,
     "shadow": 0,
     "alignment": 2
-  }
+  },
+  "qa_points": [
+    {
+      "time": 18.4,
+      "reason": "Bright background behind the caption"
+    }
+  ]
 }
 ```
 
@@ -109,6 +115,12 @@ When enabled, the renderer performs single-pass normalization. Prefer deliberate
 - `font_name`, `font_size`, `margin_v`, `outline`, `shadow`, `alignment` — optional libass styling overrides.
 
 When using ASS, prefer styles inside the ASS file. Styling overrides are mainly intended for SRT.
+
+## QA points
+
+`qa_points` is an optional list of output-timeline timestamps with a short `reason`. Use it only for risks that `qa_media.py` cannot derive automatically, such as an unusual color change, a prop entering the crop, or a particularly bright caption background.
+
+The QA helper already derives review frames for every cut, every zoom phase, evenly distributed caption cues, and an overall contact sheet. Do not duplicate those as manual points.
 
 ## Planning discipline
 

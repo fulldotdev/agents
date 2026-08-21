@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import math
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -77,11 +78,48 @@ def safe_stem(path: Path) -> str:
     return f"{cleaned or 'media'}-{digest}"
 
 
+def analyze_audio(path: Path) -> dict[str, float | bool | None]:
+    result = subprocess.run(
+        [
+            FFMPEG,
+            "-hide_banner",
+            "-nostats",
+            "-i",
+            str(path),
+            "-map",
+            "0:a:0",
+            "-af",
+            "volumedetect",
+            "-f",
+            "null",
+            "-",
+        ],
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+
+    def level(name: str) -> float | None:
+        match = re.search(rf"{name}:\s*(-?(?:inf|\d+(?:\.\d+)?)) dB", result.stderr)
+        if not match or match.group(1) == "-inf":
+            return None
+        return float(match.group(1))
+
+    mean = level("mean_volume")
+    peak = level("max_volume")
+    return {
+        "mean_volume_db": mean,
+        "max_volume_db": peak,
+        "near_silent": peak is None or peak <= -50,
+    }
+
+
 def create_review_assets(path: Path, info: dict, review_dir: Path) -> dict:
     review_dir.mkdir(parents=True, exist_ok=True)
     stem = safe_stem(path)
     proxy = review_dir / f"{stem}-proxy.mp4"
     sheet = review_dir / f"{stem}-contact.jpg"
+    scan_sheet = review_dir / f"{stem}-text-scan.jpg"
 
     run(
         [
@@ -135,7 +173,39 @@ def create_review_assets(path: Path, info: dict, review_dir: Path) -> dict:
             str(sheet),
         ]
     )
-    return {"proxy": str(proxy), "contact_sheet": str(sheet)}
+
+    scan_frames = max(1, min(120, math.ceil(duration)))
+    scan_interval = max(1.0, duration / scan_frames)
+    scan_columns = 10
+    scan_rows = math.ceil(scan_frames / scan_columns)
+    scan_vf = (
+        f"fps=1/{scan_interval:.6f},scale=160:-2,"
+        f"tile={scan_columns}x{scan_rows}:nb_frames={scan_frames}:"
+        "padding=2:margin=2:color=black"
+    )
+    run(
+        [
+            FFMPEG,
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-y",
+            "-i",
+            str(path),
+            "-vf",
+            scan_vf,
+            "-frames:v",
+            "1",
+            "-q:v",
+            "3",
+            str(scan_sheet),
+        ]
+    )
+    return {
+        "proxy": str(proxy),
+        "contact_sheet": str(sheet),
+        "text_scan_contact_sheet": str(scan_sheet),
+    }
 
 
 def main() -> int:
@@ -143,6 +213,7 @@ def main() -> int:
     parser.add_argument("inputs", nargs="+", type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--review-dir", type=Path)
+    parser.add_argument("--analyze-audio", action="store_true")
     args = parser.parse_args()
 
     records = []
@@ -150,6 +221,8 @@ def main() -> int:
         if not path.is_file():
             raise SystemExit(f"Input does not exist or is not a file: {path}")
         info = inspect(path)
+        if args.analyze_audio and info["audio"]:
+            info["audio"]["analysis"] = analyze_audio(path)
         if args.review_dir and info["video"]:
             info["review"] = create_review_assets(path, info, args.review_dir)
         records.append(info)
