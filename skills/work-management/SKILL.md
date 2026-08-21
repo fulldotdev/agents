@@ -69,23 +69,12 @@ Append the supporting source event before changing Status. Done is terminal unle
 
 Project statuses are `Discovery`, `Planned`, `In Progress`, `Paused`, `Completed`, and `Canceled`. Move Discovery to Planned when a concrete delivery commitment or approval exists.
 
-## Ownership and approval
+## Cross-system boundaries
 
-- Moneybird owns financial documents and open balances; Rabobank owns observed receipts.
-- monday.com owns individual customer execution tickets.
-- `work-execution` owns scoped implementation, verification, previews, release, and handoff. Its customer rules own customer-visible approval boundaries.
-- Customer-communication owns customer-facing messages and their format.
+Notion coordinates work. Moneybird owns financial documents and open balances, Rabobank owns observed receipts, monday.com owns individual customer tickets, and `customer-communication` owns customer-facing wording.
 
 Create a Notion Task around another system only for an explicit action, decision, exception, approval, or cross-system follow-up that the native system does not already surface reliably.
 
-Get explicit approval before:
+Ask before scanning broad private sources, restructuring Notion databases or templates, or changing automation schedules. Use the relevant skill's approval rules for messages, publishing, finance, and deletion.
 
-- sending customer or vendor messages
-- publishing customer work or Moneybird documents
-- changing unclear finance data
-- deleting data
-- scanning broad private sources
-- restructuring databases or templates
-- changing automation schedules
-
-For an authorized change, write body evidence first and canonical properties last. Read back the result, then verify it with the relevant API, test, build, preview, screenshot, document check, or source confirmation.
+For a Notion change, append body evidence first, write canonical properties last, then read back the result.

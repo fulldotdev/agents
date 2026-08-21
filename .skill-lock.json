@@ -2,22 +2,13 @@
   "version": 3,
   "skills": {
     "gog": {
-      "source": "steipete/clawdis",
+      "source": "openclaw/gogcli",
       "sourceType": "github",
-      "sourceUrl": "https://github.com/steipete/clawdis.git",
-      "skillPath": "skills/gog/SKILL.md",
-      "skillFolderHash": "ceca95bf1ce9e1e66d6fac7f58b0ab69ae9e1771",
+      "sourceUrl": "https://github.com/openclaw/gogcli.git",
+      "skillPath": ".agents/skills/gog/SKILL.md",
+      "skillFolderHash": "c2703d34a76c2e76f5ea7762316be976191daf30",
       "installedAt": "2026-06-10T14:54:43.968Z",
-      "updatedAt": "2026-07-12T15:30:49.476Z"
-    },
-    "notion": {
-      "source": "steipete/clawdis",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/steipete/clawdis.git",
-      "skillPath": "skills/notion/SKILL.md",
-      "skillFolderHash": "d2e041c19097a66fa22c89991690aa69c7616895",
-      "installedAt": "2026-06-11T09:50:46.120Z",
-      "updatedAt": "2026-06-11T09:50:46.120Z"
+      "updatedAt": "2026-08-21T09:53:15.847Z"
     },
     "mcporter": {
       "source": "steipete/clawdis",
@@ -334,6 +325,15 @@
       "skillFolderHash": "6161508c5c7959b156ff0e4e10b510863b51f9cc",
       "installedAt": "2026-08-20T08:06:21.315Z",
       "updatedAt": "2026-08-20T08:06:21.315Z"
+    },
+    "notion-cli": {
+      "source": "makenotion/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/makenotion/skills.git",
+      "skillPath": "skills/notion-cli/SKILL.md",
+      "skillFolderHash": "4360360f674f12699a66fffa1ab80174abbca93b",
+      "installedAt": "2026-08-21T09:53:04.161Z",
+      "updatedAt": "2026-08-21T09:53:04.161Z"
     }
   },
   "dismissed": {

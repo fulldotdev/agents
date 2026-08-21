@@ -7,7 +7,7 @@ Use the smallest source set that can answer the request reliably. For a full his
 1. **Notion and meetings**
    - Read the current scope, requirements, decisions, meeting summaries, and transcripts when the transcript can change a price or version decision.
    - Capture the version actually presented to the customer and the time of the presentation.
-   - Use the `notion` and `work-management` skills.
+   - Use the `notion-cli` and `work-management` skills.
 
 2. **monday.com**
    - Read relevant boards, tickets, updates, and comments with `monday-com`.

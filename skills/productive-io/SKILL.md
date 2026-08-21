@@ -7,9 +7,7 @@ description: Use only when the user explicitly asks to inspect, export, correct,
 
 ## Ownership
 
-This skill keeps on-demand access to Productive time entries. Productive does not participate in routine planning, triage, delivery, commercial scoping, or work-system maintenance. Hours are not inspected, reconstructed, or recorded by default.
-
-Use it only when the current user request explicitly asks for Productive or time-entry work. A request to inspect work, plan a Sprint, deliver a project, prepare an invoice, or price a scope does not authorize a Productive read or write.
+This skill handles Productive time entries only when the current request explicitly asks for Productive or time-entry work. It does not participate in routine planning, triage, delivery, commercial scoping, invoicing, or work-system maintenance.
 
 ## References
 
@@ -23,7 +21,7 @@ Use it only when the current user request explicitly asks for Productive or time
 3. Resolve live person, deal, service, and optional task IDs before a write. For retainers, verify that the parent deal covers the entry date.
 4. For a direct read or export, return entries or totals in human units. Keep raw minutes for calculations.
 5. For an explicitly requested reconstruction, apply `references/reconstruction.md`: contract-total-first, preserve existing entries, distribute only from evidence, and flag unresolved mismatches.
-6. Before any write, show the proposed diff unless Sil explicitly asked to execute that exact Productive change. A read, export, audit, or general work request does not authorize writes.
+6. Before a write, show the proposed diff unless Sil explicitly asked to execute that exact change.
 7. Verify created or updated entries by reading them back. Never delete entries without Sil's explicit request.
 
 ## Write requirements

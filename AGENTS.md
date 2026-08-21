@@ -14,6 +14,12 @@ I'm Sil. I use agents for customer work, business operations, and software. I li
 - We work on my personal Macbook and on a remote always-on Mac Mini named Otis.
 - On Otis, use `~/.hermes/browser-profiles/otis` for authenticated browser work.
 - On Macbook, you can ssh into otis with `ssh -A otis`.
+- Keep projects in `~/projects` and T3 Code's project list aligned on both machines. Sync project contents through Git, never through a cloud folder, and never overwrite uncommitted work.
+
+## Skills
+
+- Do not edit installed skills unless I explicitly ask. Local changes can block updates or be overwritten.
+- Keep custom skills concise. Remove generic guidance, duplication, and detail that belongs in references or scripts.
 
 ## Coding
 

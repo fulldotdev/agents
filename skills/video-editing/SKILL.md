@@ -19,6 +19,8 @@ Edit supplied footage non-destructively on `otis`. Use Faster-Whisper for transc
 
 Read the `ssh` skill before operating Otis. Use lowered process priority and one render at a time so Hermes stays responsive.
 
+Read [references/commands.md](references/commands.md) when creating a job or running the inspection, transcription, render, or QA scripts manually.
+
 ## Workflow
 
 1. Resolve every source and destination path. Check disk, media metadata, tool versions, and any existing job state. Never overwrite or delete an original.
@@ -86,63 +88,6 @@ Read the `ssh` skill before operating Otis. Use lowered process priority and one
 - Do not apply a low-pass filter, compressor, denoiser, or loudness normalization by default. Use a light high-pass only for real low-frequency rumble and transparent peak limiting only when peaks require it.
 - Measure loudness and true peak. If level correction is needed, prefer deliberate gain or measured two-pass normalization over blind single-pass processing.
 - Final social audio should normally be `48 kHz` AAC at about `320 kbps`; previews may use a lower bitrate. Listen to the output, not only the meters.
-
-## Commands
-
-Preflight:
-
-```bash
-ssh otis '/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg -version | head -n 1
-/opt/homebrew/opt/ffmpeg-full/bin/ffprobe -version | head -n 1
-/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg -hide_banner -filters 2>/dev/null | awk '\''$2 == "ass" || $2 == "subtitles" {print}'\''
-/Users/otis/.hermes/hermes-agent/venv/bin/python -c "import faster_whisper; print(faster_whisper.__version__)"
-df -h / | tail -n 1'
-```
-
-Create a job and ingest a source:
-
-```bash
-ssh otis 'mkdir -p /Users/otis/.video-editing/jobs/<job-id>/{source,work,output}'
-rsync -av --progress "/absolute/local/input.mp4" "otis:/Users/otis/.video-editing/jobs/<job-id>/source/"
-```
-
-Inspect and transcribe:
-
-```bash
-ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
-  /Users/otis/.agents/skills/video-editing/scripts/inspect_media.py \
-  /Users/otis/.video-editing/jobs/<job-id>/source/*.mp4 \
-  --output /Users/otis/.video-editing/jobs/<job-id>/work/media-manifest.json \
-  --review-dir /Users/otis/.video-editing/jobs/<job-id>/work/review \
-  --analyze-audio'
-
-ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
-  /Users/otis/.agents/skills/video-editing/scripts/transcribe.py \
-  /Users/otis/.video-editing/jobs/<job-id>/source/input.mp4 \
-  --output-dir /Users/otis/.video-editing/jobs/<job-id>/work/input-transcript \
-  --model small --language auto --word-timestamps'
-```
-
-Render an edit plan:
-
-```bash
-ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
-  /Users/otis/.agents/skills/video-editing/scripts/render_plan.py \
-  /Users/otis/.video-editing/jobs/<job-id>/work/edit-plan.json \
-  --root /Users/otis/.video-editing/jobs/<job-id>'
-```
-
-QA a final against its plan:
-
-```bash
-ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
-  /Users/otis/.agents/skills/video-editing/scripts/qa_media.py \
-  /Users/otis/.video-editing/jobs/<job-id>/output/final.mp4 \
-  --plan /Users/otis/.video-editing/jobs/<job-id>/work/edit-plan.json \
-  --root /Users/otis/.video-editing/jobs/<job-id> \
-  --output-dir /Users/otis/.video-editing/jobs/<job-id>/work/final-qa \
-  --require-captions'
-```
 
 ## Final QA
 
