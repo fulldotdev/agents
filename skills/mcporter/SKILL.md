@@ -1,7 +1,6 @@
 ---
 name: mcporter
-description: "List, configure, authenticate, call, and inspect MCP servers/tools with mcporter over HTTP or stdio."
-homepage: http://mcporter.dev
+description: "Use when MCP servers or tools must be listed, configured, authenticated, called, or inspected with mcporter."
 metadata:
   {
     "openclaw":
@@ -25,6 +24,8 @@ metadata:
 # mcporter
 
 Use `mcporter` to work with MCP servers directly.
+
+Documentation: <http://mcporter.dev>
 
 Quick start
 

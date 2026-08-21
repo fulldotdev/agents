@@ -41,6 +41,8 @@ Precedence: site globals < context overrides; production overrides globals when 
 
 ## CLI deploys
 
+For an existing repository, use its linked Netlify site. Before creating a preview URL or deploying, verify that `.netlify/state.json` identifies the intended site for that repository. Stop on a mismatch instead of deploying to a different site.
+
 ```bash
 netlify create              # new project from a natural-language prompt
 netlify deploy              # manual deploy, no continuous deployment

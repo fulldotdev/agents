@@ -1,7 +1,6 @@
 ---
 name: notion
-description: "Notion CLI/API for pages, Markdown content, data sources, files, comments, search, Workers, and raw API calls."
-homepage: https://developers.notion.com/cli/get-started/overview
+description: "Use when Notion pages, data sources, files, comments, searches, Workers, or raw API operations must be read or changed with the Notion CLI."
 metadata:
   {
     "openclaw":
@@ -26,6 +25,8 @@ metadata:
 # Notion
 
 Prefer official `ntn` CLI. Use curl only when `ntn` is unavailable or a raw request is clearer.
+
+Official CLI docs: <https://developers.notion.com/cli/get-started/overview>
 
 ## Setup
 

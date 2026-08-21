@@ -1,6 +1,6 @@
 ---
 name: gog
-description: "Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs."
+description: "Use when Gmail, Google Calendar, Drive, Contacts, Sheets, Docs, or Forms must be read or changed with the gog CLI."
 metadata:
   {
     "openclaw":

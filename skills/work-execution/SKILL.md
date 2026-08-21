@@ -1,6 +1,6 @@
 ---
 name: work-execution
-description: Use when scoped work must be implemented, verified, previewed, released, or handed off. Apply the customer branch when the target or deliverable belongs to or will be seen by a customer.
+description: Use when the user asks to implement, change, fix, QA, preview, release, deploy, publish, or hand off scoped work.
 ---
 
 # Work execution
@@ -21,12 +21,14 @@ Internal tools, personal work, sales exploration, and reusable assets use only t
 
 ## Regular rules
 
-1. Read the request, repository instructions, current worktree, and sources that define the outcome. Preserve unrelated changes.
+1. Read the request, repository instructions, and sources that define the outcome. At the start of a development session, inspect `git status`. Preserve unrelated changes, and pull only when the worktree is clean with no open local changes.
 2. Confirm the deliverable, target, and stopping boundary. Ask only when missing information would change the result, risk, or authorization.
-3. Implement the agreed scope in the appropriate local or preview environment. Use specialist skills when the work needs them.
-4. Verify the result in proportion to risk. Run the relevant tests or build, inspect the target environment, and use screenshots for visual changes.
-5. Commit, push, publish, or release only when the request and repository workflow authorize that step.
-6. Return the result, useful URLs, verification, and any concrete limitation. When an owning Notion record exists, use `work-management` to record evidence and update its status after verification.
+3. Follow repository-specific branch rules. Otherwise continue the current task branch, use `preview` for normal work when available, and use `main` for production. Teveo and fayn Shopify repositories default to `main`. Use a worktree only when the user asks for one.
+4. Reuse a responsive project dev server when available. Otherwise start the project's normal dev command and keep it running for the thread.
+5. Implement only the agreed scope in the appropriate local or preview environment. Use specialist skills when the work needs them.
+6. Verify in proportion to risk with the relevant test, build, or target environment. For visual changes, inspect screenshots in the target environment and iterate until the result matches the intended design.
+7. Commit, push, publish, or release only when the request and repository workflow authorize that step.
+8. Return the result, useful URLs including the local or preview URL, verification, and any concrete limitation. When an owning Notion record exists, use `work-management` to record evidence and update its status after verification.
 
 Do not add customer-specific local or preview approval stages to regular work. Follow the approval boundaries in the request, repository, and shared instructions.
 
