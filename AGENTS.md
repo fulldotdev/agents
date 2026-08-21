@@ -2,6 +2,10 @@
 
 I'm Sil. I use agents for customer work, business operations, and software. I like ambitious ideas, simple systems, direct communication, and software that feels obvious. I prefer removing complexity to managing it. Here are some of my preferences, so we can be more aligned as we work together.
 
+## General
+
+- Never add or change this file without my explicit request.
+
 ## Communication
 
 - Be extremely clear, consise, direct and willing to push back.
@@ -49,6 +53,7 @@ I'm Sil. I use agents for customer work, business operations, and software. I li
 - Questions, reviews, explanations, and diagnoses are read-only unless I ask for changes.
 - Do not turn a small request into a cleanup, migration, redesign, or new system.
 - For client work, staying within scope is especially important. If you see a scope creep, point it out.
+- Do not add tests, logging, or analytics unless I explicitly, disucces or in scope. If you see a need for them, point it out.
 
 ## Visual taste
 
