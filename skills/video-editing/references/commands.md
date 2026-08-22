@@ -15,8 +15,8 @@ df -h / | tail -n 1'
 ## Create and ingest
 
 ```bash
-ssh otis 'mkdir -p /Users/otis/.video-editing/jobs/<job-id>/{source,work,output}'
-rsync -av --progress "/absolute/local/input.mp4" "otis:/Users/otis/.video-editing/jobs/<job-id>/source/"
+ssh otis 'mkdir -p /Users/otis/video-work/<job-id>/{source,work,output}'
+rsync -av --progress "/absolute/local/input.mp4" "otis:/Users/otis/video-work/<job-id>/source/"
 ```
 
 ## Inspect and transcribe
@@ -24,15 +24,15 @@ rsync -av --progress "/absolute/local/input.mp4" "otis:/Users/otis/.video-editin
 ```bash
 ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
   /Users/otis/.agents/skills/video-editing/scripts/inspect_media.py \
-  /Users/otis/.video-editing/jobs/<job-id>/source/*.mp4 \
-  --output /Users/otis/.video-editing/jobs/<job-id>/work/media-manifest.json \
-  --review-dir /Users/otis/.video-editing/jobs/<job-id>/work/review \
+  /Users/otis/video-work/<job-id>/source/*.mp4 \
+  --output /Users/otis/video-work/<job-id>/work/media-manifest.json \
+  --review-dir /Users/otis/video-work/<job-id>/work/review \
   --analyze-audio'
 
 ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
   /Users/otis/.agents/skills/video-editing/scripts/transcribe.py \
-  /Users/otis/.video-editing/jobs/<job-id>/source/input.mp4 \
-  --output-dir /Users/otis/.video-editing/jobs/<job-id>/work/input-transcript \
+  /Users/otis/video-work/<job-id>/source/input.mp4 \
+  --output-dir /Users/otis/video-work/<job-id>/work/input-transcript \
   --model small --language auto --word-timestamps'
 ```
 
@@ -41,8 +41,8 @@ ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
 ```bash
 ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
   /Users/otis/.agents/skills/video-editing/scripts/render_plan.py \
-  /Users/otis/.video-editing/jobs/<job-id>/work/edit-plan.json \
-  --root /Users/otis/.video-editing/jobs/<job-id>'
+  /Users/otis/video-work/<job-id>/work/edit-plan.json \
+  --root /Users/otis/video-work/<job-id>'
 ```
 
 ## QA
@@ -50,9 +50,9 @@ ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
 ```bash
 ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
   /Users/otis/.agents/skills/video-editing/scripts/qa_media.py \
-  /Users/otis/.video-editing/jobs/<job-id>/output/final.mp4 \
-  --plan /Users/otis/.video-editing/jobs/<job-id>/work/edit-plan.json \
-  --root /Users/otis/.video-editing/jobs/<job-id> \
-  --output-dir /Users/otis/.video-editing/jobs/<job-id>/work/final-qa \
+  /Users/otis/video-work/<job-id>/output/final.mp4 \
+  --plan /Users/otis/video-work/<job-id>/work/edit-plan.json \
+  --root /Users/otis/video-work/<job-id> \
+  --output-dir /Users/otis/video-work/<job-id>/work/final-qa \
   --require-captions'
 ```

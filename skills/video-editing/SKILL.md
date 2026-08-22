@@ -10,7 +10,8 @@ Edit supplied footage non-destructively on `otis`. Use Faster-Whisper for transc
 ## Fixed environment
 
 - Host: `otis`
-- Job root: `/Users/otis/.video-editing/jobs/<job-id>`
+- Job root: `/Users/otis/video-work/<job-id>`
+- Shared Drive root: `/Users/otis/Google Drive/My Drive/videos`
 - FFmpeg Full: `/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg`
 - FFprobe: `/opt/homebrew/opt/ffmpeg-full/bin/ffprobe`
 - Python with Faster-Whisper: `/Users/otis/.hermes/hermes-agent/venv/bin/python`
@@ -20,6 +21,13 @@ Edit supplied footage non-destructively on `otis`. Use Faster-Whisper for transc
 Read the `ssh` skill before operating Otis. Use lowered process priority and one render at a time so Hermes stays responsive.
 
 Read [references/commands.md](references/commands.md) when creating a job or running the inspection, transcription, render, or QA scripts manually.
+
+## Storage
+
+- Use `~/video-work/<job-id>` on either Mac for temporary editing work. Otis remains the default editing host.
+- Keep lasting source files in Drive `videos/inbox`, review files in `videos/review`, and approved deliverables in `videos/final` so they can be linked from Notion.
+- Copy a Drive source into the local job before processing. Never render directly into the streamed Drive folder.
+- Copy verified outputs to Drive only when authorized, then verify size and checksum. Keep originals unchanged and delete local jobs only with explicit approval.
 
 ## Workflow
 
