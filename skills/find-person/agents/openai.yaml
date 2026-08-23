@@ -1,0 +1,4 @@
+interface:
+  display_name: "Find Person"
+  short_description: "Find people through public cross-references"
+  default_prompt: "Use $find-person to search for someone through public, authorized sources and show me the strongest candidates."
