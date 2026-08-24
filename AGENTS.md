@@ -15,9 +15,9 @@ I'm Sil. I use agents for customer work, business operations, and software. I li
 
 ## Environments
 
-- always use chrome when using browser
+- Always use the machine's existing Chrome work profile for browser tasks on both MacBook and Otis.
+- When the user asks to access a site, saved Chrome credentials and password-manager autofill may be used to sign in. Never reveal, copy, export, or change saved credentials, and never enter 2FA codes.
 - We work on my personal Macbook and on a remote always-on Mac Mini named Otis.
-- On Otis, use `~/.hermes/browser-profiles/otis` for authenticated browser work.
 - On Macbook, you can ssh into otis with `ssh -A otis`.
 - Keep projects in `~/projects` and T3 Code's project list aligned on both machines. Sync project contents through Git, never through a cloud folder, and never overwrite uncommitted work.
 
