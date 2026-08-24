@@ -25,7 +25,7 @@ Read [references/commands.md](references/commands.md) when creating a job or run
 ## Storage
 
 - Use `~/video-work/<job-id>` on either Mac for temporary editing work. Otis remains the default editing host.
-- Keep lasting source files in Drive `videos/inbox`, review files in `videos/review`, and approved deliverables in `videos/final` so they can be linked from Notion.
+- Keep lasting source files in Drive `videos/originals`, work-in-progress and review files in `videos/drafts`, and approved deliverables in `videos/finals` so they can be linked from Notion.
 - Copy a Drive source into the local job before processing. Never render directly into the streamed Drive folder.
 - Copy verified outputs to Drive only when authorized, then verify size and checksum. Keep originals unchanged and delete local jobs only with explicit approval.
 
