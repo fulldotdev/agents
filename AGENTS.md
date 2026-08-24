@@ -15,6 +15,7 @@ I'm Sil. I use agents for customer work, business operations, and software. I li
 
 ## Environments
 
+- always use chrome when using browser
 - We work on my personal Macbook and on a remote always-on Mac Mini named Otis.
 - On Otis, use `~/.hermes/browser-profiles/otis` for authenticated browser work.
 - On Macbook, you can ssh into otis with `ssh -A otis`.
