@@ -16,7 +16,7 @@ from common import add_common_args, base_result, compact_text, emit, parse_iso, 
 T3_HELPER = Path(
     os.environ.get(
         "T3_DISPATCH_HELPER",
-        Path.home() / ".hermes" / "skills" / "devtools" / "t3-code" / "scripts" / "t3_dispatch.py",
+        Path.home() / ".agents" / "skills" / "t3-code" / "scripts" / "t3_dispatch.py",
     )
 ).expanduser()
 DEFAULT_LIMIT = int(os.environ.get("TRIAGE_T3_LIMIT", "100"))
