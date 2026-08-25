@@ -79,6 +79,7 @@ class WhatsAppMediaRecoveryTests(unittest.TestCase):
                             {
                                 "ChatJID": "chat@example.com",
                                 "MsgID": "m1",
+                                "FromMe": True,
                                 "MediaType": "image",
                                 "Timestamp": "2026-07-31T08:00:00Z",
                             }
@@ -90,6 +91,7 @@ class WhatsAppMediaRecoveryTests(unittest.TestCase):
                 items = whatsapp.collect(datetime(2026, 7, 31, tzinfo=timezone.utc), datetime(2026, 8, 1, tzinfo=timezone.utc))
 
             recover.assert_called_once_with([])
+            self.assertTrue(items[0]["messages"][0]["is_sent_by_me"])
             self.assertEqual(items[0]["messages"][0]["media"]["saved_paths"], [str(media_path)])
             self.assertNotIn("recovery", items[0]["messages"][0]["media"])
 

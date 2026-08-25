@@ -44,10 +44,10 @@ def collect_account(account, after_dt=None, before_dt=None, query=None):
     elif after_dt:
         from datetime import timedelta
         search_before = before_dt.date() + timedelta(days=1)
-        window_query = f"in:inbox after:{after_dt.strftime('%Y/%m/%d')} before:{search_before.strftime('%Y/%m/%d')}"
-        queries, mode = [window_query], "inbox_window"
+        window = f"after:{after_dt.strftime('%Y/%m/%d')} before:{search_before.strftime('%Y/%m/%d')}"
+        queries, mode = [f"in:inbox {window}", f"in:sent {window}"], "inbox_and_sent_window"
     else:
-        queries, mode = ["in:inbox"], "inbox"
+        queries, mode = ["in:inbox", "in:sent"], "inbox_and_sent"
     threads, seen = [], set()
     for q in queries:
         for summary in search_threads(account, q):
@@ -86,8 +86,6 @@ def collect_account(account, after_dt=None, before_dt=None, query=None):
                 saved = dest if dest and dest.exists() else src if src and src.exists() else None
                 atts.append({"filename": att.get("filename"), "mime_type": att.get("mimeType"), "size": att.get("size"), "saved_path": str(saved) if saved else None})
             messages.append({"id": msg.get("id"), "date": hs.get("date"), "from": hs.get("from"), "to": hs.get("to"), "cc": hs.get("cc"), "bcc": hs.get("bcc"), "subject": hs.get("subject") or summary.get("subject"), "labels": labels, "is_sent_by_me": "SENT" in labels, "in_window": in_window, "body": compact_text(body(msg.get("payload") or {}), 20000), "attachments": atts})
-        if not query and not has_inbox:
-            continue
         if query and after_dt and not has_window:
             continue
         items.append({"id": tid, "url": gmail_url(account, tid), "account": account, "subject": summary.get("subject"), "query": summary.get("matched_query"), "queries": queries, "mode": mode, "contains_sent_by_me": has_sent, "contains_in_window": has_window, "is_in_inbox": has_inbox, "is_archived": not has_inbox, "has_unread": has_unread, "messages": messages})

@@ -293,6 +293,7 @@ def collect(a, b):
                 "id": mid,
                 "sender": m.get("SenderJID"),
                 "sender_name": m.get("SenderName") or None,
+                "is_sent_by_me": bool(m.get("FromMe")),
                 "timestamp": m.get("Timestamp"),
                 "kind": "media" if mt else "message",
                 "text": compact_text(m.get("Text") or m.get("DisplayText") or m.get("Snippet") or "", 12000),
