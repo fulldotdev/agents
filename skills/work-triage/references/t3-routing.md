@@ -28,7 +28,7 @@ Update the Task and Timeline first. Check the thread index and live status befor
 
 The dispatch prompt appears in Sil's existing thread. Write it for him, not as orchestration metadata.
 
-Open with a natural sentence such as: `This is an automatic follow-up from heartbeat triage. Franziska added new feedback on the existing task, so I reopened this thread.` Then summarize what changed and what the agent will do in plain language. Put the Task and source links after the explanation. Include scope and safety limits without labels such as `Owning Task`, `New source`, `bounded feedback`, or `stopping boundary`.
+Open with a natural sentence such as: `This is an automatic follow-up from heartbeat triage. A customer added new feedback to the existing task, so I reopened this thread.` Then summarize what changed and what the agent will do in plain language. Put references and links after the explanation. Include scope and safety limits without internal orchestration labels.
 
 End the prompt with these response requirements:
 
@@ -37,7 +37,7 @@ End the prompt with these response requirements:
 - The final reply explains the result and Sil's next action before mentioning files, commits, tests, IDs, or vendor internals.
 - Technical detail appears only when it helps Sil review the work or act on a blocker.
 
-The reader must understand the trigger, result, and next action without opening monday, Notion, or the code diff.
+The reader must understand the trigger, result, and next action without opening linked sources, task records, or technical artifacts.
 
 After a turn starts, record the dispatch and set the Task to Doing. A finished T3 turn does not prove the Task is Done; use the verification rule in `work-management`.
 
