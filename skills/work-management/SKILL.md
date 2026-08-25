@@ -37,7 +37,7 @@ Create a Project only when the work crosses the Task threshold above. A single d
 2. Reuse an active Task when the stakeholder, outcome, and short execution window are the same.
 3. Keep related preparation, calls, feedback, blockers, approvals, follow-up, and files on that Task. Split work when its stakeholder changes or a part can be completed independently.
 4. Treat Tasks completed before today as closure records. New work normally gets a related Task. Do not keep dormant Tasks for hypothetical requests.
-5. Create a Task for Sil only when Sil owns a concrete action, decision, deliverable, or follow-up. Work owned by someone else remains Company, Project, or source context.
+5. Create a Task only when Sil owns agreed work that must be tracked outside its source: a deliverable, multi-step action, deadline or dependency, or follow-up that outlives the conversation. Replies, acknowledgements, scheduling, forwarding, quick reviews, questions, proposals, ideas, and unconfirmed requests stay in their source unless they create that work.
 6. Bound recurring work by a period or result. Do not use an indefinite operational Task.
 7. Keep source links through relations and compact, reopenable Timeline locators.
 
