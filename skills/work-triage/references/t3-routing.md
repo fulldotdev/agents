@@ -24,6 +24,21 @@ If a condition fails, stop at preparation. Preserve the source, update the Task 
 
 Update the Task and Timeline first. Check the thread index and live status before creating or resuming. Store the stable T3 environment, project, and thread locator in the Timeline.
 
-Every prompt names the owning Task, exact new source, scope, and stopping boundary. After a turn starts, record the dispatch and set the Task to Doing. A finished T3 turn does not prove the Task is Done; use the verification rule in `work-management`.
+### User-visible handoff
+
+The dispatch prompt appears in Sil's existing thread. Write it for him, not as orchestration metadata.
+
+Open with a natural sentence such as: `This is an automatic follow-up from heartbeat triage. Franziska added new feedback on the existing task, so I reopened this thread.` Then summarize what changed and what the agent will do in plain language. Put the Task and source links after the explanation. Include scope and safety limits without labels such as `Owning Task`, `New source`, `bounded feedback`, or `stopping boundary`.
+
+End the prompt with these response requirements:
+
+- The agent's first user-visible message says that heartbeat triage started the turn and why.
+- The final reply opens with why the turn started automatically and what the agent did.
+- The final reply explains the result and Sil's next action before mentioning files, commits, tests, IDs, or vendor internals.
+- Technical detail appears only when it helps Sil review the work or act on a blocker.
+
+The reader must understand the trigger, result, and next action without opening monday, Notion, or the code diff.
+
+After a turn starts, record the dispatch and set the Task to Doing. A finished T3 turn does not prove the Task is Done; use the verification rule in `work-management`.
 
 Triage ends after context updates, native drafts, appropriate Gmail archival, and T3 dispatch. T3 may implement, test, and prepare a preview within scope. Merge, release, publish, payment, destructive changes, and external communication still need approval.

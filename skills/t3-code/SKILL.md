@@ -53,6 +53,10 @@ The presence of a Task, new feedback, or an existing thread does not by itself a
 
 A stopped, ready, or settled thread may be resumed directly. Store the T3 environment, project ID, thread ID, repository path, branch, provider/model, and provider session ID when available as a source-grounded Task Timeline event. Do not store credentials.
 
-Every automated prompt includes the owning Task, exact new source, current scope, and stopping boundary. External communication, release, payment, and ambiguous irreversible actions remain approval-gated.
+Automated prompts follow the user-visible handoff rules in `work-triage/references/t3-routing.md`. They say in normal language that heartbeat triage started the turn, what new event caused it, and what work will continue. Task links, source links, scope, and safety limits come afterward.
+
+The agent's first user-visible message identifies the automatic trigger. Its final reply opens with the reason the turn started and what the agent did, then states the result and Sil's next action. Do not lead with files, commits, test counts, IDs, or vendor internals.
+
+External communication, release, payment, and ambiguous irreversible actions remain approval-gated.
 
 After dispatch, confirm the expected thread exists and surface completed, running, failed, approval-needed, or user-input-needed state. Verify filesystem or git results only when the owning execution workflow calls for that verification; triage itself stops after dispatch.
