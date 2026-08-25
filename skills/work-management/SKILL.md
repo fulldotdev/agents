@@ -21,7 +21,7 @@ Load only the detail needed for the current operation:
 - **Project**: a confirmed outcome with several independent Tasks or more than about one week of work.
 - **Company**: an identifiable organization with reusable sales, delivery, finance, or relationship context.
 - **Person**: someone whose relationship context is worth retaining even when they are not in Google Contacts. Use Google Contacts as the address book; use Persons for researched or durable context that does not belong there.
-- **Sprint**: a Monday to Sunday commitment. Add a Task only when Sil commits to substantial work that week. Todo without a Sprint is valid unscheduled work.
+- **Sprint**: a Monday to Sunday commitment. When creating a Task, assign it to the current Sprint by default. Leave Sprint empty only when the request clearly belongs later, in the backlog, in Someday, or otherwise outside the current week.
 - **Goal**: an accepted long-term outcome. Keep it in `Backlog` until Sil activates it for a time horizon.
 - **Someday**: a vague or maybe-later idea that is not executable yet.
 - **Source**: evidence such as a message, meeting, file, decision, blocker, or requirement. It becomes a Task only when Sil owns concrete work.
