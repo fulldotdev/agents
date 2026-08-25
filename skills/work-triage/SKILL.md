@@ -68,8 +68,8 @@ Keep routine bookkeeping silent: archival, Timeline additions, source links, med
 
 Group changes from one source into one outcome item. Retry a lane failure silently once. After two consecutive failures, report one alert naming the lane and the concrete work that cannot be judged.
 
-Return one compact numbered list. Continue after the highest number already used in the current Triage conversation. A silent run consumes no number. Link every named Task, Project, or Company to its Notion page.
+Return only a compact numbered list. Each item must be one sentence of at most 25 words, excluding the Notion link. Never use sub-bullets or follow-up paragraphs. State only what Sil must know or do now; leave evidence, technical details, quotes, option breakdowns, and draft contents in the linked Task or native draft.
 
-Start each item with a short bold action label ending in a period, followed by the result. Example: `28. **Task created.** [Fix privacy-page feedback](...) from Joren's confirmed request.`
+Continue after the highest number already used in the current Triage conversation. A silent run consumes no number. Link every named Task, Project, or Company to its Notion page. Start each item with a short bold action label ending in a period. Example: `28. **Task created.** [Fix privacy-page feedback](...) from Joren's confirmed request.`
 
 If nothing meets the reporting gate, return exactly `[SILENT]`.
