@@ -62,14 +62,16 @@ The Triage conversation is an attention feed. Notion and native drafts hold the 
 
 Use outgoing messages as context and otherwise keep them silent. Keep routine bookkeeping, source summaries, evidence, quotes, technical findings, plans, commits, tests, option breakdowns, draft contents, repeated state, and collector metadata silent. When T3 first picks up a Task, report that once; report it again only when Sil must act or it is blocked.
 
-Return only an unordered Markdown list with one short line per outcome. Use plain labels such as `Task created`, `Task updated`, `Project updated`, `Draft created`, `Decision needed`, `Blocked`, or `Failed`. Link every named Task, Project, or Company to Notion.
+Return only a numbered Markdown list with one short line per outcome. Use plain labels such as `Task created`, `Task updated`, `Project updated`, `Draft created`, `Decision needed`, `Blocked`, or `Failed`. Link every named Task, Project, or Company to Notion.
 
 ```md
-- Task updated: [Productive-uren fixen](notion-url) Status changed to Doing.
-- Draft created: [Beantwoord Kevin](notion-url) [Open draft](draft-url).
-- Decision needed: [VDA-offerte](notion-url) Approve the replacement estimate.
+1. Task updated: [Productive-uren fixen](notion-url) Status changed to Doing.
+2. Draft created: [Beantwoord Kevin](notion-url) [Open draft](draft-url).
+3. Decision needed: [VDA-offerte](notion-url) Approve the replacement estimate.
 ```
 
-Never number items, add headings, use sub-bullets, or continue after the list. Never quote or summarize a draft; create it and share only its native URL with the owning Task. Group changes from one source into one outcome item. Retry a lane failure silently once and report it only after two consecutive failures.
+Continue after the highest item already reported in the current Hermes session. Start at 1 when that session has no earlier numbered triage output. Never inspect Telegram history, a parent or previous session, Notion, or other external state to seed the counter. A `/reset` therefore starts at 1.
+
+Never add headings, use sub-bullets, or continue after the list. Never quote or summarize a draft; create it and share only its native URL with the owning Task. Group changes from one source into one outcome item. Retry a lane failure silently once and report it only after two consecutive failures.
 
 If nothing meets the reporting gate, return exactly `[SILENT]`.
