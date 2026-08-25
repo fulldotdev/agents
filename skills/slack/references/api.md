@@ -4,6 +4,8 @@
 
 For multi-workspace reads, store one file per workspace under `~/.config/slack/workspaces/<slug>.env`. Each file contains `SLACK_WORKSPACE_NAME` and that workspace's token variables. The work-management collector reads every `*.env` file in this directory, emits a success/failure summary per workspace, and labels results with the workspace slug, display name, team ID, and URL.
 
+Set `SLACK_TRIAGE_MODE=signals` to collect DMs, direct mentions, and messages sent by the authenticated user. This is the default. Set `SLACK_TRIAGE_MODE=all` to collect every accessible message in the triage window, including channel messages and thread replies.
+
 Set `SLACK_CONFIG_PATH` only when intentionally selecting one config file. If no workspace files exist, exported environment variables are the fallback.
 
 Use `--workspace <slug>` on the work-triage source collector for a focused read. Omit it during triage so every workspace is collected.

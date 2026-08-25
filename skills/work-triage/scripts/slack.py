@@ -2,6 +2,7 @@
 # Slack collection for work-triage.
 import argparse, json, os, shlex, subprocess, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import timedelta
 from pathlib import Path
 from urllib.parse import parse_qs, urlencode, urlparse
 from common import MAX_ITEMS_PER_LANE, add_common_args, base_result, compact_text, emit, error_obj, window_from_args
@@ -10,6 +11,7 @@ SLACK_API_TIMEOUT_SECONDS = float(os.environ.get("SLACK_API_TIMEOUT_SECONDS", "8
 SLACK_CONNECT_TIMEOUT_SECONDS = float(os.environ.get("SLACK_CONNECT_TIMEOUT_SECONDS", "3"))
 SLACK_COLLECT_TIMEOUT_SECONDS = float(os.environ.get("SLACK_COLLECT_TIMEOUT_SECONDS", "45"))
 SLACK_SEARCH_COUNT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_SEARCH_COUNT", "25")))
+SLACK_ALL_SEARCH_COUNT = min(100, MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_ALL_SEARCH_COUNT", "100")))
 SLACK_HISTORY_LIMIT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_HISTORY_LIMIT", "50")))
 SLACK_CONVERSATION_LIMIT = min(200, int(os.environ.get("SLACK_CONVERSATION_LIMIT", "100")))
 SLACK_REPLIES_LIMIT = min(MAX_ITEMS_PER_LANE, int(os.environ.get("SLACK_REPLIES_LIMIT", "50")))
@@ -94,6 +96,16 @@ def select_token(config):
             if value and value.strip():
                 return value.strip()
     raise RuntimeError(f"missing slack token for workspace {config.get('slug')}")
+
+def triage_mode(config):
+    values = config.get("values") or {}
+    value = values.get("SLACK_TRIAGE_MODE")
+    if config.get("use_environment"):
+        value = os.environ.get("SLACK_TRIAGE_MODE") or value
+    mode = (value or "signals").strip().lower()
+    if mode not in {"signals", "all"}:
+        raise ValueError(f"invalid SLACK_TRIAGE_MODE for workspace {config.get('slug')}: {mode}")
+    return mode
 
 def token():
     if not _token_value:
@@ -203,6 +215,9 @@ def slack_search_messages(q):
     matches = (api("search.messages", {"query": q, "count": str(SLACK_SEARCH_COUNT), "sort": "timestamp", "sort_dir": "desc"}).get("messages") or {}).get("matches") or []
     return [m for m in matches if isinstance(m, dict)][:MAX_ITEMS_PER_LANE]
 
+def search_date_bounds(a, b):
+    return f"after:{(a.date() - timedelta(days=1)).isoformat()} before:{(b.date() + timedelta(days=1)).isoformat()}"
+
 def search(q, a, b, filter_window=True, include_replies=True):
     matches = slack_search_messages(q)
     items = []
@@ -212,6 +227,107 @@ def search(q, a, b, filter_window=True, include_replies=True):
         if not filter_window or item.get("in_window") or item["thread_replies"]:
             items.append(item)
     return items
+
+def all_search(a, b):
+    q = search_date_bounds(a, b)
+    items, page = [], 1
+    while len(items) < MAX_ITEMS_PER_LANE:
+        messages = api("search.messages", {
+            "query": q,
+            "count": str(SLACK_ALL_SEARCH_COUNT),
+            "page": str(page),
+            "sort": "timestamp",
+            "sort_dir": "desc",
+        }).get("messages") or {}
+        matches = [m for m in messages.get("matches") or [] if isinstance(m, dict)]
+        for match in matches:
+            if in_window(match, a, b):
+                item = norm(match, after_dt=a, before_dt=b)
+                item["match_query"] = "all_search"
+                item["thread_replies"] = []
+                items.append(item)
+                if len(items) >= MAX_ITEMS_PER_LANE:
+                    break
+        paging = messages.get("paging") or messages.get("pagination") or {}
+        pages = int(paging.get("pages") or paging.get("page_count") or 1)
+        if not matches or page >= pages:
+            break
+        timestamps = [float(m.get("ts") or 0) for m in matches]
+        if timestamps and min(timestamps) < a.timestamp():
+            break
+        page += 1
+    return items
+
+def list_conversations(types):
+    channels, cursor = [], None
+    while True:
+        params = {"types": types, "exclude_archived": "true", "limit": str(SLACK_CONVERSATION_LIMIT)}
+        if cursor:
+            params["cursor"] = cursor
+        data = api("conversations.list", params)
+        channels.extend(ch for ch in data.get("channels") or [] if isinstance(ch, dict) and ch.get("id"))
+        cursor = (((data.get("response_metadata") or {}).get("next_cursor")) or "").strip()
+        if not cursor:
+            return channels
+
+def conversation_history(ch, a, b):
+    items, cursor = [], None
+    channel_type = "mpim" if ch.get("is_mpim") else "im" if ch.get("is_im") else "private_channel" if ch.get("is_private") else "public_channel"
+    channel_name = ch.get("name") or (user_display(ch.get("user")) if channel_type == "im" else None)
+    while len(items) < MAX_ITEMS_PER_LANE:
+        params = {
+            "channel": ch.get("id"),
+            "oldest": str(a.timestamp()),
+            "latest": str(b.timestamp()),
+            "inclusive": "false",
+            "limit": str(SLACK_HISTORY_LIMIT),
+        }
+        if cursor:
+            params["cursor"] = cursor
+        data = api("conversations.history", params)
+        for message in data.get("messages") or []:
+            if not isinstance(message, dict):
+                continue
+            item = norm(message, channel=ch.get("id"), channel_name=channel_name, channel_type=channel_type, after_dt=a, before_dt=b)
+            item["match_query"] = "all_history"
+            item["thread_replies"] = replies(ch.get("id"), item["thread_ts"], a, b, channel_name) if message.get("reply_count") else []
+            items.append(item)
+        cursor = (((data.get("response_metadata") or {}).get("next_cursor")) or "").strip()
+        if not cursor:
+            return items
+    return items
+
+def all_history(a, b):
+    items = []
+    channels = list_conversations("public_channel,private_channel,im,mpim")
+    with ThreadPoolExecutor(max_workers=min(SLACK_WORKERS, max(1, len(channels)))) as executor:
+        futures = [executor.submit(conversation_history, ch, a, b) for ch in channels]
+        for future in as_completed(futures):
+            try:
+                items.extend(future.result())
+            except Exception as exc:
+                items.append({"ok": False, "query": "all_history", "error": str(exc)})
+    return items
+
+def deduplicate(items):
+    result, seen = [], set()
+    for item in items:
+        if item.get("ok") is False:
+            result.append(item)
+            continue
+        nested_keys = {
+            (reply.get("channel_id"), reply.get("ts"))
+            for reply in item.get("thread_replies") or []
+            if reply.get("channel_id") and reply.get("ts")
+        }
+        key = (item.get("channel_id"), item.get("ts"))
+        if key[0] and key[1] and key in seen:
+            continue
+        result.append(item)
+        if key[0] and key[1]:
+            seen.add(key)
+        seen.update(nested_keys)
+    return result
 
 def dm_channel_history(ch, a, b, oldest, latest):
     items = []
@@ -238,9 +354,11 @@ def collect_workspace(a,b,query,config):
     global _deadline, _token_value, _users, _workspace
     _deadline = time.monotonic() + SLACK_COLLECT_TIMEOUT_SECONDS
     _token_value = select_token(config)
+    mode = triage_mode(config)
     _workspace = {
         "workspace_slug": config.get("slug"),
         "workspace_name": (config.get("values") or {}).get("SLACK_WORKSPACE_NAME") or config.get("slug"),
+        "triage_mode": mode,
     }
     identity = api("auth.test")
     _workspace.update({
@@ -249,16 +367,24 @@ def collect_workspace(a,b,query,config):
         "workspace_url": identity.get("url"),
     })
     _users = load_users()
-    uid = None if query else identity.get("user_id")
-    qs = [query] if query else [f"<@{uid}> after:{a.date().isoformat()} before:{b.date().isoformat()}", f"from:<@{uid}> after:{a.date().isoformat()} before:{b.date().isoformat()}"]
     items = []
-    for q in qs:
-        try: items.extend(search(q,a,b,include_replies=False))
-        except Exception as exc: items.append({"ok": False, "query": q, "error": str(exc)})
-    if not query:
+    if query:
+        try: items.extend(search(query,a,b,include_replies=False))
+        except Exception as exc: items.append({"ok": False, "query": query, "error": str(exc)})
+    elif mode == "all":
+        try: items.extend(all_history(a,b))
+        except Exception as exc: items.append({"ok": False, "query": "all_history", "error": str(exc)})
+        try: items.extend(all_search(a,b))
+        except Exception as exc: items.append({"ok": False, "query": "all_search", "error": str(exc)})
+    else:
+        uid = identity.get("user_id")
+        bounds = search_date_bounds(a, b)
+        for q in (f"<@{uid}> {bounds}", f"from:<@{uid}> {bounds}"):
+            try: items.extend(search(q,a,b,include_replies=False))
+            except Exception as exc: items.append({"ok": False, "query": q, "error": str(exc)})
         try: items.extend(dm_history(a,b))
         except Exception as exc: items.append({"ok": False, "query": "dm_history", "error": str(exc)})
-    tagged = [tag_item(item) for item in items[:MAX_ITEMS_PER_LANE]]
+    tagged = [tag_item(item) for item in deduplicate(items)[:MAX_ITEMS_PER_LANE]]
     failures = [item for item in tagged if item.get("ok") is False]
     summary = dict(_workspace)
     summary.update({"ok": not failures, "item_count": len(tagged) - len(failures)})
@@ -290,7 +416,7 @@ def collect(a,b,query=None,workspace=None):
 
 def main():
     p=argparse.ArgumentParser(); add_common_args(p); p.add_argument("--query"); p.add_argument("--workspace"); args=p.parse_args()
-    a,b=window_from_args(args.after,args.before,require=not bool(args.query)); r=base_result("slack","dm_mentions_sent_all_workspaces",a,b)
+    a,b=window_from_args(args.after,args.before,require=not bool(args.query)); r=base_result("slack","workspace_triage_mode",a,b)
     try: r.update(collect_result(a,b,args.query,args.workspace))
     except Exception as exc: err=error_obj("slack",exc); r["ok"]=False; r["errors"].append(err)
     item_errors = [x for x in r.get("items") or [] if x.get("ok") is False]
