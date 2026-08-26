@@ -334,6 +334,15 @@
       "skillFolderHash": "4360360f674f12699a66fffa1ab80174abbca93b",
       "installedAt": "2026-08-21T09:53:04.161Z",
       "updatedAt": "2026-08-21T09:53:04.161Z"
+    },
+    "dex-skill": {
+      "source": "getdex/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/getdex/agent-skills.git",
+      "skillPath": "dex-skill/SKILL.md",
+      "skillFolderHash": "ca04b2a0570f35b17d60b2b21d0fc5fb52084292",
+      "installedAt": "2026-08-26T08:00:58.706Z",
+      "updatedAt": "2026-08-26T08:00:58.706Z"
     }
   },
   "dismissed": {
