@@ -1,0 +1,4 @@
+interface:
+  display_name: "Social posts"
+  short_description: "Write and manage posts across social channels"
+  default_prompt: "Use $social-posts to turn this source material into a channel-ready social post."
