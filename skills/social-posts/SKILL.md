@@ -40,6 +40,7 @@ Do not invent handles, metrics, quotes, results, or client approval. Ask when a 
 ## Channel guidance
 
 - For LinkedIn copy or carousels, read [references/linkedin.md](references/linkedin.md).
+- For X copy or launch media, read [references/x.md](references/x.md).
 - Add a separate channel reference only after that channel has real requirements or repeated user feedback. Do not generalize LinkedIn conventions to every platform.
 
 ## Notion Posts
