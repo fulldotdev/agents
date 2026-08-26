@@ -1,6 +1,6 @@
 ---
 name: "slack"
-description: "Use when work requires searching or reading Slack messages, DMs, channels, threads, or permalinks, creating a native Slack draft, or sending a Slack message after explicit approval. Use this for the direct Slack API, not the Hermes gateway."
+description: "Use when work requires searching or reading Slack messages, DMs, channels, threads, or permalinks, drafting a Slack message in chat, or sending one after explicit approval. Use this for the direct Slack API, not the Hermes gateway."
 metadata:
   {
     "openclaw":
@@ -18,7 +18,7 @@ metadata:
 
 Use this skill for direct Slack Web API reads and explicit message operations. Do not reconfigure or use the Hermes Slack gateway unless the user specifically asks for a Hermes bot/channel change.
 
-For `work-triage`, Slack collection is read-only. The parent workflow owns routing, Notion writes, and customer draft decisions.
+For `work-triage`, Slack collection is read-only. Triage does not create Slack drafts or send messages.
 
 Read [references/api.md](references/api.md) before making API calls.
 
@@ -30,17 +30,8 @@ Read [references/api.md](references/api.md) before making API calls.
 4. Open the relevant channel history and full thread; search snippets alone are not sufficient evidence.
 5. Preserve message timestamps and permalinks for facts that may need to be reopened.
 6. Summarize decisions, commitments, blockers, unanswered questions, and useful next actions rather than dumping raw private messages.
-7. For a native Slack draft, resolve the workspace, channel or DM, and thread. Preview the destination and text unless the user already approved them. Create it with the bundled helper:
-
-   ```bash
-   python3 ~/.agents/skills/slack/scripts/create_draft.py \
-     --workspace <slug> \
-     --channel <C_OR_G_OR_D_ID> \
-     --text-file <path-or->
-   ```
-
-   Use `--thread-ts <timestamp>` for a thread draft and `--broadcast` only when requested. Use `--dry-run` to validate without creating anything. The helper uses the workspace's `SLACK_USER_TOKEN` (`xoxp`), calls `auth.test`, creates an unsent draft through `drafts.create`, and prints safe metadata. Do not use browser-session `xoxc` or `xoxd` credentials. If the undocumented endpoint fails, keep the draft in the response or a temporary file.
-8. Send only after the user approves the exact message and destination. Verify the API response and return the permalink when available.
+7. When the user asks for a Slack draft, resolve the intended workspace, channel or DM, and thread, then return the proposed message in the current chat. Do not create a draft inside Slack.
+8. Send only after the user approves the exact message and destination. Suppress rich link previews by default (`unfurl_links: false`, `unfurl_media: false`) unless the user explicitly wants them. Verify the API response and return the permalink when available.
 
 ## Safety
 
@@ -53,6 +44,6 @@ Read [references/api.md](references/api.md) before making API calls.
 
 A read is complete when every selected workspace was collected or has a clear access gap, relevant history and threads were inspected, and material findings have permalinks.
 
-A draft is complete when `drafts.create` returns `ok: true` with a draft ID and the workspace, destination, and management URL are reported. Do not claim `drafts.list` verification with an `xoxp` token because Slack rejects it.
+A draft is complete when the proposed message and intended destination are returned in the current chat.
 
 A send is complete after its workspace, destination, content, thread or broadcast intent, API success, and permalink are verified.

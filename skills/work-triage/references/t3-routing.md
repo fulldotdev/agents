@@ -13,7 +13,7 @@ Create or resume a T3 thread only when every condition is true:
 5. No stakeholder decision, clarification, or approval is needed before work starts.
 6. The target thread is not running or waiting for approval or user input.
 
-If a condition fails, stop at preparation. Preserve the source, update the Task and Timeline, prepare a native draft when useful, and record the exact missing decision. Research may prove the gate passes. Remaining uncertainty means it does not.
+If a condition fails, stop at preparation. Preserve the source, update the Task and Timeline, prepare a native Gmail draft when useful, and record the exact missing decision. Research may prove the gate passes. Remaining uncertainty means it does not.
 
 ## Create or resume
 
@@ -41,4 +41,4 @@ The reader must understand the trigger, result, and next action without opening 
 
 After a turn starts, record the dispatch and set the Task to Doing. A finished T3 turn does not prove the Task is Done; use the verification rule in `work-management`.
 
-Triage ends after context updates, native drafts, appropriate Gmail archival, and T3 dispatch. T3 may implement, test, and prepare a preview within scope. Merge, release, publish, payment, destructive changes, and external communication still need approval.
+Triage ends after context updates, native Gmail drafts, appropriate Gmail archival, and T3 dispatch. T3 may implement, test, and prepare a preview within scope. Merge, release, publish, payment, destructive changes, and external communication still need approval.
