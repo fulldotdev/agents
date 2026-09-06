@@ -15,17 +15,13 @@ def relation(*ids):
 
 
 class NotionSchemaTests(unittest.TestCase):
-    def test_company_item_keeps_google_contacts_separate_from_persons(self):
-        row = {"id": "company", "properties": {
-            "Google contacts": {"type": "multi_select", "multi_select": [{"name": "Sil"}]},
-            "Persons": relation("person"),
-        }}
+    def test_company_item_excludes_person_contact_sources(self):
+        row = {"id": "company", "properties": {}}
 
         item = common.company_item(row)
 
-        self.assertEqual(item["google_contacts"], ["Sil"])
-        self.assertEqual(item["persons"], ["person"])
-        self.assertNotIn("contacts", item)
+        self.assertNotIn("google_contacts", item)
+        self.assertNotIn("persons", item)
 
     def test_project_and_task_use_companies_relation(self):
         project = common.project_item({"id": "project", "properties": {

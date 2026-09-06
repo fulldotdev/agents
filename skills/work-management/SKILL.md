@@ -20,7 +20,7 @@ Load only the detail needed for the current operation:
 - **Task**: executable work for one stakeholder and one outcome. It normally takes hours to a few days and less than one week.
 - **Project**: a confirmed outcome with several independent Tasks or more than about one week of work.
 - **Company**: an identifiable organization with reusable sales, delivery, finance, or relationship context.
-- **Person**: someone whose relationship context is worth retaining even when they are not in Google Contacts. Use Google Contacts as the address book; use Persons for researched or durable context that does not belong there.
+- **Contact**: Dex owns people, contact details, LinkedIn profiles, and relationship context. Notion owns company-level sales and delivery context.
 - **Sprint**: a Monday to Sunday commitment. When creating a Task, assign it to the current Sprint by default. Leave Sprint empty only when the request clearly belongs later, in the backlog, in Someday, or otherwise outside the current week.
 - **Goal**: an accepted long-term outcome. Keep it in `Backlog` until Sil activates it for a time horizon.
 - **Someday**: a vague or maybe-later idea that is not executable yet.

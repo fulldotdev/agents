@@ -201,8 +201,6 @@ def company_item(row):
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row), "domain": url_value(row, "Domain"),
         "github_repo_url": url_value(row, "GitHub Repo URL"),
-        "google_contacts": multi_select_names(row, "Google contacts"),
-        "persons": relation_ids(row, "Persons"),
         "edited": prop_time(row, "Edited"), "created": prop_time(row, "Created"),
     }
 
