@@ -1,33 +1,20 @@
 ---
 name: customer-communication
-description: Use when drafting or revising customer-facing email, WhatsApp, or Slack messages, including replies, status updates, clarification questions, scope or pricing messages, and technical explanations.
+description: Draft or revise customer-facing email, WhatsApp, and Slack messages in Sil's voice, including replies, updates, scope, pricing, and technical explanations.
 ---
 
-# Customer Communication
+# Customer communication
 
-Add customer-specific judgment and delivery rules to prose already governed by `unslop`. Draft from what the receiver has actually seen, supplied, discussed, or approved.
+Write as Sil continuing the actual conversation. Read the latest substantive messages from both sides and any relevant user correction. Establish the customer's open question, what they already know, and what Sil has actually agreed or done. A draft or someone else's request is not proof of an agreement. The latest sent reply may already answer the question.
 
-## Draft
+Give the answer or result directly, then enough explanation to make it useful. Use ordinary words, `ik`, `je`, and `jullie`, matching the conversation's language and familiarity. Warmth can be a short acknowledgment or a fitting emoji. Let the exchange determine the length and structure. Greetings, thanks, shorthand, lists, and closing questions are choices, not channel requirements. Do not manufacture informality or copy typos.
 
-1. **Establish receiver-visible context.** Inspect the recent messages from both sides when available. Identify the receiver, the last substantive point, what Sil has already introduced, and whether this continues an active exchange or starts a fresh update. Do not reintroduce context the receiver just received. When only an excerpt or previous draft is available, use it without inventing a transition.
-2. **Separate business intent from implementation.** Distinguish confirmed intent, open intent, and internal implementation. Ask the customer only about business decisions or rules. Resolve implementation choices internally unless their intent depends on them.
-3. **Make the customer action clear.** Continue from the exchange, then give the answer, status, or ask at the first natural point. Include dates, amounts, links, scope, owners, check requests, and default outcomes only when they affect what the receiver understands or does next.
-4. **Translate internal context.** Turn internal shorthand, feature names, and technical evidence into customer-visible language. Keep technical detail when the receiver requested it. Use the receiver's business language only when they personally used or received it.
-5. **Apply the relevant branch.** For WhatsApp, email, or Slack, read [channels.md](references/channels.md) and apply only that channel. For a status update, scope or pushback, pricing or billing, or technical explanation, read [message-shapes.md](references/message-shapes.md) and apply only that shape.
+When scope is unclear, explain what the customer already gets and what the missing part means for them, then the additional work or decision. At a problem, distinguish confirmed facts from a possible cause and identify a useful next step within the authorized work. Resolve implementation choices internally; keep technical detail when the recipient needs it to decide, operate, or review. Keep user-agent discussion and agent-internal safeguards out of customer messages.
 
-## Customer boundaries
+Use confirmed amounts and scope. If they need calculation or reconciliation, use `commercial-scoping`. Never invent prior agreement, completion, availability, prices, deadlines, or consequences of silence. Include a verified link when the customer needs to review or use something. Ask a follow-up only for a real open point, and stop after the last relevant result, caveat, or request.
 
-- Sound like Sil as a practical collaborator. Use `je` and `jullie` naturally, with light warmth and honest pushback.
-- Tie apologies to a concrete lapse or customer impact. Use at most one brief thank-you.
-- Never expose internal safeguards, permissions, deployment targets, tool state, implementation workflow, or user-assistant discussion unless the user explicitly asks to share that exact detail.
-- Do not invent prior agreement, approval, customer-visible facts, or a transition unsupported by the available conversation.
-- End after the last customer-relevant result, caveat, or request. Do not add internal safety notes, workflow details, or future deadlines that require no customer action.
+Read [examples.md](references/examples.md) when calibrating tone or handling a sensitive scope, problem, or pricing reply. These examples explain decisions; they are not reusable customer facts. `unslop` is a final editing aid, not a second voice or a word blacklist.
 
-## Output
+Put each requested draft in its own fenced `text` block. Keep internal notes and missing facts outside it; do not present a draft with unresolved factual placeholders as ready to send. Give one draft unless alternatives are requested. Follow an explicitly requested format instead. In mail replies, do not add a duplicate signature; use an existing or explicitly requested sign-off when appropriate.
 
-- Put each requested customer draft in its own fenced `text` block so it is directly copyable.
-- Keep explanations, status, and caveats outside the draft.
-- Briefly label multiple alternatives.
-- Follow an explicitly requested output format instead.
-
-A draft is complete when every applicable customer rule passes and it sounds like Sil. Resolve missing context from available sources and flag customer-visible facts that cannot be safely inferred.
+Before handing over, check that it answers the actual question, relies on available facts, and introduces no unauthorized promise. Resolve missing facts from available sources before asking Sil. For authorized Gmail draft creation or updates, use `gog` and [gmail-drafts.md](references/gmail-drafts.md). Writing a draft in chat does not authorize sending or saving it to another app.
