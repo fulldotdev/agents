@@ -7,6 +7,8 @@ description: "Use for recurring intake across Gmail, Slack, WhatsApp, Calendar, 
 
 Turns new source events into routed context, dispatched work or drafted replies. Always also use `work-management` when using this skill.
 
+Weekly cleanup and project updates use `weekly-planning`; numbered approvals or edits in Telegram Planning use `message-outbox`. Do not create a second reply draft or intake task for those weekly updates, and do not use triage cursors or its pending queue as their approval/send state.
+
 Read [references/media.md](references/media.md) when collected items include relevant attachments. Read [references/meeting-analysis.md](references/meeting-analysis.md) for a new transcript revision marked `transcript_ready`. Read [references/t3-routing.md](references/t3-routing.md) only when an item may qualify for T3 dispatch.
 
 ## Collection

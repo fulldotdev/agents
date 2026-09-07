@@ -7,6 +7,8 @@ description: "Use when reading, creating, routing, or updating Notion Tasks, Pro
 
 This skill defines how work is stored and routed. Live Notion owns the current records and schema.
 
+For Sunday's weekly cleanup and customer update preparation, use `weekly-planning`. Weekly draft text, versions and approvals belong in Project bodies through `message-outbox`, with the numbered review linked from the Sprint. Telegram Planning owns the review conversation; Notion records its result.
+
 Load only the detail needed for the current operation:
 
 - Before writing or interpreting a Task body, read [references/timeline.md](references/timeline.md).
