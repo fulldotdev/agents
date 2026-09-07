@@ -22,13 +22,16 @@ MAX_SEEN_PER_LANE = int(os.environ.get("WORK_TRIAGE_MAX_SEEN", "2000"))
 def load(path=DEFAULT_STATE_FILE):
     path = Path(path).expanduser()
     if not path.exists():
-        return {"version": 1, "lanes": {}}
+        return {"version": 2, "lanes": {}}
     try:
         data = json.loads(path.read_text())
     except (OSError, json.JSONDecodeError) as exc:
         raise RuntimeError(f"invalid triage cursor state {path}: {exc}") from exc
-    if data.get("version") != 1 or not isinstance(data.get("lanes"), dict):
+    if data.get("version") not in {1, 2} or not isinstance(data.get("lanes"), dict):
         raise RuntimeError(f"unsupported triage cursor state: {path}")
+    # Existing cursors/seen values remain authoritative; never replay old history
+    # automatically during the version-1 migration.
+    data["version"] = 2
     return data
 
 
@@ -43,6 +46,11 @@ def save(state, path=DEFAULT_STATE_FILE):
             handle.flush()
             os.fsync(handle.fileno())
         os.replace(tmp_name, path)
+        directory_fd = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
     finally:
         try:
             os.unlink(tmp_name)
@@ -52,7 +60,8 @@ def save(state, path=DEFAULT_STATE_FILE):
 
 def window(state, lane, before, bootstrap_hours=DEFAULT_BOOTSTRAP_HOURS, overlap_minutes=DEFAULT_OVERLAP_MINUTES, initial_after=None):
     cursor = parse_iso(((state.get("lanes") or {}).get(lane) or {}).get("cursor"))
-    floor = initial_after or before - timedelta(hours=bootstrap_hours)
+    bootstrap_after = parse_iso(((state.get("lanes") or {}).get(lane) or {}).get("bootstrap_after"))
+    floor = bootstrap_after or initial_after or before - timedelta(hours=bootstrap_hours)
     if cursor:
         floor = max(floor, cursor - timedelta(minutes=overlap_minutes)) if initial_after else cursor - timedelta(minutes=overlap_minutes)
     return min(floor, before), before
@@ -74,7 +83,7 @@ def item_signature(lane, item):
     if lane == "gmail":
         messages = [msg for msg in item.get("messages") or [] if msg.get("in_window")]
         latest = (messages or item.get("messages") or [{}])[-1]
-        value = [item.get("account"), item.get("id"), latest.get("id"), latest.get("date"), item.get("has_unread")]
+        value = [item.get("account"), item.get("id"), latest.get("id"), latest.get("date")]
     elif lane == "slack":
         candidates = []
         if item.get("in_window"):
@@ -164,7 +173,7 @@ def count_items(lane, value):
 def is_saturated(lane, value, limit):
     """Fail closed when a collector may have clipped a cursor window."""
     if lane in {"gmail", "calendar"}:
-        return any(len(source.get("items") or []) >= limit for source in value.get("sources") or [])
+        return any(source.get("complete") is False or source.get("message_count", 0) >= limit or len(source.get("items") or []) >= limit for source in value.get("sources") or [])
     if lane == "whatsapp":
         return sum(len(chat.get("messages") or []) for chat in value.get("items") or []) >= limit
     if lane == "slack":

@@ -5,9 +5,7 @@ import argparse
 import json
 import os
 import re
-import shutil
 import subprocess
-import time as time_module
 from datetime import datetime, time, timezone
 from pathlib import Path
 
@@ -20,31 +18,10 @@ TEMP_ROOT = Path(
 LEGACY_TEMP_ROOT = Path.home() / ".hermes" / "tmp" / "work-management"
 
 
-def cleanup_run_root(root):
-    """Remove collector scratch entries older than 24 hours."""
-    if not root.exists():
-        return
-    cutoff = time_module.time() - 86400
-    for child in root.iterdir():
-        try:
-            if child.stat().st_mtime < cutoff:
-                shutil.rmtree(child) if child.is_dir() else child.unlink()
-        except FileNotFoundError:
-            pass
-
-
-def create_run_dir():
-    """Create bounded per-run scratch space and clean current and legacy roots."""
-    TEMP_ROOT.mkdir(parents=True, exist_ok=True)
-    for root in dict.fromkeys((TEMP_ROOT, LEGACY_TEMP_ROOT)):
-        cleanup_run_root(root)
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    run_dir = TEMP_ROOT / f"{stamp}-{os.getpid()}"
-    run_dir.mkdir(parents=True, exist_ok=False)
-    return run_dir
-
-
-RUN_DIR = create_run_dir()
+# Imports and --help must not mutate or garbage-collect runtime state. Attachment
+# directories are created only by focused downloads. Keep them until reviewed;
+# a pending event may outlive an arbitrary 24-hour scratch retention window.
+RUN_DIR = TEMP_ROOT / f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{os.getpid()}"
 ATTACHMENTS_DIR = RUN_DIR / "attachments"
 
 DEFAULT_GMAIL_ACCOUNTS = ["sil@full.dev", "silveltman@gmail.com"]
@@ -199,7 +176,7 @@ def row_item(row):
 def company_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
-        "status": status_value(row), "domain": url_value(row, "Domain"),
+        "status": status_value(row), "website": url_value(row, "Website"),
         "github_repo_url": url_value(row, "GitHub Repo URL"),
         "edited": prop_time(row, "Edited"), "created": prop_time(row, "Created"),
     }

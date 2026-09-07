@@ -11,6 +11,7 @@ import gmail
 import incremental
 import meetings
 import notion
+import pending
 import slack
 import t3_threads
 import whatsapp
@@ -47,7 +48,7 @@ def collect_source(name, after, before, args, triage_context=False):
         sources = []
         for account in accounts:
             try:
-                sources.append(gmail.collect_account(account, after, before, args.query))
+                sources.append(gmail.read_thread(account, args.thread_id, getattr(args, "download", False)) if args.thread_id else gmail.collect_account(account, after, before, args.query, args.limit))
             except Exception as exc:
                 sources.append(error_obj(account, exc))
         return {"sources": sources, "ok": all(item.get("ok", True) for item in sources)}
@@ -130,10 +131,25 @@ def triage(args):
 
 
 def incremental_triage(args):
+    state_path = args.state_file or incremental.DEFAULT_STATE_FILE
+    if args.no_commit_state:
+        return collect_incremental(args, incremental.load(state_path), preview=True)
+    with pending.locked(state_path) as state:
+        pending.claim(state, args.owner)
+        # Persist ownership before source calls, so a crashed collector can only
+        # be replaced deliberately. No processing cursor moves on collection.
+        incremental.save(state, state_path)
+        if state.get("pending"):
+            return pending.view(state)
+        result = collect_incremental(args, state)
+        incremental.save(state, state_path)
+        return result
+
+
+def collect_incremental(args, state, preview=False):
     before = window_from_args(None, args.before)[1]
     initial_after = window_from_args(args.after, args.before)[0]
     state_path = args.state_file or incremental.DEFAULT_STATE_FILE
-    state = incremental.load(state_path)
     selected = args.source or list(SOURCES)
     result = base_result("work_triage", "incremental_triage", initial_after, before)
     result.pop("items")
@@ -142,6 +158,7 @@ def incremental_triage(args):
 
     calls = {}
     windows = {}
+    proposals = {}
     for name in selected:
         after, lane_before = incremental.window(
             state, name, before, args.bootstrap_hours, args.overlap_minutes, initial_after
@@ -158,6 +175,15 @@ def incremental_triage(args):
     calls["work_context"] = lambda: notion.collect_changed_work_context(
         wc_after, wc_before, iso_utc(wc_after), iso_utc(wc_before), args.limit
     )
+
+    if not preview:
+        # A failed first collection must not move its bootstrap floor forward
+        # on tomorrow's retry. This is a fetch boundary, never a processed cursor.
+        for name, (after, _) in windows.items():
+            lane = state.setdefault("lanes", {}).setdefault(name, {"seen": []})
+            if not lane.get("cursor"):
+                lane.setdefault("bootstrap_after", iso_utc(after))
+        incremental.save(state, state_path)
 
     with ThreadPoolExecutor(max_workers=len(calls)) as executor:
         futures = {executor.submit(fn): name for name, fn in calls.items()}
@@ -176,7 +202,8 @@ def incremental_triage(args):
                 value, signatures = incremental.filter_value(name, value, seen)
                 value["after"] = iso_utc(after)
                 value["before"] = iso_utc(lane_before)
-                value["cursor_advanced"] = bool(value.get("ok", True) and not saturated)
+                value["cursor_advanced"] = False
+                proposals[name] = {"before": iso_utc(lane_before), "complete": bool(value.get("ok", True) and not saturated)}
                 if saturated:
                     value["complete"] = False
                     value.setdefault("errors", []).append({
@@ -186,9 +213,7 @@ def incremental_triage(args):
                         "error": f"collector reached lane limit {args.limit}; cursor was not advanced",
                         "items": [],
                     })
-                if value.get("ok", True) and not saturated:
-                    incremental.advance(state, name, lane_before, signatures)
-                else:
+                if not proposals[name]["complete"]:
                     result["ok"] = False
                     result["errors"].extend(value.get("errors") or [{"source": name, "ok": False}])
                     if name != "work_context":
@@ -210,17 +235,17 @@ def incremental_triage(args):
                     result["groups"]["incoming"]["errors"].append(error)
                     result["groups"]["incoming"]["ok"] = False
 
-    if not args.no_commit_state:
-        incremental.save(state, state_path)
-    result["state_committed"] = not args.no_commit_state
+    result["state_committed"] = False
     result["changed_count"] = sum(
         value.get("changed_count", 0)
         for value in result["groups"]["incoming"]["sources"].values()
     ) + (result["groups"].get("work_context") or {}).get("changed_count", 0)
-    return result
+    return result if preview else pending.stage(state, result, proposals)
 
 
 def source(args):
+    if args.download and (args.name != "gmail" or not args.thread_id):
+        raise ValueError("--download requires source gmail --thread-id")
     require_window = args.name in {"whatsapp", "calendar", "meetings"} or (args.name == "slack" and not args.query)
     after, before = (None, None) if args.all or args.thread_id or (args.query and args.name == "gmail") else window_from_args(
         args.after, args.before, require=require_window
@@ -254,11 +279,19 @@ def build_parser():
     triage_parser.add_argument("--project")
     triage_parser.add_argument("--thread-id")
     triage_parser.add_argument("--turn-limit", type=int, default=t3_threads.DEFAULT_TURN_LIMIT)
+    triage_parser.add_argument("--owner", help="unique worker run ID for the durable queue")
     triage_parser.add_argument("--incremental", action="store_true", help="use per-lane cursors and overlap dedupe")
     triage_parser.add_argument("--state-file", type=str, help="override incremental cursor state path")
     triage_parser.add_argument("--overlap-minutes", type=int, default=incremental.DEFAULT_OVERLAP_MINUTES)
     triage_parser.add_argument("--bootstrap-hours", type=int, default=incremental.DEFAULT_BOOTSTRAP_HOURS)
     triage_parser.add_argument("--no-commit-state", action="store_true", help="preview incremental results without advancing cursors")
+    queue_parser = commands.add_parser("queue", help="inspect, acknowledge and resume durable triage batches")
+    queue_parser.add_argument("operation", choices=["status", "claim", "apply", "finish", "reports", "release"])
+    queue_parser.add_argument("--owner")
+    queue_parser.add_argument("--previous-owner", help="explicit takeover only after verifying this worker stopped")
+    queue_parser.add_argument("--file", help="JSON array of prepare/resolve/cancel/ack/retry/report_failure/reported operations")
+    queue_parser.add_argument("--state-file")
+    output_args(queue_parser)
     source_parser = commands.add_parser("source", help="collect one source for focused follow-up")
     source_parser.add_argument("name", choices=SOURCES)
     window_args(source_parser)
@@ -271,7 +304,8 @@ def build_parser():
     source_parser.add_argument("--include-archived", action="store_true")
     source_parser.add_argument("--limit", type=int, default=MAX_ITEMS_PER_LANE)
     source_parser.add_argument("--project")
-    source_parser.add_argument("--thread-id")
+    source_parser.add_argument("--thread-id", help="focused Gmail or T3 thread read")
+    source_parser.add_argument("--download", action="store_true", help="download attachments for a focused Gmail thread")
     source_parser.add_argument("--turn-limit", type=int, default=t3_threads.DEFAULT_TURN_LIMIT)
     return parser
 
@@ -280,8 +314,8 @@ def main():
     parser = build_parser()
     args = parser.parse_args()
     try:
-        result = {"triage": triage, "source": source}[args.command](args)
-    except ValueError as exc:
+        result = {"triage": triage, "source": source, "queue": pending.command}[args.command](args)
+    except (ValueError, RuntimeError, KeyError, TypeError) as exc:
         parser.error(str(exc))
     emit(result, args.pretty, args.format)
 

@@ -23,6 +23,10 @@ class NotionSchemaTests(unittest.TestCase):
         self.assertNotIn("google_contacts", item)
         self.assertNotIn("persons", item)
 
+    def test_company_website_matches_current_schema(self):
+        item = common.company_item({"properties": {"Website": {"type": "url", "url": "https://example.com"}}})
+        self.assertEqual(item["website"], "https://example.com")
+
     def test_project_and_task_use_companies_relation(self):
         project = common.project_item({"id": "project", "properties": {
             "Companies": relation("company"),

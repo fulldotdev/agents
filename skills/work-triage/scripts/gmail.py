@@ -1,103 +1,92 @@
 #!/usr/bin/env python3
-# Gmail collection for work-triage.
-import argparse, base64, shutil
-from datetime import timezone
-from email.utils import parsedate_to_datetime
-from pathlib import Path
+"""Gmail metadata index; full bodies and attachments require focused reads."""
+
+import argparse
 from urllib.parse import quote
-from common import ATTACHMENTS_DIR, DEFAULT_GMAIL_ACCOUNTS, MAX_ITEMS_PER_LANE, add_common_args, base_result, compact_text, emit, error_obj, json_cmd, window_from_args
+
+from common import (
+    ATTACHMENTS_DIR, DEFAULT_GMAIL_ACCOUNTS, MAX_ITEMS_PER_LANE,
+    add_common_args, base_result, emit, error_obj, json_cmd, window_from_args,
+)
 
 
 def gmail_url(account, thread_id):
-    """Match `gog gmail url`: select the mailbox without Gmail's fragile /u/<email>/ route."""
     return f"https://mail.google.com/mail/?authuser={quote(account, safe='')}#all/{thread_id}"
 
-def headers(payload):
-    return {h.get("name","").lower(): h.get("value") for h in (payload or {}).get("headers", []) if h.get("name")}
 
-def decode(data):
-    if not data: return ""
-    raw = base64.urlsafe_b64decode((data + "=" * (-len(data) % 4)).encode())
-    for enc in ("utf-8", "latin-1"):
-        try: return raw.decode(enc)
-        except UnicodeDecodeError: pass
-    return raw.decode("utf-8", errors="replace")
+def collect_account(account, after_dt=None, before_dt=None, query=None, limit=MAX_ITEMS_PER_LANE):
+    # Gmail's default search includes archived received mail. Exclude drafts,
+    # spam and trash explicitly; neither Inbox nor Sent is a complete inbox log.
+    terms = [query] if query else []
+    terms += ["-in:spam", "-in:trash", "-in:drafts"]
+    if after_dt:
+        terms.append(f"after:{int(after_dt.timestamp())}")
+    if before_dt:
+        terms.append(f"before:{int(before_dt.timestamp())}")
+    search = " ".join(terms)
+    data = json_cmd([
+        "gog", "--readonly", "--no-input", "-a", account, "--json",
+        "gmail", "messages", "search", search, "--max", str(limit), "--timezone", "UTC",
+    ])
+    messages = data if isinstance(data, list) else data.get("messages") or []
+    threads = {}
+    for message in messages:
+        thread_id = message.get("threadId") or message.get("thread_id")
+        if not message.get("id") or not thread_id:
+            raise ValueError("Gmail message index lacks id/threadId; cannot acknowledge an incomplete index")
+        thread = threads.setdefault(thread_id, {
+            "id": thread_id, "account": account, "url": gmail_url(account, thread_id),
+            "subject": message.get("subject"), "index_only": True,
+            "requires_thread_read_for_decision": True, "messages": [],
+        })
+        labels = message.get("labels") or message.get("labelIds") or []
+        thread["messages"].append({
+            "id": message["id"], "date": message.get("date"),
+            "from": message.get("from"), "subject": message.get("subject"),
+            "labels": labels, "is_sent_by_me": "SENT" in labels,
+            "in_window": True,
+        })
+    for thread in threads.values():
+        thread["messages"].sort(key=lambda message: (message.get("date") or "", message["id"]))
+    return {
+        "source": account, "ok": True, "mode": "message_index", "query": search,
+        "items": list(threads.values()), "message_count": len(messages),
+        "complete": not (isinstance(data, dict) and (data.get("nextPageToken") or data.get("next_page_token"))) and len(messages) < limit,
+    }
 
-def body(payload):
-    if not payload: return ""
-    mime = payload.get("mimeType") or ""
-    text = decode((payload.get("body") or {}).get("data"))
-    if mime.startswith("text/plain") and text.strip(): return text
-    parts = [body(p) for p in payload.get("parts") or [] if (p.get("mimeType") or "").startswith("text/plain")]
-    return "\n\n".join([p for p in parts if p.strip()]) or text
 
-def mail_dt(value):
-    try: return parsedate_to_datetime(value).astimezone(timezone.utc) if value else None
-    except Exception: return None
-
-def search_threads(account, q):
-    return json_cmd(["gog", "-a", account, "--json", "--results-only", "gmail", "search", q, "--max", str(MAX_ITEMS_PER_LANE)])
-
-def collect_account(account, after_dt=None, before_dt=None, query=None):
-    if query:
-        queries, mode = [query], "query"
-    elif after_dt:
-        from datetime import timedelta
-        search_before = before_dt.date() + timedelta(days=1)
-        window = f"after:{after_dt.strftime('%Y/%m/%d')} before:{search_before.strftime('%Y/%m/%d')}"
-        queries, mode = [f"in:inbox {window}", f"in:sent {window}"], "inbox_and_sent_window"
-    else:
-        queries, mode = ["in:inbox", "in:sent"], "inbox_and_sent"
-    threads, seen = [], set()
-    for q in queries:
-        for summary in search_threads(account, q):
-            tid = summary.get("id")
-            if not tid or tid in seen:
-                continue
-            seen.add(tid)
-            summary["matched_query"] = q
-            threads.append(summary)
-            if len(threads) >= MAX_ITEMS_PER_LANE:
-                break
-        if len(threads) >= MAX_ITEMS_PER_LANE:
-            break
-    items = []
-    for summary in threads[:MAX_ITEMS_PER_LANE]:
-        tid = summary.get("id")
-        if not tid: continue
-        out = ATTACHMENTS_DIR / "gmail" / account / tid
+def read_thread(account, thread_id, download=False):
+    cmd = ["gog", "--readonly", "--no-input", "-a", account, "--json", "gmail", "thread", "get", thread_id, "--full"]
+    if download:
+        out = ATTACHMENTS_DIR / "gmail" / account / thread_id
         out.mkdir(parents=True, exist_ok=True)
-        data = json_cmd(["gog", "-a", account, "--json", "gmail", "thread", "get", tid, "--full", "--download", "--out-dir", str(out)])
-        downloaded = {}
-        for att in data.get("downloaded") or []:
-            downloaded.setdefault(att.get("messageId"), []).append(att)
-        messages, has_sent, has_window, has_inbox, has_unread = [], False, False, False, False
-        for msg in (data.get("thread") or {}).get("messages") or []:
-            hs, labels = headers(msg.get("payload") or {}), msg.get("labelIds") or []
-            dt = mail_dt(hs.get("date"))
-            in_window = bool(dt and after_dt and before_dt and after_dt <= dt < before_dt) if after_dt else True
-            has_sent, has_window = has_sent or "SENT" in labels, has_window or in_window
-            has_inbox, has_unread = has_inbox or "INBOX" in labels, has_unread or "UNREAD" in labels
-            atts = []
-            for att in downloaded.get(msg.get("id"), []):
-                src = Path(att.get("path")) if att.get("path") else None
-                dest = out / src.name if src else None
-                if src and src.exists() and dest and src != dest: shutil.copy2(src, dest)
-                saved = dest if dest and dest.exists() else src if src and src.exists() else None
-                atts.append({"filename": att.get("filename"), "mime_type": att.get("mimeType"), "size": att.get("size"), "saved_path": str(saved) if saved else None})
-            messages.append({"id": msg.get("id"), "date": hs.get("date"), "from": hs.get("from"), "to": hs.get("to"), "cc": hs.get("cc"), "bcc": hs.get("bcc"), "subject": hs.get("subject") or summary.get("subject"), "labels": labels, "is_sent_by_me": "SENT" in labels, "in_window": in_window, "body": compact_text(body(msg.get("payload") or {}), 20000), "attachments": atts})
-        if query and after_dt and not has_window:
-            continue
-        items.append({"id": tid, "url": gmail_url(account, tid), "account": account, "subject": summary.get("subject"), "query": summary.get("matched_query"), "queries": queries, "mode": mode, "contains_sent_by_me": has_sent, "contains_in_window": has_window, "is_in_inbox": has_inbox, "is_archived": not has_inbox, "has_unread": has_unread, "messages": messages})
-    return {"source": account, "ok": True, "mode": mode, "queries": queries, "items": items}
+        cmd += ["--download", "--out-dir", str(out)]
+    return {"source": account, "ok": True, "url": gmail_url(account, thread_id), "thread": json_cmd(cmd)}
+
 
 def main():
-    p = argparse.ArgumentParser(); add_common_args(p); p.add_argument("--query"); p.add_argument("--account", action="append"); args = p.parse_args()
-    after_dt, before_dt = (None, None) if args.query else window_from_args(args.after, args.before)
-    result = base_result("gmail", "query" if args.query else "window" if after_dt else "inbox", after_dt, before_dt); result["sources"] = []
+    parser = argparse.ArgumentParser()
+    add_common_args(parser)
+    parser.add_argument("--query")
+    parser.add_argument("--account", action="append")
+    parser.add_argument("--thread-id")
+    parser.add_argument("--download", action="store_true")
+    args = parser.parse_args()
+    if args.download and not args.thread_id:
+        parser.error("--download requires a focused --thread-id")
+    after, before = (None, None) if args.query or args.thread_id else window_from_args(args.after, args.before)
+    result = base_result("gmail", "thread" if args.thread_id else "index", after, before)
+    result["sources"] = []
     for account in args.account or DEFAULT_GMAIL_ACCOUNTS:
-        try: result["sources"].append(collect_account(account, after_dt, before_dt, args.query))
+        try:
+            result["sources"].append(read_thread(account, args.thread_id, args.download) if args.thread_id else collect_account(account, after, before, args.query))
         except Exception as exc:
-            err = error_obj(account, exc); result["sources"].append(err); result["errors"].append(err); result["ok"] = False
+            error = error_obj(account, exc)
+            result["sources"].append(error)
+            result["errors"].append(error)
+            result["ok"] = False
     emit(result, args.pretty, args.format)
-if __name__ == "__main__": main()
+
+
+if __name__ == "__main__":
+    main()
