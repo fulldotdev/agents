@@ -30,7 +30,7 @@ Return a compact source-grounded assessment with:
 - the likely existing Task or Project, when supported;
 - uncertainty about the speaker, owner, scope, or intended outcome;
 - a one- or two-sentence candidate for the Meeting `Summary` property;
-- a routing recommendation, without writing records, dispatching T3, or preparing external communication.
+- a routing recommendation, according to the rules in our triage.
 
 Separate explicit statements from interpretation. A possible commitment stays a candidate when speaker identity or ownership is unclear. The parent heartbeat applies `work-management`, performs writes, and decides whether the result meets the T3 dispatch gate.
 
