@@ -46,16 +46,16 @@ Before dispatch:
 
 1. Update the owning Task with the exact new source.
 2. Use the compact T3 index or `status` to check `sessionStatus`, `latestTurnState`, pending approvals, and pending user input.
-3. Create only when an eligible Task has no thread. Resume only for actionable input that belongs to the same eligible Task, outcome, and small low-risk scope.
+3. For automatic triage, resume only under `work-triage/references/t3-routing.md`. Creating a new thread requires a separate user instruction covering that work; this tool skill supplies no additional start permission.
 4. Start a turn only when the thread is not already running or waiting for approval/input.
 
-The presence of a Task, new feedback, or an existing thread does not by itself authorize an automated turn. When the gate does not pass, triage prepares the work and reports it for Sil instead.
+The presence of a Task, new feedback, or an existing thread does not by itself authorize an automated turn. When the gate does not pass, prepare context and apply work-triage's reporting gate.
 
 A stopped, ready, or settled thread may be resumed directly. Store the T3 environment, project ID, thread ID, repository path, branch, provider/model, and provider session ID when available as a source-grounded Task Timeline event. Do not store credentials.
 
 Automated prompts follow the user-visible handoff rules in `work-triage/references/t3-routing.md`. They say in normal language that heartbeat triage started the turn, what new event caused it, and what work will continue. Task links, source links, scope, and safety limits come afterward.
 
-The agent's first user-visible message identifies the automatic trigger. Its final reply opens with the reason the turn started and what the agent did, then states the result and Sil's next action. Do not lead with files, commits, test counts, IDs, or vendor internals.
+The first user-visible message identifies the automatic trigger. The final reply leads with the result and Sil's next action, with enough evidence to review it.
 
 External communication, release, payment, and ambiguous irreversible actions remain approval-gated.
 

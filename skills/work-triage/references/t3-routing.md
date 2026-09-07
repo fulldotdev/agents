@@ -1,26 +1,18 @@
 # T3 routing
 
-Notion is the source of truth. T3 is an optional execution surface for small, bounded work with high confidence.
+This is the single gate for automatic triage dispatch. An explicit instruction from Sil may separately authorize new work; do not infer that permission from an incoming message.
 
-## Create or resume threads
+Automatically resume a thread only when all conditions hold:
 
-Create or resume a T3 thread only when every condition is true:
+1. New, concrete feedback concerns previously delivered work in an existing Notion Task with a known owning T3 thread.
+2. The feedback belongs to the same outcome, one known repository, and one small cycle ending at review or preview.
+3. Source, scope, expected result, and stopping boundary are clear. No stakeholder decision or missing input is needed first.
+4. The owning thread is not running or waiting for approval or user input. Check its live state and latest result, not just its title.
 
-1. A concrete, source-grounded Task exists or can be created without ambiguity.
-2. The work has one deliverable in one known repository or workspace and fits one short cycle ending at review or preview.
-3. The request, owning project, source, scope, and stopping boundary are clear.
-4. No stakeholder decision, clarification, or approval is needed before work starts.
+Do not automatically create a thread or reopen completed work merely because a client makes a new proposal. Prepare source-grounded context when the gate does not pass. Report only an outcome allowed by the main skill, not every declined dispatch.
 
-Update the Task and Timeline first. Check the thread index and live status before creating or resuming. Store the stable T3 environment, project, and thread locator in the Timeline.
+Use `work-management` to append the exact new source to the Task before dispatch, and `t3-code` for the helper commands. Keep at most one owning thread per Task. Journal the action before the external call; on interruption inspect the existing thread before retrying.
 
-### User-visible handoff
+The handoff briefly explains the automatic trigger, the new feedback, and the expected result. Derive the current brief from the Task's history and latest source, including superseded decisions. Include source links, scope, repository/branch, and the review boundary. Do not require the same introductory paragraph in every reply.
 
-The dispatch prompt appears in Sil's existing thread. Write it for him, not as orchestration metadata.
-
-Open with a natural sentence such as: `This is an automatic follow-up from heartbeat triage. A customer added new feedback to the existing task, so I reopened this thread.` Then summarize what changed and what the agent will do in plain language. Put references and links after the explanation. Include scope and safety limits without internal orchestration labels.
-
-Make sure the final reply in the thread briefly explains why this has been started automatically, instruct the thread to include this brief intro. The reader must understand the trigger, result, and next action without opening linked sources, task records, or technical artifacts.
-
-T3 may implement, test, and prepare a preview within scope. Merge, release, publish, payment, destructive changes, and external communication still need approval.
-
-You run from Otis; when providing the user with preview urls always use tailscale hosted urls.
+T3 may implement, validate, and prepare a preview within that scope. Existing explicit authorization governs other actions; automatic feedback dispatch alone does not authorize release, production changes, payment, destructive changes, or external messages. On Otis, provide validated Tailscale preview URLs for Sil's review.

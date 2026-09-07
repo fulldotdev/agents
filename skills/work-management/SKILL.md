@@ -41,6 +41,10 @@ Load only the detail needed for the current operation:
 5. Create a Task only when Sil owns agreed work that must be tracked outside its source: a deliverable, multi-step action, deadline or dependency, or follow-up that outlives the conversation. Replies, acknowledgements, scheduling, forwarding, quick reviews, questions, ideas, and unconfirmed requests stay in their source unless they create that work.
 6. Keep source links through relations and compact, reopenable Timeline locators.
 
+An accepted customer ticket already tracked in monday stays there. Create a Notion Task only for a distinct Sil-owned commitment or an overarching delivery outcome, not a copy of each ticket. A proposal, meeting suggestion, draft, or quoted request does not establish Sil's acceptance. Check recent outgoing replies and completion evidence before creating or reopening work.
+
+Keep active Project introductions current: replace superseded planning prose using dated sources, preserve decisions and commercial references, and let the Status property own status. Do not infer a new Task merely because a Project has none. Paused or Discovery projects may legitimately have no executable work. For Waiting work, identify the dependency and its owner; use Due only for an agreed follow-up or deadline, not an invented reminder.
+
 ## Area
 
 Choose the single Area that owns the Task's primary outcome:
@@ -59,7 +63,7 @@ Choose the single Area that owns the Task's primary outcome:
 - **Done**: the outcome is completed and verified.
 - **Canceled**: duplicate, superseded, moved to Someday, no longer executable, or explicitly dropped.
 
-The Status property is authoritative. Record its evidence in the Timeline, but do not keep a second status in the body. A Task remains Doing between work sessions unless a concrete dependency makes it Waiting. When that dependency clears, use Todo if work had not started and Doing if it had.
+The Status property is authoritative. Record its evidence in the Timeline, but do not keep a second status in the body. A Task remains Doing between work sessions unless a concrete dependency makes it Waiting. When that dependency clears, use Todo if work had not started and Doing if it had. A partially blocked work package remains Doing when accepted work can continue independently; preserve the specific dependency rather than hiding all remaining work behind Waiting.
 
 Append the supporting source event before changing Status. Done is terminal unless Sil or a newer source reopens the same deliverable. When canceling a Task, clear obsolete Sprint and Due values in the final write and verify them. Use Due only for real deadlines or follow-up dates.
 

@@ -40,4 +40,6 @@ An authorized migration or repair may replace a known-bad pilot history with a c
 
 Derive current actions and completion conditions when reading. Do not store regenerated `Next`, `Done when`, inferred criteria, context summaries, or uncited synthesis. Notion generates the `Summary` property. Never edit it manually or treat it as evidence.
 
+At an execution handoff, derive a short current brief from the applicable source events: requested result, unresolved decisions, allowed scope, and review boundary. Put that brief in the execution prompt, with source locators, not back into the Task as a second current-state record. Reconcile later corrections before relying on older entries.
+
 Tiny reminders may have a short or empty body. Task titles name the work package or observable outcome, not every substep. Prefer English unless the work is clearly in Dutch. Preserve customer wording literally.
