@@ -28,7 +28,7 @@ When `work-management` calls this skill, it owns the Notion record, timing, rout
 
 ## Approval boundary
 
-Ask before sending or publishing, destructive history cleanup, rejected or canceled status changes, or removing unclear lines. Create a concept during an approved workflow only when the customer, contact, scope, price or rate, VAT, period, and evidence are clear. Otherwise return the proposed structure and exact missing decision.
+Require explicit authorization for sending or publishing, destructive history cleanup, rejected or canceled status changes, or removing unclear lines. An earlier instruction covering the same exact action and document remains valid; do not ask again. Create a concept during an approved workflow only when the customer, contact, scope, price or rate, VAT, period, and evidence are clear. Otherwise return the proposed structure and exact missing decision.
 
 Push back when work is clearly underpriced, a shared cost is duplicated, alternatives lack a real tradeoff, or wording conceals a scope or pricing problem.
 

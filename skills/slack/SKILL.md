@@ -31,7 +31,7 @@ Read [references/api.md](references/api.md) before making API calls.
 5. Preserve message timestamps and permalinks for facts that may need to be reopened.
 6. Summarize decisions, commitments, blockers, unanswered questions, and useful next actions rather than dumping raw private messages.
 7. When the user asks for a Slack draft, resolve the intended workspace, channel or DM, and thread, then return the proposed message in the current chat. Do not create a draft inside Slack.
-8. Send only after the user approves the exact message and destination. Suppress rich link previews by default (`unfurl_links: false`, `unfurl_media: false`) unless the user explicitly wants them. Verify the API response and return the permalink when available.
+8. Send only with explicit authorization for the exact message and destination. An earlier instruction covering the same content, destination, and action remains valid; do not ask again. Suppress rich link previews by default (`unfurl_links: false`, `unfurl_media: false`) unless the user explicitly wants them. Verify the API response and return the permalink when available.
 
 ## Safety
 

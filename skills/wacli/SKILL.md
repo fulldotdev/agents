@@ -10,7 +10,7 @@ description: Use wacli on the Otis Mac mini to authenticate, sync, inspect, sear
 3. For reads, searches, message context, and recent replies, use bounded non-interactive commands with `--read-only --json`, scoped to the smallest relevant chat and time window. `work-triage` should normally use its collector rather than operating wacli manually.
 4. When a requested recent reply has not reached the store, run one bounded `wacli sync --once` on Otis, then repeat the scoped read. Authentication, history backfill, downloads, and broader store mutations require an explicit request.
 5. Select the requested named account/store explicitly when multiple accounts exist.
-6. Before sending, require an exact recipient and message/file. Confirm both immediately before executing any third-party send.
+6. Send only with explicit authorization for the exact recipient and message/file. An earlier instruction covering the same recipient, content, and action remains valid; do not ask again. If any of those are unresolved, confirm them before sending.
 
 For WhatsApp reads covered by this skill, do not switch to Computer Use, browser control, Chrome, or WhatsApp Web. If Otis or its wacli store is unavailable, report that boundary instead of changing surfaces.
 

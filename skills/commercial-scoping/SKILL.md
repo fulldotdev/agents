@@ -15,7 +15,7 @@ Produce a defensible customer price and a traceable internal calculation. Ground
 4. Inspect what already exists in tickets, code, preview, CMS, Figma, deployments, and recorded work. Remove completed work and reused foundations from the new estimate.
 5. Decompose the remaining outcome into customer-recognizable categories and smaller internal subitems. Apply [commercial-rules.md](references/commercial-rules.md).
 6. Estimate internal effort first. Compare analogous historical estimates with invoices and verified delivered state. Explain material deviations from those analogues. Use Productive hours only when Sil explicitly asks for them.
-7. Convert effort to price using the engagement's verified rate. For Skantrae through Small Giants, use €100/hour when that remains the agreed rate; verify other engagements instead of carrying this rate across customers.
+7. Convert effort to price using the engagement's verified rate from its accepted estimate, contract, or direct agreement. Keep changing customer rates with their customer/project source, and never carry a rate across engagements by default.
 8. Classify uncertainty as one of:
    - known and included;
    - open point with bounded work;

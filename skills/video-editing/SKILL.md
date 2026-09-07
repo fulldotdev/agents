@@ -105,7 +105,7 @@ Read [references/commands.md](references/commands.md) when creating a job or run
 - Caption presence is a hard gate. Open `captions-review.jpg` and confirm visible burned text in every sampled spoken interval. A valid ASS or SRT file alone does not pass.
 - Captions match the speech, remain readable over dark and bright frames, and stay inside safe margins. The source does not already contain a competing caption layer.
 - Face centering and headroom hold throughout each portrait segment.
-- Every animated zoom has a smooth baseline, peak, and full return.
+- Every animated zoom starts smoothly, holds its intended framing, and resets at the chosen hard cut or uses the explicitly chosen eased return. Check the rendered transition against that choice.
 - Color matches the approved reference on representative skin, clothing, and background frames.
 - Delivery checksum matches the verified local or Otis render.
 
