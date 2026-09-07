@@ -10,3 +10,5 @@ Use live Notion metadata as the authority for exact property names, option names
 - **Insights** `collection://1d65979e-268c-80a9-9f26-000bcfb57574`
 - **Goals** `collection://2005979e-268c-80d1-8ecf-000b841762a2`
 - **Sprints** `collection://3555979e-268c-807b-bdb4-000b86b48f90`
+
+The internal **Documents** container is the regular page `https://app.notion.com/p/3d45979e268c81e58a96cd0b0f210dfc`, not a database.

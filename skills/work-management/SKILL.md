@@ -1,6 +1,6 @@
 ---
 name: work-management
-description: "Use when reading, creating, routing, or updating Notion Tasks, Projects, Companies, Sprints, Goals, Someday items, or Documents."
+description: "Use when reading, creating, routing, or updating Notion Tasks, Projects, Companies, Sprints, Goals, Someday items, Insights, or the Documents page."
 ---
 
 # Work management
@@ -21,8 +21,16 @@ Load only the detail needed for the current operation:
 - **Sprint**: a Monday to Sunday commitment. When creating a Task, assign it to the current Sprint by default. Leave Sprint empty only when the request clearly belongs later, in the backlog, in Someday, or otherwise outside the current week.
 - **Goal**: an accepted long-term outcome. Never edit this, treat as read-only.
 - **Someday**: a vague or maybe-later idea that is not executable yet.
+- **Insight**: a durable internal note, finding, or piece of research that is not executable work and does not belong to a customer file.
+- **Document**: a substantial internal reference or long-form working page. Store it as a child of the regular Documents page, never as a database record.
 - **Source**: evidence such as a message, meeting, file, decision, blocker, or requirement. It becomes a Task only when Sil owns concrete work.
-- **Document**: a findable, mutable work product or index entry, such as a brief, scope, research note, draft, spec, copy, or design.
+
+## Files
+
+- Store customer work products and references in the `Files` property of their owning Company or Project. Do not create records in the legacy Documents database.
+- Put reusable customer-wide material on the Company. Put project-specific material on the Project. Do not mirror a file across both by default.
+- Keep the mutable artifact at its canonical source. Use Drive or Google Docs for uploaded and editable documents, and direct URLs for Figma, Sheets, Slides, Moneybird, or other durable sources.
+- Put a short standalone finding in Insights. Put substantial internal reference material under the regular Documents page. Keep task-specific context in the Task Timeline or as a child page when it needs its own page.
 
 ## Routing
 
