@@ -23,13 +23,7 @@ Before pulling, inspect:
 ssh <host> 'cd "<repo>" && git status --short && git branch --show-current && git remote -v && git rev-parse --short HEAD'
 ```
 
-Then:
-
-1. If clean, use `git pull --ff-only` and verify status plus divergence from upstream.
-2. If dirty, inspect the diff and untracked files. Do not pull over them.
-3. Preserve useful remote changes in the canonical repository first when appropriate.
-4. Stash remaining remote state with a dated, descriptive name and `-u`; never drop that stash automatically.
-5. Pull with `--ff-only`, then verify both local and remote repositories are clean and synchronized.
+Use `git pull --ff-only` when compatible with the actual state. Preserve dirty and untracked work; do not stash, overwrite, or switch branches merely to make a pull succeed. Reconcile useful changes through GitHub as the task requires, then verify the intended commits reached the target checkout.
 
 For global agent updates, the canonical repository is local `~/.agents`; Otis uses `~/.agents`. Push the canonical changes before pulling them on Otis.
 
@@ -39,4 +33,4 @@ Use `rsync` for directories or resumable transfers and `scp` for a simple file. 
 
 ## Safety
 
-Ask before destructive, irreversible, privacy-sensitive, privileged, service-restarting, or machine-rebooting actions. A request to connect or inspect does not authorize broader remote changes.
+A request to connect or inspect does not authorize broader remote changes. Apply the user's existing authorization and approval boundaries; do not ask again for an action already covered by the request.

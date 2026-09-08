@@ -37,7 +37,7 @@ Use the smallest source set that can answer the request reliably. For a full his
 
 ## Evidence matrix
 
-Build an internal matrix for each proposed deliverable:
+For complex calibration, an internal comparison table can help:
 
 | Deliverable | Historical scope | Verified delivered state | Current reusable state | New effort | Uncertainty | Sources |
 |---|---|---|---|---:|---|---|

@@ -5,7 +5,7 @@ license: MIT
 metadata:
   hermes:
     tags: [T3-Code, T3-Connect, Remote-Agents, Automation]
-    related_skills: [codex, work-management, work-triage]
+    related_skills: [development, work-management, work-triage]
 ---
 
 # T3 Code on Otis
@@ -29,6 +29,7 @@ python3 ~/.agents/skills/t3-code/scripts/t3_dispatch.py status \
 python3 ~/.agents/skills/t3-code/scripts/t3_dispatch.py create \
   --project-id <project-id> \
   --title "Task title" \
+  --branch <actual-checkout-branch> \
   --prompt "Read <Task URL> and continue to the review/preview boundary."
 
 python3 ~/.agents/skills/t3-code/scripts/t3_dispatch.py resume \
@@ -40,23 +41,10 @@ The helper creates a thread before starting its first turn, supports settle/unse
 
 ## Triage integration
 
-Notion is the work source of truth; T3 is an optional execution surface. For automated triage, load `work-triage` and apply its automatic-dispatch gate. A Task may have at most one owning T3 thread; most Tasks do not need one.
+For automatic triage, use `work-triage` and its [dispatch gate](../work-triage/references/t3-routing.md); that reference owns source updates, authorization, and handoff requirements. This tool skill grants no additional start permission.
 
-Before dispatch:
+Use the compact T3 index or `status` to check `sessionStatus`, `latestTurnState`, pending approvals, and pending user input. Do not start a turn already running or awaiting approval/input. A stopped, ready, or settled thread may be resumed directly when the requested work is authorized.
 
-1. Update the owning Task with the exact new source.
-2. Use the compact T3 index or `status` to check `sessionStatus`, `latestTurnState`, pending approvals, and pending user input.
-3. For automatic triage, resume only under `work-triage/references/t3-routing.md`. Creating a new thread requires a separate user instruction covering that work; this tool skill supplies no additional start permission.
-4. Start a turn only when the thread is not already running or waiting for approval/input.
+For implementation handoffs, tell the executing agent to use `development`. Pass the actual checkout branch on creation; the helper's fallback is `preview`, which does not establish the repository's current branch.
 
-The presence of a Task, new feedback, or an existing thread does not by itself authorize an automated turn. When the gate does not pass, prepare context and apply work-triage's reporting gate.
-
-A stopped, ready, or settled thread may be resumed directly. Store the T3 environment, project ID, thread ID, repository path, branch, provider/model, and provider session ID when available as a source-grounded Task Timeline event. Do not store credentials.
-
-Automated prompts follow the user-visible handoff rules in `work-triage/references/t3-routing.md`. They say in normal language that scheduled triage started the turn, what new event caused it, and what work will continue. Task links, source links, scope, and safety limits come afterward.
-
-The first user-visible message identifies the automatic trigger. The final reply leads with the result and Sil's next action, with enough evidence to review it.
-
-External communication, release, payment, and ambiguous irreversible actions remain approval-gated.
-
-After dispatch, confirm the expected thread exists and surface completed, running, failed, approval-needed, or user-input-needed state. Verify filesystem or git results only when the owning execution workflow calls for that verification; triage itself stops after dispatch.
+After dispatch, confirm the expected thread and its state. On a tracked Task, preserve its T3 locator and relevant checkout information through `work-management`; native T3 already owns model and session metadata. Triage stops after dispatch; implementation and verification belong to the executing agent.

@@ -17,4 +17,4 @@ Read [examples.md](references/examples.md) when calibrating tone or handling a s
 
 Put each requested draft in its own fenced `text` block. Keep internal notes and missing facts outside it; do not present a draft with unresolved factual placeholders as ready to send. Give one draft unless alternatives are requested. Follow an explicitly requested format instead. In mail replies, do not add a duplicate signature; use an existing or explicitly requested sign-off when appropriate.
 
-Before handing over, check that it answers the actual question, relies on available facts, and introduces no unauthorized promise. Resolve missing facts from available sources before asking Sil. For authorized Gmail draft creation or updates, use `gog` and [gmail-drafts.md](references/gmail-drafts.md). Writing a draft in chat does not authorize sending or saving it to another app.
+For authorized Gmail draft creation or updates, use `gog` and [gmail-drafts.md](references/gmail-drafts.md). Writing a draft in chat does not authorize sending or saving it to another app.

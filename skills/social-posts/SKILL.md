@@ -7,15 +7,6 @@ description: Create, adapt, review, or manage social posts and their media acros
 
 Treat the message as the source and each channel as a distribution variant. The Notion Posts database is the canonical working record when the post belongs in the user's content workflow.
 
-## Workflow
-
-1. Identify whether the request concerns an idea, draft, review, channel adaptation, media, storage, scheduling, or publishing.
-2. Read the supplied sources and any existing Post or linked Task. Preserve approved copy and media unless the user asks to change them.
-3. Choose one central point. Support it with concrete examples, results, screenshots, quotes, or other source-backed evidence.
-4. Write the canonical caption in the user's voice, then adapt it for each requested channel. Do not force identical copy across platforms.
-5. Give every media item one clear job. Remove slides, scenes, or assets that merely repeat the caption or act as filler.
-6. Verify copy, claims, client names, handles, links, media order, dimensions, crop, and readability before handoff or storage.
-
 Do not invent handles, metrics, quotes, results, or client approval. Ask when a missing fact would materially change the post.
 
 ## Writing defaults

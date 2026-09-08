@@ -5,26 +5,11 @@ description: "Use when a customer scope or price must be created, checked agains
 
 # Commercial Scoping
 
-Produce a defensible customer price and a traceable internal calculation. Ground every conclusion in current delivery state and historical evidence.
+Produce a customer price and traceable internal calculation. Apply [commercial-rules.md](references/commercial-rules.md) for Sil's category pricing, scope vocabulary and document conventions. For historical or multi-source calibration, read [evidence-sources.md](references/evidence-sources.md); choose evidence depth to fit the request.
 
-## Workflow
+Before revising a price, identify the latest customer-presented baseline and preserve its source, amounts and presentation time when known. Check current delivery and reusable foundations so the estimate covers the remaining work. Keep material changes and their reasons in the existing internal calculation.
 
-1. Establish the requested outcome, customer, project, currency, pricing model, target version, and relevant time window.
-2. Identify the latest customer-presented baseline before proposing changes. Record its URL, total, category prices, and presentation time when known.
-3. Gather the evidence needed for the requested confidence level. For historical or multi-source work, read [evidence-sources.md](references/evidence-sources.md).
-4. Inspect what already exists in tickets, code, preview, CMS, Figma, deployments, and recorded work. Remove completed work and reused foundations from the new estimate.
-5. Decompose the remaining outcome into customer-recognizable categories and smaller internal subitems. Apply [commercial-rules.md](references/commercial-rules.md).
-6. Estimate internal effort first. Compare analogous historical estimates with invoices and verified delivered state. Explain material deviations from those analogues. Use Productive hours only when Sil explicitly asks for them.
-7. Convert effort to price using the engagement's verified rate from its accepted estimate, contract, or direct agreement. Keep changing customer rates with their customer/project source, and never carry a rate across engagements by default.
-8. Classify uncertainty as one of:
-   - known and included;
-   - open point with bounded work;
-   - provisional price pending a named dependency;
-   - separate v2 or follow-up scope.
-9. Produce two synchronized views when a document is requested:
-   - customer scope with category prices and unpriced subitems;
-   - internal calculation with subitem effort and prices.
-10. Validate arithmetic, terminology, current-state deduplication, source links, and change history before presenting or writing.
+Convert internal effort to price using the engagement's verified rate from its accepted estimate, contract or direct agreement. Never carry a rate across engagements by default. Use Productive hours only when Sil explicitly asks for them.
 
 ## Pricing decisions
 
@@ -37,13 +22,6 @@ Produce a defensible customer price and a traceable internal calculation. Ground
 
 ## Output
 
-Lead with the recommended total and whether it is sharp, realistic, or conservative. Then provide:
+Lead with the recommended total or requested price change. Include category prices, included scope, material open points, relevant v1/v2 choices and changes from the presented baseline as the request needs. Explain material differences from historical analogues when used.
 
-1. category prices;
-2. included subitems;
-3. material open points;
-4. v1/v2 classification when relevant;
-5. comparison with relevant historical scopes and delivered work;
-6. the exact changes from the last presented version.
-
-Use euros in customer-facing scopes unless the user requests hours. Keep internal hours available for calculation and audit. End the customer document at the total table unless the user explicitly requests notes below it.
+Use euros in customer-facing scopes unless the user requests hours. Customer documents show category prices and unpriced subitems; keep subitem effort and prices in the internal calculation. Verify matching category totals after revisions. End the customer document at the total table unless the user explicitly requests notes below it.

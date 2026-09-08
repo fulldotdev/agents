@@ -22,19 +22,13 @@ Use the machine's Chrome default profile and preserve the signed-in session. Sav
 
 Do not use the monday API. Distinguish `browser unavailable`, `login required`, `permission denied`, and `board loaded but data hidden`.
 
-## Workflow
+## Evidence
 
-For a focused ticket question, inspect that ticket, its complete relevant updates, links, and the row fields needed to answer. The full Main table inventory and reconciliation below apply to sprint, backlog, release, or capacity reviews. Do not scan unrelated tickets to answer a narrow question. State the inspected scope and preserve explicit blanks only for fields actually checked.
+For a focused ticket question, read that ticket's relevant updates, links, attachments, and row fields. For sprint, backlog, release, or capacity reviews, account for every ticket in scope and verify the displayed name, group, Priority, and Expected hours, including actual blanks. Choose views and navigation suited to the request, and reconcile coverage against the full relevant group. A hidden column or ticket dialog does not prove a field is empty.
 
-1. Scope the customer and period. If the request says only `current sprint`, check both boards briefly and report the candidates.
-2. Open the relevant board and inspect `Main table` first. Before searching, filtering, or opening tickets, make a row inventory of every relevant item. Record at least the ticket name, group, Priority, and Expected hours exactly as displayed.
-3. Scan the full table width. If a planning column is outside the viewport, horizontally scroll, resize, or use another read-only inspection method until its cells have been checked. A filtered search result or ticket dialog does not prove that a board field is blank or missing.
-4. Find the relevant sprint group, status area, backlog, bugs, and capacity information. Use filtered views such as `In Progress`, `Backlog`, and `Bugs` only after the Main table inventory exists.
-5. Capture the remaining useful fields: exact pulse URL or ID, actual hours, owner, status, update count, attachments, and release date. Never infer a board field from update urgency, comments, colors, ordering, or ticket age. Mark an unreadable field `[blocked: reason]`.
-6. Open every relevant ticket and read its description, updates, replies, expanded text, links, and material attachments.
-7. Return to `Main table` after the ticket reads. Reconcile the inventory against the full relevant group: item count, names, Priority, and Expected hours. Do not report that these fields are absent or inconsistently filled unless every relevant row was inspected.
-8. Read Slack only when the ticket directly links a message/thread or the user explicitly asks. Open the thread, not just a search snippet, and preserve its permalink.
-9. Separate monday facts from linked Slack or attachment context. When `work-management` calls this skill, include useful writeback suggestions. The parent workflow decides and performs Notion writes.
+Preserve exact pulse URLs or IDs and version names. Read each relevant ticket or report why it is blocked. Do not infer board fields from urgency, comments, colors, or ordering. If `current sprint` is ambiguous between customers, check both boards for candidates.
+
+Read Slack when a ticket links a thread or the user asks; keep its permalink and distinguish its evidence from monday fields. `work-management` owns any resulting Notion writes.
 
 ## Read-only boundary
 
@@ -42,14 +36,4 @@ Use only the navigation, filters, previews, and downloads needed to read. Do not
 
 Download an attachment only when preview or extraction is insufficient, and keep it in a temporary workspace path. Never alter an attachment.
 
-## Output and completion
-
-Keep the report concise:
-
-- `Board / sprint`
-- `Tickets read`
-- `Current state`
-- `Blockers / gaps`
-- `Recommended next actions`
-
-The read is complete when every ticket within the requested scope was opened or marked `[blocked]` with the exact reason, exact URLs and version names were preserved, and monday was not changed. A sprint, backlog, release, or capacity review also requires the Main table inventory and final reconciliation, with recorded Priority and Expected hours including explicit blanks. State uncertainty instead of guessing.
+Report the requested findings with direct sources, inspected scope, and any coverage gaps. No fixed report template is required.

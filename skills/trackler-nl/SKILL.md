@@ -21,24 +21,14 @@ Use the machine's Chrome default profile and preserve the signed-in session. Sav
 
 Do not use the Trackler API. Distinguish `login required`, `permission denied`, `browser/session unavailable`, `track loaded but data hidden`, and `browser automation failure`.
 
-## Workflow
+## Evidence
 
-1. Scope the track and period. With a specific URL, inspect only that track by default. For `current Trackler work`, check the track list briefly before choosing what to read in full.
-2. Open the main/default view first and capture its exact title, URL, visible status, dates, progress, and section names.
-3. Inspect every relevant section. Never invent or translate a bucket label that is not visible.
-4. Open relevant items and read descriptions, comments, visible replies, expanded text, links, and material attachments.
-5. Inspect weekplanner/schrift photos and coaching transcripts or summaries when they can affect review or planning.
-6. Follow Slack only when Trackler directly links a message/thread or the user explicitly asks. Read the thread and preserve its permalink.
-7. Return exact Trackler item URLs or IDs, visible labels, and a short summary that keeps sources separate. Include Notion writeback suggestions only when `work-management` calls this skill.
+With a specific URL, stay within that track unless linked context is needed. For `current Trackler work`, check the track list before selecting relevant items. Preserve exact item URLs or IDs and visible labels.
+
+Read relevant comments and attachments, including weekplanner/schrift photos and coaching transcripts when they affect the decision. Follow Slack when Trackler links a thread or the user asks; retain its permalink and distinguish the sources. Report unreadable material and its effect on the answer.
 
 ## Read-only boundary
 
 Use only the navigation, previews, and downloads needed to read. Do not create, edit, comment, upload, move, complete, assign, delete, or change status. If something changes by accident, stop and report it before attempting cleanup.
 
 Download only when preview or text extraction is insufficient, and keep the file in a temporary workspace path.
-
-## Output and completion
-
-Use only useful sections: `Trackler track`, `Sections`, `Items read`, `Planning signals`, `Blockers / gaps`, and `Recommended next actions`.
-
-The read is complete when every relevant section and item was read or marked `[blocked]` with the exact reason, useful images and attachments were inspected, exact URLs and visible labels were preserved, and Trackler was not changed. State uncertainty instead of guessing.

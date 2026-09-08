@@ -31,4 +31,4 @@ Keep these sections in this order:
 
 Use the Notion file upload API for binary media. Preserve the requested order and read back the page after writes. For important final assets, download the Notion files again and compare them with the approved local files.
 
-Creating or editing a Post is not permission to publish it. Obtain explicit approval immediately before any external scheduling or publication action.
+Creating or editing a Post is not permission to publish it. Schedule or publish only with explicit user authorization covering that post and action; an earlier matching instruction remains valid.

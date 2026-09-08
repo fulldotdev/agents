@@ -46,24 +46,9 @@ If either answer changes the price materially, show a provisional price, alterna
 
 ## Change control
 
-Maintain a price-change ledger during every revision:
+Preserve the customer-presented baseline. In the existing internal calculation, note material price or effort changes, their source and reason, and whether they are proposed, approved or customer-presented. A separate ledger is not required.
 
-| Field | Required value |
-|---|---|
-| Changed at | Exact timestamp and timezone when available |
-| Baseline | Version or document presented before the change |
-| Category | Customer-facing category |
-| Previous | Previous price and internal effort |
-| Proposed | Proposed price and internal effort |
-| Source | Meeting, Slack, ticket, historical evidence, user decision, or agent recommendation |
-| Status | Proposed, user-approved, customer-presented, superseded, or removed |
-| Reason | One concrete sentence |
-
-- Label an agent risk adjustment as a proposal until the user explicitly approves it.
-- Do not attribute an internally proposed change to a meeting or customer source.
-- When the user asks what changed after a call, compare timestamps against the exact version presented in that call.
-- Preserve earlier presented values after later revisions so the commercial sequence can be reconstructed.
-- Reconcile the ledger, customer document, and internal calculation after every approved price change.
+Do not attribute an agent proposal to a customer or meeting. When asked what changed after a call, compare against the exact version presented there using available timestamps. Preserve earlier presented values and reconcile the customer document with the internal calculation after a price change.
 
 ## Documents
 
@@ -81,7 +66,7 @@ Internal version:
 - rate used;
 - historical analogue and actuals;
 - risk and assumptions;
-- price-change ledger;
+- material change notes and their sources;
 - same category totals as the customer version.
 
 Verify every category sum and grand total. After an update, read both documents back and compare totals and category names.
