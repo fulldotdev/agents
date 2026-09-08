@@ -17,4 +17,4 @@ Read [examples.md](references/examples.md) when calibrating tone or handling a s
 
 Put each requested draft in its own fenced `text` block. Keep internal notes and missing facts outside it; do not present a draft with unresolved factual placeholders as ready to send. Give one draft unless alternatives are requested. Follow an explicitly requested format instead. In mail replies, do not add a duplicate signature; use an existing or explicitly requested sign-off when appropriate.
 
-For authorized Gmail draft creation or updates, use `gog` and [gmail-drafts.md](references/gmail-drafts.md). Writing a draft in chat does not authorize sending or saving it to another app.
+For requested Gmail drafts or drafts authorized by triage, use `gog` and [gmail-drafts.md](references/gmail-drafts.md) directly. A chat-only writing request stays in chat. Saving a draft does not authorize sending.

@@ -192,7 +192,33 @@ def apply(state, owner, operations):
         event = events.get(op.get("event"))
         if event is None:
             raise ValueError("Unknown event in current pending batch")
-        if operation == "prepare":
+        if operation == "record_draft":
+            kind, receipt, report = op.get("kind"), op.get("receipt"), op.get("report") or {}
+            if kind not in {"draft_created", "draft_updated"} or not isinstance(receipt, str) or not receipt.strip():
+                raise ValueError("record_draft requires a draft kind and verified native draft ID")
+            if not report.get("title") or not report.get("url"):
+                raise ValueError("A draft report requires title and native URL")
+            key = f"draft:{op['event']}:{receipt}"
+            for previous_key in event["actions"]:
+                previous = actions[previous_key]
+                if previous["kind"] in {"draft_created", "draft_updated"} and previous.get("receipt") == receipt:
+                    key = previous_key
+                    break
+            if event["status"] == "done" and key not in event["actions"]:
+                raise ValueError("An acknowledged event cannot acquire new actions")
+            if any(actions[k]["kind"] in {"draft_created", "draft_updated"}
+                   and actions[k]["status"] == "prepared" for k in event["actions"]):
+                raise ValueError("Resolve or cancel the existing draft intent before recording a draft")
+            existing = actions.get(key)
+            if existing and (existing["kind"] != kind or existing.get("receipt") != receipt):
+                raise ValueError("Conflicting draft receipt; reconcile the external draft first")
+            actions.setdefault(key, {"kind": kind, "receipt": receipt, "status": "done", "resolved_at": now()})
+            state.setdefault("reports", {}).setdefault(key, {
+                "kind": kind, "title": report["title"], "url": report["url"],
+            })
+            if key not in event["actions"]:
+                event["actions"].append(key)
+        elif operation == "prepare":
             if event["status"] == "done":
                 raise ValueError("An acknowledged event cannot acquire new actions")
             key, kind, target = op["key"], op["kind"], op["target"]

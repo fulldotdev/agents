@@ -67,6 +67,6 @@ Choose the single Area that owns the Task's primary outcome:
 
 The Status property is authoritative. Record its evidence in the Timeline, but do not keep a second status in the body. A Task remains Doing between work sessions unless a concrete dependency makes it Waiting. When that dependency clears, use Todo if work had not started and Doing if it had. A partially blocked work package remains Doing when accepted work can continue independently; preserve the specific dependency rather than hiding all remaining work behind Waiting.
 
-Append the supporting source event before changing Status. Done is terminal unless Sil or a newer source reopens the same deliverable. When canceling a Task, clear obsolete Sprint and Due values in the final write and verify them. Use Due only for real deadlines or follow-up dates.
+Record the supporting source and apply evidenced status changes within the authorized workflow, without asking again. Done is terminal unless Sil or a newer source reopens the same deliverable. When canceling a Task, clear obsolete Sprint and Due values in the final write and verify them. Use Due only for real deadlines or follow-up dates.
 
 Project statuses are `Discovery`, `Planned`, `In Progress`, `Paused`, `Completed`, and `Canceled`. Move Discovery to Planned when a concrete delivery commitment or approval exists.

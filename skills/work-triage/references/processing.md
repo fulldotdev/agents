@@ -10,24 +10,35 @@ Another owner blocks execution. Verify the old worker has actually stopped befor
 
 Read each event's current source and relevant existing artifacts before deciding. On the first deployment, the overlap may include events already handled under the old collector; reconcile them. Old checkpoints do not prove that historical processing completed.
 
-## Journal external actions
+## Record outcomes
 
 `queue apply --owner RUN --file /absolute/path/decisions.json` accepts a JSON array. Batch independent acknowledgments in one file. Use event IDs from the queue, not invented examples below.
 
-Before an external write, save an intent with a stable key identifying the result and source revision, plus a target that lets a future worker find it:
+For Gmail drafts, use the persisted source event and Gmail's actual thread/drafts to recover: inspect the latest sent reply and matching drafts before creating or updating, preserve Sil's edits, and verify the result through readback. No separate pre-write intent is needed. Record the native draft ID and acknowledge the event once all its work is handled:
 
 ```json
-[{"op":"prepare","event":"gmail:EVENT_HASH","key":"draft:ACCOUNT:THREAD:SOURCE_MESSAGE","kind":"draft_created","target":"Gmail ACCOUNT thread THREAD; inspect matching drafts and latest sent reply"}]
+[
+  {"op":"record_draft","event":"gmail:EVENT_HASH","kind":"draft_created","receipt":"GMAIL_DRAFT_ID","report":{"title":"Draft created: concrete subject","url":"VERIFIED_NATIVE_URL"}},
+  {"op":"ack","event":"gmail:EVENT_HASH","outcome":"handled","note":"Matching draft verified"}
+]
 ```
 
-Reportable kinds are `task_created`, `project_created`, `company_created`, `task_canceled`, `task_done`, `project_status_changed`, `company_status_changed`, `draft_created`, `draft_updated`, `t3_started`, and `t3_continued`. Use `context_updated` or `other` for quiet actions. `t3_started` requires separately authorized work; it does not grant automatic start permission.
+Use `draft_updated` for a material update. After interruption, reconcile Gmail before retrying a write; an unchanged pre-existing draft is not a newly created outcome. The record key is derived from the event and draft ID, so repeating the same record does not duplicate its report. An existing prepared draft action from an older run still needs `resolve` or `cancel` below; do not also record it as a new action. Saving a draft never authorizes sending.
+
+For other external writes, save an intent with a stable key identifying the result and source revision, plus a target that lets a future worker find it:
+
+```json
+[{"op":"prepare","event":"EVENT_ID","key":"ACTION_KEY","kind":"task_created","target":"Notion Task for source SOURCE_URL; search before creating"}]
+```
+
+Reportable kinds are `task_created`, `project_created`, `company_created`, `task_canceled`, `task_done`, `project_status_changed`, `company_status_changed`, `draft_created`, `draft_updated`, `t3_started`, and `t3_continued`. Use `context_updated` or `other` for quiet actions. `t3_started` requires work covered by Sil's authorization.
 
 Inspect an existing intent and external state before retrying a write with uncertain outcome. Reuse a verified artifact, preserve human edits, and never create a duplicate merely because its receipt is missing. After successful readback:
 
 ```json
 [
-  {"op":"resolve","key":"draft:ACCOUNT:THREAD:SOURCE_MESSAGE","receipt":"VERIFIED_EXTERNAL_ID","report":{"title":"Draft created: concrete subject","url":"VERIFIED_NATIVE_URL"}},
-  {"op":"ack","event":"gmail:EVENT_HASH","outcome":"handled","note":"Matching draft verified"}
+  {"op":"resolve","key":"ACTION_KEY","receipt":"VERIFIED_EXTERNAL_ID","report":{"title":"Task created: concrete outcome","url":"VERIFIED_NATIVE_URL"}},
+  {"op":"ack","event":"EVENT_ID","outcome":"handled","note":"Task verified"}
 ]
 ```
 

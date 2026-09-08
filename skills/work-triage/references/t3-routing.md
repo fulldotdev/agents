@@ -1,8 +1,6 @@
 # T3 routing
 
-This is the single gate for automatic triage dispatch. An explicit instruction from Sil may separately authorize new work; do not infer that permission from an incoming message.
-
-Automatically resume a thread only when all conditions hold:
+First apply Sil's existing instruction for this work. When it authorizes starting or continuing implementation, dispatch within that scope without asking again. Customer input alone does not provide authorization. Without such an instruction, automatic feedback dispatch must meet these conditions:
 
 1. New, concrete feedback concerns previously delivered work in an existing Notion Task with a known owning T3 thread.
 2. The feedback belongs to the same outcome, one known repository, and one small cycle ending at review or preview.

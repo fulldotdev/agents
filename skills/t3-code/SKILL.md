@@ -30,11 +30,11 @@ python3 ~/.agents/skills/t3-code/scripts/t3_dispatch.py create \
   --project-id <project-id> \
   --title "Task title" \
   --branch <actual-checkout-branch> \
-  --prompt "Read <Task URL> and continue to the review/preview boundary."
+  --prompt "Read <Task URL>. Use development and complete the authorized work, including its agreed review or release boundary."
 
 python3 ~/.agents/skills/t3-code/scripts/t3_dispatch.py resume \
   --thread-id <thread-id> \
-  --prompt "See <new source> and the updated Task <Task URL>. Continue within scope and stop at review/preview."
+  --prompt "Read <Task URL> and <new source>. Use development and complete the authorized work, including its agreed review or release boundary."
 ```
 
 The helper creates a thread before starting its first turn, supports settle/unsettle operations, and defaults to `gpt-6-astra`, high reasoning, and full access. Override these with `T3_DEFAULT_MODEL`, `T3_DEFAULT_REASONING_EFFORT`, `--model`, `--reasoning-effort`, or `--runtime-mode` when a task needs different settings.
@@ -43,7 +43,7 @@ The helper creates a thread before starting its first turn, supports settle/unse
 
 For automatic triage, use `work-triage` and its [dispatch gate](../work-triage/references/t3-routing.md); that reference owns source updates, authorization, and handoff requirements. This tool skill grants no additional start permission.
 
-Use the compact T3 index or `status` to check `sessionStatus`, `latestTurnState`, pending approvals, and pending user input. Do not start a turn already running or awaiting approval/input. A stopped, ready, or settled thread may be resumed directly when the requested work is authorized.
+Use the compact T3 index or `status` to check live state and pending requests. Do not duplicate a running turn. When Sil has supplied a pending approval or answer, pass it through T3's supported response mechanism and continue the authorized work; otherwise preserve the pending request. A stopped, ready, or settled thread may be resumed directly when the requested work is authorized.
 
 For implementation handoffs, tell the executing agent to use `development`. Pass the actual checkout branch on creation; the helper's fallback is `preview`, which does not establish the repository's current branch.
 

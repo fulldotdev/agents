@@ -14,11 +14,11 @@ gog --readonly --gmail-no-send --account user@example.com --no-input gmail draft
 
 Use a plain UTF-8 body file with actual newlines. `--body` does not turn literal `\n` into newlines. Draft replies require an explicit subject. Use the Gmail message ID of the specific message being answered for stable reply headers. `--thread-id` instead uses the thread's latest message, which may have changed or may be a draft. Select recipients from the current conversation; `--reply-all` is appropriate only when all original recipients should receive the reply.
 
-After authorization to save the draft, preview the exact mutation with `--dry-run`, then run it without that flag:
+Create or update the authorized draft directly. For our draft workflow, `--dry-run` is optional when the command shape is uncertain:
 
 ```bash
-gog --gmail-no-send --account user@example.com --no-input --dry-run gmail drafts create --to recipient@example.com --subject 'Re: Existing subject' --reply-to-message-id MESSAGE_ID --body-file /absolute/path/reply.txt --json
-gog --gmail-no-send --account user@example.com --no-input --dry-run gmail drafts update DRAFT_ID --subject 'Re: Existing subject' --body-file /absolute/path/reply.txt --json
+gog --gmail-no-send --account user@example.com --no-input gmail drafts create --to recipient@example.com --subject 'Re: Existing subject' --reply-to-message-id MESSAGE_ID --body-file /absolute/path/reply.txt --json
+gog --gmail-no-send --account user@example.com --no-input gmail drafts update DRAFT_ID --subject 'Re: Existing subject' --body-file /absolute/path/reply.txt --json
 ```
 
 Updating preserves reply headers by default; do not use `--clear-reply-context` for a reply. Omitting `--attach` preserves existing attachments. `--attach` replaces them. Inspect recipient fields after update rather than assuming omission preserves every field. `--quote` is optional when useful; do not append duplicate signatures or quoted history manually.

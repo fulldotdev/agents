@@ -21,7 +21,7 @@ Evaluate its findings and fix relevant issues within scope. Recheck affected beh
 
 ## Reviewable delivery
 
-For CMS or visual-editor changes, verify the relevant editing experience as well as the rendered page, using an authorized development environment. A rendered example alone does not establish that the customer can edit it.
+Our CMSes are CloudCannon, Sanity, and Shopify. Use their existing skills for implementation details. For CMS changes, verify the affected editing experience as well as the rendered page: CloudCannon's configured editor, Sanity Studio, or Shopify's theme editor and relevant custom-data fields. Use the project's authorized development environment; test only the editing surfaces the change affects.
 
 Give Sil a validated preview when the change has a reviewable UI, with what to inspect and any access or lifetime limitation. On Otis, localhost alone is not a cross-device review link. State relevant verification, unresolved issues, and whether the work is committed, pushed, or released; do not imply that one establishes another.
 

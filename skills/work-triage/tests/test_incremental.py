@@ -175,6 +175,64 @@ class DurableHandoffTests(unittest.TestCase):
         incremental.save(state, self.path)
         self.assertEqual(pending.reports(incremental.load(self.path)), [])
 
+    def test_draft_without_intent_recovers_pending_event_and_reports_once(self):
+        _, event_id = self.batch()
+        # Gmail has saved the draft; the worker dies before recording its ID.
+        replay = collect.incremental_triage(self.args)
+        self.assertEqual(replay["queue"]["events"][event_id]["status"], "pending")
+        state = incremental.load(self.path)
+        record = {"op": "record_draft", "event": event_id, "kind": "draft_created",
+                  "receipt": "recovered-native-draft-id",
+                  "report": {"title": "Draft created: reply", "url": "https://mail.google.com/example"}}
+        pending.apply(state, "worker-a", [record])
+        incremental.save(state, self.path)
+        state = incremental.load(self.path)
+        ack = {"op": "ack", "event": event_id, "outcome": "handled", "note": "Existing Gmail draft verified"}
+        pending.apply(state, "worker-a", [record, ack, record])
+        self.assertEqual(len(state["actions"]), 1)
+        self.assertEqual(len(pending.reports(state)), 1)
+        key = pending.reports(state)[0]["key"]
+        pending.apply(state, "worker-a", [{"op": "reported", "key": key}, record])
+        self.assertEqual(pending.reports(state), [])
+        pending.finish(state, "worker-a")
+        self.assertFalse(state["backlog"])
+        self.assertEqual(state["lanes"]["slack"]["cursor"], "2026-09-07T10:00:00Z")
+
+    def test_draft_record_preserves_owner_receipt_and_acknowledgement_guards(self):
+        _, event_id = self.batch()
+        state = incremental.load(self.path)
+        record = {"op": "record_draft", "event": event_id, "kind": "draft_updated",
+                  "receipt": "native-draft-id",
+                  "report": {"title": "Draft updated: reply", "url": "https://mail.google.com/example"}}
+        with self.assertRaises(ValueError):
+            pending.apply(state, "worker-b", [record])
+        for invalid in [{"receipt": ""}, {"report": {}}, {"kind": "t3_started"}, {"event": "unknown"}]:
+            with self.assertRaises(ValueError):
+                pending.apply(state, "worker-a", [{**record, **invalid}])
+        self.assertFalse(state.get("actions"))
+        pending.apply(state, "worker-a", [record])
+        for invalid in [{"kind": "draft_created"}, {"op": "ack", "outcome": "no_action", "note": "Nothing done"}]:
+            with self.assertRaises(ValueError):
+                pending.apply(state, "worker-a", [{**record, **invalid}])
+        pending.apply(state, "worker-a", [{"op": "ack", "event": event_id, "outcome": "handled", "note": "Verified"}])
+        with self.assertRaises(ValueError):
+            pending.apply(state, "worker-a", [{**record, "receipt": "another-draft"}])
+
+    def test_draft_record_reconciles_legacy_intent_without_duplicate_report(self):
+        _, event_id = self.batch()
+        state = incremental.load(self.path)
+        record = {"op": "record_draft", "event": event_id, "kind": "draft_created",
+                  "receipt": "native-draft-id",
+                  "report": {"title": "Draft created: reply", "url": "https://mail.google.com/example"}}
+        pending.apply(state, "worker-a", [{"op": "prepare", "event": event_id,
+                      "key": "legacy-draft", "kind": "draft_created", "target": "Gmail thread"}])
+        with self.assertRaises(ValueError):
+            pending.apply(state, "worker-a", [record])
+        pending.apply(state, "worker-a", [{"op": "resolve", "key": "legacy-draft",
+                      "receipt": record["receipt"], "report": record["report"]}, record])
+        self.assertEqual(state["pending"]["events"][event_id]["actions"], ["legacy-draft"])
+        self.assertEqual(len(pending.reports(state)), 1)
+
     def test_cancel_unneeded_intent_keeps_evidence_without_false_created_report(self):
         _, event_id = self.batch()
         state = incremental.load(self.path)
@@ -290,7 +348,7 @@ class GmailIndexTests(unittest.TestCase):
         }]}) as command:
             result = gmail.collect_account("me@example.com", after, before)
         args = command.call_args.args[0]
-        query = args[args.index("search") + 1]
+        query = args[args.index("--") + 1] if "--" in args else args[args.index("search") + 1]
         self.assertNotIn("in:inbox", query)
         self.assertNotIn("in:sent", query)
         self.assertIn("-in:spam", query)
