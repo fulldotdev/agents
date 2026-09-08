@@ -20,7 +20,7 @@ Dit is onderzoek. Wijzig geen Notion- of Dex-records en voer geen LinkedIn-actie
 
 ## Output
 
-Geef alleen een genummerde lijst in het Nederlands, met maximaal vijf sterke items. Geef minder als er minder goede vondsten zijn; vul niet aan om een aantal te halen. Elke regel heeft een label, een directe LinkedIn-link en één korte, concrete beschrijving.
+Geef dagelijks een genummerde lijst in het Nederlands met tien sterke items. Zoek zo nodig bij meer targetbedrijven om tot tien te komen. Alleen als er onvoldoende verifieerbare vondsten zijn, geef je minder en meld je kort waarom. Elke regel heeft een label, een directe LinkedIn-link en één korte, concrete beschrijving.
 
 - `Persoon: [Naam](profiel) - Rol bij Targetbedrijf; waarom deze persoon relevant is.`
 - `Via-via: [Naam](profiel) - Rol bij Organisatie; concrete relatie met Targetbedrijf.`
