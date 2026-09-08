@@ -4,6 +4,7 @@ import argparse
 import fcntl
 import hashlib
 import json
+import os
 import re
 import sqlite3
 import subprocess
@@ -149,7 +150,10 @@ def publish(batch_id, notes):
     batch["text"] = message
     batch["pending_report"] = {"at": pending_at, "snapshot": snapshot, "header": header}
     store.save(batch_id, batch)
-    result = subprocess.run(["hermes", "send", "--to", "telegram:" + CHAT, "--json"], input=message, text=True, capture_output=True, timeout=90)
+    # This helper owns the review send; the cron ends with [SILENT].
+    send_env = {key: value for key, value in os.environ.items() if key not in {
+        "HERMES_CRON_AUTO_DELIVER_PLATFORM", "HERMES_CRON_AUTO_DELIVER_CHAT_ID", "HERMES_CRON_AUTO_DELIVER_THREAD_ID"}}
+    result = subprocess.run(["hermes", "send", "--to", "telegram:" + CHAT, "--json"], input=message, text=True, capture_output=True, timeout=90, env=send_env)
     if result.returncode:
         raise RuntimeError("Planning delivery uncertain; inspect chat before publishing again")
     receipt = json.loads(result.stdout)

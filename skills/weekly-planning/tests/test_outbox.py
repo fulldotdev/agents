@@ -1,6 +1,7 @@
 """Offline weekly rehearsal: real helpers, fake Notion API and Telegram history."""
 import copy
 import json
+import os
 import sqlite3
 import sys
 import tempfile
@@ -97,6 +98,27 @@ class WeeklyRehearsal(unittest.TestCase):
     def receipt(self, claim):
         return {'digest': claim['digest'], 'channel': 'gmail', 'message_id': 'fake-sent-message',
                 'sent_at': self.clock.isoformat()}
+
+    def test_cron_review_is_sent_and_can_be_approved(self):
+        self.draft()
+
+        def cron_send(args, **kwargs):
+            env = kwargs.get('env', os.environ)
+            if env.get('HERMES_CRON_AUTO_DELIVER_PLATFORM') == 'telegram' and env.get('HERMES_CRON_AUTO_DELIVER_CHAT_ID') == outbox.CHAT:
+                return SimpleNamespace(returncode=0, stdout=json.dumps({
+                    'success': True, 'skipped': True, 'reason': 'cron_auto_delivery_duplicate_target'}))
+            self.assertEqual(env['HERMES_SESSION_ID'], 'weekly-test')
+            return self.send(args, **kwargs)
+
+        with patch.dict(os.environ, {'HERMES_CRON_AUTO_DELIVER_PLATFORM': 'telegram',
+                                     'HERMES_CRON_AUTO_DELIVER_CHAT_ID': outbox.CHAT,
+                                     'HERMES_SESSION_ID': 'weekly-test'}), \
+             patch.object(outbox.subprocess, 'run', side_effect=cron_send):
+            self.assertTrue(outbox.publish(self.batch, '')['published'])
+            self.assertEqual(os.environ['HERMES_CRON_AUTO_DELIVER_CHAT_ID'], outbox.CHAT)
+        self.assertEqual(len(self.publications), 1)
+        self.reply('alles akkoord')
+        self.assertEqual(outbox.reconcile(self.batch)['changed'][0]['status'], 'Goedgekeurd')
 
     def test_full_week_approve_skip_send_and_restart(self):
         one = self.draft()
