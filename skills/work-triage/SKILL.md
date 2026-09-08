@@ -13,7 +13,7 @@ Read [references/media.md](references/media.md) when collected items include rel
 
 ## Collection
 
-For the recurring Hermes heartbeat:
+For the Hermes cron running every 30 minutes with continuity enabled:
 
 ```bash
 python3 ~/.agents/skills/work-triage/scripts/collect.py triage --incremental --owner UNIQUE_RUN_ID --format yaml
@@ -63,6 +63,6 @@ Template:
 2. Label: [title](link) - optional description
 ```
 
-Continue after the highest item already reported in the current session. Start at 1 when that session has no earlier numbered triage output.
+Continue after the highest item in the previous delivered triage report. Read recent Triage chat history when reconciling delivery or Sil's feedback; cron continuity contains prior output, not the full conversation. Start at 1 when there is no prior report.
 
 If nothing meets the reporting gate, return exactly `[SILENT]`.

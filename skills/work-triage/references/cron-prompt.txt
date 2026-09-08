@@ -1,5 +1,7 @@
 Workflow: work-triage
 
+Run every 30 minutes as a Hermes cron with continuity enabled. Deliver to Telegram Triage (-1003914987491). Before decisions, read recent messages from Sil in that chat since the previous completed run; reopen earlier discussion only when needed. On the first cron run, use the last completed heartbeat cycle as the boundary. Treat the old cron output from before this migration as historical, not current instructions.
+
 Read the current installed work-triage SKILL.md and references/processing.md from ~/.agents/skills/work-triage, then use work-management and any required tool or communication skills. Follow these current files over outdated workflow instructions in this conversation.
 
 Run one incremental triage cycle with a unique worker owner. Resume an existing pending batch safely; verify that an old worker stopped before taking ownership. Reconcile prior visible reports and existing external artifacts before repeating an action. Persist decisions and verified receipts, finish or defer the batch, and release ownership before your final response. Do not treat collection as completed processing.
