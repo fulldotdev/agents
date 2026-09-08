@@ -5,11 +5,11 @@ description: Run Sunday Notion cleanup and project-update drafts, process Sil's 
 
 # Weekly planning
 
-One weekly routine on Otis: prepare Sunday at 10:00, review in Telegram Planning, and send approved updates Monday at 07:00 Europe/Amsterdam. Updates tell each customer what we will work on in the coming week, so they know what to expect without asking. Use `work-management` for Notion decisions and `customer-communication` for voice.
+One weekly routine on Otis: prepare Sunday at 10:00, review in Telegram Planning, and send approved updates Monday at 07:00 Europe/Amsterdam. Use the current Notion Projects, Tasks, Companies and Sprint as the context for this routine. Updates tell each customer what we will work on in the coming week, so they know what to expect without asking. Apply `work-management` to these Notion records and `customer-communication`'s writing style to the customer context recorded there.
 
 Read the instructions for the current stage:
 
-- [Sunday preparation](references/sunday.md): collect sources, clean up Notion, draft useful updates and publish one numbered review.
+- [Sunday preparation](references/sunday.md): review and clean up Notion, draft useful updates and publish one numbered review.
 - [Planning replies](references/approvals.md): handle Sil's approvals, edits, skips and withdrawals.
 - [Monday sending](references/monday.md): check current facts, send only approved messages and report the result.
 

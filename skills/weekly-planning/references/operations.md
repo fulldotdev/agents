@@ -31,7 +31,7 @@ Draft input:
     "channel_id": "verified-channel-id",
     "thread_ts": "verified-parent-ts"
   },
-  "sources": ["actual conversation permalink", "actual delivery evidence"]
+  "sources": ["Notion Project link", "Notion Task or Sprint link"]
 }
 ```
 
@@ -42,7 +42,7 @@ The Project toggle contains a status line, the exact text in a plain-text code b
 Fresh check input:
 
 ```json
-{"checked_at": "current ISO timestamp with timezone", "digest": "current draft digest", "unchanged": true, "sources": ["latest conversation locator", "current delivery evidence"]}
+{"checked_at": "current ISO timestamp with timezone", "digest": "current draft digest", "unchanged": true, "sources": ["Notion Project link", "Notion Task or Sprint link"]}
 ```
 
 Do the actual check first. A claim requires a source check less than ten minutes old, exact approval verified against the real incoming Hermes row and published review, and Monday 07:00–12:00 Amsterdam. Claim output is the sole send payload. The helper does not call customer send APIs; the agent follows the channel skill using this exact payload. Never invoke a channel sender when claim fails.
