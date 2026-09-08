@@ -1,0 +1,9 @@
+# Monday sending
+
+Run Monday at 07:00 Europe/Amsterdam as one continuous job. Discover only the batch for today's Monday, reconcile Planning replies, and inspect each Project's current draft. Missing approval means skip. Also skip items with missing facts, revised text, a failed check or an uncertain earlier send.
+
+For each approved update, read the latest conversation and relevant project facts since drafting. If anything makes its content or routing stale, `hold` it and tell Sil what needs review; do not rewrite and send under the old approval. If still accurate, create a fresh check payload with actual source locators, then `claim`. Only the exact text and destination returned by a successful claim may be sent. Use the appropriate channel skill, verify the resulting native message ID, then immediately `receipt` it in Notion. Do not append a signature, change thread, or alter recipients beyond the approved payload.
+
+Claim persists `Bezig met verzenden` before any external send. A crash, timeout, ambiguous response or failed receipt write is not permission to retry. Inspect the actual channel for the exact message and record a verified receipt if found; otherwise leave `Verzending controleren` and ask Sil in Planning. Never clear a claim and resend automatically. A later Monday rerun skips sent/uncertain items; the normal send window ends at noon. Late sending needs a new explicit agreement.
+
+Return one short numbered Telegram result with sent, skipped and blocked items, linking their Project sections. This final result is delivered by the Monday cron to Planning. Preserve errors per project and continue with independent approved updates. The Sunday job's numbered review is sent by the publish helper; do not duplicate it through cron delivery.

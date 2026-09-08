@@ -11,7 +11,6 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 SKILLS = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(SKILLS / "message-outbox/scripts"))
 import store
 
 SOURCES = ("gmail", "slack", "whatsapp", "calendar", "meetings", "t3_threads")

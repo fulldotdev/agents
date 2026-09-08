@@ -31,7 +31,7 @@ Use the smallest source set that can answer the request reliably. For a full his
    - Do not expose `incl. design` in customer wording unless requested, but account for missing design work internally.
 
 6. **Code, CMS, and preview**
-   - Inspect current implementation state before pricing.
+   - Inspect current implementation when reuse or remaining work can materially change the price.
    - Confirm which layouts, blocks, components, queries, routes, schemas, integrations, and environments already exist.
    - Reuse existing foundations in the estimate and state where reuse lowers effort.
 

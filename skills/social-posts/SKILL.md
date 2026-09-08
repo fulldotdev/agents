@@ -13,7 +13,7 @@ Do not invent handles, metrics, quotes, results, or client approval. Ask when a 
 
 - Make one point per post.
 - Open with a concrete observation, claim, or situation from the source.
-- Prefer plain language and short paragraphs over marketing language or performative expertise.
+- Prefer plain language and short paragraphs. Remove filler and repeated conclusions while preserving facts, useful detail and real uncertainty. Do not force slang, jokes or a different personality to make the text sound human.
 - Use real work and named examples instead of broad capability claims when permission and evidence exist.
 - Treat technology as evidence for an outcome unless the technology itself is the subject.
 - Let the caption carry the argument and the media carry proof or context. Avoid needless duplication.

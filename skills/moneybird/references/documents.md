@@ -1,37 +1,11 @@
-# Commercial documents
+# Moneybird document layout
 
-## Structure
+Apply the agreed scope and billing basis. Pricing decisions belong in `commercial-scoping`; use `customer-communication` when drafting new wording.
 
-Separate already billed/covered work, one-off work, recurring service, shared infrastructure/admin, and per-company work. Put one-off lines above recurring lines and monthly packages at the bottom.
+Prefer a few clear lines. A normal line has a bold heading followed immediately by a specific paragraph describing the work and billing basis. Use `Kenmerken:` or `Inbegrepen:` bullets only when they help explain the line.
 
-Use these default category labels when they fit:
+Put one-off work first and monthly packages last. Use `Eenmalige werkzaamheden` and `Doorlopende service` as category labels when they fit.
 
-- `Eenmalige werkzaamheden`
-- `Doorlopende service`
+For invoices with several workstreams, name each workstream and its agreed basis, such as `9 uur per week` or `4 uur per twee weken`. Preserve fixed billing descriptions when they must remain unchanged.
 
-If a cost is shared across brands or companies, prefer one separate shared document over duplicating it. Label genuine alternatives `Optie 1`, `Optie 2`, and so on; mandatory and optional must reflect the real sales intent.
-
-## Line writing
-
-Keep documents short, direct, and commercially believable. Prefer a few strong lines to many fragments.
-
-A normal line uses:
-
-1. a bold heading;
-2. no blank line after it;
-3. one specific paragraph describing scope and billing basis;
-4. optional `Kenmerken:` bullets for what the line is;
-5. optional `Inbegrepen:` bullets for explicit included scope.
-
-Do not add decorative introductions. Keep Dutch copy crisp, remove filler and hedging, and make similar lines distinct in their first sentence. For multi-line SOW invoices, name each workstream and its driver, such as `9 uur per week` or `4 uur per twee weken`, without repeating boilerplate.
-
-## Commercial checks
-
-- Preserve agreed rates, IDs, titles, and fixed billing lines exactly.
-- Exclude work already billed or covered elsewhere.
-- Resolve underpricing through scope, hours, or rate—not vague wording.
-- Ensure shared and per-company costs are split once and correctly.
-- Ensure options have real tradeoffs and recurring lines are at the bottom.
-- Check headings, line order, quantities/units, pricing, VAT, totals, and related-document consistency.
-
-The document is ready when a buyer can understand what is one-off, recurring, shared, optional, included, and billable without additional interpretation.
+Follow the quantity, period and price field conventions in [operations.md](operations.md). Read back headings, line order and optionality as well as amounts; formatting must preserve the agreed distinction between included, optional, one-off and recurring work.

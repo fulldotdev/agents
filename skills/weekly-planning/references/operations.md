@@ -3,16 +3,16 @@
 Run on Otis, where Hermes and channel credentials live:
 
 ```sh
-python3 ~/.agents/skills/message-outbox/scripts/outbox.py discover --week YYYY-MM-DD
-python3 ~/.agents/skills/message-outbox/scripts/outbox.py init --sprint SPRINT_ID --week YYYY-MM-DD
-python3 ~/.agents/skills/message-outbox/scripts/outbox.py draft --batch BATCH_ID --file /tmp/update.json
-python3 ~/.agents/skills/message-outbox/scripts/outbox.py publish --batch BATCH_ID --file /tmp/cleanup-note.txt
-python3 ~/.agents/skills/message-outbox/scripts/outbox.py recover-publication --batch BATCH_ID --file /tmp/verified-planning-receipt.json
-python3 ~/.agents/skills/message-outbox/scripts/outbox.py reconcile --batch BATCH_ID
-python3 ~/.agents/skills/message-outbox/scripts/outbox.py list --batch BATCH_ID
-python3 ~/.agents/skills/message-outbox/scripts/outbox.py claim --batch BATCH_ID --number 1 --file /tmp/source-check.json
-python3 ~/.agents/skills/message-outbox/scripts/outbox.py receipt --section SECTION_ID --file /tmp/receipt.json
-python3 ~/.agents/skills/message-outbox/scripts/outbox.py hold --section SECTION_ID --file /tmp/reason.json
+python3 ~/.agents/skills/weekly-planning/scripts/outbox.py discover --week YYYY-MM-DD
+python3 ~/.agents/skills/weekly-planning/scripts/outbox.py init --sprint SPRINT_ID --week YYYY-MM-DD
+python3 ~/.agents/skills/weekly-planning/scripts/outbox.py draft --batch BATCH_ID --file /tmp/update.json
+python3 ~/.agents/skills/weekly-planning/scripts/outbox.py publish --batch BATCH_ID --file /tmp/cleanup-note.txt
+python3 ~/.agents/skills/weekly-planning/scripts/outbox.py recover-publication --batch BATCH_ID --file /tmp/verified-planning-receipt.json
+python3 ~/.agents/skills/weekly-planning/scripts/outbox.py reconcile --batch BATCH_ID
+python3 ~/.agents/skills/weekly-planning/scripts/outbox.py list --batch BATCH_ID
+python3 ~/.agents/skills/weekly-planning/scripts/outbox.py claim --batch BATCH_ID --number 1 --file /tmp/source-check.json
+python3 ~/.agents/skills/weekly-planning/scripts/outbox.py receipt --section SECTION_ID --file /tmp/receipt.json
+python3 ~/.agents/skills/weekly-planning/scripts/outbox.py hold --section SECTION_ID --file /tmp/reason.json
 ```
 
 Week is the Monday date. Sunday drafts belong to the next day; Monday sends belong to today. `init` is idempotent. `draft` replaces the same project's unsent draft, increments its revision and clears approval. Publication is a single Telegram message; shorten names/notes if the review list exceeds the limit. Numbers stay fixed within the week. Draft source locators are internal, never appended to customer text automatically.

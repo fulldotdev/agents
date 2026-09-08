@@ -13,7 +13,7 @@ When scope is unclear, explain what the customer already gets and what the missi
 
 Use confirmed amounts and scope. If they need calculation or reconciliation, use `commercial-scoping`. Never invent prior agreement, completion, availability, prices, deadlines, or consequences of silence. Include a verified link when the customer needs to review or use something. Ask a follow-up only for a real open point, and stop after the last relevant result, caveat, or request.
 
-Read [examples.md](references/examples.md) when calibrating tone or handling a sensitive scope, problem, or pricing reply. These examples explain decisions; they are not reusable customer facts. `unslop` is a final editing aid, not a second voice or a word blacklist.
+Read [examples.md](references/examples.md) when calibrating tone or handling a sensitive scope, problem, or pricing reply. These examples explain decisions; they are not reusable customer facts. When editing, remove filler and repeated conclusions while preserving facts, useful detail and real uncertainty. Do not force slang, jokes or a different personality to make the text sound human.
 
 Put each requested draft in its own fenced `text` block. Keep internal notes and missing facts outside it; do not present a draft with unresolved factual placeholders as ready to send. Give one draft unless alternatives are requested. Follow an explicitly requested format instead. In mail replies, do not add a duplicate signature; use an existing or explicitly requested sign-off when appropriate.
 

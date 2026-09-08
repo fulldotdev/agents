@@ -7,7 +7,7 @@ description: "Use when reading, creating, routing, or updating Notion Tasks, Pro
 
 This skill defines how work is stored and routed. Live Notion owns the current records and schema.
 
-For Sunday's weekly cleanup and customer update preparation, use `weekly-planning`. Weekly draft text, versions and approvals belong in Project bodies through `message-outbox`, with the numbered review linked from the Sprint. Telegram Planning owns the review conversation; Notion records its result.
+Use `weekly-planning` for Sunday cleanup, customer updates, Telegram Planning approvals and Monday sending. Its helper stores exact drafts and approvals in Project bodies, with the numbered review linked from the Sprint.
 
 Load only the detail needed for the current operation:
 
@@ -44,6 +44,8 @@ Load only the detail needed for the current operation:
 6. Keep source links through relations and compact, reopenable Timeline locators.
 
 An accepted customer ticket already tracked in monday stays there. Create a Notion Task only for a distinct Sil-owned commitment or an overarching delivery outcome, not a copy of each ticket. A proposal, meeting suggestion, draft, or quoted request does not establish Sil's acceptance. Check recent outgoing replies and completion evidence before creating or reopening work.
+
+When tracking a quote or invoice, use `moneybird` for its current state and direct URL, and record relevant facts in the Task Timeline. A sent estimate needing follow-up belongs to the Project's sales work. On verified acceptance, finish the sales Task and create or link the agreed delivery work under the normal routing rules; keep the original Task if it already represents delivery.
 
 Keep active Project introductions current: replace superseded planning prose using dated sources, preserve decisions and commercial references, and let the Status property own status. Do not infer a new Task merely because a Project has none. Paused or Discovery projects may legitimately have no executable work. For Waiting work, identify the dependency and its owner; use Due only for an agreed follow-up or deadline, not an invented reminder.
 
