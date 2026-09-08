@@ -20,7 +20,7 @@ Before an external write, save an intent with a stable key identifying the resul
 [{"op":"prepare","event":"gmail:EVENT_HASH","key":"draft:ACCOUNT:THREAD:SOURCE_MESSAGE","kind":"draft_created","target":"Gmail ACCOUNT thread THREAD; inspect matching drafts and latest sent reply"}]
 ```
 
-Allowed kinds are `task_created`, `draft_created`, `draft_updated`, `t3_continued`, `context_updated`, and `other`. The CLI also supports `t3_started` for separately authorized work; it does not grant automatic start permission.
+Reportable kinds are `task_created`, `project_created`, `company_created`, `task_canceled`, `task_done`, `project_status_changed`, `company_status_changed`, `draft_created`, `draft_updated`, `t3_started`, and `t3_continued`. Use `context_updated` or `other` for quiet actions. `t3_started` requires separately authorized work; it does not grant automatic start permission.
 
 Inspect an existing intent and external state before retrying a write with uncertain outcome. Reuse a verified artifact, preserve human edits, and never create a duplicate merely because its receipt is missing. After successful readback:
 
@@ -31,7 +31,7 @@ Inspect an existing intent and external state before retrying a write with uncer
 ]
 ```
 
-Reportable action kinds require a title and native URL. Omit `report` for quiet context updates. Every prepared action must be resolved or explicitly canceled before acknowledging its event.
+Reportable action kinds require a title and native URL; status-change titles include the verified `old → new` transition. Omit `report` for quiet context updates. Every prepared action must be resolved or explicitly canceled before acknowledging its event.
 
 For no action, use `ack` with `outcome: "no_action"` and a factual `note`, for example that Sil already answered. For an unfinished event, use `retry` with its event ID and the missing evidence or failure in `note`. A prepared intent that has become unnecessary needs `{"op":"cancel","key":"ACTION_KEY","note":"Sil already answered before the write","evidence":"Verified sent-message locator and absence of an existing artifact"}`, not a fabricated success receipt. Reconcile an uncertain external write before canceling; completed actions cannot be canceled.
 

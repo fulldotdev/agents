@@ -11,7 +11,11 @@ from uuid import uuid4
 import incremental
 from common import iso_utc, parse_iso
 
-REPORT_KINDS = {"task_created", "draft_created", "draft_updated", "t3_started", "t3_continued"}
+REPORT_KINDS = {
+    "task_created", "project_created", "company_created", "task_canceled", "task_done",
+    "project_status_changed", "company_status_changed",
+    "draft_created", "draft_updated", "t3_started", "t3_continued",
+}
 ACTION_KINDS = REPORT_KINDS | {"context_updated", "other"}
 
 
