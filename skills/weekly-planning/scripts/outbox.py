@@ -13,7 +13,7 @@ from zoneinfo import ZoneInfo
 
 import store
 
-CHAT = "-5101802924"
+CHAT = "-5475360719"
 SIL = "8491875812"
 TZ = ZoneInfo("Europe/Amsterdam")
 DB = Path.home() / ".hermes/state.db"
@@ -88,8 +88,25 @@ def draft(batch_id, incoming):
     date = week_date(batch["week"])
     scheduled = datetime.combine(date, datetime.min.time(), TZ).replace(hour=7).isoformat()
     existing = next((item for item in batch["items"] if item["project"] == incoming["project"]), None)
+    recovered = False
+    if not existing:
+        candidates = [child for child in store.children(incoming["project"])
+                      if child["type"] == "toggle" and store.plain(child) == f"Klantupdate · {batch['week']}"]
+        if len(candidates) > 1:
+            raise ValueError("Several project updates exist for this week; resolve the duplicate before continuing")
+        if candidates:
+            existing = {"number": len(batch["items"]) + 1, "project": incoming["project"],
+                        "section": candidates[0]["id"], "name": incoming["name"]}
+            batch["items"].append(existing)
+            recovered = True
     previous = store.load(existing["section"]) if existing else None
+    if previous and (previous.get("kind") != "update" or previous.get("project") != incoming["project"]):
+        raise ValueError("Existing project section does not match this update")
     if previous and previous["text"] == incoming["text"] and previous["destination"] == incoming["destination"] and previous["send_at"] == scheduled and digest(previous) == previous["digest"]:
+        if recovered or existing.get("digest") != previous["digest"]:
+            existing["digest"] = previous["digest"]
+            existing.pop("published_at", None)
+            store.save(batch_id, batch)
         return {"number": existing["number"], "section": existing["section"], "url": link(previous["project"], existing["section"]), "unchanged": True, **previous}
     if previous and previous["status"] in TERMINAL:
         raise ValueError("A sent or uncertain send cannot be replaced")
@@ -114,7 +131,8 @@ def publish(batch_id, notes):
     batch = store.load(batch_id)
     if batch.get("pending_report"):
         raise ValueError("Prior publication is uncertain; inspect Planning and recover its receipt before republishing")
-    lines = [f"Weekupdates {batch['week']} klaar voor review."]
+    header = f"Weekupdates {batch['week']} · review {len(batch['reports']) + 1} klaar voor review."
+    lines = [header]
     snapshot = {}
     for item in batch["items"]:
         value = store.load(item["section"])
@@ -129,7 +147,7 @@ def publish(batch_id, notes):
         raise ValueError("Review list exceeds one Telegram message; shorten names/notes")
     pending_at = stamp()
     batch["text"] = message
-    batch["pending_report"] = {"at": pending_at, "snapshot": snapshot}
+    batch["pending_report"] = {"at": pending_at, "snapshot": snapshot, "header": header}
     store.save(batch_id, batch)
     result = subprocess.run(["hermes", "send", "--to", "telegram:" + CHAT, "--json"], input=message, text=True, capture_output=True, timeout=90)
     if result.returncode:
@@ -138,7 +156,7 @@ def publish(batch_id, notes):
     if receipt.get("error") or receipt.get("success") is not True or not receipt.get("message_id") or str(receipt.get("chat_id")) != CHAT:
         raise RuntimeError("Planning delivery failed")
     at = stamp()
-    batch["reports"].append({"at": at, "snapshot": snapshot, "receipt": receipt})
+    batch["reports"].append({"at": pending_at, "confirmed_at": at, "header": header, "snapshot": snapshot, "receipt": receipt})
     batch.pop("pending_report", None)
     for item in batch["items"]:
         item["published_at"] = at
@@ -199,11 +217,9 @@ def reconcile(batch_id):
     first = datetime.fromisoformat(batch["reports"][0]["at"]).timestamp()
     changes = []
     for row in messages(first, batch["last_message"]):
-        reports = [r for r in batch["reports"] if datetime.fromisoformat(r["at"]).timestamp() <= row["timestamp"]]
-        if not reports:
+        report, choices = review_decisions(row, batch)
+        if report is None:
             continue
-        report = reports[-1]
-        choices = parse(row["content"], [int(n) for n in report["snapshot"]])
         evidence = {"hermes_message": row["id"], "session": row["session_id"], "chat": CHAT, "user": SIL,
                     "at": datetime.fromtimestamp(row["timestamp"], timezone.utc).isoformat(), "text": row["content"]}
         for item in batch["items"]:
@@ -228,6 +244,25 @@ def reconcile(batch_id):
     return {"batch": batch_id, "changed": changes, "items": [{**item, "update": store.load(item["section"])} for item in batch["items"]]}
 
 
+def review_decisions(row, batch):
+    reports = [r for r in batch["reports"] if datetime.fromisoformat(r["at"]).timestamp() <= row["timestamp"]]
+    if not reports:
+        return None, None
+    report, text = reports[-1], row["content"]
+    quote = re.fullmatch(r'\[Replying to(?: your previous message)?: "(.*?)"\]\n\n(.*)', text, re.DOTALL)
+    if quote:
+        header = quote.group(1).splitlines()[0] if quote.group(1) else ""
+        matched = [r for r in reports if r.get("header") == header]
+        if len(matched) != 1:
+            return report, None
+        report, text = matched[0], quote.group(2)
+    elif row["timestamp"] < datetime.fromisoformat(report.get("confirmed_at", report["at"])).timestamp():
+        # A plain reply during delivery could concern the previous review.
+        # Keep it for review instead of dropping it or assuming approval.
+        return report, None
+    return report, parse(text, [int(n) for n in report["snapshot"]])
+
+
 def check_approval(value, batch):
     approval = value.get("approval")
     if value["status"] != "Goedgekeurd" or not approval or digest(value) != approval["digest"] or value["digest"] != digest(value):
@@ -237,10 +272,9 @@ def check_approval(value, batch):
     if not row or row["content"] != approval["text"] or row["session_id"] != approval["session"]:
         raise ValueError("Original Sil approval cannot be verified")
     item = next(i for i in batch["items"] if i["project"] == value["project"])
-    reports = [r for r in batch["reports"] if datetime.fromisoformat(r["at"]).timestamp() <= row["timestamp"]]
-    if not reports or reports[-1]["snapshot"].get(str(item["number"])) != digest(value):
+    report, choices = review_decisions(row, batch)
+    if not report or report["snapshot"].get(str(item["number"])) != digest(value):
         raise ValueError("Approval did not refer to this published version")
-    choices = parse(row["content"], [int(n) for n in reports[-1]["snapshot"]])
     if not choices or choices.get(item["number"]) != "Goedgekeurd":
         raise ValueError("Message does not approve this update")
 
@@ -311,7 +345,7 @@ def main():
             at = datetime.fromisoformat(data["sent_at"])
             if not datetime.fromisoformat(pending["at"]) - timedelta(seconds=1) <= at <= now():
                 raise ValueError("Receipt timestamp is outside the publication window")
-            batch["reports"].append({"at": data["sent_at"], "snapshot": pending["snapshot"], "receipt": data})
+            batch["reports"].append({"at": data["sent_at"], "header": pending.get("header"), "snapshot": pending["snapshot"], "receipt": data})
             batch.pop("pending_report")
             for item in batch["items"]:
                 item["published_at"] = data["sent_at"]
