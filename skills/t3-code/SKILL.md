@@ -36,7 +36,7 @@ python3 ~/.agents/skills/t3-code/scripts/t3_dispatch.py resume \
   --prompt "See <new source> and the updated Task <Task URL>. Continue within scope and stop at review/preview."
 ```
 
-The helper creates a thread before starting its first turn, supports settle/unsettle operations, and defaults to `gpt-5.6-sol`, high reasoning, and full access. Override these with `T3_DEFAULT_MODEL`, `T3_DEFAULT_REASONING_EFFORT`, `--model`, `--reasoning-effort`, or `--runtime-mode` when a task needs different settings.
+The helper creates a thread before starting its first turn, supports settle/unsettle operations, and defaults to `gpt-6-astra`, high reasoning, and full access. Override these with `T3_DEFAULT_MODEL`, `T3_DEFAULT_REASONING_EFFORT`, `--model`, `--reasoning-effort`, or `--runtime-mode` when a task needs different settings.
 
 ## Triage integration
 
@@ -53,7 +53,7 @@ The presence of a Task, new feedback, or an existing thread does not by itself a
 
 A stopped, ready, or settled thread may be resumed directly. Store the T3 environment, project ID, thread ID, repository path, branch, provider/model, and provider session ID when available as a source-grounded Task Timeline event. Do not store credentials.
 
-Automated prompts follow the user-visible handoff rules in `work-triage/references/t3-routing.md`. They say in normal language that heartbeat triage started the turn, what new event caused it, and what work will continue. Task links, source links, scope, and safety limits come afterward.
+Automated prompts follow the user-visible handoff rules in `work-triage/references/t3-routing.md`. They say in normal language that scheduled triage started the turn, what new event caused it, and what work will continue. Task links, source links, scope, and safety limits come afterward.
 
 The first user-visible message identifies the automatic trigger. The final reply leads with the result and Sil's next action, with enough evidence to review it.
 

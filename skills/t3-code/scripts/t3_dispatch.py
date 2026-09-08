@@ -246,7 +246,7 @@ def build_parser() -> argparse.ArgumentParser:
     create.add_argument("--thread-id")
     create.add_argument("--branch", default="preview")
     create.add_argument("--instance-id", default="codex")
-    create.add_argument("--model", default=os.environ.get("T3_DEFAULT_MODEL", "gpt-5.6-sol"))
+    create.add_argument("--model", default=os.environ.get("T3_DEFAULT_MODEL", "gpt-6-astra"))
     create.add_argument(
         "--reasoning-effort",
         default=os.environ.get("T3_DEFAULT_REASONING_EFFORT", "high"),
@@ -262,7 +262,7 @@ def build_parser() -> argparse.ArgumentParser:
     resume.add_argument("--thread-id", required=True)
     resume.add_argument("--prompt", required=True)
     resume.add_argument("--instance-id", default="codex")
-    resume.add_argument("--model", default=os.environ.get("T3_DEFAULT_MODEL", "gpt-5.6-sol"))
+    resume.add_argument("--model", default=os.environ.get("T3_DEFAULT_MODEL", "gpt-6-astra"))
     resume.add_argument(
         "--reasoning-effort",
         default=os.environ.get("T3_DEFAULT_REASONING_EFFORT", "high"),
