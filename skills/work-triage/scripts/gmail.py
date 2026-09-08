@@ -26,7 +26,9 @@ def collect_account(account, after_dt=None, before_dt=None, query=None, limit=MA
     search = " ".join(terms)
     data = json_cmd([
         "gog", "--readonly", "--no-input", "-a", account, "--json",
-        "gmail", "messages", "search", search, "--max", str(limit), "--timezone", "UTC",
+        "gmail", "messages", "search", "--max", str(limit), "--timezone", "UTC",
+        # Queries can start with -in:spam; stop CLI flag parsing first.
+        "--", search,
     ])
     messages = data if isinstance(data, list) else data.get("messages") or []
     threads = {}
