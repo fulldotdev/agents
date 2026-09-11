@@ -5,13 +5,13 @@ description: Apply Sil's development, local review, and handoff conventions when
 
 # Development
 
-Use the repository's instructions and existing framework skills for implementation details. Choose planning, tools, and implementation depth to fit the request; there is no required planner/executor split.
+Use the repository's instructions and existing framework skills for implementation details. Choose planning, tools, and implementation depth to fit the request.
 
 ## Work ownership
 
 Continue in the existing checkout and branch by default. Sil prefers one branch with focused commits, not a worktree per task. Check actual Git state when resuming; thread metadata can be stale. If another implementation is using the checkout, coordinate or use an explicitly agreed isolated checkout rather than switching its branch or mixing changes.
 
-Notion owns Sil's commitments; an existing customer ticket in monday remains there. Use `work-management` when tracking needs an update, without creating a parallel ticket. Use `t3-code` when dispatching work through T3; local reviewer sub-agents do not need their own T3 threads or Notion Tasks.
+Use `work-management` for tracking and Notion routing. Use `t3-code` when dispatching work through T3; local reviewer sub-agents do not need their own T3 threads or Notion Tasks.
 
 ## Local review
 

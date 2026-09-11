@@ -5,10 +5,6 @@ description: Use only when the user explicitly asks to inspect, export, correct,
 
 # Productive.io
 
-## Ownership
-
-This skill handles Productive time entries only when the current request explicitly asks for Productive or time-entry work. It does not participate in routine planning, triage, delivery, commercial scoping, invoicing, or work-system maintenance.
-
 ## References
 
 - Read [references/api.md](references/api.md) for credentials, API calls, payloads, and error handling.
@@ -39,8 +35,6 @@ Do not infer a service from its label or an existing note alone. Match the paren
 
 Stop when identity is missing, service or deal ownership is unclear, contract totals conflict, or evidence is insufficient. Report the exact missing fact.
 
-## Output and completion
+## Output
 
 Report the requested period, totals, changed entries, and unresolved issues.
-
-The request is complete after the requested period is inspected, every write has exact live IDs and evidence, successful writes are read back, and the user has a confirmed result or concrete blocker.

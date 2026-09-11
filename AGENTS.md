@@ -18,10 +18,11 @@ Never add or change this file without my explicit request.
 - When the user asks to access a site, saved Chrome credentials and password-manager autofill may be used to sign in. Never reveal, copy, export, or change saved credentials, and never enter 2FA codes.
 - We work on my personal MacBook and on a remote always-on Mac mini named Otis.
 - On MacBook, you can SSH into Otis with `ssh -A otis`.
-- Keep projects in `~/projects` and T3 Code's project list aligned on both machines. Sync project contents through GitHub.
+- Keep projects in `~/projects`. Align projects and T3 Code's project lists on both machines when creating, moving, or explicitly syncing a project. Sync project contents through GitHub.
 
 ## Skills
 
+- Manage shared custom skills and global instructions in `~/.agents` on the MacBook; sync to Otis through GitHub. Keep project instructions in their repository and credentials, plugins, and machine configuration local.
 - Do not edit installed skills unless I explicitly ask. Local changes can block updates or be overwritten.
 - Keep custom skills concise. Remove generic guidance, duplication, and detail that belongs in references or scripts.
 
@@ -49,11 +50,11 @@ Never add or change this file without my explicit request.
 
 ## Production and shared environments
 
-- Never touch production, live databases, or daily-driver build/preview channels unless explicitly told to. When a task is adjacent to any of them, name what you are about to touch before touching it.
+- Read-only inspection of production, live databases, and daily-driver build/preview channels is allowed. Changes require explicit authorization; name the target before changing it.
 
 ## Coding workflow
 
 - Prefer working in one branch, with a commit per task.
 - We usually work in preview, with the main branch being production.
-- In Shopify we work on main directly, with production being published over CLI.
+- In Shopify we work on main directly, with production being published over CLI, unless the project specifies a different workflow.
 - Work locally first. For completed tickets or features, check the result in the browser when useful. Give me working preview links so I can review it myself.
