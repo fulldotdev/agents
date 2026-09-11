@@ -29,20 +29,24 @@ Read [references/commands.md](references/commands.md) when creating a job or run
 - Copy a Drive source into the local job before processing. Never render directly into the streamed Drive folder.
 - Copy verified outputs to Drive only when authorized, then verify size and checksum. Keep originals unchanged and delete local jobs only with explicit approval.
 
-## Workflow
+## Choose the needed workflow
 
-1. Resolve every source and destination path. Check disk, media metadata, tool versions, and any existing job state. Never overwrite or delete an original.
-2. Create a unique job with `source`, `work`, and `output` directories. Transfer sources with `rsync` without `--delete`.
-3. Run `scripts/inspect_media.py`. Inspect its manifest, overview sheet, denser text-scan sheet, and proxy before choosing content or framing. Map existing burned text, letterbox or pillarbox bars, logos, the face and shoulder envelope, hand gestures, and important props. Treat a near-silent audio warning as a stop signal for automatic captions.
-4. Transcribe each speaking source separately with `scripts/transcribe.py`. Keep JSON, TXT, and SRT. Read transcript warnings and sanity-check that the text is real language before authoring. Correct names, punctuation, wording, and caption breaks against the audio. Retry once with a larger model when confidence or language detection is poor; never caption confident-looking gibberish.
-5. Study the user's approved or published examples when available. Compare cut density, framing, captions, skin tone, background color, motion, and audio. Treat them as the style target, not generic social-video conventions.
-6. Build an explicit edit plan using [references/edit-plan.md](references/edit-plan.md). Choose cuts by meaning and delivery. Silence detection may propose cuts but never decides them. Add `qa_points` for risks that cannot be derived from cuts, captions, or zoom events.
-7. Calibrate style cheaply. Start with stills and contact sheets for crop, grade, and caption placement. Render motion only for cuts, zooms, lip sync, and audio. For a repeated effect, make one compact review containing only the proposed moments. Do not render a whole batch to discover a static layout problem.
-8. Use the brief, supplied examples, or earlier approval to settle style. Ask only when a missing style choice materially affects the result; otherwise render one complete low-resolution preview from the original sources. Inspect video, audio, cuts, framing, captions, color, motion, and lip sync.
-9. Render finals from the originals in the format required by the brief or channel. Default to `1080x1920` portrait for social deliverables only when no format is specified.
-10. Run `scripts/qa_media.py` on every final. Fully decode it, probe it, and inspect the generated cut, zoom, manual, contact, and caption sheets. Transfer or upload only when authorized. Verify size and checksum after transfer. Remove job files only after confirmed delivery and explicit deletion approval.
+Resolve the source, destination, requested change, and output format. Check disk space, media metadata, and existing job state. Keep originals unchanged and work in a unique local job. For editorial social deliverables, use the brief or channel's format; default to `1080x1920` only when neither specifies it.
 
-Read [references/talking-head-style.md](references/talking-head-style.md) when editing social talking heads. It covers pacing, portrait framing, captions, zooms, color, and audio.
+For a technical operation such as trimming known timestamps, compression, remuxing, or resizing, use FFmpeg directly. Preserve source dimensions, framing, timing, and streams except where the requested operation requires changing them. Inspect the relevant source and result. No transcript, contact sheets, style review, or JSON edit plan is needed unless the operation depends on speech, composition, or another editorial choice. Check exact cut boundaries and sync for trims, and composition throughout affected shots for crops.
+
+For editorial work, use the steps that affect the requested result:
+
+1. Use `scripts/inspect_media.py` when choosing content or framing. Inspect the manifest, review sheets, and proxy for burned text, bars, logos, faces, gestures, and important props. A near-silent warning blocks automatic captions until the audio is understood.
+2. Transcribe with `scripts/transcribe.py` when selecting by spoken content or writing captions. Keep JSON, TXT, and SRT. Verify names, wording, and timing against audio. Retry once with a larger model if confidence is poor; do not caption gibberish.
+3. Follow the supplied examples or brief. Use [references/talking-head-style.md](references/talking-head-style.md) for social talking heads, not for unrelated conversions.
+4. Use [references/edit-plan.md](references/edit-plan.md) for a multi-segment edit or the plan-based renderer. Choose cuts by meaning and delivery; silence detection only proposes candidates. Add `qa_points` for risks the plan cannot derive.
+5. Check crop, grade, and caption placement with stills before costly renders. Test motion or audio with short windows. Ask about style only when the brief, examples, and prior approval leave a consequential choice unresolved.
+6. Render a complete low-resolution preview when needed to judge the edit, then finals from the original sources. Inspect the affected cuts, framing, captions, motion, color, and audio.
+
+## Verify and deliver
+
+For technical conversions, probe the output, fully decode it, and inspect or listen to the affected result. For plan-based edits, use `scripts/qa_media.py` with the plan and relevant caption options; inspect its generated review sheets. Apply the checks below only to features present in the output. Transfer only when authorized, verify the destination checksum, and remove job files only after confirmed delivery and explicit deletion approval.
 
 ## Final QA
 
