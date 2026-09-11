@@ -18,7 +18,7 @@ Edit supplied footage non-destructively on `otis`. Use Faster-Whisper for transc
 - Remote skill: `/Users/otis/.agents/skills/video-editing`
 - Transcription model: `small` for normal work, `base` for rough drafts, and `large-v3` when final accuracy warrants the time and storage.
 
-Read the `ssh` skill before operating Otis. Use lowered process priority and one render at a time so the agent services stay responsive.
+Use lowered process priority and one render at a time so the agent services stay responsive.
 
 Read [references/commands.md](references/commands.md) when creating a job or running the inspection, transcription, render, or QA scripts manually.
 
