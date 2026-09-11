@@ -30,7 +30,7 @@ Otis uses OpenClaw for Telegram, Discord, Slack and scheduled work. Native Codex
 - Chat-owned automation creation, manual execution and removal were verified through the native `automations` tool. This does not establish unrestricted scheduler administration: OpenClaw grants cross-session management to fresh authenticated Control UI administrators, not Telegram owner IDs. See <https://docs.openclaw.ai/automation/cron-jobs/managing-jobs>.
 - A remaining limitation in OpenClaw 2026.9.4: the tested chat-created isolated cron stored a finite default tool cap. Its run had native Codex/Astra and filesystem access but lacked `cua_repl` and the native skills catalog. Requesting `toolsAllow: ["*"]` through the creator's automation tool did not broaden the stored cap. Do not claim that chat-created crons inherit all interactive native tools. The existing migrated operator jobs retain their original explicit full tool policies. No scheduler authority or OS lock checks were bypassed.
 
-- Triage cursor and watchdog state: `~/.local/state/fulldev/work-triage`. Existing pending batches and source cursors were transferred, not reset. Old absolute temporary-artifact paths remain readable under `.hermes`; new temporary output uses `~/.cache/fulldev/work-triage`.
+- Triage cursor and watchdog state: `~/.local/state/fulldev/work-triage`. Watchdog stdout/stderr logs live in its `logs` subdirectory, outside the Hermes archive. Existing pending batches and source cursors were transferred, not reset. Old absolute temporary-artifact paths remain readable under `.hermes`; new temporary output uses `~/.cache/fulldev/work-triage`.
 - Two command automations: `~/.local/share/fulldev/automations`. The refund dedupe state is in `~/.local/state/fulldev/automations`; WhatsApp monitoring retains `.wacli/watchdog-state.json`.
 - Video transcription: `~/.local/share/fulldev/video-venv/bin/python`, independent of Hermes.
 - Eight migrated jobs retain schedules and Telegram destinations. Cron timezone is Europe/Amsterdam. Their old/new identifiers are in `~/backups/openclaw-migration-20260911/cron-map.json`.
@@ -50,6 +50,8 @@ python3 ~/.agents/skills/t3-code/scripts/t3_dispatch.py list
 For Computer Use, run an OpenClaw native turn on a local test page, follow the instructions returned by `cua_repl`, and check typing, clicking and a screenshot in the existing Chrome default profile. Do not accept a tool listing as proof that app control works.
 
 ## Rollback
+
+Archived Hermes dependency directories (`hermes-agent/.venv`, `venv`, `node_modules`) were removed on 11 September after the migration. Reinstall them from the retained source and dependency manifests before attempting a Hermes rollback. The MacBook Hermes scratch directory is retained only in the verified `~/backups/codex-native-cleanup-20260911/final-cleanup/macbook-hermes.tar.gz` archive.
 
 The verified pre-migration backup is `~/backups/openclaw-migration-20260911`, including the original service plists, configuration and consistent SQLite backups. The large `.hermes/state.db` backup is stored as `state.db.gz`; its decompressed SHA-256 was verified. Decompress it before SQLite inspection or restoration. Keep both runtimes' state and histories.
 
