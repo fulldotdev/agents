@@ -36,10 +36,21 @@ For Computer Use, run an OpenClaw native turn on a local test page, follow the i
 
 ## Rollback
 
-The verified pre-migration backup is `~/backups/openclaw-migration-20260911`, including the original service plists, configuration and consistent SQLite backups. Keep both runtimes' state and histories.
+The verified pre-migration backup is `~/backups/openclaw-migration-20260911`, including the original service plists, configuration and consistent SQLite backups. The large `.hermes/state.db` backup is stored as `state.db.gz`; its decompressed SHA-256 was verified. Decompress it before SQLite inspection or restoration. Keep both runtimes' state and histories.
 
 1. Unload `com.fulldev.work-triage-watchdog` and stop OpenClaw with `openclaw gateway stop`. Disable its launchd service before enabling Hermes. Never run both channel listeners or schedulers together.
 2. Copy the latest canonical triage state back into `.hermes/state/work-triage` as well as retaining the canonical copy. Keep the migrated approval helper: set `WEEKLY_PLANNING_RUNTIME=hermes` and `WORK_TRIAGE_RUNTIME=hermes` in the restored Hermes gateway environment. It continues to verify both histories and accepts new Hermes feedback.
 3. Restore the backed-up Hermes gateway/watchdog plists and their original credentials, enable `ai.hermes.gateway`, and bootstrap it. Set `WORK_TRIAGE_RUNTIME=hermes` in the watchdog environment. Do not reset Notion batches, send claims, receipts or source cursors.
 4. Hermes cron prompts still contain their original `[SILENT]` behavior. Restore that token in the two shared workflow references (`weekly-planning/references/sunday.md`, `work-triage/references/processing.md`) for Hermes operation; keep native-history verification and independent state paths.
 5. Verify Hermes channel connectivity, exactly eight expected enabled jobs and triage processing before reloading the watchdog. Reconcile the current week before any customer send; uncertain deliveries require inspection, never an automatic retry.
+
+## Migration verification, 11 September 2026
+
+- 54 weekplanning and 60 triage tests passed, with independent Astra review.
+- Native Codex turns reported `agentHarnessId: codex` and executed native terminal and `node_repl` tools.
+- A silent native cron test completed with `NO_REPLY`; its one-shot job was removed automatically.
+- The migrated WhatsApp watchdog completed with exit 0 and no output or message.
+- All three channels reconnected after a managed gateway restart. Eight jobs retained their next-run times; the triage watchdog passed with existing pending/deferred state preserved.
+- T3's authenticated helper still listed its 57 threads. The independent transcription environment imported faster-whisper 1.2.1.
+- Still open: native Computer Use app control. The actual Chrome test returned “Computer Use was not approved to use Google Chrome.” Grant Chrome access in the desktop app on Otis, then rerun the local fixture test. No app-control success is claimed from `list_apps` alone.
+- MacBook's older duplicate `.codex/skills/social-posts` was archived under `~/backups/openclaw-migration-20260911`; canonical `.agents/skills/social-posts` remains.
