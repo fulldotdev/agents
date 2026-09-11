@@ -9,7 +9,7 @@ Otis uses OpenClaw for Telegram, Discord, Slack and scheduled work. Native Codex
 - Codex configuration, login, native plugins and MCPs remain machine-local in `~/.codex`. OpenClaw uses Codex's user home through `appServer.homeScope: user`.
 - OpenClaw: `~/.openclaw/openclaw.json`, service `ai.openclaw.gateway`, loopback port 18789. Secrets stay in machine-local credential files, outside Git.
 - Agent model: `openai/gpt-6-astra` with `agentRuntime.id: codex`. Do not replace this with only a Codex model provider, which would change the harness.
-- Computer Use uses the native plugin through `node_repl` and its wrapper. The OpenClaw legacy readiness probe expects a direct `list_apps` MCP tool, so it is configured non-strict with `mcpServerName: node_repl`; a successful real desktop test remains necessary. Chrome currently requires approval in the Otis desktop app.
+- Computer Use uses the native plugin through `node_repl` and its wrapper. The OpenClaw legacy readiness probe expects a direct `list_apps` MCP tool, so it is configured non-strict with `mcpServerName: node_repl`; a successful real desktop test remains necessary. App-use approvals from OpenClaw are routed to Sil's private Telegram chat via `approvals.plugin`; desktop-app approval state does not establish that this separate request can be handled.
 - Native browser/Chrome and artifact plugins remain installed through Codex. Desktop app integrations still depend on local sessions and permissions; a native harness alone does not reproduce every hosted connector.
 - Bundled OpenClaw skills are disabled to avoid competing browser and service workflows. Shared custom skills and native Codex plugins remain available. Automatic skill rewriting, dreaming and heartbeat jobs are disabled.
 
@@ -52,5 +52,5 @@ The verified pre-migration backup is `~/backups/openclaw-migration-20260911`, in
 - The migrated WhatsApp watchdog completed with exit 0 and no output or message.
 - All three channels reconnected after a managed gateway restart. Eight jobs retained their next-run times; the triage watchdog passed with existing pending/deferred state preserved.
 - T3's authenticated helper still listed its 57 threads. The independent transcription environment imported faster-whisper 1.2.1.
-- Still open: native Computer Use app control. The actual Chrome test returned “Computer Use was not approved to use Google Chrome.” Grant Chrome access in the desktop app on Otis, then rerun the local fixture test. No app-control success is claimed from `list_apps` alone.
+- Computer Use diagnosis corrected after inspecting `operator_approvals`: the Chrome requests were rejected by OpenClaw with `terminal_reason: no-route`, not a demonstrated missing macOS permission. Plugin approval forwarding is now configured for agent `main` to Sil's private Telegram chat. A real operator approval and successful local fixture test remain required. No app-control success is claimed from `list_apps` alone.
 - MacBook's older duplicate `.codex/skills/social-posts` was archived under `~/backups/openclaw-migration-20260911`; canonical `.agents/skills/social-posts` remains.
