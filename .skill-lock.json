@@ -74,15 +74,6 @@
       "installedAt": "2026-06-11T10:28:13.399Z",
       "updatedAt": "2026-08-19T12:07:16.237Z"
     },
-    "workos-widgets": {
-      "source": "workos/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/workos/skills.git",
-      "skillPath": "plugins/workos/skills/workos-widgets/SKILL.md",
-      "skillFolderHash": "99506e1276215350c803436d5e88efa4b72e558d",
-      "installedAt": "2026-06-11T10:29:30.049Z",
-      "updatedAt": "2026-08-19T12:07:16.238Z"
-    },
     "figma": {
       "source": "openai/skills",
       "sourceType": "github",
@@ -118,24 +109,6 @@
       "skillFolderHash": "63f440413b2d24e3e89ad2efd5c6869b664b1bdd",
       "installedAt": "2026-08-19T08:59:11.855Z",
       "updatedAt": "2026-08-19T08:59:11.855Z"
-    },
-    "netlify-agent-runner": {
-      "source": "netlify/context-and-tools",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/netlify/context-and-tools.git",
-      "skillPath": "skills/netlify-agent-runner/SKILL.md",
-      "skillFolderHash": "9e17ffe9dcd5c5c4d706b1e98b6cdf4985f22db1",
-      "installedAt": "2026-08-19T08:59:11.858Z",
-      "updatedAt": "2026-08-19T08:59:11.858Z"
-    },
-    "netlify-ai-gateway": {
-      "source": "netlify/context-and-tools",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/netlify/context-and-tools.git",
-      "skillPath": "skills/netlify-ai-gateway/SKILL.md",
-      "skillFolderHash": "8c02c2af1d60cefaed83d80009a2210f4ae74269",
-      "installedAt": "2026-08-19T08:59:11.858Z",
-      "updatedAt": "2026-08-19T08:59:11.858Z"
     },
     "netlify-blobs": {
       "source": "netlify/context-and-tools",
@@ -182,30 +155,12 @@
       "installedAt": "2026-08-19T08:59:11.864Z",
       "updatedAt": "2026-08-19T08:59:11.864Z"
     },
-    "netlify-identity": {
-      "source": "netlify/context-and-tools",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/netlify/context-and-tools.git",
-      "skillPath": "skills/netlify-identity/SKILL.md",
-      "skillFolderHash": "699a91329e2df2a903dc20d05a0861617d04490e",
-      "installedAt": "2026-08-19T08:59:11.865Z",
-      "updatedAt": "2026-08-19T08:59:11.865Z"
-    },
     "netlify-image-cdn": {
       "source": "netlify/context-and-tools",
       "sourceType": "github",
       "sourceUrl": "https://github.com/netlify/context-and-tools.git",
       "skillPath": "skills/netlify-image-cdn/SKILL.md",
       "skillFolderHash": "fbcdbe6652532fcd84b74118342204968306f970",
-      "installedAt": "2026-08-19T08:59:11.867Z",
-      "updatedAt": "2026-08-19T08:59:11.867Z"
-    },
-    "netlify-mcp-servers": {
-      "source": "netlify/context-and-tools",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/netlify/context-and-tools.git",
-      "skillPath": "skills/netlify-mcp-servers/SKILL.md",
-      "skillFolderHash": "3535a175b600c5df2374b2220e31f48b954e81dc",
       "installedAt": "2026-08-19T08:59:11.867Z",
       "updatedAt": "2026-08-19T08:59:11.867Z"
     },
@@ -271,15 +226,6 @@
       "skillFolderHash": "201239763f7418d8a7f28624a2182d9401729967",
       "installedAt": "2026-08-19T12:06:57.870Z",
       "updatedAt": "2026-08-19T12:06:57.870Z"
-    },
-    "agent-email-inbox": {
-      "source": "resend/resend-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/resend/resend-skills.git",
-      "skillPath": "skills/agent-email-inbox/SKILL.md",
-      "skillFolderHash": "a0673ac4ddf2e735e334bc06698184166e4bd304",
-      "installedAt": "2026-08-19T12:23:31.241Z",
-      "updatedAt": "2026-08-19T12:23:31.241Z"
     },
     "email-best-practices": {
       "source": "resend/resend-skills",
