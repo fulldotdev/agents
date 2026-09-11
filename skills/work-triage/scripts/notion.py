@@ -2,6 +2,8 @@
 """Notion work-context queries for triage."""
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from common import (
     MAX_ITEMS_PER_LANE, NOTION_COMPANIES_DATA_SOURCE_ID,
@@ -12,7 +14,7 @@ from common import (
 )
 
 COMPANY_STATUSES = ["Prospect", "Active"]
-TRIAGE_PROJECT_STATUSES = ["Discovery", "Planned", "In Progress"]
+TRIAGE_PROJECT_STATUSES = ["Discovery", "Planned", "In Progress", "Paused"]
 OPEN_TASK_STATUSES = ["Todo", "Doing", "Waiting"]
 TRIAGE_TASK_STATUSES = OPEN_TASK_STATUSES
 
@@ -21,17 +23,32 @@ def status_filter(statuses):
     return {"or": [{"property": "Status", "status": {"equals": status}} for status in statuses]}
 
 
-def query_items(data_source_id, item_fn, statuses, limit, sorts=None):
-    data = notion_query(data_source_id, {
-        "filter": status_filter(statuses),
+def query_items(data_source_id, item_fn, statuses, limit, sorts=None, query_filter=None):
+    payload = {
         "sorts": sorts or [{"property": "Edited", "direction": "descending"}],
-        "page_size": limit,
-    })
-    return [item_fn(row) for row in limited_rows(data, limit)]
+        "page_size": min(limit, 100),
+    }
+    if query_filter or statuses:
+        payload["filter"] = query_filter or status_filter(statuses)
+    items, cursors = {}, set()
+    while True:
+        data = notion_query(data_source_id, payload)
+        if len(data.get("results") or []) > payload["page_size"]:
+            raise RuntimeError("Notion returned more rows than requested; pagination boundary is ambiguous")
+        for row in limited_rows(data, payload["page_size"]):
+            items[row["id"]] = item_fn(row)
+        cursor = data.get("next_cursor")
+        if not data.get("has_more") and not cursor:
+            return list(items.values())
+        if not cursor or cursor in cursors:
+            raise RuntimeError("Incomplete Notion index: missing or repeated pagination cursor")
+        cursors.add(cursor)
+        payload["start_cursor"] = cursor
 
 
 def active_companies(limit=MAX_ITEMS_PER_LANE):
-    return query_items(NOTION_COMPANIES_DATA_SOURCE_ID, company_item, COMPANY_STATUSES, limit)
+    # Include inactive companies too: active work can still link to them.
+    return query_items(NOTION_COMPANIES_DATA_SOURCE_ID, company_item, None, limit)
 
 
 def active_projects(limit=MAX_ITEMS_PER_LANE):
@@ -47,16 +64,13 @@ def current_sprint_id():
 
 
 def triage_tasks(limit=MAX_ITEMS_PER_LANE):
-    filters = [{"property": "Status", "status": {"equals": status}} for status in TRIAGE_TASK_STATUSES]
-    sprint_id = current_sprint_id()
-    if sprint_id:
-        filters.append({"property": "Sprint", "relation": {"contains": sprint_id}})
-    data = notion_query(NOTION_TASKS_DATA_SOURCE_ID, {
-        "filter": {"or": filters},
-        "sorts": [{"property": "Edited", "direction": "descending"}],
-        "page_size": limit,
-    })
-    return [task_item(row) for row in limited_rows(data, limit)]
+    today = datetime.now(ZoneInfo("Europe/Amsterdam")).replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    query_filter = status_filter(OPEN_TASK_STATUSES)
+    query_filter["or"].extend({"and": [
+        {"property": "Status", "status": {"equals": status}},
+        {"property": "Edited", "last_edited_time": {"on_or_after": today}},
+    ]} for status in ["Done", "Canceled"])
+    return query_items(NOTION_TASKS_DATA_SOURCE_ID, task_item, None, limit, query_filter=query_filter)
 
 
 def changed_items(data_source_id, item_fn, after, before, limit):
@@ -90,11 +104,13 @@ def collect_group(lane, mode, calls, after=None, before=None):
 
 
 def collect_work_context(after=None, before=None, limit=MAX_ITEMS_PER_LANE):
-    return collect_group("work_context", "companies_projects_active_tasks_active_or_current_sprint", {
+    result = collect_group("work_context", "all_companies_active_projects_tasks", {
         "companies": lambda: active_companies(limit),
         "projects": lambda: active_projects(limit),
         "tasks": lambda: triage_tasks(limit),
     }, after, before)
+    result["complete"] = result["ok"]
+    return result
 
 
 def collect_changed_work_context(after, before, after_text, before_text, limit=MAX_ITEMS_PER_LANE):

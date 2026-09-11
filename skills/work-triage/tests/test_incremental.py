@@ -95,7 +95,7 @@ class DurableHandoffTests(unittest.TestCase):
         ])
         self.item = {"workspace_id": "w", "channel_id": "c", "thread_ts": "t", "ts": "1", "in_window": True}
         self.source = patch.object(collect, "collect_source", return_value={"ok": True, "items": [self.item]})
-        self.context = patch.object(collect.notion, "collect_changed_work_context", return_value={"ok": True, "lanes": {}})
+        self.context = patch.object(collect.notion, "collect_work_context", return_value={"ok": True, "lanes": {}})
         self.source_mock = self.source.start()
         self.context.start()
         self.addCleanup(self.source.stop)
@@ -105,7 +105,7 @@ class DurableHandoffTests(unittest.TestCase):
         result = collect.incremental_triage(self.args)
         return result, next(iter(result["queue"]["events"]))
 
-    def test_crash_after_fetch_keeps_cursor_and_replays_same_batch_without_sources(self):
+    def test_crash_after_fetch_keeps_cursor_and_refreshes_same_batch(self):
         first, event_id = self.batch()
         persisted = incremental.load(self.path)
         self.assertEqual(persisted["version"], 2)
@@ -114,7 +114,7 @@ class DurableHandoffTests(unittest.TestCase):
         second = collect.incremental_triage(self.args)
         self.assertEqual(first["queue"]["batch_id"], second["queue"]["batch_id"])
         self.assertIn(event_id, second["queue"]["events"])
-        self.assertEqual(self.source_mock.call_count, 1)
+        self.assertEqual(self.source_mock.call_count, 2)
 
     def test_claim_survives_process_exit_and_explicit_takeover_fences_old_owner(self):
         self.batch()

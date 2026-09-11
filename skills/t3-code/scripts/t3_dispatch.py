@@ -143,6 +143,7 @@ def command_list(args: argparse.Namespace, token: str) -> None:
                 "archivedAt": thread.get("archivedAt"),
                 "settledOverride": thread.get("settledOverride"),
                 "settledAt": thread.get("settledAt"),
+                "snoozedUntil": thread.get("snoozedUntil"),
                 "latestUserMessageAt": thread.get("latestUserMessageAt"),
                 "hasPendingApprovals": bool(thread.get("hasPendingApprovals")),
                 "hasPendingUserInput": bool(thread.get("hasPendingUserInput")),

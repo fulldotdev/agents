@@ -200,20 +200,42 @@ def norm(msg, channel=None, channel_name=None, channel_type=None, after_dt=None,
     if resolved_channel_name in _users:
         resolved_channel_name = user_display(resolved_channel_name)
     resolved_channel_type = channel_type or ("im" if msg_channel.get("is_im") else "channel")
-    return {"channel_id": ch, "channel_name": resolved_channel_name, "channel_type": resolved_channel_type, "ts": msg.get("ts"), "thread_ts": thread_root_ts(msg), "sender": sender, "sender_name": user_display(sender), "text": compact_text(msg.get("text"), 12000), "url": msg.get("permalink"), "files": msg.get("files") or [], "in_window": in_window(msg, after_dt, before_dt) if after_dt and before_dt else None}
+    return {"channel_id": ch, "channel_name": resolved_channel_name, "channel_type": resolved_channel_type, "ts": msg.get("ts"), "thread_ts": thread_root_ts(msg), "sender": sender, "sender_name": user_display(sender), "text": compact_text(msg.get("text"), 12000), "edited_at": (msg.get("edited") or {}).get("ts"), "url": msg.get("permalink"), "files": msg.get("files") or [], "in_window": in_window(msg, after_dt, before_dt) if after_dt and before_dt else None}
 
 def replies(ch, thread_ts, a, b, channel_name=None):
     if not ch or not thread_ts: return []
-    messages = api("conversations.replies", {"channel": ch, "ts": thread_ts, "limit": str(SLACK_REPLIES_LIMIT)}).get("messages") or []
-    return [
-        norm(m, channel=ch, channel_name=channel_name, after_dt=a, before_dt=b)
-        for m in messages
-        if isinstance(m, dict) and (m.get("ts") == thread_ts or in_window(m, a, b))
-    ]
+    messages, cursor, cursors = [], None, set()
+    while True:
+        params = {"channel": ch, "ts": thread_ts, "limit": str(SLACK_REPLIES_LIMIT)}
+        if cursor: params["cursor"] = cursor
+        data = api("conversations.replies", params)
+        messages.extend(data.get("messages") or [])
+        cursor = (data.get("response_metadata") or {}).get("next_cursor")
+        if not cursor:
+            if data.get("has_more"):
+                raise RuntimeError("Incomplete Slack replies: missing pagination cursor")
+            break
+        if cursor in cursors:
+            raise RuntimeError("Incomplete Slack replies: repeated pagination cursor")
+        cursors.add(cursor)
+    return [norm(m, channel=ch, channel_name=channel_name, after_dt=a, before_dt=b)
+            for m in messages if isinstance(m, dict) and (m.get("ts") == thread_ts or in_window(m, a, b))]
 
 def slack_search_messages(q):
-    matches = (api("search.messages", {"query": q, "count": str(SLACK_SEARCH_COUNT), "sort": "timestamp", "sort_dir": "desc"}).get("messages") or {}).get("matches") or []
-    return [m for m in matches if isinstance(m, dict)][:MAX_ITEMS_PER_LANE]
+    matches, page = [], 1
+    while True:
+        data = api("search.messages", {"query": q, "count": str(SLACK_SEARCH_COUNT), "page": str(page), "sort": "timestamp", "sort_dir": "desc"}).get("messages") or {}
+        chunk = data.get("matches") or []
+        matches.extend(m for m in chunk if isinstance(m, dict))
+        paging = data.get("paging") or data.get("pagination") or {}
+        pages = int(paging.get("pages") or paging.get("page_count") or 1)
+        if page >= pages:
+            if int(data.get("total") or 0) > len(matches):
+                raise RuntimeError("Incomplete Slack search: missing pages")
+            return matches
+        if not chunk:
+            raise RuntimeError("Incomplete Slack search: empty intermediate page")
+        page += 1
 
 def search_date_bounds(a, b):
     return f"after:{(a.date() - timedelta(days=1)).isoformat()} before:{(b.date() + timedelta(days=1)).isoformat()}"
@@ -230,8 +252,8 @@ def search(q, a, b, filter_window=True, include_replies=True):
 
 def all_search(a, b):
     q = search_date_bounds(a, b)
-    items, page = [], 1
-    while len(items) < MAX_ITEMS_PER_LANE:
+    items, page, fetched = [], 1, 0
+    while True:
         messages = api("search.messages", {
             "query": q,
             "count": str(SLACK_ALL_SEARCH_COUNT),
@@ -240,17 +262,20 @@ def all_search(a, b):
             "sort_dir": "desc",
         }).get("messages") or {}
         matches = [m for m in messages.get("matches") or [] if isinstance(m, dict)]
+        fetched += len(matches)
         for match in matches:
             if in_window(match, a, b):
                 item = norm(match, after_dt=a, before_dt=b)
                 item["match_query"] = "all_search"
                 item["thread_replies"] = []
                 items.append(item)
-                if len(items) >= MAX_ITEMS_PER_LANE:
-                    break
         paging = messages.get("paging") or messages.get("pagination") or {}
         pages = int(paging.get("pages") or paging.get("page_count") or 1)
-        if not matches or page >= pages:
+        if not matches and page < pages:
+            raise RuntimeError("Incomplete Slack search: empty intermediate page")
+        if page >= pages:
+            if int(messages.get("total") or 0) > fetched:
+                raise RuntimeError("Incomplete Slack search: missing pages")
             break
         timestamps = [float(m.get("ts") or 0) for m in matches]
         if timestamps and min(timestamps) < a.timestamp():
@@ -274,19 +299,19 @@ def conversation_history(ch, a, b):
     items, cursor = [], None
     channel_type = "mpim" if ch.get("is_mpim") else "im" if ch.get("is_im") else "private_channel" if ch.get("is_private") else "public_channel"
     channel_name = ch.get("name") or (user_display(ch.get("user")) if channel_type == "im" else None)
-    while len(items) < MAX_ITEMS_PER_LANE:
+    while True:
         params = {
             "channel": ch.get("id"),
             "oldest": str(a.timestamp()),
             "latest": str(b.timestamp()),
-            "inclusive": "false",
+            "inclusive": "true",
             "limit": str(SLACK_HISTORY_LIMIT),
         }
         if cursor:
             params["cursor"] = cursor
         data = api("conversations.history", params)
         for message in data.get("messages") or []:
-            if not isinstance(message, dict):
+            if not isinstance(message, dict) or not in_window(message, a, b):
                 continue
             item = norm(message, channel=ch.get("id"), channel_name=channel_name, channel_type=channel_type, after_dt=a, before_dt=b)
             item["match_query"] = "all_history"
@@ -294,8 +319,9 @@ def conversation_history(ch, a, b):
             items.append(item)
         cursor = (((data.get("response_metadata") or {}).get("next_cursor")) or "").strip()
         if not cursor:
+            if data.get("has_more"):
+                raise RuntimeError("Incomplete Slack history: missing pagination cursor")
             return items
-    return items
 
 def all_history(a, b):
     items = []
@@ -329,26 +355,16 @@ def deduplicate(items):
         seen.update(nested_keys)
     return result
 
-def dm_channel_history(ch, a, b, oldest, latest):
-    items = []
-    channel_type = "mpim" if ch.get("is_mpim") else "im"
-    channel_name = ch.get("name") or (user_display(ch.get("user")) if channel_type == "im" else None)
-    for m in api("conversations.history", {"channel": ch.get("id"), "oldest": oldest, "latest": latest, "inclusive": "false", "limit": str(SLACK_HISTORY_LIMIT)}).get("messages") or []:
-        if not isinstance(m, dict): continue
-        item = norm(m, channel=ch.get("id"), channel_name=channel_name, channel_type=channel_type, after_dt=a, before_dt=b)
-        item["match_query"] = "dm_history"; item["thread_replies"] = replies(ch.get("id"), item["thread_ts"], a, b, channel_name) if m.get("reply_count") else []; items.append(item)
-    return items
-
 def dm_history(a,b):
-    items, oldest, latest = [], str(a.timestamp()), str(b.timestamp())
-    raw_channels = api("conversations.list", {"types": "im,mpim", "limit": str(SLACK_CONVERSATION_LIMIT)}).get("channels") or []
+    items = []
+    raw_channels = list_conversations("im,mpim")
     channels = [ch for ch in raw_channels if isinstance(ch, dict) and ch.get("id")]
     with ThreadPoolExecutor(max_workers=min(SLACK_WORKERS, max(1, len(channels)))) as executor:
-        futures = [executor.submit(dm_channel_history, ch, a, b, oldest, latest) for ch in channels]
+        futures = [executor.submit(conversation_history, ch, a, b) for ch in channels]
         for future in as_completed(futures):
             try: items.extend(future.result())
             except Exception as exc: items.append({"ok": False, "query": "dm_history", "error": str(exc)})
-    return items[:MAX_ITEMS_PER_LANE]
+    return items
 
 def collect_workspace(a,b,query,config):
     global _deadline, _token_value, _users, _workspace
@@ -384,10 +400,10 @@ def collect_workspace(a,b,query,config):
             except Exception as exc: items.append({"ok": False, "query": q, "error": str(exc)})
         try: items.extend(dm_history(a,b))
         except Exception as exc: items.append({"ok": False, "query": "dm_history", "error": str(exc)})
-    tagged = [tag_item(item) for item in deduplicate(items)[:MAX_ITEMS_PER_LANE]]
+    tagged = [tag_item(item) for item in deduplicate(items)]
     failures = [item for item in tagged if item.get("ok") is False]
     summary = dict(_workspace)
-    summary.update({"ok": not failures, "item_count": len(tagged) - len(failures)})
+    summary.update({"ok": not failures, "complete": not failures, "item_count": len(tagged) - len(failures)})
     return tagged, summary
 
 def collect_result(a,b,query=None,workspace=None):
@@ -409,7 +425,7 @@ def collect_result(a,b,query=None,workspace=None):
             }
             items.append(failure)
             workspaces.append({key: value for key, value in failure.items() if key != "query"})
-    return {"ok": all(workspace.get("ok") for workspace in workspaces), "workspaces": workspaces, "items": items}
+    return {"ok": all(workspace.get("ok") for workspace in workspaces), "complete": all(workspace.get("complete") for workspace in workspaces), "workspaces": workspaces, "items": items}
 
 def collect(a,b,query=None,workspace=None):
     return collect_result(a, b, query, workspace)["items"]

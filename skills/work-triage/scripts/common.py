@@ -97,16 +97,30 @@ def notion_query(data_source_id, payload):
         if prop_name:
             direction = "desc" if sort.get("direction") == "descending" else "asc"
             cmd += ["--sort", f"{prop_name} {direction}"]
+    if payload.get("start_cursor"):
+        cmd += ["--start-cursor", payload["start_cursor"]]
     if payload.get("filter"):
         cmd += ["--filter", json.dumps(payload["filter"])]
     return json_cmd(cmd)
 
 
 def notion_blocks(page_id, page_size=100):
-    return json_cmd([
-        "ntn", "api", f"v1/blocks/{page_id}/children", f"page_size=={page_size}",
-        "--notion-version", NOTION_VERSION,
-    ]).get("results", [])
+    blocks, cursor, cursors = [], None, set()
+    while True:
+        cmd = ["ntn", "api", f"v1/blocks/{page_id}/children", f"page_size=={page_size}",
+               "--notion-version", NOTION_VERSION]
+        if cursor:
+            cmd.append(f"start_cursor=={cursor}")
+        data = json_cmd(cmd)
+        if "results" not in data:
+            raise RuntimeError("Incomplete Notion block response")
+        blocks.extend(data["results"])
+        cursor = data.get("next_cursor")
+        if not data.get("has_more") and not cursor:
+            return blocks
+        if not cursor or cursor in cursors:
+            raise RuntimeError("Incomplete Notion blocks: missing or repeated pagination cursor")
+        cursors.add(cursor)
 
 
 def notion_block(block_id):

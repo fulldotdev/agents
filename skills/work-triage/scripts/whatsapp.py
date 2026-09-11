@@ -274,12 +274,27 @@ def recovery_key_for_message(recovery, chat_id, msg_id):
     return key if key in recovery else None
 
 
-def collect(a, b):
+def collect(a, b, recover_media=True):
     chat_rows = (json_cmd(["wacli", "--json", "--read-only", "chats", "list", "--limit", str(MAX_ITEMS_PER_LANE)]).get("data") or [])
     chats = {(c.get("jid") or c.get("JID")): c for c in chat_rows}
-    data = json_cmd(["wacli", "--json", "--read-only", "messages", "list", "--after", iso_utc(a), "--before", iso_utc(b), "--limit", str(MAX_ITEMS_PER_LANE)])
+    # wacli has no offset/token. Grow the bounded query instead of skipping
+    # timestamp ties with a moving --before boundary. Only an under-full read
+    # proves completion; refuse oversized windows rather than silently clipping.
+    limit = MAX_ITEMS_PER_LANE
+    while True:
+        data = json_cmd(["wacli", "--json", "--read-only", "messages", "list", "--after", iso_utc(a), "--before", iso_utc(b), "--limit", str(limit)])
+        if data.get("success") is False:
+            raise RuntimeError("WhatsApp message query failed")
+        messages = (data.get("data") or {}).get("messages")
+        if not isinstance(messages, list):
+            raise RuntimeError("Incomplete WhatsApp message response")
+        if len(messages) < limit:
+            break
+        if limit >= 1048576:
+            raise RuntimeError("WhatsApp window too large; split it before advancing the checkpoint")
+        limit *= 2
     grouped, chat_names, missing = {}, {}, []
-    for m in (data.get("data") or {}).get("messages") or []:
+    for m in messages:
         cid, mid, mt = m.get("ChatJID"), m.get("MsgID"), m.get("MediaType")
         chat_row = chats.get(cid) or {}
         chat_names[cid] = m.get("ChatName") or chat_names.get(cid) or chat_row.get("name") or chat_row.get("Name") or cid
@@ -301,7 +316,7 @@ def collect(a, b):
             }
         )
 
-    recovery = recover_missing_media(missing)
+    recovery = recover_missing_media(missing) if recover_media else {}
     if recovery:
         for cid, messages in grouped.items():
             for msg in messages:

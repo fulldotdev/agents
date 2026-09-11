@@ -15,6 +15,7 @@ REPORT_KINDS = {
     "task_created", "project_created", "company_created", "task_canceled", "task_done",
     "project_status_changed", "company_status_changed",
     "draft_created", "draft_updated", "t3_started", "t3_continued",
+    "calendar_created", "calendar_updated", "calendar_rescheduled", "calendar_canceled",
 }
 ACTION_KINDS = REPORT_KINDS | {"context_updated", "other"}
 
@@ -74,24 +75,67 @@ def event_signature(lane, item):
     return incremental.item_signature(lane, item)
 
 
+def source_revision(lane, item):
+    """Content edits are new evidence; delivery/read/download metadata is not."""
+    if lane == "whatsapp":
+        message = item["messages"][0]
+        media = message.get("media") or {}
+        return incremental.stable_hash([message.get("sender"), message.get("is_sent_by_me"),
+            message.get("text"), media.get("type"), media.get("display_text")])
+    if lane == "slack":
+        return incremental.stable_hash([item.get("ts"), item.get("sender"), item.get("text"),
+            item.get("edited_at"),
+            [(f.get("id"), f.get("title")) for f in item.get("files") or []],
+            [source_revision(lane, reply) for reply in item.get("thread_replies") or []]])
+    return None
+
+
 def stage(state, result, proposals):
+    previous = state.get("pending") or {}
     events = copy.deepcopy(state.get("backlog") or {})
+    events.update(copy.deepcopy(previous.get("events") or {}))
     values = dict(result["groups"]["incoming"]["sources"])
     values["work_context"] = result["groups"].get("work_context") or {}
     for lane, value in values.items():
+        seen = set((state.get("lanes", {}).get(lane) or {}).get("seen") or [])
         for item in iter_items(lane, value):
             signature = event_signature(lane, item)
             if not signature:
                 continue
+            revision = source_revision(lane, item)
+            if revision:
+                # Seed existing receipts without replaying every acknowledged message
+                # after upgrade. Subsequent same-ID edits get distinct action events.
+                original = events.get(f"{lane}:{signature}", {}).get("item")
+                revisions = state.setdefault("source_revisions", {})
+                revision_key = f"{lane}:{signature}"
+                previous_revision = revisions.get(revision_key)
+                if not isinstance(previous_revision, dict):
+                    previous_revision = {"content": previous_revision or (source_revision(lane, original) if original else revision),
+                                         "signature": signature}
+                if previous_revision["content"] != revision:
+                    previous_revision = {"content": revision,
+                        "signature": incremental.stable_hash([previous_revision["signature"], revision])}
+                revisions[revision_key] = previous_revision
+                signature = previous_revision["signature"]
+            if signature in seen:
+                continue
             event_id = f"{lane}:{signature}"
+            if revision:
+                base = event_signature(lane, item)
+                for old_id, old in events.items():
+                    if (old_id != event_id and old["lane"] == lane
+                            and event_signature(lane, old["item"]) == base
+                            and old["status"] != "done"):
+                        old["superseded_by"] = event_id
             events.setdefault(event_id, {
                 "lane": lane, "signature": signature, "item": item,
                 "status": "pending", "actions": [],
             })
     record_failures(state, result, proposals)
     state["pending"] = {
-        "id": uuid4().hex, "collected_at": now(), "result": result,
-        "proposals": proposals, "events": events,
+        "id": previous.get("id") or uuid4().hex, "collected_at": now(), "result": result,
+        "proposals": {**previous.get("proposals", {}), **proposals}, "events": events,
     }
     state["backlog"] = {}
     state["last_collected_at"] = now()
@@ -219,6 +263,8 @@ def apply(state, owner, operations):
             if key not in event["actions"]:
                 event["actions"].append(key)
         elif operation == "prepare":
+            if event.get("superseded_by"):
+                raise ValueError("Source revision superseded; reconcile old intents and use the latest event")
             if event["status"] == "done":
                 raise ValueError("An acknowledged event cannot acquire new actions")
             key, kind, target = op["key"], op["kind"], op["target"]
@@ -270,7 +316,7 @@ def finish(state, owner):
         completed = [event["signature"] for event in lane_events if event["status"] == "done"]
         previous = state.setdefault("lanes", {}).setdefault(lane, {"seen": []})
         seen = list(dict.fromkeys(previous.get("seen", []) + completed))
-        previous["seen"] = seen[-incremental.MAX_SEEN_PER_LANE:]
+        previous["seen"] = seen
         if proposal.get("complete") and all(event["status"] == "done" for event in lane_events):
             incremental.advance(state, lane, parse_iso(proposal["before"]), completed)
     state["last_finished_at"] = now()

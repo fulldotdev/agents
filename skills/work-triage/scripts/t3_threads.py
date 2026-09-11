@@ -71,8 +71,14 @@ def compact_item(item):
             "session": item.get("sessionStatus"),
             "latest_turn": item.get("latestTurnState"),
             "latest_turn_id": item.get("latestTurnId"),
-            "settled": item.get("settledOverride") == "settled" or bool(item.get("settledAt")),
+            "settled": not bool(item.get("snoozedUntil")) and (
+                item.get("settledOverride") == "settled" or (
+                    item.get("settledOverride") != "active" and bool(item.get("settledAt"))
+                )
+            ),
             "archived": bool(item.get("archivedAt")),
+            "snoozed": bool(item.get("snoozedUntil")),
+            "snoozed_until": item.get("snoozedUntil"),
             "pending_approval": bool(item.get("hasPendingApprovals")),
             "pending_user_input": bool(item.get("hasPendingUserInput")),
             "actionable_plan": bool(item.get("hasActionableProposedPlan")),
@@ -106,7 +112,7 @@ def collect(after_dt=None, before_dt=None, include_archived=False, limit=DEFAULT
             continue
         if before_dt and activity and activity >= before_dt:
             continue
-        if not include_archived and item["state"]["archived"]:
+        if item["state"]["settled"] or (not include_archived and item["state"]["archived"]):
             continue
         haystack = " ".join(
             str(value or "")
@@ -121,7 +127,7 @@ def collect(after_dt=None, before_dt=None, include_archived=False, limit=DEFAULT
             continue
         items.append(item)
     items.sort(key=lambda item: item.get("last_activity_at") or "", reverse=True)
-    return {"ok": True, "mode": "thread_index", "count": len(items[:limit]), "items": items[:limit]}
+    return {"ok": True, "complete": True, "mode": "thread_index", "count": len(items), "items": items}
 
 
 def main():

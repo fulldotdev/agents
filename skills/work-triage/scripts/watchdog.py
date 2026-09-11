@@ -5,8 +5,9 @@ import json
 import os
 import subprocess
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 HERMES_DIR = Path(os.environ.get('HERMES_HOME', Path.home() / '.hermes')).expanduser()
 JOB_ID = '79d5bed18bab'
@@ -40,20 +41,43 @@ def cron_health(current):
     claim = timestamp((job.get('fire_claim') or {}).get('at'))
     running = claim is not None and current - claim <= 300
     ticker_age = current - float(TICKER_FILE.read_text())
-    scheduled = due is not None and -300 <= due - current <= MAX_AGE
+    # Daily schedules legitimately wait overnight; only a past due time is late.
+    scheduled = due is not None and due >= current - 300
     return {'ok': not paused and ticker_age <= 150 and (running or scheduled),
             'paused': paused, 'running': running, 'ticker_age_seconds': ticker_age,
             'next_run_at': job.get('next_run_at'), 'last_run_at': job.get('last_run_at'),
             'last_status': job.get('last_status')}
 
 
+def processing_due(current):
+    """Latest daily slot whose processing grace has elapsed, from the actual job."""
+    jobs = json.loads(JOBS_FILE.read_text())['jobs']
+    job = next(j for j in jobs if j['id'] == JOB_ID)
+    schedule = job.get('schedule') or {}
+    if schedule.get('kind') != 'cron':
+        return current - MAX_AGE
+    minute, hours, day, month, weekday = schedule['expr'].split()
+    if (day, month, weekday) != ('*', '*', '*'):
+        raise ValueError('Processing watchdog requires a daily cron schedule')
+    local = datetime.fromtimestamp(current, ZoneInfo('Europe/Amsterdam'))
+    candidates = [
+        (local - timedelta(days=offset)).replace(
+            hour=int(hour), minute=int(minute), second=0, microsecond=0
+        ).timestamp()
+        for offset in (0, 1, 2) for hour in hours.split(',')
+    ]
+    return max(slot for slot in candidates if slot + MAX_AGE <= current)
+
+
 def processing_health(current):
     value = json.loads(TRIAGE_FILE.read_text())
     batch = value.get('pending') or {}
     finished = timestamp(value.get('last_finished_at'))
-    started = timestamp(batch.get('collected_at'))
-    anchor = max(finished or 0, started or 0)
-    return {'ok': bool(anchor) and current - anchor <= MAX_AGE,
+    # Collection is not completion. Allow each scheduled cycle its full grace.
+    due = processing_due(current)
+    anchor = finished
+    return {'ok': bool(anchor) and anchor >= due,
+            'required_finished_since': datetime.fromtimestamp(due, timezone.utc).isoformat(),
             'last_finished_at': value.get('last_finished_at'),
             'age_seconds': current - anchor if anchor else None,
             'pending_count': sum(e.get('status') != 'done' for e in batch.get('events', {}).values()),

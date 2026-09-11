@@ -26,7 +26,7 @@ def collect_account(account, after_dt=None, before_dt=None, query=None, limit=MA
     search = " ".join(terms)
     data = json_cmd([
         "gog", "--readonly", "--no-input", "-a", account, "--json",
-        "gmail", "messages", "search", "--max", str(limit), "--timezone", "UTC",
+        "gmail", "messages", "search", "--all", "--max", str(limit), "--timezone", "UTC",
         # Queries can start with -in:spam; stop CLI flag parsing first.
         "--", search,
     ])
@@ -53,7 +53,7 @@ def collect_account(account, after_dt=None, before_dt=None, query=None, limit=MA
     return {
         "source": account, "ok": True, "mode": "message_index", "query": search,
         "items": list(threads.values()), "message_count": len(messages),
-        "complete": not (isinstance(data, dict) and (data.get("nextPageToken") or data.get("next_page_token"))) and len(messages) < limit,
+        "complete": not (isinstance(data, dict) and (data.get("nextPageToken") or data.get("next_page_token"))),
     }
 
 

@@ -18,8 +18,8 @@ def in_window(value, after, before):
 
 def fetch_events(account, after, before, limit):
     return json_cmd([
-        "gog", "-a", account, "--json", "--results-only", "calendar", "events",
-        "--from", iso_utc(after), "--to", iso_utc(before), "--all", "--max", str(limit),
+        "gog", "--readonly", "--no-input", "-a", account, "--json", "--results-only", "calendar", "events",
+        "--from", iso_utc(after), "--to", iso_utc(before), "--all", "--all-pages", "--max", str(limit),
     ])
 
 
@@ -73,9 +73,7 @@ def collect_account(account, after, before, limit=MAX_ITEMS_PER_LANE, context=Fa
                 "changed_in_window": in_window(item["created"], after, before) or in_window(item["updated"], after, before),
             })
         items.append(item)
-        if len(items) >= limit:
-            break
-    result = {"source": account, "ok": True, "items": items}
+    result = {"source": account, "ok": True, "complete": True, "items": items}
     if context:
         result.update({"context_lookback_days": lookback, "context_lookahead_days": lookahead})
     return result

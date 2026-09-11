@@ -9,14 +9,13 @@ import tempfile
 from datetime import timedelta
 from pathlib import Path
 
-from common import iso_utc, parse_iso, prop_time
+from common import MAX_ITEMS_PER_LANE, iso_utc, parse_iso, prop_time
 
 DEFAULT_STATE_FILE = Path(
     os.environ.get("WORK_TRIAGE_STATE_FILE", Path.home() / ".hermes" / "state" / "work-triage" / "cursors.json")
 ).expanduser()
 DEFAULT_OVERLAP_MINUTES = int(os.environ.get("WORK_TRIAGE_OVERLAP_MINUTES", "10"))
 DEFAULT_BOOTSTRAP_HOURS = int(os.environ.get("WORK_TRIAGE_BOOTSTRAP_HOURS", "24"))
-MAX_SEEN_PER_LANE = int(os.environ.get("WORK_TRIAGE_MAX_SEEN", "2000"))
 
 
 def load(path=DEFAULT_STATE_FILE):
@@ -172,12 +171,16 @@ def count_items(lane, value):
 
 def is_saturated(lane, value, limit):
     """Fail closed when a collector may have clipped a cursor window."""
+    if value.get("complete") is False or value.get("has_more") or value.get("next_cursor") or value.get("nextPageToken"):
+        return True
+    if value.get("complete") is True:
+        return False
     if lane in {"gmail", "calendar"}:
-        return any(source.get("complete") is False or source.get("message_count", 0) >= limit or len(source.get("items") or []) >= limit for source in value.get("sources") or [])
+        return any(source.get("complete") is False or (source.get("complete") is not True and (source.get("message_count", 0) >= limit or len(source.get("items") or []) >= limit)) for source in value.get("sources") or [])
     if lane == "whatsapp":
-        return sum(len(chat.get("messages") or []) for chat in value.get("items") or []) >= limit
+        return sum(len(chat.get("messages") or []) for chat in value.get("items") or []) >= min(limit, MAX_ITEMS_PER_LANE)
     if lane == "slack":
-        return any(int(workspace.get("item_count") or 0) >= limit for workspace in value.get("workspaces") or [])
+        return any(workspace.get("complete") is False or int(workspace.get("item_count") or 0) >= limit for workspace in value.get("workspaces") or [])
     if lane == "work_context":
         return any(len(group.get("items") or []) >= limit for group in (value.get("lanes") or {}).values())
     return len(value.get("items") or []) >= limit
@@ -192,5 +195,5 @@ def advance(state, lane, before, signatures):
             combined.append(signature)
     lanes[lane] = {
         "cursor": iso_utc(before),
-        "seen": combined[-MAX_SEEN_PER_LANE:],
+        "seen": combined,
     }

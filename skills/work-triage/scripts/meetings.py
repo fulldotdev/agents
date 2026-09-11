@@ -102,9 +102,25 @@ def include_row(row,a,b):
     changed_in_window = in_window_value(prop_time(row,"Created"),a,b) or in_window_value(prop_time(row,"Edited"),a,b)
     return when_in_window or changed_in_window
 
+def query_pages(payload):
+    rows, cursors = [], set()
+    while True:
+        data = notion_query(NOTION_MEETINGS_DATA_SOURCE_ID, payload)
+        if "results" not in data:
+            raise RuntimeError("Incomplete meeting query response")
+        rows.extend(data["results"])
+        cursor = data.get("next_cursor")
+        if not data.get("has_more") and not cursor:
+            return {"results": rows}
+        if not cursor or cursor in cursors:
+            raise RuntimeError("Incomplete meeting index: missing or repeated pagination cursor")
+        cursors.add(cursor)
+        payload["start_cursor"] = cursor
+
+
 def collect(a,b):
-    when_data=notion_query(NOTION_MEETINGS_DATA_SOURCE_ID,{"filter":{"property":"When","date":{"on_or_after":iso_utc(a),"before":iso_utc(b)}},"sorts":[{"property":"When","direction":"descending"}],"page_size":100})
-    changed_data=notion_query(NOTION_MEETINGS_DATA_SOURCE_ID,{"filter":{"or":[{"property":"Created","created_time":{"on_or_after":iso_utc(a),"before":iso_utc(b)}},{"property":"Edited","last_edited_time":{"on_or_after":iso_utc(a),"before":iso_utc(b)}}]},"sorts":[{"property":"Edited","direction":"descending"}],"page_size":100})
+    when_data=query_pages({"filter":{"property":"When","date":{"on_or_after":iso_utc(a),"before":iso_utc(b)}},"sorts":[{"property":"When","direction":"descending"}],"page_size":100})
+    changed_data=query_pages({"filter":{"or":[{"property":"Created","created_time":{"on_or_after":iso_utc(a),"before":iso_utc(b)}},{"property":"Edited","last_edited_time":{"on_or_after":iso_utc(a),"before":iso_utc(b)}}]},"sorts":[{"property":"Edited","direction":"descending"}],"page_size":100})
     rows=dedupe_rows((when_data.get("results") or []) + (changed_data.get("results") or []))
     items=[]
     for row in rows:
@@ -125,10 +141,11 @@ def collect(a,b):
                     note.get("status") == "notes_ready" and note.get("transcript_block_id")
                     for note in meeting_notes
                 )
-        except Exception as exc: item["body_error"]=str(exc)
+        except Exception as exc:
+            item.update(ok=False, body_error=str(exc))
+        if any(note.get("transcript_revision_error") for note in item.get("meeting_notes") or []):
+            item["ok"] = False
         items.append(item)
-        if len(items) >= MAX_ITEMS_PER_LANE:
-            break
     return items
 
 def main():

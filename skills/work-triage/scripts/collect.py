@@ -2,6 +2,7 @@
 """Single public CLI for recurring work-triage collection."""
 
 import argparse
+import copy
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
@@ -55,14 +56,15 @@ def collect_source(name, after, before, args, triage_context=False):
     if name == "slack":
         return slack.collect_result(after, before, args.query, getattr(args, "workspace", None))
     if name == "whatsapp":
-        return {"items": whatsapp.collect(after, before)}
+        return {"complete": True, "items": whatsapp.collect(after, before, recover_media=not getattr(args, "no_commit_state", False))}
     if name == "calendar":
         sources = calendar_source.collect(after, before, args.account, args.limit, triage_context)
         return {"sources": sources, "ok": all(item.get("ok", True) for item in sources)}
     if name == "meetings":
-        return {"items": meetings.collect(after, before)}
+        return {"complete": True, "items": meetings.collect(after, before)}
     return t3_threads.collect(
-        after, before, args.include_archived, args.limit, args.project,
+        None if triage_context else after, None if triage_context else before,
+        False if triage_context else args.include_archived, args.limit, args.project,
         args.query, args.thread_id, args.turn_limit,
     )
 
@@ -139,8 +141,6 @@ def incremental_triage(args):
         # Persist ownership before source calls, so a crashed collector can only
         # be replaced deliberately. No processing cursor moves on collection.
         incremental.save(state, state_path)
-        if state.get("pending"):
-            return pending.view(state)
         result = collect_incremental(args, state)
         incremental.save(state, state_path)
         return result
@@ -148,7 +148,7 @@ def incremental_triage(args):
 
 def collect_incremental(args, state, preview=False):
     before = window_from_args(None, args.before)[1]
-    initial_after = window_from_args(args.after, args.before)[0]
+    initial_after, before = incoming_window(window_from_args(args.after, args.before)[0], before)
     state_path = args.state_file or incremental.DEFAULT_STATE_FILE
     selected = args.source or list(SOURCES)
     result = base_result("work_triage", "incremental_triage", initial_after, before)
@@ -161,8 +161,11 @@ def collect_incremental(args, state, preview=False):
     proposals = {}
     for name in selected:
         after, lane_before = incremental.window(
-            state, name, before, args.bootstrap_hours, args.overlap_minutes, initial_after
+            state, name, before, args.bootstrap_hours, args.overlap_minutes,
+            None if (state.get("lanes", {}).get(name) or {}).get("cursor") else initial_after
         )
+        # Always refresh yesterday-to-now context, extending back for unfinished fetches.
+        after = min(after, initial_after)
         windows[name] = (after, lane_before)
         calls[name] = lambda name=name, after=after, lane_before=lane_before: collect_source(
             name, after, lane_before, args, True
@@ -172,9 +175,7 @@ def collect_incremental(args, state, preview=False):
         state, "work_context", before, args.bootstrap_hours, args.overlap_minutes, initial_after
     )
     windows["work_context"] = (wc_after, wc_before)
-    calls["work_context"] = lambda: notion.collect_changed_work_context(
-        wc_after, wc_before, iso_utc(wc_after), iso_utc(wc_before), args.limit
-    )
+    calls["work_context"] = lambda: notion.collect_work_context(initial_after, before, args.limit)
 
     if not preview:
         # A failed first collection must not move its bootstrap floor forward
@@ -199,7 +200,9 @@ def collect_incremental(args, state, preview=False):
                     if not lane_result["ok"]:
                         value["ok"] = False
                 seen = ((state.get("lanes") or {}).get(name) or {}).get("seen") or []
-                value, signatures = incremental.filter_value(name, value, seen)
+                # Context remains visible even when its action revision was acknowledged.
+                unseen, signatures = incremental.filter_value(name, value, seen)
+                value["changed_count"] = unseen["changed_count"]
                 value["after"] = iso_utc(after)
                 value["before"] = iso_utc(lane_before)
                 value["cursor_advanced"] = False
@@ -240,7 +243,10 @@ def collect_incremental(args, state, preview=False):
         value.get("changed_count", 0)
         for value in result["groups"]["incoming"]["sources"].values()
     ) + (result["groups"].get("work_context") or {}).get("changed_count", 0)
-    return result if preview else pending.stage(state, result, proposals)
+    output = pending.stage(copy.deepcopy(state) if preview else state, result, proposals)
+    if preview:
+        output["state_committed"] = False
+    return output
 
 
 def source(args):

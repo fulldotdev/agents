@@ -4,11 +4,11 @@ Use the collector CLI for state changes, never edit its JSON state manually. Thi
 
 ## Claim and collect
 
-Choose one unique owner for this worker run. Keep it when resuming an interrupted run. `triage --incremental --owner RUN --format yaml` persists the batch before returning it; repeating the command with that owner returns the same pending batch without recollecting. `queue status` shows ownership, pending events, action intents and reports.
+Choose one unique owner for this worker run. Keep it when resuming an interrupted run. `triage --incremental --owner RUN --format yaml` persists the batch before returning it; repeating the command refreshes context while preserving the batch ID, decisions, action intents and all unresolved older events. `queue status` shows ownership, pending events, action intents and reports.
 
 Another owner blocks execution. Verify the old worker has actually stopped before `queue claim --owner NEW --previous-owner OLD`. Age alone is not permission to take over. After a normally released run, `queue claim --owner NEW` can claim outstanding reports before collecting.
 
-Read each event's current source and relevant existing artifacts before deciding. On the first deployment, the overlap may include events already handled under the old collector; reconcile them. Old checkpoints do not prove that historical processing completed.
+`groups` is refreshed context, including acknowledged revisions; only unfinished `queue.events` require decisions. Never reexecute an acknowledged revision just because it remains visible. When an event has `superseded_by`, use the newer source for decisions; reconcile its old intents, then acknowledge the obsolete event without new execution or drafts. Older pending payloads stay in the ledger even when absent from today's context. Read each event's current source and relevant existing artifacts before deciding. On the first deployment, the overlap may include events already handled under the old collector; reconcile them. Old checkpoints do not prove that historical processing completed. On migration, the first refreshed WhatsApp/Slack content seeds the edit baseline for legacy receipts without replaying them. Earlier edits cannot be distinguished from previously handled content; reconcile suspected corrections against the destination. Later same-ID content edits create new action revisions.
 
 ## Record outcomes
 
@@ -31,7 +31,7 @@ For other external writes, save an intent with a stable key identifying the resu
 [{"op":"prepare","event":"EVENT_ID","key":"ACTION_KEY","kind":"task_created","target":"Notion Task for source SOURCE_URL; search before creating"}]
 ```
 
-Reportable kinds are `task_created`, `project_created`, `company_created`, `task_canceled`, `task_done`, `project_status_changed`, `company_status_changed`, `draft_created`, `draft_updated`, `t3_started`, and `t3_continued`. Use `context_updated` or `other` for quiet actions. `t3_started` requires work covered by Sil's authorization.
+Reportable kinds are `task_created`, `project_created`, `company_created`, `task_canceled`, `task_done`, `project_status_changed`, `company_status_changed`, `draft_created`, `draft_updated`, `t3_started`, `t3_continued`, `calendar_created`, `calendar_updated`, `calendar_rescheduled`, and `calendar_canceled`. Use `context_updated` or `other` for quiet actions. `t3_started` requires work covered by Sil's authorization.
 
 Inspect an existing intent and external state before retrying a write with uncertain outcome. Reuse a verified artifact, preserve human edits, and never create a duplicate merely because its receipt is missing. After successful readback:
 
@@ -44,7 +44,7 @@ Inspect an existing intent and external state before retrying a write with uncer
 
 Reportable action kinds require a title and native URL; status-change titles include the verified `old → new` transition. Omit `report` for quiet context updates. Every prepared action must be resolved or explicitly canceled before acknowledging its event.
 
-For no action, use `ack` with `outcome: "no_action"` and a factual `note`, for example that Sil already answered. For an unfinished event, use `retry` with its event ID and the missing evidence or failure in `note`. A prepared intent that has become unnecessary needs `{"op":"cancel","key":"ACTION_KEY","note":"Sil already answered before the write","evidence":"Verified sent-message locator and absence of an existing artifact"}`, not a fabricated success receipt. Reconcile an uncertain external write before canceling; completed actions cannot be canceled.
+For no action, first pass the main skill's destination, media, Files and context completion checks, then use `ack` with `outcome: "no_action"` and a factual `note` identifying the checked evidence. For an unfinished event, use `retry` with its event ID and the missing evidence or failure in `note`. A prepared intent that has become unnecessary needs `{"op":"cancel","key":"ACTION_KEY","note":"Sil already answered before the write","evidence":"Verified sent-message locator and absence of an existing artifact"}`, not a fabricated success receipt. Reconcile an uncertain external write before canceling; completed actions cannot be canceled.
 
 Before finishing the batch, a qualifying failure can be queued with `{"op":"report_failure","lane":"slack","title":"Practical problem and required fix"}` after two consecutive failed collections. For failed execution, replace `lane` with the `event` ID; this requires retry decisions in at least two distinct batches, not two repeated calls in one run. Only escalate when Sil needs to act. Source recovery or event completion suppresses an undelivered stale failure report.
 
