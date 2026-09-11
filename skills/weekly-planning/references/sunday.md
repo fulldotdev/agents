@@ -6,7 +6,7 @@ Run Sunday at 10:00 Europe/Amsterdam. Complete cleanup, drafting and review publ
 
 Use `work-management` and `notion-cli` to read the current active Projects, related Tasks and Companies, and the upcoming Sprint. Read their properties and bodies, including the recorded planning, agreements and dependencies. Follow pagination to cover all active records.
 
-Clean up active records using the information in Notion: stale project introductions, duplicate active work, broken relations, incorrect statuses, missing dependency owners, obsolete dates and accepted work that lacks an owner. Preserve historical Timeline entries and commercial decisions. Ignore terminal history and Reservations. Read-only Goals remain read-only. Do not auto-delete ambiguous work or invent commitments, deadlines or a new weekly proposal. Sprint changes must follow an existing agreement; unresolved choices go in the short Telegram note.
+Clean up active records using the information in Notion: outdated project scope or agreements (not progress summaries), duplicate active work, broken relations, incorrect statuses, missing dependency owners, obsolete dates and accepted work that lacks an owner. Preserve historical Timeline entries and commercial decisions. Ignore terminal history and Reservations. Read-only Goals remain read-only. Do not auto-delete ambiguous work or invent commitments, deadlines or a new weekly proposal. Sprint changes must follow an existing agreement; unresolved choices go in the short Telegram note.
 
 ## Draft and publish
 

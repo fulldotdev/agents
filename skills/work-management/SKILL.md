@@ -7,7 +7,7 @@ description: "Use when reading, creating, routing, or updating Notion Tasks, Pro
 
 This skill defines how work is stored and routed. Live Notion owns the current records and schema.
 
-Use `weekly-planning` for Sunday cleanup, customer updates, Telegram Planning approvals and Monday sending. Its helper stores exact drafts and approvals in Project bodies, with the numbered review linked from the Sprint.
+Use `weekly-planning` for Sunday cleanup, customer updates, Telegram Planning approvals and Monday sending. Its helper-managed drafts, approvals and send receipts are the only operational-log exception in Project bodies; keep them intact, with the numbered review linked from the Sprint.
 
 Load only the detail needed for the current operation:
 
@@ -47,7 +47,7 @@ An accepted customer ticket already tracked in monday stays there. Create a Noti
 
 When tracking a quote or invoice, use `moneybird` for its current state and direct URL, and record relevant facts in the Task Timeline. A sent estimate needing follow-up belongs to the Project's sales work. On verified acceptance, finish the sales Task and create or link the agreed delivery work under the normal routing rules; keep the original Task if it already represents delivery.
 
-Keep active Project introductions current: replace superseded planning prose using dated sources, preserve decisions and commercial references, and let the Status property own status. Do not infer a new Task merely because a Project has none. Paused or Discovery projects may legitimately have no executable work. For Waiting work, identify the dependency and its owner; use Due only for an agreed follow-up or deadline, not an invented reminder.
+Project bodies hold the agreed outcome, scope, project-wide agreements and links to leading documents. Change that frame only when a dated source changes the agreement. Keep progress, feedback and execution evidence in the owning Task Timeline, not in Project summaries, timelines or copied Task bodies. Company bodies hold reusable organization context and customer-wide agreements, not project progress or Dex contact details. Properties own status, ownership and planning. Do not infer a new Task merely because a Project has none. Paused or Discovery projects may legitimately have no executable work. For Waiting work, identify the dependency and its owner; use Due only for an agreed follow-up or deadline, not an invented reminder.
 
 ## Area
 
