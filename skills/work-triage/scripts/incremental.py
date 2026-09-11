@@ -12,7 +12,7 @@ from pathlib import Path
 from common import MAX_ITEMS_PER_LANE, iso_utc, parse_iso, prop_time
 
 DEFAULT_STATE_FILE = Path(
-    os.environ.get("WORK_TRIAGE_STATE_FILE", Path.home() / ".hermes" / "state" / "work-triage" / "cursors.json")
+    os.environ.get("WORK_TRIAGE_STATE_FILE", Path.home() / ".local" / "state" / "fulldev" / "work-triage" / "cursors.json")
 ).expanduser()
 DEFAULT_OVERLAP_MINUTES = int(os.environ.get("WORK_TRIAGE_OVERLAP_MINUTES", "10"))
 DEFAULT_BOOTSTRAP_HOURS = int(os.environ.get("WORK_TRIAGE_BOOTSTRAP_HOURS", "24"))

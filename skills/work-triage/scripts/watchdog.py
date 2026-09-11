@@ -1,21 +1,25 @@
 #!/usr/bin/env python3
-"""Check triage cron progress independently of the Hermes gateway."""
+"""Check triage scheduling and processing independently of the gateway."""
 import argparse
 import json
 import os
 import subprocess
+import sqlite3
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 HERMES_DIR = Path(os.environ.get('HERMES_HOME', Path.home() / '.hermes')).expanduser()
+RUNTIME = os.environ.get('WORK_TRIAGE_RUNTIME', 'openclaw')
+OPENCLAW_DIR = Path(os.environ.get('OPENCLAW_STATE_DIR', Path.home() / '.openclaw')).expanduser()
+STATE_DIR = Path.home() / '.local/state/fulldev/work-triage'
 JOB_ID = '79d5bed18bab'
 JOBS_FILE = HERMES_DIR / 'cron/jobs.json'
 TICKER_FILE = HERMES_DIR / 'cron/ticker_heartbeat'
 GATEWAY_FILE = HERMES_DIR / 'state/gateway.heartbeat'
-TRIAGE_FILE = HERMES_DIR / 'state/work-triage/cursors.json'
-STATUS_FILE = HERMES_DIR / 'state/work-triage/watchdog-status.json'
+TRIAGE_FILE = Path(os.environ.get('WORK_TRIAGE_STATE_FILE', STATE_DIR / 'cursors.json'))
+STATUS_FILE = STATE_DIR / 'watchdog-status.json'
 ALERT_TARGET = os.environ.get('WORK_TRIAGE_ALERT_TARGET', 'telegram:-1003914987491')
 MAX_AGE = 45 * 60
 
@@ -25,12 +29,30 @@ def timestamp(value):
 
 
 def gateway_health(current):
+    if RUNTIME == 'openclaw':
+        result = subprocess.run(['openclaw', 'health', '--json'], capture_output=True, text=True, timeout=30)
+        if result.returncode:
+            return {'ok': False, 'error': 'OpenClaw health request failed'}
+        value = json.loads(result.stdout)
+        return {'ok': value.get('ok') is True}
     value = json.loads(GATEWAY_FILE.read_text())
     age = current - timestamp(value['updated_at'])
     return {'ok': age <= 150, 'age_seconds': age, 'pid': value.get('pid')}
 
 
 def cron_health(current):
+    if RUNTIME == 'openclaw':
+        job = openclaw_job()
+        config = json.loads((OPENCLAW_DIR / 'openclaw.json').read_text())
+        scheduler = config.get('cron', {}).get('enabled', True)
+        state = job.get('state', {})
+        due = state.get('nextRunAtMs')
+        started = state.get('runningAtMs')
+        running = started is not None and current * 1000 - started <= MAX_AGE * 1000
+        paused = not job.get('enabled') or not scheduler
+        return {'ok': not paused and (running or due is not None and due >= (current - 300) * 1000),
+                'paused': paused, 'running': running, 'next_run_at_ms': due,
+                'last_status': state.get('lastStatus')}
     jobs = json.loads(JOBS_FILE.read_text())['jobs']
     matches = [j for j in jobs if j.get('name') == 'work-triage' or j['id'] == JOB_ID]
     if len(matches) != 1 or matches[0]['id'] != JOB_ID:
@@ -49,10 +71,24 @@ def cron_health(current):
             'last_status': job.get('last_status')}
 
 
+def openclaw_job():
+    database = OPENCLAW_DIR / 'state/openclaw.sqlite'
+    with sqlite3.connect(f'file:{database}?mode=ro', uri=True) as connection:
+        rows = connection.execute('SELECT job_json,state_json FROM cron_jobs WHERE name=?', ('work-triage',)).fetchall()
+    if len(rows) != 1:
+        raise ValueError('Missing or duplicate OpenClaw triage automation')
+    job = json.loads(rows[0][0])
+    job['state'] = json.loads(rows[0][1])
+    return job
+
+
 def processing_due(current):
     """Latest daily slot whose processing grace has elapsed, from the actual job."""
-    jobs = json.loads(JOBS_FILE.read_text())['jobs']
-    job = next(j for j in jobs if j['id'] == JOB_ID)
+    if RUNTIME == 'openclaw':
+        job = openclaw_job()
+    else:
+        jobs = json.loads(JOBS_FILE.read_text())['jobs']
+        job = next(j for j in jobs if j['id'] == JOB_ID)
     schedule = job.get('schedule') or {}
     if schedule.get('kind') != 'cron':
         return current - MAX_AGE
@@ -98,9 +134,9 @@ def inspect(current):
 
 def message(status):
     if not status['gateway']['ok']:
-        return 'Hermes gateway is unavailable. The triage watchdog attempted a restart; check gateway health if triage does not resume.'
+        return f'{RUNTIME} gateway is unavailable. The triage watchdog attempted a restart; check gateway health if triage does not resume.'
     if not status['cron']['ok']:
-        return 'Triage cron is missing, duplicated or overdue. Check hermes cron status and job 79d5bed18bab. Preserve the pending queue when recovering.'
+        return f'Triage automation is missing, duplicated or overdue. Check {RUNTIME} cron status and work-triage. Preserve the pending queue when recovering.'
     return 'Triage has not completed processing recently. Check its current cron run and pending batch. Source collection alone does not mean the work finished.'
 
 
@@ -123,11 +159,14 @@ def main():
         if previous.get('alert_text') != alert_text or not previous.get('alert_sent'):
             if not status['gateway']['ok']:
                 try:
-                    subprocess.run([str(Path.home() / '.local/bin/hermes'), 'gateway', 'restart'], capture_output=True, text=True, timeout=90)
+                    executable = 'openclaw' if RUNTIME == 'openclaw' else str(Path.home() / '.local/bin/hermes')
+                    subprocess.run([executable, 'gateway', 'restart'], capture_output=True, text=True, timeout=90)
                 except (OSError, subprocess.TimeoutExpired):
                     pass
             try:
-                result = subprocess.run([str(Path.home() / '.local/bin/hermes'), 'send', '--quiet', '--to', ALERT_TARGET, alert_text], capture_output=True, text=True, timeout=45)
+                command = (['openclaw', 'message', 'send', '--channel', 'telegram', '--target', ALERT_TARGET.removeprefix('telegram:'), '--message', alert_text, '--json']
+                           if RUNTIME == 'openclaw' else [str(Path.home() / '.local/bin/hermes'), 'send', '--quiet', '--to', ALERT_TARGET, alert_text])
+                result = subprocess.run(command, capture_output=True, text=True, timeout=45)
                 sent = result.returncode == 0
             except (OSError, subprocess.TimeoutExpired):
                 sent = False

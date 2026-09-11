@@ -55,7 +55,7 @@ class WeeklyRehearsal(unittest.TestCase):
         self.clock = datetime(2026, 9, 13, 10, tzinfo=outbox.TZ)
         self.notion = Notion()
         self.publications = []
-        for obj, name, value in [(store, 'api', self.notion.api), (outbox, 'DB', self.db),
+        for obj, name, value in [(store, 'api', self.notion.api), (outbox, 'DB', self.db), (outbox, 'RUNTIME', 'hermes'),
                                  (outbox, 'now', lambda: self.clock),
                                  (outbox.subprocess, 'run', self.send)]:
             patcher = patch.object(obj, name, value)

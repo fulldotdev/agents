@@ -8,7 +8,7 @@ Use these commands when running the Otis video pipeline manually. Replace every 
 ssh otis '/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg -version | head -n 1
 /opt/homebrew/opt/ffmpeg-full/bin/ffprobe -version | head -n 1
 /opt/homebrew/opt/ffmpeg-full/bin/ffmpeg -hide_banner -filters 2>/dev/null | awk '\''$2 == "ass" || $2 == "subtitles" {print}'\''
-/Users/otis/.hermes/hermes-agent/venv/bin/python -c "import faster_whisper; print(faster_whisper.__version__)"
+/Users/otis/.local/share/fulldev/video-venv/bin/python -c "import faster_whisper; print(faster_whisper.__version__)"
 df -h / | tail -n 1'
 ```
 
@@ -22,14 +22,14 @@ rsync -av --progress "/absolute/local/input.mp4" "otis:/Users/otis/video-work/<j
 ## Inspect and transcribe
 
 ```bash
-ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
+ssh otis '/Users/otis/.local/share/fulldev/video-venv/bin/python \
   /Users/otis/.agents/skills/video-editing/scripts/inspect_media.py \
   /Users/otis/video-work/<job-id>/source/*.mp4 \
   --output /Users/otis/video-work/<job-id>/work/media-manifest.json \
   --review-dir /Users/otis/video-work/<job-id>/work/review \
   --analyze-audio'
 
-ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
+ssh otis '/Users/otis/.local/share/fulldev/video-venv/bin/python \
   /Users/otis/.agents/skills/video-editing/scripts/transcribe.py \
   /Users/otis/video-work/<job-id>/source/input.mp4 \
   --output-dir /Users/otis/video-work/<job-id>/work/input-transcript \
@@ -39,7 +39,7 @@ ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
 ## Render
 
 ```bash
-ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
+ssh otis '/Users/otis/.local/share/fulldev/video-venv/bin/python \
   /Users/otis/.agents/skills/video-editing/scripts/render_plan.py \
   /Users/otis/video-work/<job-id>/work/edit-plan.json \
   --root /Users/otis/video-work/<job-id>'
@@ -48,7 +48,7 @@ ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
 ## QA
 
 ```bash
-ssh otis '/Users/otis/.hermes/hermes-agent/venv/bin/python \
+ssh otis '/Users/otis/.local/share/fulldev/video-venv/bin/python \
   /Users/otis/.agents/skills/video-editing/scripts/qa_media.py \
   /Users/otis/video-work/<job-id>/output/final.mp4 \
   --plan /Users/otis/video-work/<job-id>/work/edit-plan.json \

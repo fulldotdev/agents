@@ -10,7 +10,7 @@ metadata:
 
 # T3 Code on Otis
 
-Otis runs the authoritative T3 server and provider processes. T3 Connect makes its managed threads visible on the signed-in MacBook and mobile clients; it does not itself start work. Hermes starts work through the authenticated local dispatch helper.
+Otis runs the authoritative T3 server and provider processes. T3 Connect makes its managed threads visible on the signed-in MacBook and mobile clients; it does not itself start work. OpenClaw starts work through the authenticated local dispatch helper.
 
 Use T3-managed threads when cross-device visibility matters. A standalone provider resume, such as `codex exec resume`, is not automatically imported into T3.
 

@@ -56,4 +56,4 @@ Read `queue reports --owner RUN` and apply the main skill's reporting gate. Reco
 
 Runtime and scheduler alerts belong to the watchdog. Triage owns actionable source and execution failure reports.
 
-Release with `queue release --owner RUN` after finishing the batch, then return the concise final response or `[SILENT]`. Leave reports first emitted in that final response unmarked until the next run can observe it. If a session change makes delivery uncertain, inspect available conversation history before repeating or acknowledging. This preserves recovery without pretending final-message delivery is exactly once.
+Release with `queue release --owner RUN` after finishing the batch, then return the concise final response or `NO_REPLY`. Leave reports first emitted in that final response unmarked until the next run can observe it. If a session change makes delivery uncertain, inspect available conversation history before repeating or acknowledging. This preserves recovery without pretending final-message delivery is exactly once.

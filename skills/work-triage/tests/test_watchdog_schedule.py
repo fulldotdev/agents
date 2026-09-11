@@ -1,6 +1,7 @@
 """Read-only watchdog regressions for twice-daily processing."""
 import importlib.util
 import json
+import sqlite3
 from datetime import datetime
 from pathlib import Path
 import tempfile
@@ -31,7 +32,7 @@ class ScheduleTests(unittest.TestCase):
                     'next_run_at': '2026-09-12T07:00:00+02:00'}
         self.jobs.write_text(json.dumps({'jobs': [self.job]}))
         self.state.write_text(json.dumps({'last_finished_at': '2026-09-11T17:20:00+02:00'}))
-        for key, value in [('JOBS_FILE', self.jobs), ('TRIAGE_FILE', self.state), ('TICKER_FILE', self.ticker)]:
+        for key, value in [('RUNTIME', 'hermes'), ('JOBS_FILE', self.jobs), ('TRIAGE_FILE', self.state), ('TICKER_FILE', self.ticker)]:
             patcher = patch.object(watchdog, key, value)
             patcher.start()
             self.addCleanup(patcher.stop)
@@ -64,6 +65,24 @@ class ScheduleTests(unittest.TestCase):
         now = ts('2026-09-12T07:06:00')
         self.ticker.write_text(str(now))
         self.assertFalse(watchdog.cron_health(now)['ok'])
+
+    def test_openclaw_state_and_duplicate_detection(self):
+        root = Path(self.temp.name) / 'openclaw'
+        (root / 'state').mkdir(parents=True)
+        (root / 'openclaw.json').write_text('{"cron":{"enabled":true}}')
+        database = root / 'state/openclaw.sqlite'
+        job = {'id':'native-id','name':'work-triage','enabled':True,'schedule':self.job['schedule']}
+        state = {'nextRunAtMs':int(ts('2026-09-12T07:00:00')*1000)}
+        with sqlite3.connect(database) as c:
+            c.execute('CREATE TABLE cron_jobs(name TEXT,job_json TEXT,state_json TEXT)')
+            c.execute('INSERT INTO cron_jobs VALUES (?,?,?)',('work-triage',json.dumps(job),json.dumps(state)))
+        with patch.object(watchdog,'RUNTIME','openclaw'), patch.object(watchdog,'OPENCLAW_DIR',root):
+            self.assertTrue(watchdog.cron_health(ts('2026-09-12T06:30:00'))['ok'])
+            self.assertFalse(watchdog.cron_health(ts('2026-09-12T07:06:00'))['ok'])
+            self.assertEqual(watchdog.processing_due(ts('2026-09-12T08:00:00')),ts('2026-09-12T07:00:00'))
+            with sqlite3.connect(database) as c:
+                c.execute('INSERT INTO cron_jobs VALUES (?,?,?)',('work-triage',json.dumps(job),json.dumps(state)))
+            with self.assertRaises(ValueError):watchdog.cron_health(ts('2026-09-12T06:30:00'))
 
 
 if __name__ == '__main__':

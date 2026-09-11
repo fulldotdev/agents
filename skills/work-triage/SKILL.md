@@ -13,7 +13,7 @@ Read [references/media.md](references/media.md) when collected items include rel
 
 ## Collection
 
-For each twice-daily Hermes run:
+For each twice-daily OpenClaw run:
 
 ```bash
 python3 ~/.agents/skills/work-triage/scripts/collect.py triage --incremental --owner UNIQUE_RUN_ID --format yaml
@@ -72,4 +72,4 @@ Template:
 
 Continue after the highest item in the previous delivered triage report. Read recent Triage chat history when reconciling delivery or Sil's feedback; cron continuity contains prior output, not the full conversation. Start at 1 when there is no prior report.
 
-If nothing meets the reporting gate, return exactly `[SILENT]`.
+If nothing meets the reporting gate, return exactly `NO_REPLY`.

@@ -139,7 +139,7 @@ def main() -> int:
     except ImportError as exc:
         raise SystemExit(
             "faster-whisper is unavailable; run this script with "
-            "/Users/otis/.hermes/hermes-agent/venv/bin/python"
+            "/Users/otis/.local/share/fulldev/video-venv/bin/python"
         ) from exc
 
     args.output_dir.mkdir(parents=True, exist_ok=True)

@@ -13,7 +13,7 @@ MAX_ITEMS_PER_LANE = int(os.environ.get("TRIAGE_MAX_ITEMS_PER_LANE", "200"))
 TEMP_ROOT = Path(
     os.environ.get("WORK_TRIAGE_TEMP_DIR")
     or os.environ.get("WORK_MANAGEMENT_TEMP_DIR")
-    or Path.home() / ".hermes" / "tmp" / "work-triage"
+    or Path.home() / ".cache" / "fulldev" / "work-triage"
 ).expanduser()
 LEGACY_TEMP_ROOT = Path.home() / ".hermes" / "tmp" / "work-management"
 

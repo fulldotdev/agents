@@ -14,11 +14,11 @@ Edit supplied footage non-destructively on `otis`. Use Faster-Whisper for transc
 - Shared Drive root: `/Users/otis/Google Drive/My Drive/videos`
 - FFmpeg Full: `/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg`
 - FFprobe: `/opt/homebrew/opt/ffmpeg-full/bin/ffprobe`
-- Python with Faster-Whisper: `/Users/otis/.hermes/hermes-agent/venv/bin/python`
+- Python with Faster-Whisper: `/Users/otis/.local/share/fulldev/video-venv/bin/python`
 - Remote skill: `/Users/otis/.agents/skills/video-editing`
 - Transcription model: `small` for normal work, `base` for rough drafts, and `large-v3` when final accuracy warrants the time and storage.
 
-Read the `ssh` skill before operating Otis. Use lowered process priority and one render at a time so Hermes stays responsive.
+Read the `ssh` skill before operating Otis. Use lowered process priority and one render at a time so the agent services stay responsive.
 
 Read [references/commands.md](references/commands.md) when creating a job or running the inspection, transcription, render, or QA scripts manually.
 

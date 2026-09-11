@@ -6,4 +6,4 @@ Plain approvals such as `keur 1 en 3 goed`, `alles akkoord`, or lines `1 ok` / `
 
 Each published list has a review number. Telegram replies are matched to the quoted review, so replying to an old list cannot approve changed text. If a quote cannot be matched, or a plain reply arrives before publication is confirmed, keep it for review and ask for a fresh numbered approval.
 
-If a user row is not yet available in Hermes history, say the approval has not been recorded yet and retry once it is persisted; do not manufacture evidence. Current Hermes persists incoming user turns before the first model call. Monday reconciles the real history again, including later withdrawals.
+If a user row is not yet available in OpenClaw ingress history, say the approval has not been recorded yet and retry once it is persisted; do not manufacture evidence. OpenClaw stores original Telegram updates before processing them. Edited replies replace their earlier evidence. Monday reconciles the real history again, including later withdrawals.
