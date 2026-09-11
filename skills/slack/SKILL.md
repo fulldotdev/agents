@@ -1,6 +1,6 @@
 ---
 name: "slack"
-description: "Use when work requires searching or reading Slack messages, DMs, channels, threads, or permalinks, drafting a Slack message in chat, or sending one after explicit approval. Use this for the direct Slack API, not the Hermes gateway."
+description: "Use when work requires searching or reading Slack messages, DMs, channels, threads, or permalinks, drafting a Slack message in chat, or sending one after explicit approval. Use this for the direct Slack API, not the OpenClaw gateway."
 metadata:
   {
     "openclaw":
@@ -16,7 +16,7 @@ metadata:
 
 ## Ownership
 
-Use this skill for direct Slack Web API reads and explicit message operations. Do not reconfigure or use the Hermes Slack gateway unless the user specifically asks for a Hermes bot/channel change.
+Use this skill for direct Slack Web API reads and explicit message operations. Do not reconfigure or use the OpenClaw Slack gateway unless the user specifically asks for a gateway or bot/channel change.
 
 For `work-triage`, Slack collection is read-only. Triage does not create Slack drafts or send messages.
 

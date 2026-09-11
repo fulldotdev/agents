@@ -52,7 +52,7 @@ Before finishing the batch, a qualifying failure can be queued with `{"op":"repo
 
 `queue finish --owner RUN` saves completed decisions. Only complete, successfully collected lanes advance their checkpoint. Unfinished events, source payloads and action intents remain in the backlog, so independent lanes can progress. A failed or saturated lane remains incomplete; never advance its checkpoint merely to clear an error. Per-run downloads are retained for pending work and are not canonical document storage.
 
-Read `queue reports --owner RUN` and apply the main skill's reporting gate. Reconcile outstanding reports against actual Triage chat messages or successful Hermes cron delivery receipts, not just continuity output. Mark an entry with `{"op":"reported","key":"ACTION_KEY"}` only when delivery is verified. A prepared answer is not delivery evidence.
+Read `queue reports --owner RUN` and apply the main skill's reporting gate. Reconcile outstanding reports against actual Triage chat messages or matching OpenClaw run receipts (`openclaw cron runs --id JOB_ID --json`). A receipt must confirm delivery (`delivered: true` and `deliveryStatus: "delivered"`) to the intended Triage chat and identify the reported output. A successful run or a silent `NO_REPLY` is not delivery evidence. Retained Hermes receipts apply only to historical deliveries. Mark an entry with `{"op":"reported","key":"ACTION_KEY"}` only when delivery is verified. A prepared answer is not delivery evidence.
 
 Runtime and scheduler alerts belong to the watchdog. Triage owns actionable source and execution failure reports.
 

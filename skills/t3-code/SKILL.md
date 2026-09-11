@@ -2,10 +2,6 @@
 name: t3-code
 description: "Operate T3-managed agent threads on Otis: inspect, create, resume, settle, and expose them through T3 Connect. Use for T3 thread dispatch or the rare Otis T3 service/Connect issue."
 license: MIT
-metadata:
-  hermes:
-    tags: [T3-Code, T3-Connect, Remote-Agents, Automation]
-    related_skills: [development, work-management, work-triage]
 ---
 
 # T3 Code on Otis

@@ -1,11 +1,11 @@
 Workflow: work-triage
 
-Run every 30 minutes as a Hermes cron with continuity enabled. Deliver to Telegram Triage (-1003914987491). Before decisions, read recent messages from Sil in that chat since the previous completed run; reopen earlier discussion only when needed. On the first cron run, use the last completed heartbeat cycle as the boundary. Treat the old cron output from before this migration as historical, not current instructions.
+Run one OpenClaw triage cycle on Otis. The configured OpenClaw job owns the schedule and Telegram Triage destination.
 
-Read the current installed work-triage SKILL.md and references/processing.md from ~/.agents/skills/work-triage, then use work-management and any required tool or communication skills. Follow these current files over outdated workflow instructions in this conversation.
+Read the current ~/.agents/skills/work-triage/SKILL.md and references/processing.md, then use work-management and the required tool or communication skills. Follow these current files over outdated workflow instructions in conversation history.
 
-Run one incremental triage cycle with a unique worker owner. Resume an existing pending batch safely; verify that an old worker stopped before taking ownership. Reconcile prior visible reports and existing external artifacts before repeating an action. Persist decisions and verified receipts, finish or defer the batch, and release ownership before your final response. Do not treat collection as completed processing.
+Read Sil's recent Triage chat messages alongside source context; reopen older discussion only when it affects a decision. Use current OpenClaw run history and persistent skill state to reconcile earlier work. Historical Hermes records are read-only evidence, not a runtime to invoke.
 
-Apply work-triage's action and reporting gates. Its Gmail-draft permission does not authorize sending. Automatic T3 execution is limited to the existing feedback-resume gate. Do not turn customer proposals or agent suggestions into Sil's accepted work.
+Run one incremental cycle with a unique worker owner. Preserve pending work, verify that a previous worker stopped before taking ownership, and reconcile visible reports and external artifacts before repeating actions. Persist decisions and verified receipts, finish or defer the batch, and release ownership before the final response. Collection alone is not completed processing.
 
-If no outcome meets the reporting gate, return exactly [SILENT]. Otherwise return only the short numbered outcomes with native links. Do not add a routine status summary or repeat unchanged blockers. Observe actual final responses before marking their reports delivered.
+Apply the skill's current action, authorization, and reporting gates. Saving a Gmail draft does not authorize sending it. Return only the concise numbered verified outcomes with native links, or exactly NO_REPLY. Mark reports delivered only after observing delivery evidence.

@@ -17,7 +17,7 @@ Token roles:
 - `SLACK_USER_TOKEN_READONLY`: collector fallback after the user and bot tokens.
 - `SLACK_APP_TOKEN`: Socket Mode only, not normal Web API calls.
 
-Keep direct API credentials in the workspace files, not project repos, skills, chat logs, old OpenClaw backups, or Hermes gateway config. Reserve Hermes environment credentials for the gateway itself. Never print a full token.
+Keep direct API credentials in the workspace files, separate from OpenClaw gateway credentials and outside project repos, skills, and chat logs. Reserve gateway credentials for the gateway itself. Never print a full token.
 
 Validate every configured user or bot token with `auth.test`. The display name and URL slug can differ; use `team_id` as the stable workspace identity. Before sending, select the exact workspace file.
 
