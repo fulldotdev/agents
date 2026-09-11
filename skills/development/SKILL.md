@@ -7,6 +7,16 @@ description: Apply Sil's development, local review, and handoff conventions when
 
 Use the repository's instructions and existing framework skills for implementation details. Choose planning, tools, and implementation depth to fit the request.
 
+## Simplicity and scope
+
+- Implement the requested outcome with the smallest complete change. Prefer existing components, dependencies, and direct code over new layers, packages, helpers, or configuration.
+- Add an abstraction only when it removes real duplication or makes the current behavior clearer. Do not build for hypothetical future features.
+- Avoid speculative fallbacks, redundant checks, comments that narrate obvious code, and boilerplate that adds no behavior. Preserve validation and error handling needed for real failure cases.
+- Remove dead code and temporary scaffolding introduced by this task. Do not turn adjacent problems into a cleanup, migration, or redesign; report material out-of-scope issues separately.
+- Review for both correctness and unnecessary complexity. Stop when the requested behavior works and the relevant checks pass.
+
+Use `design` when the task involves visual or interaction decisions. Keep implementation details out of user-facing flows unless they help the user act or decide.
+
 ## Work ownership
 
 Continue in the existing checkout and branch by default. Sil prefers one branch with focused commits, not a worktree per task. Check actual Git state when resuming; thread metadata can be stale. If another implementation is using the checkout, coordinate or use an explicitly agreed isolated checkout rather than switching its branch or mixing changes.
