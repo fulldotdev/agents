@@ -45,6 +45,6 @@ For automatic triage, use `work-triage` and its [dispatch gate](../work-triage/r
 
 Use the compact T3 index or `status` to check live state and pending requests. Do not duplicate a running turn. When Sil has supplied a pending approval or answer, pass it through T3's supported response mechanism and continue the authorized work; otherwise preserve the pending request. A stopped, ready, or settled thread may be resumed directly when the requested work is authorized.
 
-For implementation handoffs, tell the executing agent to use `development`. Pass the actual checkout branch on creation; the helper's fallback is `preview`, which does not establish the repository's current branch.
+For implementation handoffs, tell the executing agent to use `development`. Inspect Git in the target checkout and pass its current branch through the required `--branch` argument. Resolve a detached HEAD before creating a thread; do not invent a branch.
 
 After dispatch, confirm the expected thread and its state. On a tracked Task, preserve its T3 locator and relevant checkout information through `work-management`; native T3 already owns model and session metadata. Triage stops after dispatch; implementation and verification belong to the executing agent.

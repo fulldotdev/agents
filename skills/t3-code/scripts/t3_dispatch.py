@@ -245,7 +245,7 @@ def build_parser() -> argparse.ArgumentParser:
     create.add_argument("--title", required=True)
     create.add_argument("--prompt")
     create.add_argument("--thread-id")
-    create.add_argument("--branch", default="preview")
+    create.add_argument("--branch", required=True, help="Actual checkout branch; inspect Git before creation")
     create.add_argument("--instance-id", default="codex")
     create.add_argument("--model", default=os.environ.get("T3_DEFAULT_MODEL", "gpt-6-astra"))
     create.add_argument(
