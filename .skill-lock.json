@@ -218,15 +218,6 @@
       "installedAt": "2026-08-19T12:06:57.870Z",
       "updatedAt": "2026-08-19T12:06:57.870Z"
     },
-    "email-best-practices": {
-      "source": "resend/resend-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/resend/resend-skills.git",
-      "skillPath": "skills/email-best-practices/SKILL.md",
-      "skillFolderHash": "81faa7841e9634778d43a5357c6798db1309aee5",
-      "installedAt": "2026-08-19T12:23:31.242Z",
-      "updatedAt": "2026-08-19T12:23:31.242Z"
-    },
     "react-email": {
       "source": "resend/resend-skills",
       "sourceType": "github",
