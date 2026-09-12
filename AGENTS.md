@@ -54,6 +54,7 @@ Never add or change this file without my explicit request.
 
 ## Coding workflow
 
+- Never create or extend automated tests unless I explicitly ask for them. Feature, bug-fix, review, and verification requests do not imply permission to add tests. Running existing tests and checks is allowed; use `development` for the full rule.
 - Prefer working in one branch, with a commit per task.
 - We usually work in preview, with the main branch being production.
 - In Shopify we work on main directly, with production being published over CLI, unless the project specifies a different workflow.

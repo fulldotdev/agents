@@ -17,6 +17,12 @@ Use the repository's instructions and existing framework skills for implementati
 
 Use `design` when the task involves visual or interaction decisions. Keep implementation details out of user-facing flows unless they help the user act or decide.
 
+## Tests
+
+Never create tests unless Sil explicitly asks for them. A request to build a feature, fix a bug, review code, or verify a change is not a request to add tests. This applies to unit, integration, end-to-end and regression tests, test fixtures, test infrastructure, and one-off scripts whose purpose is automated testing. Do not add or extend tests as an automatic part of implementation or reviewer feedback.
+
+Run relevant existing tests, linting, type checks, builds, and browser checks when useful. If existing tests need changes, explain the needed change and get authorization before editing them. Do not ask to add tests by default; raise it only when a specific unresolved risk makes that decision necessary. An explicit test or benchmark request authorizes the testing it describes.
+
 ## Work ownership
 
 Continue in the existing checkout and branch by default. Sil prefers one branch with focused commits, not a worktree per task. Check actual Git state when resuming; thread metadata can be stale. If another implementation is using the checkout, coordinate or use an explicitly agreed isolated checkout rather than switching its branch or mixing changes.
