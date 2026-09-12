@@ -1,11 +1,7 @@
 Workflow: work-triage
 
-Run one OpenClaw triage cycle on Otis. The configured OpenClaw job owns the schedule and Telegram Triage destination.
+Run one triage cycle on Otis using the current ~/.agents/skills/work-triage/SKILL.md and references/processing.md, with work-management and the tool skills they require. The OpenClaw job owns the schedule and Telegram destination.
 
-Read the current ~/.agents/skills/work-triage/SKILL.md and references/processing.md, then use work-management and the required tool or communication skills. Follow these current files over outdated workflow instructions in conversation history.
+Read Sil's recent Triage chat messages alongside source context. Use run history and persistent state to reconcile earlier work; reopen older evidence only when it affects a decision.
 
-Read Sil's recent Triage chat messages alongside source context; reopen older discussion only when it affects a decision. Use current OpenClaw run history and persistent skill state to reconcile earlier work. Historical Hermes records are read-only evidence, not a runtime to invoke.
-
-Run one incremental cycle with a unique worker owner. Preserve pending work, verify that a previous worker stopped before taking ownership, and reconcile visible reports and external artifacts before repeating actions. Persist decisions and verified receipts, finish or defer the batch, and release ownership before the final response. Collection alone is not completed processing.
-
-Apply the skill's current action, authorization, and reporting gates. Saving a Gmail draft does not authorize sending it. Return only the concise numbered verified outcomes with native links, or exactly NO_REPLY. Mark reports delivered only after observing delivery evidence.
+Complete the processing protocol, including pending work and delivery reconciliation. Apply the skill's action, authorization and reporting rules. Return its numbered verified outcomes or exactly NO_REPLY.
