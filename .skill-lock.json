@@ -6,9 +6,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/openclaw/gogcli.git",
       "skillPath": ".agents/skills/gog/SKILL.md",
-      "skillFolderHash": "c2703d34a76c2e76f5ea7762316be976191daf30",
+      "skillFolderHash": "e6deffb38da479cac331ea08bad6be0c71d34635",
       "installedAt": "2026-06-10T14:54:43.968Z",
-      "updatedAt": "2026-08-21T09:53:15.847Z"
+      "updatedAt": "2026-09-12T10:36:06.803Z"
     },
     "mcporter": {
       "source": "steipete/clawdis",
@@ -34,9 +34,9 @@
       "sourceUrl": "https://docs.stripe.com/.well-known/skills/stripe-best-practices/SKILL.md",
       "skillFolderHash": "",
       "sourceBaseUrl": "https://docs.stripe.com",
-      "wellKnownDigest": "sha256:4940a986e8935a9f943413c5ddaa193e865d9136e0cdb5498c15482dc46796b2",
+      "wellKnownDigest": "sha256:cb228ffe3c6500f6f9cd5d9e61cc51bcafe87caafe4fcc156f616576fcbf3bb5",
       "installedAt": "2026-06-11T10:07:25.359Z",
-      "updatedAt": "2026-08-19T12:07:19.329Z"
+      "updatedAt": "2026-09-12T10:36:04.055Z"
     },
     "netlify-config": {
       "source": "netlify/context-and-tools",

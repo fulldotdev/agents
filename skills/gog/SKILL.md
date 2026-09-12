@@ -29,6 +29,11 @@ For JSON output projection, `--fields` is accepted as an alias for `--select` on
 commands that do not define their own API field-mask `--fields`; commands with a
 local field-mask flag keep that command-specific meaning.
 
+`--results-only` unwraps the primary result before `--select` projects it. For
+lists, select item-relative fields: `--results-only --select id`. Dot paths do
+not broadcast through nested arrays (`--select items.id` selects nothing).
+Unmatched object fields are omitted.
+
 Pick the account explicitly for API work:
 
 ```bash
@@ -132,8 +137,8 @@ the pane width. A truncated consent URL does not fail loudly: Google renders
 client misconfiguration and sends you debugging the wrong thing. Verify the
 captured URL contains `response_type` before using it.
 
-Write the URL to a mode-0600 file and hand it to the browser by file reference
-(see `$browser-use`); never echo it. Appending `&login_hint=user@example.com`
+Write the URL to a mode-0600 file and use the available browser control tool
+under the global browser and sign-in rules; follow that tool's instructions for opening it without exposing the URL. Appending `&login_hint=user@example.com`
 skips the account chooser and removes a whole class of wrong-account risk.
 
 Expect up to two interstitials when the OAuth client is unverified or in
