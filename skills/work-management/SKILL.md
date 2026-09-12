@@ -5,70 +5,57 @@ description: "Use when reading, creating, routing, or updating Notion Tasks, Pro
 
 # Work management
 
-This skill defines how work is stored and routed. Live Notion owns the current records and schema.
+Owns Notion record selection, source context, files and status. Live Notion owns current records and schema. `work-triage` owns intake, execution and reporting; `weekly-planning` owns weekly cleanup, update drafts, Planning approvals and Monday sending.
 
-Use `weekly-planning` for Sunday cleanup, customer updates, Telegram Planning approvals and Monday sending. Its helper-managed drafts, approvals and send receipts are the only operational-log exception in Project bodies; keep them intact, with the numbered review linked from the Sprint.
+Before interpreting or writing a Task body, read [timeline.md](references/timeline.md). Before exact property writes, read [notion-schema.md](references/notion-schema.md).
 
-Load only the detail needed for the current operation:
+## Records
 
-- Before writing or interpreting a Task body, read [references/timeline.md](references/timeline.md).
-- Before exact Notion property writes, read [references/notion-schema.md](references/notion-schema.md).
-
-## Model
-
-- **Task**: executable work bucket for one stakeholder and one outcome. It normally takes hours to a few days and less than one week.
+- **Task**: one stakeholder and executable outcome, normally hours to a few days and less than one week.
 - **Project**: a confirmed outcome with several independent Tasks or more than about one week of work.
-- **Company**: an identifiable organization with reusable sales, delivery, finance, or relationship context.
-- **Contact**: Dex owns people, contact details, LinkedIn profiles, and relationship context. Notion owns company-level sales and delivery context.
-- **Sprint**: a Monday to Sunday commitment. When creating a Task, assign it to the current Sprint by default. Leave Sprint empty only when the request clearly belongs later, in the backlog, in Someday, or otherwise outside the current week.
-- **Goal**: an accepted long-term outcome. Never edit this, treat as read-only.
+- **Company**: reusable organization-level sales, delivery, finance or relationship context.
+- **Contact**: Dex owns people, contact details, LinkedIn profiles and relationships. Use `dex-skill`; resolve identity and preserve existing fields when updating. Introductions or chatter alone do not justify creating a contact.
+- **Sprint**: a Monday-to-Sunday commitment. New Tasks default to the current Sprint unless explicitly later, backlog, Someday or otherwise outside this week.
+- **Goal**: an accepted long-term outcome; read-only.
 - **Someday**: a vague or maybe-later idea that is not executable yet.
-- **Insight**: a durable internal note, finding, or piece of research that is not executable work and does not belong to a customer file.
-- **Document**: a substantial internal reference or long-form working page. Store it as a child of the regular Documents page, never as a database record.
-- **Source**: evidence such as a message, meeting, file, decision, blocker, or requirement. It becomes a Task only when Sil owns concrete work.
+- **Insight**: a durable internal finding or research note, not executable work or a customer file.
+- **Document**: substantial internal reference material, stored beneath the regular Documents page, never as a database record.
 
-## Files
+## Sources and record bodies
 
-- Store customer work products and references in the `Files` property of their owning Company or Project. Do not create records in the legacy Documents database.
-- Put reusable customer-wide material on the Company. Put project-specific material on the Project. Do not mirror a file across both by default.
-- Keep the mutable artifact at its canonical source. Use Drive or Google Docs for uploaded and editable documents, and direct URLs for Figma, Sheets, Slides, Moneybird, or other durable sources.
-- Put a short standalone finding in Insights. Put substantial internal reference material under the regular Documents page. Keep task-specific context in the Task Timeline or as a child page when it needs its own page.
+Read the relevant original source, recent outgoing replies, completion evidence, and destination properties and body before routing. Verify the stakeholder and owning records; similar names and AI summaries are not ownership evidence. Copy source IDs and locators from the source itself. A proposal, meeting suggestion, quoted request or draft does not establish Sil's acceptance.
 
-## Routing
+Task Timelines hold dated requirements, progress, feedback, decisions and verification under the append-only rules in `timeline.md`. Keep incoming requirements distinct from implementation evidence. Store enough context to prevent a wrong decision, not whole conversations. Correct earlier entries with a new source-backed event; do not replace history or write generated current-state summaries.
 
-1. Read the target record's properties, body, and relevant source before deciding or writing.
-2. Before creating a Task, search active Tasks. Reuse one when the stakeholder, outcome, and short execution window are the same.
-3. Keep related preparation, calls, feedback, blockers, approvals, follow-up, and files on that Task. Split work when its stakeholder changes or a part can be completed independently.
-4. Treat Tasks completed before today as closure records. New work normally gets a related Task. Do not keep dormant Tasks for hypothetical requests.
-5. Create a Task only when Sil owns agreed work that must be tracked outside its source: a deliverable, multi-step action, deadline or dependency, or follow-up that outlives the conversation. Replies, acknowledgements, scheduling, forwarding, quick reviews, questions, ideas, and unconfirmed requests stay in their source unless they create that work.
-6. Keep source links through relations and compact, reopenable Timeline locators.
+Project bodies hold agreed outcomes, scope, project-wide agreements and leading document links. Change this frame only when a dated source changes the agreement. Company bodies hold reusable organization context and customer-wide agreements, not project progress or Dex contact details. Properties own status, ownership and planning.
 
-An accepted customer ticket already tracked in monday stays there. Create a Notion Task only for a distinct Sil-owned commitment or an overarching delivery outcome, not a copy of each ticket. A customer sprint may have one overarching Task linked to the Company and Sil's Sprint. Record relevant ticket updates as separate Timeline events with direct facts and their pulse URLs or IDs. A proposal, meeting suggestion, draft, or quoted request does not establish Sil's acceptance. Check recent outgoing replies and completion evidence before creating or reopening work.
+Preserve weekly-planning's helper-managed drafts, approvals and send receipts in Project bodies, with the numbered review linked from the Sprint. They are the only operational-log exception.
 
-When tracking a quote or invoice, use `moneybird` for its current state and direct URL, and record relevant facts in the Task Timeline. A sent estimate needing follow-up belongs to the Project's sales work. On verified acceptance, finish the sales Task and create or link the agreed delivery work under the normal routing rules; keep the original Task if it already represents delivery.
+## Routing and files
 
-Project bodies hold the agreed outcome, scope, project-wide agreements and links to leading documents. Change that frame only when a dated source changes the agreement. Keep progress, feedback and execution evidence in the owning Task Timeline, not in Project summaries, timelines or copied Task bodies. Company bodies hold reusable organization context and customer-wide agreements, not project progress or Dex contact details. Properties own status, ownership and planning. Do not infer a new Task merely because a Project has none. Paused or Discovery projects may legitimately have no executable work. For Waiting work, identify the dependency and its owner; use Due only for an agreed follow-up or deadline, not an invented reminder.
+1. Search active Tasks before creating one. Reuse the same stakeholder, outcome and short execution window; keep its preparation, calls, feedback, blockers and follow-up together. Split independently completable work or work for a different stakeholder.
+2. Create a Task only for Sil's agreed work that needs tracking beyond its source: a deliverable, multi-step action, deadline, dependency or lasting follow-up. Quick replies, scheduling, questions, reviews, ideas and unconfirmed requests stay at their source unless they establish that work.
+3. Tasks completed before today are closure records. New work normally gets a related Task; reopen only when Sil or a newer source reopens the same deliverable. Do not retain dormant Tasks for hypothetical requests or infer work merely because a Paused or Discovery Project has no Tasks.
+4. Route missing source context even when no new Task is needed. Keep source relations and reopenable Timeline locators, and verify destination writes before considering routing complete.
 
-## Area
+Accepted monday tickets remain in monday. Create a Notion Task only for a distinct Sil-owned commitment or overarching delivery outcome, possibly one customer-sprint Task linked to the Company and Sil's Sprint. Record relevant tickets as separate Timeline events with original pulse URLs or IDs.
 
-Choose the single Area that owns the Task's primary outcome:
+Use `moneybird` for quote/invoice state and direct URLs. A sent estimate needing follow-up belongs to the Project's sales work. On verified acceptance, finish the sales Task and create or link delivery work; retain the Task if it already represents delivery.
 
-- **Delivery**: customer implementation, support, coordination, etc.
-- **Sales**: qualify a lead, define scope, prepare an offer, etc.
-- **Growth**: marketing, positioning, partnerships, internal products, reusable assets, open source, demand generation, etc.
-- **Admin**: finance, legal, tooling, internal coordination, or the work system itself.
-- **Personal**: non-business work.
+Store customer artifacts in the owning Company or Project's `Files`: reusable customer-wide material on the Company, project-specific material on the Project. Do not mirror files or use the legacy Documents database. Keep editable artifacts at their canonical source: Drive/Docs for uploaded documents, direct durable URLs for Figma, Sheets, Slides, Moneybird and similar sources. Short internal findings belong in Insights; substantial internal references beneath Documents; task-specific context in the Timeline or a child page when needed.
 
-## Status
+## Planning and status
 
-- **Todo**: accepted and executable, but not started.
-- **Doing**: execution has started and remains unfinished.
-- **Waiting**: a concrete dependency prevents execution.
-- **Done**: the outcome is completed and verified.
-- **Canceled**: duplicate, superseded, moved to Someday, no longer executable, or explicitly dropped.
+Choose the Task's single primary Area: **Delivery** for customer work and coordination; **Sales** for qualification, scope and offers; **Growth** for marketing, partnerships, internal products and reusable assets; **Admin** for finance, legal, tooling and internal coordination; **Personal** for non-business work.
 
-The Status property is authoritative. Record its evidence in the Timeline, but do not keep a second status in the body. A Task remains Doing between work sessions unless a concrete dependency makes it Waiting. When that dependency clears, use Todo if work had not started and Doing if it had. A partially blocked work package remains Doing when accepted work can continue independently; preserve the specific dependency rather than hiding all remaining work behind Waiting.
+Task Status is authoritative:
 
-Record the supporting source and apply evidenced status changes within the authorized workflow, without asking again. Done is terminal unless Sil or a newer source reopens the same deliverable. When canceling a Task, clear obsolete Sprint and Due values in the final write and verify them. Use Due only for real deadlines or follow-up dates.
+- **Todo**: accepted, executable, not started.
+- **Doing**: started and unfinished. Keep Doing between work sessions, including when some work is blocked but accepted work can continue independently.
+- **Waiting**: a concrete dependency prevents execution. Record its owner. When cleared, use Todo if not started, otherwise Doing.
+- **Done**: completed and verified; terminal except for reopening the same deliverable above.
+- **Canceled**: duplicate, superseded, moved to Someday, no longer executable or explicitly dropped. Clear obsolete Sprint and Due values and verify the final write.
 
-Project statuses are `Discovery`, `Planned`, `In Progress`, `Paused`, `Completed`, and `Canceled`. Move Discovery to Planned when a concrete delivery commitment or approval exists.
+Apply source-backed status changes within the authorized workflow without asking again. Keep evidence in the Timeline, not a second status in the body. Use Due only for agreed deadlines or follow-up dates, never an invented reminder.
+
+Project statuses are `Discovery`, `Planned`, `In Progress`, `Paused`, `Completed` and `Canceled`. Move Discovery to Planned when concrete delivery commitment or approval exists.

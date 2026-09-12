@@ -1,0 +1,70 @@
+{
+  "01": [
+    "No new Task, draft or send",
+    "Acknowledge no_action and no visible report"
+  ],
+  "02": [
+    "Reuse task; store PDF in Project Files and source in Timeline; no project progress summary",
+    "Update only verified contact phone via Dex, preserving other fields",
+    "Verify routing before ack; context changes remain quiet"
+  ],
+  "03": [
+    "No duplicate Notion ticket tasks; separate source Timeline entries",
+    "Remain Doing; record specific dependency, no invented Due"
+  ],
+  "04": [
+    "Route only to T04b from original evidence",
+    "Do not dispatch into either running thread; do not trust AI summary"
+  ],
+  "05": [
+    "Create distinct delivery Task, leave completed old task closed",
+    "Assign current Sprint, no invented Due; link P05"
+  ],
+  "06": [
+    "Cancel not delete; preserve Timeline source",
+    "Clear Sprint and Due; verify; report cancellation"
+  ],
+  "07": [
+    "No invented accepted work, rate, deadline or Task",
+    "Draft grounded reply only, preserve lack of agreement, never send"
+  ],
+  "08": [
+    "Preserve G08 exactly, no duplicate or material-update claim",
+    "No repeat report; acknowledge after checks"
+  ],
+  "09": [
+    "Retry unresolved e09a, no no_action assumption or premature failure escalation",
+    "Acknowledge independent e09b; incomplete work retained"
+  ],
+  "10": [
+    "Append source before dispatch; resume existing R10 despite snooze",
+    "Bound to preview; no new thread, production, or customer send"
+  ],
+  "11": [
+    "No automatic reopen, Task creation or settled-thread resume",
+    "Preserve proposal context without treating it as agreed scope or executable work"
+  ],
+  "12": [
+    "Route approval to weekly-planning helper; no send B under A approval",
+    "No duplicate Gmail draft/Task or triage approval ledger; preserve helper sections"
+  ],
+  "13": [
+    "Reconcile existing Task and resolve intent instead of duplicate create",
+    "Do not advance incomplete Slack checkpoint; retain old pending event",
+    "Pending report starts at 9; do not mark reported before actual delivery"
+  ],
+  "14": [
+    "Complete sales Task; create delivery Task current Sprint no invented Due",
+    "Project Discovery to Planned; preserve scope, amounts and weekly helper section",
+    "Execution sources remain in Task Timeline not Project progress or regenerated next steps"
+  ],
+  "15": [
+    "Append correction referring to B15; preserve original",
+    "Update Due to Tuesday; preserve Doing; do not edit Summary or project scope"
+  ],
+  "16": [
+    "Report verified Calendar old/new date/time and URL",
+    "Report actionable Slack reconnection failure once; no repeat watchdog alert",
+    "Start list at 4; no new live action implied"
+  ]
+}
