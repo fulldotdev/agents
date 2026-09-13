@@ -37,7 +37,9 @@ Evaluate its findings and fix relevant issues within scope. Recheck affected beh
 
 ## Reviewable delivery
 
-For Shopify, use `shopify theme dev` by default; create a separate theme-library draft only when needed for a lasting review, unless the repository specifies otherwise.
+Creating, updating, deleting or publishing a Shopify theme requires Sil's explicit authorization for that Shopify action and target, including development and unpublished themes. Permission for local/GitHub work or preview review does not grant permission to change Shopify themes. Check connected-theme effects before pushing or merging GitHub branches; `shopify theme dev` also uploads to Shopify.
+
+Use existing Shopify previews read-only unless theme writes are authorized. For an authorized preview deployment, prefer `shopify theme dev`; create a theme-library draft only when its creation is authorized.
 
 Our CMSes are CloudCannon, Sanity, and Shopify. Use their existing skills for implementation details. For CMS changes, verify the affected editing experience as well as the rendered page: CloudCannon's configured editor, Sanity Studio, or Shopify's theme editor and relevant custom-data fields. Use the project's authorized development environment; test only the editing surfaces the change affects.
 
