@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """Notion-owned weekly drafts, authentic Planning approvals and send claims."""
-from contextlib import closing
 import argparse
 import fcntl
 import hashlib
 import json
 import os
 import re
-import sqlite3
 import subprocess
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -19,9 +17,7 @@ from planning_history import openclaw_messages, OPENCLAW_ID_BASE
 CHAT = "-5475360719"
 SIL = "8491875812"
 TZ = ZoneInfo("Europe/Amsterdam")
-DB = Path.home() / ".hermes/state.db"
 OPENCLAW_DB = Path.home() / ".openclaw/state/openclaw.sqlite"
-RUNTIME = os.environ.get("WEEKLY_PLANNING_RUNTIME", "openclaw")
 SPRINTS = "3555979e-268c-807b-bdb4-000b86b48f90"
 TERMINAL = {"Verzonden", "Bezig met verzenden", "Verzending controleren"}
 
@@ -155,20 +151,15 @@ def publish(batch_id, notes):
     batch["pending_report"] = {"at": pending_at, "snapshot": snapshot, "header": header}
     store.save(batch_id, batch)
     # This helper owns the review send; the OpenClaw cron ends with NO_REPLY.
-    send_env = {key: value for key, value in os.environ.items() if key not in {
-        "HERMES_CRON_AUTO_DELIVER_PLATFORM", "HERMES_CRON_AUTO_DELIVER_CHAT_ID", "HERMES_CRON_AUTO_DELIVER_THREAD_ID"}}
-    command = (["hermes", "send", "--to", "telegram:" + CHAT, "--json"] if RUNTIME == "hermes" else
-               ["openclaw", "message", "send", "--channel", "telegram", "--target", CHAT, "--message", message, "--json"])
-    result = subprocess.run(command, input=message if RUNTIME == "hermes" else None,
-                            text=True, capture_output=True, timeout=90, env=send_env)
+    command = ["openclaw", "message", "send", "--channel", "telegram", "--target", CHAT, "--message", message, "--json"]
+    result = subprocess.run(command, text=True, capture_output=True, timeout=90)
     if result.returncode:
         raise RuntimeError("Planning delivery uncertain; inspect chat before publishing again")
     receipt = json.loads(result.stdout)
-    if RUNTIME == "openclaw":
-        payload = receipt.get("payload", {})
-        if receipt.get("action") != "send" or receipt.get("channel") != "telegram" or payload.get("ok") is not True:
-            raise RuntimeError("Planning delivery failed or has no confirmed receipt")
-        receipt = {"success": True, "message_id": payload.get("messageId"), "chat_id": str(payload.get("chatId")), "runtime": "openclaw"}
+    payload = receipt.get("payload", {})
+    if receipt.get("action") != "send" or receipt.get("channel") != "telegram" or payload.get("ok") is not True:
+        raise RuntimeError("Planning delivery failed or has no confirmed receipt")
+    receipt = {"success": True, "message_id": payload.get("messageId"), "chat_id": str(payload.get("chatId")), "runtime": "openclaw"}
     if receipt.get("error") or receipt.get("success") is not True or not receipt.get("message_id") or str(receipt.get("chat_id")) != CHAT:
         raise RuntimeError("Planning delivery failed")
     at = stamp()
@@ -181,23 +172,9 @@ def publish(batch_id, notes):
 
 
 def messages(after, last=0):
-    # Keep historical approval evidence readable after the gateway migration.
-    cursors = last if isinstance(last, dict) else {"hermes": last if last < OPENCLAW_ID_BASE else 0, "openclaw": last if last >= OPENCLAW_ID_BASE else 0}
-    rows = []
-    if DB.exists():
-        with closing(sqlite3.connect(f"file:{DB}?mode=ro", uri=True)) as connection:
-            connection.row_factory = sqlite3.Row
-            rows = connection.execute("""
-            SELECT m.id, m.session_id, m.content, m.timestamp, s.chat_id, s.user_id
-            FROM messages m JOIN sessions s ON s.id=m.session_id
-            WHERE s.source='telegram' AND CAST(s.chat_id AS TEXT)=?
-              AND CAST(s.user_id AS TEXT)=? AND m.role='user'
-              AND m.timestamp>=? AND m.id>? ORDER BY m.id
-            """, (CHAT, SIL, after, cursors.get("hermes", 0))).fetchall()
-    result = [dict(row) for row in rows]
-    if RUNTIME == "openclaw" or OPENCLAW_DB.exists():
-        result.extend(openclaw_messages(OPENCLAW_DB, CHAT, SIL, after, cursors.get("openclaw", 0)))
-    return sorted(result, key=lambda row: (row["timestamp"], row["id"]))
+    cursor = last.get("openclaw", 0) if isinstance(last, dict) else last if last >= OPENCLAW_ID_BASE else 0
+    return sorted(openclaw_messages(OPENCLAW_DB, CHAT, SIL, after, cursor),
+                  key=lambda row: (row["timestamp"], row["id"]))
 
 
 def parse(text, numbers):
@@ -250,16 +227,14 @@ def reconcile(batch_id):
                 store.save(item["section"], value)
                 changes.append({"number": item["number"], "status": "Review nodig", "reason": "Approval evidence changed or unavailable"})
     legacy = batch.get("last_message", 0)
-    cursors = batch.setdefault("message_cursors", {"hermes": legacy if legacy < OPENCLAW_ID_BASE else 0,
-                                                  "openclaw": 0})
+    cursors = batch.setdefault("message_cursors", {"openclaw": legacy if legacy >= OPENCLAW_ID_BASE else 0})
     for row in messages(first, cursors):
         report, choices = review_decisions(row, batch)
         if report is None:
             continue
-        evidence = {"hermes_message": row["id"], "session": row["session_id"], "chat": CHAT, "user": SIL,
+        evidence = {"ingress_id": row["id"], "session": row["session_id"], "chat": CHAT, "user": SIL,
                     "at": datetime.fromtimestamp(row["timestamp"], timezone.utc).isoformat(), "text": row["content"]}
-        if row.get("source") == "openclaw":
-            evidence.update(source="openclaw", message_id=row["message_id"], event_id=row["event_id"])
+        evidence.update(source="openclaw", message_id=row["message_id"], event_id=row["event_id"])
         for item in batch["items"]:
             if str(item["number"]) not in report["snapshot"]:
                 continue
@@ -277,7 +252,7 @@ def reconcile(batch_id):
             value["last_feedback"] = evidence
             store.save(item["section"], value)
             changes.append({"number": item["number"], "status": decision, "message": row["id"]})
-        cursors[row.get("source", "hermes")] = row["id"]
+        cursors["openclaw"] = row["id"]
         batch["last_message"] = row["id"]
         store.save(batch_id, batch)
     return {"batch": batch_id, "changed": changes, "items": [{**item, "update": store.load(item["section"])} for item in batch["items"]]}
@@ -313,7 +288,10 @@ def check_approval(value, batch):
     if value["status"] != "Goedgekeurd" or not approval or digest(value) != approval["digest"] or value["digest"] != digest(value):
         raise ValueError("Exact current draft has no valid approval")
     records = messages(datetime.fromisoformat(approval["at"]).timestamp() - 1, 0)
-    row = next((r for r in records if r["id"] == approval["hermes_message"]), None)
+    if approval.get("source") != "openclaw":
+        raise ValueError("Approval requires current OpenClaw evidence")
+    row = next((r for r in records if r["event_id"] == approval.get("event_id")
+                and r["message_id"] == approval.get("message_id")), None)
     if not row or row["content"] != approval["text"] or row["session_id"] != approval["session"]:
         raise ValueError("Original Sil approval cannot be verified")
     item = next(i for i in batch["items"] if i["project"] == value["project"])

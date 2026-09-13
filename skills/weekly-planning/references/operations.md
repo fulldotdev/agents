@@ -45,7 +45,7 @@ Fresh check input:
 {"checked_at": "current ISO timestamp with timezone", "digest": "current draft digest", "unchanged": true, "sources": ["Notion Project link", "Notion Task or Sprint link"]}
 ```
 
-Do the actual check first. A claim requires a source check less than ten minutes old, exact approval verified against the original incoming Telegram update (or retained Hermes row) and published review, and Monday 07:00–12:00 Amsterdam. Claim output is the sole send payload. The helper does not call customer send APIs; the agent follows the channel skill using this exact payload. Never invoke a channel sender when claim fails.
+Do the actual check first. A claim requires a source check less than ten minutes old, exact approval verified against the original incoming Telegram update and published review, and Monday 07:00–12:00 Amsterdam. Claim output is the sole send payload. The helper does not call customer send APIs; the agent follows the channel skill using this exact payload. Never invoke a channel sender when claim fails.
 
 Receipt input:
 
@@ -59,4 +59,4 @@ Receipt input:
 
 Publication and Notion are two separate external systems. An uncertain review publication or customer send is deliberately held for inspection, not represented as exactly-once delivery. Never use a new local state database to hide this limitation.
 
-OpenClaw is the default runtime. `WEEKLY_PLANNING_RUNTIME=hermes` is for rollback only. Current approvals are verified against original Telegram updates in OpenClaw's durable ingress, not model-written transcripts. Missing or pruned evidence blocks claims. Older approvals retain their Hermes locator and read-only history. Separate source cursors support rollback. The legacy `hermes_message` integer field remains an evidence locator; OpenClaw approvals also record source, native message ID and ingress event ID.
+OpenClaw is the only runtime. Approvals are verified against original Telegram updates in its durable ingress, not model-written transcripts. Missing or pruned evidence blocks claims. Approvals record the source, native message ID and ingress event ID; an approval without verifiable OpenClaw evidence requires fresh approval.

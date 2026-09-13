@@ -3,7 +3,7 @@ from contextlib import closing
 import json
 import sqlite3
 
-# Existing Notion batches use integer cursors. Keep imported Hermes IDs disjoint.
+# Preserve the existing OpenClaw cursor namespace in Notion batches.
 OPENCLAW_ID_BASE = 1_000_000_000_000
 
 

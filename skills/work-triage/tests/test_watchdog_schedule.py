@@ -24,22 +24,23 @@ class ScheduleTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         root = Path(self.temp.name)
-        self.jobs = root / 'jobs.json'
         self.state = root / 'cursors.json'
-        self.ticker = root / 'ticker'
-        self.job = {'id': watchdog.JOB_ID, 'name': 'work-triage', 'enabled': True,
-                    'schedule': {'kind': 'cron', 'expr': '0 7,17 * * *'},
-                    'next_run_at': '2026-09-12T07:00:00+02:00'}
-        self.jobs.write_text(json.dumps({'jobs': [self.job]}))
+        (root / 'state').mkdir()
+        (root / 'openclaw.json').write_text('{"cron":{"enabled":true}}')
+        self.job = {'id': 'native-id', 'name': 'work-triage', 'enabled': True,
+                    'schedule': {'kind': 'cron', 'expr': '0 7,17 * * *'}}
+        with sqlite3.connect(root / 'state/openclaw.sqlite') as c:
+            c.execute('CREATE TABLE cron_jobs(name TEXT,job_json TEXT,state_json TEXT)')
+            c.execute('INSERT INTO cron_jobs VALUES (?,?,?)', ('work-triage', json.dumps(self.job),
+                      json.dumps({'nextRunAtMs': int(ts('2026-09-12T07:00:00') * 1000)})))
         self.state.write_text(json.dumps({'last_finished_at': '2026-09-11T17:20:00+02:00'}))
-        for key, value in [('RUNTIME', 'hermes'), ('JOBS_FILE', self.jobs), ('TRIAGE_FILE', self.state), ('TICKER_FILE', self.ticker)]:
+        for key, value in [('OPENCLAW_DIR', root), ('TRIAGE_FILE', self.state)]:
             patcher = patch.object(watchdog, key, value)
             patcher.start()
             self.addCleanup(patcher.stop)
 
     def test_overnight_is_not_overdue(self):
         now = ts('2026-09-12T06:30:00')
-        self.ticker.write_text(str(now))
         self.assertTrue(watchdog.cron_health(now)['ok'])
         self.assertTrue(watchdog.processing_health(now)['ok'])
 
@@ -63,7 +64,6 @@ class ScheduleTests(unittest.TestCase):
 
     def test_past_due_scheduler_fails(self):
         now = ts('2026-09-12T07:06:00')
-        self.ticker.write_text(str(now))
         self.assertFalse(watchdog.cron_health(now)['ok'])
 
     def test_openclaw_state_and_duplicate_detection(self):
@@ -76,7 +76,7 @@ class ScheduleTests(unittest.TestCase):
         with sqlite3.connect(database) as c:
             c.execute('CREATE TABLE cron_jobs(name TEXT,job_json TEXT,state_json TEXT)')
             c.execute('INSERT INTO cron_jobs VALUES (?,?,?)',('work-triage',json.dumps(job),json.dumps(state)))
-        with patch.object(watchdog,'RUNTIME','openclaw'), patch.object(watchdog,'OPENCLAW_DIR',root):
+        with patch.object(watchdog,'OPENCLAW_DIR',root):
             self.assertTrue(watchdog.cron_health(ts('2026-09-12T06:30:00'))['ok'])
             self.assertFalse(watchdog.cron_health(ts('2026-09-12T07:06:00'))['ok'])
             self.assertEqual(watchdog.processing_due(ts('2026-09-12T08:00:00')),ts('2026-09-12T07:00:00'))

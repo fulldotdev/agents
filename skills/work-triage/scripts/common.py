@@ -15,7 +15,6 @@ TEMP_ROOT = Path(
     or os.environ.get("WORK_MANAGEMENT_TEMP_DIR")
     or Path.home() / ".cache" / "fulldev" / "work-triage"
 ).expanduser()
-LEGACY_TEMP_ROOT = Path.home() / ".hermes" / "tmp" / "work-management"
 
 
 # Imports and --help must not mutate or garbage-collect runtime state. Attachment

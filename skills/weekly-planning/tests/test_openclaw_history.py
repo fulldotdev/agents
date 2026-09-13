@@ -11,42 +11,10 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).parents[1] / 'scripts'))
 import outbox
 import store
-from planning_history import openclaw_messages, OPENCLAW_ID_BASE
 from test_outbox import WeeklyRehearsal
 
 
 class OpenClawRehearsal(WeeklyRehearsal):
-    def setUp(self):
-        super().setUp()
-        self.ingress = Path(self.temp.name) / 'openclaw.sqlite'
-        with sqlite3.connect(self.ingress) as c:
-            c.execute('CREATE TABLE channel_ingress_events(queue_name TEXT,event_id TEXT,payload_json TEXT,channel_id TEXT,account_id TEXT,received_at INTEGER)')
-        for key, value in [('OPENCLAW_DB', self.ingress), ('RUNTIME', 'openclaw')]:
-            p = patch.object(outbox, key, value); p.start(); self.addCleanup(p.stop)
-        self.update_id = 200
-
-    def send(self, args, **kwargs):
-        from types import SimpleNamespace
-        self.assertEqual(args[:8], ['openclaw', 'message', 'send', '--channel', 'telegram', '--target', outbox.CHAT, '--message'])
-        self.publications.append(args[8])
-        return SimpleNamespace(returncode=0, stdout=json.dumps({'action':'send','channel':'telegram',
-            'payload':{'ok':True,'messageId':str(len(self.publications)),'chatId':outbox.CHAT}}))
-
-    def reply(self, text, session='sil', **extra):
-        self.clock += timedelta(seconds=1); self.update_id += 1
-        message = {'message_id':self.update_id,'text':text,'date':int(self.clock.timestamp()),
-                   'chat':{'id':int(outbox.CHAT) if session!='wrong-chat' else -1},
-                   'from':{'id':int(outbox.SIL) if session!='other' else 123,'is_bot':False}, **extra}
-        self.ingest(message)
-        return message['message_id']
-
-    def ingest(self, message, edited=False):
-        payload = {'version':1,'updateId':self.update_id,'receivedAt':int(self.clock.timestamp()*1000),
-                   'update':{'update_id':self.update_id,'edited_message' if edited else 'message':message}}
-        with sqlite3.connect(self.ingress) as c:
-            c.execute('INSERT INTO channel_ingress_events VALUES (?,?,?,?,?,?)',
-                      ('telegram:default',str(self.update_id).zfill(16),json.dumps(payload),'telegram','default',int(self.clock.timestamp()*1000)))
-
     def edit_reply(self, message_id, text):
         self.clock += timedelta(seconds=1)
         self.update_id += 1
@@ -110,20 +78,7 @@ class OpenClawRehearsal(WeeklyRehearsal):
             outbox.claim(self.batch, 1, self.check(one['section']))
         self.assertIsNone(store.load(one['section'])['approval'])
 
-    def test_rollback_processes_hermes_withdrawal_and_fresh_approval(self):
-        one = self.draft()
-        outbox.publish(self.batch, '')
-        self.reply('1 ok')
-        outbox.reconcile(self.batch)
-        with patch.object(outbox, 'RUNTIME', 'hermes'):
-            WeeklyRehearsal.reply(self, '1 intrekken')
-            outbox.reconcile(self.batch)
-            self.assertEqual(store.load(one['section'])['status'], 'Overslaan')
-            WeeklyRehearsal.reply(self, '1 ok')
-            self.monday()
-            self.assertEqual(outbox.claim(self.batch, 1, self.check(one['section']))['send_exactly']['text'], one['text'])
-
-    def test_rollback_migrates_legacy_native_cursor(self):
+    def test_migrates_legacy_native_cursor(self):
         one = self.draft()
         outbox.publish(self.batch, '')
         self.reply('1 ok')
@@ -131,17 +86,16 @@ class OpenClawRehearsal(WeeklyRehearsal):
         batch = store.load(self.batch)
         batch.pop('message_cursors')
         store.save(self.batch, batch)
-        with patch.object(outbox, 'RUNTIME', 'hermes'):
-            WeeklyRehearsal.reply(self, '1 intrekken')
-            self.monday()
-            with self.assertRaises(ValueError):
-                outbox.claim(self.batch, 1, self.check(one['section']))
-            self.assertEqual(store.load(one['section'])['status'], 'Overslaan')
+        self.reply( '1 intrekken')
+        self.monday()
+        with self.assertRaises(ValueError):
+            outbox.claim(self.batch, 1, self.check(one['section']))
+        self.assertEqual(store.load(one['section'])['status'], 'Overslaan')
 
-    def test_legacy_native_cursor_does_not_replay_old_hermes_approval(self):
+    def test_legacy_native_cursor_does_not_replay_old_approval(self):
         one = self.draft()
         outbox.publish(self.batch, '')
-        WeeklyRehearsal.reply(self, '1 ok')
+        self.reply( '1 ok')
         outbox.reconcile(self.batch)
         self.reply('1 intrekken')
         outbox.reconcile(self.batch)
@@ -188,12 +142,6 @@ class OpenClawRehearsal(WeeklyRehearsal):
         one=self.draft();outbox.publish(self.batch,'');self.reply('alles akkoord');outbox.reconcile(self.batch)
         self.monday();self.ingress.unlink()
         with self.assertRaises(sqlite3.OperationalError):outbox.claim(self.batch,1,self.check(one['section']))
-
-    def test_migration_reads_historical_hermes_approval(self):
-        one=self.draft();outbox.publish(self.batch,'')
-        WeeklyRehearsal.reply(self,'alles akkoord')
-        self.monday()
-        self.assertEqual(outbox.claim(self.batch,1,self.check(one['section']))['send_exactly']['text'],one['text'])
 
     def test_cron_review_is_sent_and_can_be_approved(self):
         self.draft();self.assertTrue(outbox.publish(self.batch,'')['published']);self.reply('alles akkoord')

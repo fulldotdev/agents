@@ -26,7 +26,6 @@ When a reopenable URL is unavailable, put the smallest stable locator in the hea
 
 - `Telegram · chat <id> · topic <id> · message <id>`
 - `Telegram · OpenClaw host <host> · chat <id> · message <id> · ingress event <id>`
-- For historical sources only: `Telegram · Hermes host <host> · profile <profile> · session <session-id> · message <id>`
 - `Codex · host <reachable-host> · thread <uuid> · repo <owner/name> · checkout <branch-or-worktree>`
 - `T3 Code · environment <name> · project <id> · thread <id>`
 - `<channel> · <smallest stable locator its resolver can reopen>`
