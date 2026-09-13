@@ -46,7 +46,7 @@ Choose the action:
 - Nothing open or missing after those checks: acknowledge without an external write.
 - Durable work context: use `work-management` and `ntn` for Notion, and `dex-skill` for contact changes.
 - Human email with a real open question: inspect the latest sent reply and existing drafts, then create or materially update one Gmail draft using `customer-communication` and `gog`. Preserve Sil's edits and do not save unresolved factual placeholders as ready replies. Saving a draft is authorized by triage; sending is not.
-- Execution: apply Sil's existing authorization. Otherwise only resume qualifying feedback under `t3-routing.md`. An implementation request covers starting that work; a customer proposal alone does not.
+- Execution: start or resume a T3 session within Sil's existing authorization. Otherwise only resume qualifying feedback under `t3-routing.md`. An implementation request covers starting that work; a customer proposal alone does not. Hand off the requested outcome and context, without development-specific instructions; the executing thread follows its own applicable skills and repository instructions.
 
 Acknowledge only after completing the event's checks and actions, then finish the batch and reconcile the durable report queue under `processing.md`.
 
