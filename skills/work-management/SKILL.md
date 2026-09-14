@@ -12,7 +12,7 @@ Before interpreting or writing a Task body, read [timeline.md](references/timeli
 ## Records
 
 - **Task**: one stakeholder and executable outcome, normally hours to a few days and less than one week.
-- **Project**: a confirmed outcome with several independent Tasks or more than about one week of work.
+- **Project**: a reusable home for a maintained site or app, or a confirmed finite outcome with several independent Tasks or more than about one week of work.
 - **Company**: reusable organization-level sales, delivery, finance or relationship context.
 - **Contact**: Dex owns people, contact details, LinkedIn profiles and relationships. Use `dex-skill`; resolve identity and preserve existing fields when updating. Introductions or chatter alone do not justify creating a contact.
 - **Sprint**: a Monday-to-Sunday commitment. New Tasks default to the current Sprint unless explicitly later, backlog, Someday or otherwise outside this week.
@@ -20,6 +20,8 @@ Before interpreting or writing a Task body, read [timeline.md](references/timeli
 - **Someday**: a vague or maybe-later idea that is not executable yet.
 - **Insight**: a durable internal finding or research note, not executable work or a customer file.
 - **Document**: substantial internal reference material, stored beneath the regular Documents page, never as a database record.
+
+Reuse a Project for routine maintenance, content, feedback and small features on the same site or app. Create a separate Project when a substantial delivery has its own scope and acceptance and benefits from being planned or completed independently. Sharing a repository does not decide this; a new week, quote or invoice alone is not a reason to split. Reusing a Project does not reopen completed Tasks or reactivate old scope.
 
 ## Sources and record bodies
 
@@ -59,3 +61,5 @@ Task Status is authoritative:
 Apply source-backed status changes within the authorized workflow without asking again. Keep evidence in the Timeline, not a second status in the body. Use Due only for agreed deadlines or follow-up dates, never an invented reminder.
 
 Project statuses are `Discovery`, `Planned`, `In Progress`, `Paused`, `Completed` and `Canceled`. Move Discovery to Planned when concrete delivery commitment or approval exists.
+
+Once available in the live schema, use `Maintenance` when the main delivery is finished but ongoing support or improvements continue. Small active Tasks can remain under Maintenance; a substantial new delivery can return the Project to In Progress. Use Completed for a finished finite initiative with no ongoing work managed there. Retainer describes a commercial agreement, not a status. Project start/end dates are optional; do not invent dates for ongoing work.
