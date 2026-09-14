@@ -5,7 +5,7 @@ description: "Use when reading, creating, routing, or updating Notion Tasks, Pro
 
 # Work management
 
-Owns Notion record selection, source context, files and status. Live Notion owns current records and schema. `work-triage` owns intake, execution and reporting; `weekly-planning` owns weekly cleanup, update drafts, Planning approvals and Monday sending.
+Owns Notion record selection, source context, files and status. Live Notion owns current records and schema. `work-triage` owns intake, execution and reporting; `weekly-planning` owns weekly Notion maintenance and its cleanup report. Sil handles customer updates.
 
 Before interpreting or writing a Task body, read [timeline.md](references/timeline.md). Before exact property writes, read [notion-schema.md](references/notion-schema.md).
 
@@ -29,7 +29,7 @@ Task Timelines hold dated requirements, progress, feedback, decisions and verifi
 
 Project bodies hold agreed outcomes, scope, project-wide agreements and leading document links. Change this frame only when a dated source changes the agreement. Company bodies hold reusable organization context and customer-wide agreements, not project progress or Dex contact details. Properties own status, ownership and planning.
 
-Preserve weekly-planning's helper-managed drafts, approvals and send receipts in Project bodies, with the numbered review linked from the Sprint. They are the only operational-log exception.
+Preserve historical customer-message send receipts and uncertain-send evidence in Project bodies. Weekly planning no longer creates drafts, approvals or outboxes; remove obsolete unsent update sections only during an explicitly requested cleanup.
 
 ## Routing and files
 

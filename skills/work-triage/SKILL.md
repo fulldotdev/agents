@@ -7,7 +7,7 @@ description: "Use for recurring intake across Gmail, Slack, WhatsApp, Calendar, 
 
 Owns source collection, processing, execution and reporting. Always use `work-management` for record selection, source ownership, Task creation, files and status.
 
-Route weekly cleanup, customer updates and Telegram Planning approvals to `weekly-planning`. Do not create duplicate intake Tasks or reply drafts, or store its approval/send state in triage's queue or cursors.
+Route weekly Notion maintenance to `weekly-planning`. Sil handles weekly customer updates; do not generate scheduled customer updates or process legacy Telegram Planning approvals. Ordinary incoming customer replies remain in triage.
 
 Read [media.md](references/media.md) for relevant attachments, [meeting-analysis.md](references/meeting-analysis.md) for a new `transcript_ready` revision, and [t3-routing.md](references/t3-routing.md) when an item may qualify for dispatch.
 
