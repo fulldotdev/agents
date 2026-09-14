@@ -253,6 +253,15 @@
       "skillFolderHash": "ca04b2a0570f35b17d60b2b21d0fc5fb52084292",
       "installedAt": "2026-08-26T08:00:52.346Z",
       "updatedAt": "2026-08-26T08:00:52.346Z"
+    },
+    "workos": {
+      "source": "workos/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/workos/skills.git",
+      "skillPath": "plugins/workos/skills/workos/SKILL.md",
+      "skillFolderHash": "e5dc8176298aece774d5436fd4212206b1af9184",
+      "installedAt": "2026-06-11T10:28:13.399Z",
+      "updatedAt": "2026-08-19T12:07:16.237Z"
     }
   },
   "dismissed": {
