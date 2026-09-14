@@ -171,12 +171,9 @@ def record_code(row):
     return f"{prefix}-{number}" if prefix else str(number)
 
 
-def date_start(row, name):
-    return (prop(row, name).get("date") or {}).get("start")
-
-
-def url_value(row, name):
-    return prop(row, name).get("url")
+def resource_url(row, name):
+    return next((item.get("external", {}).get("url") for item in resources(row)
+                 if item.get("name", "").casefold() == name.casefold() and item.get("type") == "external"), None)
 
 
 def prop_time(row, name):
@@ -191,7 +188,7 @@ def row_item(row):
 def company_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
-        "status": status_value(row), "website": url_value(row, "Website"),
+        "status": status_value(row), "website": resource_url(row, "Website"),
         "code": record_code(row), "resources": resources(row),
         "edited": prop_time(row, "Edited"), "created": prop_time(row, "Created"),
     }
@@ -206,7 +203,7 @@ def project_item(row):
         "parent_project": relation_ids(row, "Parent project"),
         "subprojects": relation_ids(row, "Subprojects"),
         "tasks": relation_ids(row, "Tasks"), "meetings": relation_ids(row, "Meetings"),
-        "start": date_start(row, "Start"), "end": date_start(row, "End"),
+        "deadline": prop(row, "Deadline").get("date"),
         "edited": prop_time(row, "Edited"), "created": prop_time(row, "Created"),
     }
 
