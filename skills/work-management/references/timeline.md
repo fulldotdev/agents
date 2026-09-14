@@ -38,7 +38,7 @@ Do not edit existing entries. Correct an error with a new event that identifies 
 
 An authorized migration or repair may replace a known-bad pilot history with a clean, source-faithful Timeline after the underlying evidence is preserved and verified.
 
-Derive current actions and completion conditions when reading. Do not store regenerated `Next`, `Done when`, inferred criteria, context summaries, or uncited synthesis. Notion generates the `Summary` property. Never edit it manually or treat it as evidence.
+Derive current actions and completion conditions when reading. Do not store regenerated `Next`, `Done when`, inferred criteria, context summaries, or uncited synthesis.
 
 At an execution handoff, derive a short current brief from the applicable source events: requested result, unresolved decisions, allowed scope, and review boundary. Put that brief in the execution prompt, with source locators, not back into the Task as a second current-state record. Reconcile later corrections before relying on older entries.
 

@@ -44,7 +44,7 @@ Preserve historical customer-message send receipts and uncertain-send evidence i
 
 Accepted monday tickets remain in monday. Create a Notion Task only for a distinct Sil-owned commitment or overarching delivery outcome, possibly one customer-sprint Task linked to the Company and Sil's Sprint. Record relevant tickets as separate Timeline events with original pulse URLs or IDs.
 
-Use `moneybird` for quote/invoice state and direct URLs. A sent estimate needing follow-up belongs to the Project's sales work. On verified acceptance, finish the sales Task and create or link delivery work; retain the Task if it already represents delivery.
+Store one direct Moneybird contact link on the Company; resolve the administration and contact ID from that URL. Use `moneybird` for quote/invoice state and direct URLs. A sent estimate needing follow-up belongs to the Project's sales work. On verified acceptance, finish the sales Task and create or link delivery work; retain the Task if it already represents delivery.
 
 Use `Resources` (Files & media) for named URLs, files and images on Companies, Projects and Tasks. Company-wide material belongs on the Company; site/app repositories, hosting, CMS, database dashboards, Figma and deployment links on the Project; task-specific evidence on the Task. Read the owning record's Resources and then its parent Project's Resources. Notion does not inherit them automatically. Keep one canonical source, preserve existing entries on writes, and do not duplicate shared assets across deliveries. Keep editable documents at their original Drive/Docs/Figma or other source; link them by a useful name. Do not use the legacy Documents database. Short internal findings belong in Insights; substantial internal references beneath Documents.
 
@@ -60,9 +60,9 @@ Task Status is authoritative:
 - **Doing**: started and unfinished. Keep Doing between work sessions, including when some work is blocked but accepted work can continue independently.
 - **Waiting**: a concrete dependency prevents execution. Record its owner. When cleared, use Todo if not started, otherwise Doing.
 - **Done**: completed and verified; terminal except for reopening the same deliverable above.
-- **Canceled**: duplicate, superseded, moved to Someday, no longer executable or explicitly dropped. Clear obsolete Sprint, Planned and Deadline values and verify the final write.
+- **Canceled**: duplicate, superseded, moved to Someday, no longer executable or explicitly dropped. Clear obsolete Sprint and Date values and verify the final write.
 
-Apply source-backed status changes within the authorized workflow without asking again. Keep evidence in the Timeline, not a second status in the body. Use `Deadline` sparingly for a real agreed completion cutoff. Use `Planned` for scheduled work, calls or follow-up, including date ranges; Sprint owns the week commitment. Never invent a date, silently roll overdue planning forward, or drop an existing reminder during a date move.
+Apply source-backed status changes within the authorized workflow without asking again. Keep evidence in the Timeline, not a second status in the body. Sprint owns routine work planning. Use the single Task `Date` sparingly for a real deadline or another commitment that needs a specific date; do not repeat Sprint dates there. Preserve the distinction between a hard cutoff and a scheduled follow-up in the source context. Never invent a date, silently roll overdue planning forward, or drop an existing reminder during a date move.
 
 Project statuses are `Discovery`, `Planned`, `In Progress`, `Maintenance`, `Paused`, `Completed` and `Canceled`. Move Discovery to Planned when concrete delivery commitment or approval exists.
 

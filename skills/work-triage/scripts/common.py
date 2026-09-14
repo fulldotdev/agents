@@ -201,7 +201,6 @@ def project_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row),
-        "ai_generated_summary_non_evidence": plain_text(prop(row, "Summary")),
         "companies": relation_ids(row, "Companies"),
         "code": record_code(row), "resources": resources(row),
         "parent_project": relation_ids(row, "Parent project"),
@@ -216,14 +215,12 @@ def task_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row), "area": select_value(row, "Area"),
-        "ai_generated_summary_non_evidence": plain_text(prop(row, "Summary")),
         "companies": relation_ids(row, "Companies"),
         "project": relation_ids(row, "Project"),
         "sprint": relation_ids(row, "Sprint"), "meetings": relation_ids(row, "Meetings"),
         "code": record_code(row), "resources": resources(row),
         "github_pr": relation_ids(row, "GitHub PR"),
-        "planned": prop(row, "Planned").get("date"),
-        "deadline": prop(row, "Deadline").get("date"),
+        "date": prop(row, "Date").get("date"),
         "edited": prop_time(row, "Edited"),
         "created": prop_time(row, "Created"),
     }
