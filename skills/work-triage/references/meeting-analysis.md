@@ -22,4 +22,4 @@ Return the meeting ID and revision, material commitments, decisions, feedback an
 
 Triage applies `work-management`, performs writes, and decides whether the result meets the T3 dispatch gate. A delegated analyst only returns findings.
 
-After routing, triage may update the Meeting `Summary` property with a concise index of the material outcome and what would justify opening the transcript. This helps later agents choose what to read; it is not evidence and does not replace the transcript.
+Meeting summaries live in the native meeting-notes block. Do not recreate a separate Summary property.

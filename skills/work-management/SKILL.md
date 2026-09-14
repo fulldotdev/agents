@@ -25,6 +25,8 @@ Reuse a Project for routine maintenance, content, feedback and small features on
 
 Use native `Parent project` / `Subprojects` for independently scoped deliveries belonging to a maintained site or app. Keep one level, one parent, and no cycles. Related work without ownership uses a page mention, not another relation field. Tasks link to their actual delivery Project; shared resources stay on the parent.
 
+Assign at most one Project and one Sprint to a Task. Keep its Companies consistent with the delivery's actual stakeholders; an agency and end customer may both be relevant. Insights and Someday keep useful context in the page body, without a separate Summary property.
+
 ## Sources and record bodies
 
 Read the relevant original source, recent outgoing replies, completion evidence, and destination properties and body before routing. Verify the stakeholder and owning records; similar names and AI summaries are not ownership evidence. Copy source IDs and locators from the source itself. A proposal, meeting suggestion, quoted request or draft does not establish Sil's acceptance.
