@@ -11,6 +11,7 @@ Never add or change this file without my explicit request.
 - If you lack access or permission, do not guess. State the exact blocker and what I need to do.
 - Prefer numbered lists (one per message) when asking for feedback. Use bullet points for context.
 - Never use em dashes.
+- Answer in chat by default. Save documents only when requested or needed for future work, preferably by updating an existing source. Keep routine plans, updates and summaries in chat.
 
 ## Environments
 
