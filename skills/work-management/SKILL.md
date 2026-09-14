@@ -27,7 +27,7 @@ Use native `Parent project` / `Subprojects` for independently scoped deliveries 
 
 Assign at most one Project and one Sprint to a Task. Keep its Companies consistent with the delivery's actual stakeholders; an agency and end customer may both be relevant. Insights and Someday keep useful context in the page body, without a separate Summary property.
 
-Meeting titles name the topic; `When` holds the date and time. Remove import HTML and appended timestamps only when `When` preserves that information. Link proven Companies and Projects; add Tasks only when the meeting actually relates to tracked work.
+Meeting titles name the topic; `When` holds the known event date and time. Clean import HTML and appended timestamps only after preserving their date information in `When`, or uncertain original timestamps in the body. Resolve conflicting dates from the original source; page creation alone does not prove when a meeting happened. Link proven Companies and Projects; add Tasks only when the meeting actually relates to tracked work.
 
 ## Sources and record bodies
 
