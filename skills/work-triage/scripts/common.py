@@ -158,15 +158,17 @@ def multi_select_names(row, name):
     return [item.get("name") for item in prop(row, name).get("multi_select", []) if item.get("name")]
 
 
-def rollup_urls(row, name):
-    urls = []
-    for value in (prop(row, name).get("rollup") or {}).get("array") or []:
-        url = value.get("url")
-        if not url and value.get("type") == "formula":
-            url = (value.get("formula") or {}).get("string")
-        if url and url not in urls:
-            urls.append(url)
-    return urls
+def resources(row):
+    return prop(row, "Resources").get("files", [])
+
+
+def record_code(row):
+    value = prop(row, "ID").get("unique_id") or {}
+    number = value.get("number")
+    if number is None:
+        return None
+    prefix = value.get("prefix")
+    return f"{prefix}-{number}" if prefix else str(number)
 
 
 def date_start(row, name):
@@ -190,7 +192,7 @@ def company_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row), "website": url_value(row, "Website"),
-        "github_repo_url": url_value(row, "GitHub Repo URL"),
+        "code": record_code(row), "resources": resources(row),
         "edited": prop_time(row, "Edited"), "created": prop_time(row, "Created"),
     }
 
@@ -201,7 +203,9 @@ def project_item(row):
         "status": status_value(row),
         "ai_generated_summary_non_evidence": plain_text(prop(row, "Summary")),
         "companies": relation_ids(row, "Companies"),
-        "github_repo_urls": rollup_urls(row, "Github Repo URL"),
+        "code": record_code(row), "resources": resources(row),
+        "parent_project": relation_ids(row, "Parent project"),
+        "subprojects": relation_ids(row, "Subprojects"),
         "tasks": relation_ids(row, "Tasks"), "meetings": relation_ids(row, "Meetings"),
         "start": date_start(row, "Start"), "end": date_start(row, "End"),
         "edited": prop_time(row, "Edited"), "created": prop_time(row, "Created"),
@@ -216,7 +220,11 @@ def task_item(row):
         "companies": relation_ids(row, "Companies"),
         "project": relation_ids(row, "Project"),
         "sprint": relation_ids(row, "Sprint"), "meetings": relation_ids(row, "Meetings"),
-        "due": date_start(row, "Due"), "edited": prop_time(row, "Edited"),
+        "code": record_code(row), "resources": resources(row),
+        "github_pr": relation_ids(row, "GitHub PR"),
+        "planned": prop(row, "Planned").get("date"),
+        "deadline": prop(row, "Deadline").get("date"),
+        "edited": prop_time(row, "Edited"),
         "created": prop_time(row, "Created"),
     }
 

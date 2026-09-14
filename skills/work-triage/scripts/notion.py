@@ -14,7 +14,7 @@ from common import (
 )
 
 COMPANY_STATUSES = ["Prospect", "Active"]
-TRIAGE_PROJECT_STATUSES = ["Discovery", "Planned", "In Progress", "Paused"]
+TRIAGE_PROJECT_STATUSES = ["Discovery", "Planned", "In Progress", "Maintenance", "Paused", "Completed", "Canceled"]
 OPEN_TASK_STATUSES = ["Todo", "Doing", "Waiting"]
 TRIAGE_TASK_STATUSES = OPEN_TASK_STATUSES
 
@@ -52,6 +52,7 @@ def active_companies(limit=MAX_ITEMS_PER_LANE):
 
 
 def active_projects(limit=MAX_ITEMS_PER_LANE):
+    # Include closed parents too: active deliveries can use their shared Resources.
     return query_items(NOTION_PROJECTS_DATA_SOURCE_ID, project_item, TRIAGE_PROJECT_STATUSES, limit)
 
 
@@ -104,7 +105,7 @@ def collect_group(lane, mode, calls, after=None, before=None):
 
 
 def collect_work_context(after=None, before=None, limit=MAX_ITEMS_PER_LANE):
-    result = collect_group("work_context", "all_companies_active_projects_tasks", {
+    result = collect_group("work_context", "all_companies_projects_triage_tasks", {
         "companies": lambda: active_companies(limit),
         "projects": lambda: active_projects(limit),
         "tasks": lambda: triage_tasks(limit),

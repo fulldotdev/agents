@@ -39,7 +39,7 @@ Before acknowledging an event:
 
 - **Understand the source.** Inspect material attachments and transcribe relevant audio, including Sil's sent explanations. Compare with recorded agreements and preserve conflicts without choosing a new scope. Unreadable material with unknown relevance stays `retry` with the exact missing evidence. A demonstrably redundant attachment need not block an evidenced outcome.
 - **Check missing context.** Apply `work-management` even when no Task needs creating: existing records, contact details and durable file links may need updating. Do not dismiss an event merely because the work is already built or a Task or T3 thread exists.
-- **Verify the destination.** Read the owning artifact's decision-relevant content and required Files links before calling an event handled. Add only missing context and verify writes before acknowledgment. Journal and reconcile external actions through `processing.md` so missing receipts cannot create duplicate work.
+- **Verify the destination.** Read the owning artifact's decision-relevant content and Resources, including its parent Project when relevant, before calling an event handled. Add only missing context and verify writes before acknowledgment. Journal and reconcile external actions through `processing.md` so missing receipts cannot create duplicate work.
 
 Choose the action:
 

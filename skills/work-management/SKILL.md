@@ -23,6 +23,8 @@ Before interpreting or writing a Task body, read [timeline.md](references/timeli
 
 Reuse a Project for routine maintenance, content, feedback and small features on the same site or app. Create a separate Project when a substantial delivery has its own scope and acceptance and benefits from being planned or completed independently. Sharing a repository does not decide this; a new week, quote or invoice alone is not a reason to split. Reusing a Project does not reopen completed Tasks or reactivate old scope.
 
+Use native `Parent project` / `Subprojects` for independently scoped deliveries belonging to a maintained site or app. Keep one level, one parent, and no cycles. Related work without ownership uses a page mention, not another relation field. Tasks link to their actual delivery Project; shared resources stay on the parent.
+
 ## Sources and record bodies
 
 Read the relevant original source, recent outgoing replies, completion evidence, and destination properties and body before routing. Verify the stakeholder and owning records; similar names and AI summaries are not ownership evidence. Copy source IDs and locators from the source itself. A proposal, meeting suggestion, quoted request or draft does not establish Sil's acceptance.
@@ -44,7 +46,9 @@ Accepted monday tickets remain in monday. Create a Notion Task only for a distin
 
 Use `moneybird` for quote/invoice state and direct URLs. A sent estimate needing follow-up belongs to the Project's sales work. On verified acceptance, finish the sales Task and create or link delivery work; retain the Task if it already represents delivery.
 
-Store customer artifacts in the owning Company or Project's `Files`: reusable customer-wide material on the Company, project-specific material on the Project. Do not mirror files or use the legacy Documents database. Keep editable artifacts at their canonical source: Drive/Docs for uploaded documents, direct durable URLs for Figma, Sheets, Slides, Moneybird and similar sources. Short internal findings belong in Insights; substantial internal references beneath Documents; task-specific context in the Timeline or a child page when needed.
+Use `Resources` (Files & media) for named URLs, files and images on Companies, Projects and Tasks. Company-wide material belongs on the Company; site/app repositories, hosting, CMS, database dashboards, Figma and deployment links on the Project; task-specific evidence on the Task. Read the owning record's Resources and then its parent Project's Resources. Notion does not inherit them automatically. Keep one canonical source, preserve existing entries on writes, and do not duplicate shared assets across deliveries. Keep editable documents at their original Drive/Docs/Figma or other source; link them by a useful name. Do not use the legacy Documents database. Short internal findings belong in Insights; substantial internal references beneath Documents.
+
+Native IDs use `TASK`, `PROJECT` and `COMPANY` prefixes. Resolve the actual ID before using its short Notion URL. Task `GitHub PR` is the connected PR field, separate from repository links in Resources; it supports pasting a PR URL manually. For authorized PR work, add `References TASK-n` to the PR description. Automatic task-status mappings stay off: a merged PR alone does not verify delivery. Never create or modify a PR merely to populate this field.
 
 ## Planning and status
 
@@ -56,10 +60,10 @@ Task Status is authoritative:
 - **Doing**: started and unfinished. Keep Doing between work sessions, including when some work is blocked but accepted work can continue independently.
 - **Waiting**: a concrete dependency prevents execution. Record its owner. When cleared, use Todo if not started, otherwise Doing.
 - **Done**: completed and verified; terminal except for reopening the same deliverable above.
-- **Canceled**: duplicate, superseded, moved to Someday, no longer executable or explicitly dropped. Clear obsolete Sprint and Due values and verify the final write.
+- **Canceled**: duplicate, superseded, moved to Someday, no longer executable or explicitly dropped. Clear obsolete Sprint, Planned and Deadline values and verify the final write.
 
-Apply source-backed status changes within the authorized workflow without asking again. Keep evidence in the Timeline, not a second status in the body. Use Due only for agreed deadlines or follow-up dates, never an invented reminder.
+Apply source-backed status changes within the authorized workflow without asking again. Keep evidence in the Timeline, not a second status in the body. Use `Deadline` sparingly for a real agreed completion cutoff. Use `Planned` for scheduled work, calls or follow-up, including date ranges; Sprint owns the week commitment. Never invent a date, silently roll overdue planning forward, or drop an existing reminder during a date move.
 
-Project statuses are `Discovery`, `Planned`, `In Progress`, `Paused`, `Completed` and `Canceled`. Move Discovery to Planned when concrete delivery commitment or approval exists.
+Project statuses are `Discovery`, `Planned`, `In Progress`, `Maintenance`, `Paused`, `Completed` and `Canceled`. Move Discovery to Planned when concrete delivery commitment or approval exists.
 
-Once available in the live schema, use `Maintenance` when the main delivery is finished but ongoing support or improvements continue. Small active Tasks can remain under Maintenance; a substantial new delivery can return the Project to In Progress. Use Completed for a finished finite initiative with no ongoing work managed there. Retainer describes a commercial agreement, not a status. Project start/end dates are optional; do not invent dates for ongoing work.
+Use `Maintenance` when the main delivery is finished but ongoing support or improvements continue. Small active Tasks can remain under Maintenance; a substantial new delivery can return the Project to In Progress or become a separately scoped subproject. Use Completed for a finished finite initiative with no ongoing work managed there, and Paused for suspended unfinished work. Retainer describes a commercial agreement, not a status. Project start/end dates are optional; do not invent dates for ongoing work.
