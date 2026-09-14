@@ -27,6 +27,8 @@ Use native `Parent project` / `Subprojects` for independently scoped deliveries 
 
 Assign at most one Project and one Sprint to a Task. Keep its Companies consistent with the delivery's actual stakeholders; an agency and end customer may both be relevant. Insights and Someday keep useful context in the page body, without a separate Summary property.
 
+Meeting titles name the topic; `When` holds the date and time. Remove import HTML and appended timestamps only when `When` preserves that information. Link proven Companies and Projects; add Tasks only when the meeting actually relates to tracked work.
+
 ## Sources and record bodies
 
 Read the relevant original source, recent outgoing replies, completion evidence, and destination properties and body before routing. Verify the stakeholder and owning records; similar names and AI summaries are not ownership evidence. Copy source IDs and locators from the source itself. A proposal, meeting suggestion, quoted request or draft does not establish Sil's acceptance.
