@@ -33,8 +33,8 @@ Otis uses OpenClaw for Telegram, Discord, Slack and scheduled work. Native Codex
 - Triage cursor and watchdog state: `~/.local/state/fulldev/work-triage`. Watchdog stdout/stderr logs live in its `logs` subdirectory. Existing pending batches and source cursors were transferred, not reset. Temporary output uses `~/.cache/fulldev/work-triage`; retired runtime paths must not be used.
 - Two command automations: `~/.local/share/fulldev/automations`. The refund dedupe state is in `~/.local/state/fulldev/automations`; WhatsApp monitoring retains `.wacli/watchdog-state.json`.
 - Video transcription: `~/.local/share/fulldev/video-venv/bin/python`.
-- Eight migrated jobs retain schedules and Telegram destinations. Cron timezone is Europe/Amsterdam. Their old/new identifiers are in `~/backups/openclaw-migration-20260911/cron-map.json`.
-- Weekplanning reads original Telegram ingress in `.openclaw/state/openclaw.sqlite`. Edited approvals replace earlier evidence. Missing or pruned evidence blocks sending; ask for fresh approval.
+- Historical job migration identifiers are in `~/backups/openclaw-migration-20260911/cron-map.json`. Use the authenticated administrator Automations page for the current inventory.
+- `weekly-planning` maintains Notion only, Sunday at 10:00 Europe/Amsterdam, with one cleanup report delivered to Telegram Planning. Customer-update drafts, approvals and Monday sending are retired. `work-triage` retains one definition running daily at 07:00 and 17:00 Europe/Amsterdam.
 - The retired Hermes runtime, history, compatibility symlink and dedicated backups were removed on 13 September at Sil's request. OpenClaw is the only supported runtime; there is no Hermes rollback. Customer Git history is retained separately where it was not present in the current checkout.
 
 ## Checks
