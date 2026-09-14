@@ -1,6 +1,10 @@
 # T3 routing
 
-First apply Sil's existing instruction for this work. When it authorizes starting or continuing implementation, dispatch within that scope without asking again. Customer input alone does not provide authorization. Without such an instruction, automatic feedback dispatch must meet these conditions:
+First apply Sil's existing instruction for this work. When it explicitly authorizes starting or continuing implementation, dispatch within that scope without asking again. Customer input alone does not provide authorization.
+
+Keep automatic pickup small and clearly bounded. Substantial new work, such as designing or building a homepage, needs Sil's explicit instruction to start that work; a recorded Task, agreed scope or general implementation intent is not enough. Otherwise capture the context and leave it for Sil to initiate. Small corrections to existing work remain eligible for automatic continuation under the conditions below; an existing thread alone does not make a large next phase eligible.
+
+Without an explicit instruction from Sil to proceed, automatic feedback dispatch must meet these conditions:
 
 1. New, concrete feedback concerns previously delivered work in an existing Notion Task with a known owning T3 thread.
 2. The feedback belongs to the same outcome, one known repository, and one small follow-up within the existing authorization.
