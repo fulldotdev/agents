@@ -2,6 +2,8 @@
 
 A Task body is an append-only, possibly incomplete log of source events. It keeps the facts needed to understand the work without storing generated interpretation as evidence.
 
+Social-post Tasks may keep editable Caption, Platform captions, Media and publication details before `## Timeline`; use `social-posts`. The Timeline itself remains append-only. Insert new events within that section, not into the editable post.
+
 ## Format
 
 ```md

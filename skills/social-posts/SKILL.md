@@ -1,11 +1,11 @@
 ---
 name: social-posts
-description: Create, adapt, review, or manage social posts and their media across channels, including records in the Notion Posts database. Use for captions, carousels, images, video, channel variants, scheduling preparation, and publishing workflows.
+description: Create, adapt, review, or manage social posts and their media across channels, using Notion Tasks for tracked work. Use for captions, carousels, images, video, channel variants, scheduling preparation, and publishing workflows.
 ---
 
 # Social posts
 
-Treat the message as the source and each channel as a distribution variant. The Notion Posts database is the canonical working record when the post belongs in the user's content workflow.
+Treat the message as the source and each channel as a distribution variant. For tracked work, the existing Notion Task holds the post's caption and media; do not create a separate Post record.
 
 Do not invent handles, metrics, quotes, results, or client approval. Ask when a missing fact would materially change the post.
 
@@ -34,6 +34,6 @@ Do not invent handles, metrics, quotes, results, or client approval. Ask when a 
 - For X copy or launch media, read [references/x.md](references/x.md).
 - Add a separate channel reference only after that channel has real requirements or repeated user feedback. Do not generalize LinkedIn conventions to every platform.
 
-## Notion Posts
+## Notion Tasks
 
-When reading or writing the Posts database, read [references/notion-posts.md](references/notion-posts.md). Drafting or storing a Post does not authorize publishing it. Schedule or publish only after explicit user approval, then verify the public result and record its URL.
+For posts tracked in Notion, read [references/notion-posts.md](references/notion-posts.md) and use `work-management`. Drafting or storing a post does not authorize publishing it. Schedule or publish only after explicit user approval, then verify the public result and record its URL.

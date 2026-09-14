@@ -1,34 +1,20 @@
-# Notion Posts
+# Social posts in Notion Tasks
 
-Read this reference when a task uses the central Posts database.
+Use the existing Task for each accepted post outcome. The former Posts database is retired. Read current Task properties and its full Timeline before editing; newer source-backed decisions override old draft or scheduling text.
 
-## Location
+## Content
 
-- Database: [Posts](https://www.notion.so/33a669ecf07b471a984e717b50a65e4e)
-- Database ID: `33a669ec-f07b-471a-984e-717b50a65e4e`
-- Current data source ID: `1d761b93-c1de-4b8a-a29e-6bb7ea42c424`
+Keep the editable post before `## Timeline`, in this order:
 
-Read the live schema before exact property writes because Notion fields and option IDs can change.
+1. `Caption`: canonical caption.
+2. `Platform captions`: channel variants when needed.
+3. `Media`: ordered native images/videos, source context and captions.
+4. `Publication`: confirmed publication facts or unresolved details, when needed.
 
-## Current properties
+Keep supporting files, source URLs and verified published links in Task `Resources`. Preserve existing entries and use useful names such as `LinkedIn post`. Do not duplicate the caption or introduce separate Post relations or publishing-status fields.
 
-- `Name`: title
-- `Status`: `Idea`, `Draft`, `Scheduled`, or `Published`
-- `Type`: `Text`, `Image`, `Carousel`, or `Video`
-- `Publish date`: scheduled or actual publication date
-- `Tasks`: relation to the source or delivery Task
+The Task's normal Status owns execution; `Date` holds an agreed publication commitment and Sprint owns ordinary planning. Completing a draft does not establish publication. Record whether publication was verified publicly or reported by Sil; never invent a public URL. A canceled Task's retained draft is history, not a new commitment.
 
-Do not mark a Post `Scheduled` without a real schedule. Do not mark it `Published` until the public post and URL are verified.
+Use native uploaded media, preserve its order and quality, and verify it after a move or upload. Keep historical feedback and approvals in the append-only Timeline; change the editable post only within the user's requested scope.
 
-## Page body
-
-Keep these sections in this order:
-
-1. `Caption`: canonical caption
-2. `Platform captions`: channel-specific variants when needed
-3. `Media`: format, order, source links, and uploaded media
-4. `Published URLs`: verified public links after publishing
-
-Use the Notion file upload API for binary media. Preserve the requested order and read back the page after writes. For important final assets, download the Notion files again and compare them with the approved local files.
-
-Creating or editing a Post is not permission to publish it. Schedule or publish only with explicit user authorization covering that post and action; an earlier matching instruction remains valid.
+Drafting or storing content does not authorize scheduling or publishing. Act only with explicit authorization for that post and action, then verify the result and save the public URL in Resources.
