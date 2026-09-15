@@ -9,6 +9,7 @@ from pathlib import Path
 from uuid import uuid4
 
 import incremental
+import compact
 from common import iso_utc, parse_iso
 
 REPORT_KINDS = {
@@ -331,7 +332,11 @@ def command(args):
     path = args.state_file or incremental.DEFAULT_STATE_FILE
     with locked(path) as state:
         if args.operation == "status":
-            return view(state)
+            return compact.view(state) if getattr(args, "compact", False) else view(state)
+        if args.operation == "show":
+            return compact.show(state, args.event)
+        if args.operation == "context":
+            return compact.context(state, args.lane, args.id, args.query)
         operations = []
         if args.operation == "claim":
             claim(state, args.owner, args.previous_owner)

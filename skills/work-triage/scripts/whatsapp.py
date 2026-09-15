@@ -48,7 +48,7 @@ def media_dir(chat_id, msg_id):
 
 def durable_media_paths(chat_id, msg_id):
     directory = media_dir(chat_id, msg_id)
-    return [str(p) for p in sorted(directory.rglob("*")) if p.is_file()] if directory.exists() else []
+    return [str(p) for p in sorted(directory.rglob("*")) if p.is_file() and p.stat().st_size] if directory.exists() else []
 
 
 def media(chat_id, msg_id):
@@ -205,6 +205,10 @@ def recover_missing_media(missing, runner=run_command, lock_context=recovery_loc
     with lock_context():
         for item in missing:
             key = (item["chat_id"], item["message_id"])
+            existing = durable_media_paths(*key)
+            if existing:
+                results[key] = recovery_result("recovered", method="existing_download", recovered_paths=existing)
+                continue
             try:
                 download_media_item(item, runner, DIRECT_LOCK_WAIT)
                 results[key] = recovery_result("recovered", method="direct_download", recovered_paths=durable_media_paths(*key))
@@ -238,6 +242,10 @@ def recover_missing_media(missing, runner=run_command, lock_context=recovery_loc
             else:
                 for item in remaining:
                     key = (item["chat_id"], item["message_id"])
+                    existing = durable_media_paths(*key)
+                    if existing:
+                        results[key] = recovery_result("recovered", method="existing_download", recovered_paths=existing)
+                        continue
                     try:
                         download_media_item(item, runner, RECOVERY_LOCK_WAIT)
                         results[key] = recovery_result("recovered", method="launch_agent_recovery", recovered_paths=durable_media_paths(*key))

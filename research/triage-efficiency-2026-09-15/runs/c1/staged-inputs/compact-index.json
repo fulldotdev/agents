@@ -1,0 +1,28 @@
+{
+  "benchmark_now": "2026-09-15T12:00:00+02:00",
+  "timezone": "Europe/Amsterdam",
+  "lanes": {"gmail": "complete", "slack": "complete", "whatsapp": "failed_attempt_1_checkpoint_retained", "calendar": "complete", "t3_threads": "complete", "companies": "complete", "projects": "complete", "tasks": "complete"},
+  "events": [
+    {"case_id":"C01","event":"slack:evt-c01-r1","header":"Mira at Acme: accessibility follow-up","hints":["active_task","t3_open"]},
+    {"case_id":"C02","event":"gmail:evt-c02-r1","header":"Jo at North Star Labs: approved dashboard export","hints":["similar_names","sent_context"]},
+    {"case_id":"C03","event":"gmail:evt-c03-r1","header":"Lea at Birch: meeting confirmation question","hints":["latest_sent","calendar"]},
+    {"case_id":"C04","event":"slack:msg-c04:rev2","header":"Omar at Cedar: edited logo instruction","hints":["same_id_revision","pending_old_revision"]},
+    {"case_id":"C05","event":"whatsapp:evt-c05-r1","header":"Nina at Delta: footer fix still broken","hints":["task_closed_today"]},
+    {"case_id":"C06","event":"gmail:evt-c06-r1","header":"Pavel at Elm: approved September import","hints":["older_closed_task","sent_context"]},
+    {"case_id":"C07","event":"slack:evt-c07-r1","header":"Rae at Fir: asks about restarting redesign","hints":["paused_project"]},
+    {"case_id":"C08","event":"gmail:evt-c08-r1","header":"Ivy at Grove: approval relies on attachment","hints":["attachment_error"]},
+    {"case_id":"C09","event":"whatsapp:evt-c09-r1","header":"Tess at Harbor: footer phone correction","hints":["attachment_error","active_task","t3_open"]},
+    {"case_id":"C10","event":"slack:evt-c10-r1","header":"Uma at Iris: copy v4 approved","hints":["resource","partial_unrelated_lane"]},
+    {"case_id":"C11","event":"gmail:evt-c11-r1","header":"Vic at Juniper: approved feed repair","hints":["pending_intent_no_receipt"]},
+    {"case_id":"C12","event":"report:action-c12","header":"Outstanding report: Kestrel DNS task","hints":["delivery_receipt"]},
+    {"case_id":"C13","event":"slack:evt-c13-r1","header":"Wes at Lumen: small CTA correction","hints":["active_task","t3_running"]},
+    {"case_id":"C14","event":"gmail:evt-c14-r1","header":"Yara at Maple: confirms review time","hints":["calendar","sent_context"]},
+    {"case_id":"C15","event":"slack:evt-c15-r1","header":"Zed at Nova Bakery: VAT field feedback","hints":["similar_records","active_task","t3_open"]},
+    {"case_id":"C16","event":"gmail:evt-c16-r1","header":"Ana at Oak: asks Sil to choose kickoff time","hints":["latest_sent","drafts","calendar"]}
+  ],
+  "retrieval": {
+    "event": "./triage show --event EVENT_ID",
+    "context_by_case": "./triage context --case CASE_ID",
+    "context_query": "./triage context --query TEXT"
+  }
+}

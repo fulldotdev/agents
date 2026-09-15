@@ -1,0 +1,455 @@
+{
+  "runs": [
+    {
+      "trial_id": "a1",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "trial_id": "c1",
+      "condition": "compact",
+      "model": "gpt-5.6-terra",
+      "case_points": 61,
+      "case_points_possible": 80,
+      "perfect_cases": 3,
+      "case_count": 16,
+      "batch_points": 2,
+      "batch_points_possible": 2,
+      "elapsed_seconds": 163.935,
+      "usage": {
+        "input_tokens": 202530,
+        "cached_input_tokens": 154368,
+        "output_tokens": 7772,
+        "reasoning_output_tokens": 4731
+      },
+      "retrieval_commands": 35,
+      "rows": [
+        {
+          "case_id": "C01",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C02",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C03",
+          "score": 5,
+          "perfect": true,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": true,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C04",
+          "score": 4,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": true,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C05",
+          "score": 4,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": true,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C06",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C07",
+          "score": 4,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": false,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C08",
+          "score": 4,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": false,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C09",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C10",
+          "score": 4,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": true,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C11",
+          "score": 5,
+          "perfect": true,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": true,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C12",
+          "score": 5,
+          "perfect": true,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": true,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C13",
+          "score": 4,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": true,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C14",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C15",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": true
+          }
+        },
+        {
+          "case_id": "C16",
+          "score": 4,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": false,
+            "report": true,
+            "evidence": true
+          }
+        }
+      ],
+      "batch_fields": {
+        "advance_failed_whatsapp_checkpoint": true,
+        "report_whatsapp_failure_now": true
+      }
+    },
+    {
+      "trial_id": "c2",
+      "condition": "compact",
+      "model": "gpt-5.6-terra",
+      "case_points": 39,
+      "case_points_possible": 80,
+      "perfect_cases": 0,
+      "case_count": 16,
+      "batch_points": 2,
+      "batch_points_possible": 2,
+      "elapsed_seconds": 149.194,
+      "usage": {
+        "input_tokens": 189984,
+        "cached_input_tokens": 140032,
+        "output_tokens": 7248,
+        "reasoning_output_tokens": 3752
+      },
+      "retrieval_commands": 30,
+      "rows": [
+        {
+          "case_id": "C01",
+          "score": 2,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C02",
+          "score": 2,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C03",
+          "score": 4,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": true,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C04",
+          "score": 2,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C05",
+          "score": 2,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C06",
+          "score": 2,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C07",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C08",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C09",
+          "score": 2,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C10",
+          "score": 2,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C11",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C12",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C13",
+          "score": 2,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C14",
+          "score": 2,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C15",
+          "score": 2,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": false,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        },
+        {
+          "case_id": "C16",
+          "score": 3,
+          "perfect": false,
+          "fields": {
+            "disposition": true,
+            "actions": true,
+            "target": false,
+            "report": true,
+            "evidence": false
+          }
+        }
+      ],
+      "batch_fields": {
+        "advance_failed_whatsapp_checkpoint": true,
+        "report_whatsapp_failure_now": true
+      }
+    }
+  ],
+  "aggregates": [
+    {
+      "condition": "compact",
+      "model": "gpt-5.6-terra",
+      "repetitions": 2,
+      "mean_case_points": 50.0,
+      "mean_perfect_cases": 1.5,
+      "mean_elapsed_seconds": 156.5645,
+      "mean_input_tokens": 196257.0,
+      "mean_output_tokens": 7510.0,
+      "mean_retrieval_commands": 32.5
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decisions", "batch"],
+  "properties": {
+    "decisions": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case_id", "disposition", "actions", "target", "report", "evidence"],
+        "properties": {
+          "case_id": {"type": "string", "pattern": "^C(0[1-9]|1[0-6])$"},
+          "disposition": {"enum": ["ack_handled", "ack_no_action", "retry", "keep_pending", "mark_reported"]},
+          "actions": {"type": "array", "items": {"enum": ["append_task_context", "create_task", "reopen_task", "prepare_external_action", "reconcile_external_action", "create_gmail_draft", "create_calendar_event", "route_t3", "cancel_superseded_revision", "none"]}},
+          "target": {"type": ["string", "null"]},
+          "report": {"enum": ["silent", "task_created", "task_reopened_silent", "draft_created", "calendar_created", "t3_continued", "failure_after_retry_threshold", "mark_existing_delivered"]},
+          "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+        }
+      }
+    },
+    "batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["advance_failed_whatsapp_checkpoint", "report_whatsapp_failure_now", "notes"],
+      "properties": {
+        "advance_failed_whatsapp_checkpoint": {"type": "boolean"},
+        "report_whatsapp_failure_now": {"type": "boolean"},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}

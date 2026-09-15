@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 import calendar as calendar_source
+import compact
 import gmail
 import incremental
 import meetings
@@ -106,6 +107,8 @@ def collect_incoming(after, before, args):
 def triage(args):
     if args.incremental:
         return incremental_triage(args)
+    if args.compact:
+        raise ValueError("--compact requires --incremental so full evidence stays available to queue reads")
     after, before = window_from_args(args.after, args.before)
     result = base_result("work_triage", "triage", after, before)
     result.pop("items")
@@ -243,7 +246,10 @@ def collect_incremental(args, state, preview=False):
         value.get("changed_count", 0)
         for value in result["groups"]["incoming"]["sources"].values()
     ) + (result["groups"].get("work_context") or {}).get("changed_count", 0)
-    output = pending.stage(copy.deepcopy(state) if preview else state, result, proposals)
+    staged = copy.deepcopy(state) if preview else state
+    output = pending.stage(staged, result, proposals)
+    if getattr(args, "compact", False):
+        output = compact.view(staged)
     if preview:
         output["state_committed"] = False
     return output
@@ -287,12 +293,18 @@ def build_parser():
     triage_parser.add_argument("--turn-limit", type=int, default=t3_threads.DEFAULT_TURN_LIMIT)
     triage_parser.add_argument("--owner", help="unique worker run ID for the durable queue")
     triage_parser.add_argument("--incremental", action="store_true", help="use per-lane cursors and overlap dedupe")
+    triage_parser.add_argument("--compact", action="store_true", help="return complete indexes and event headers; keep full evidence in the queue")
     triage_parser.add_argument("--state-file", type=str, help="override incremental cursor state path")
     triage_parser.add_argument("--overlap-minutes", type=int, default=incremental.DEFAULT_OVERLAP_MINUTES)
     triage_parser.add_argument("--bootstrap-hours", type=int, default=incremental.DEFAULT_BOOTSTRAP_HOURS)
     triage_parser.add_argument("--no-commit-state", action="store_true", help="preview incremental results without advancing cursors")
     queue_parser = commands.add_parser("queue", help="inspect, acknowledge and resume durable triage batches")
-    queue_parser.add_argument("operation", choices=["status", "claim", "apply", "finish", "reports", "release"])
+    queue_parser.add_argument("operation", choices=["status", "show", "context", "claim", "apply", "finish", "reports", "release"])
+    queue_parser.add_argument("--compact", action="store_true", help="compact status without full source payloads")
+    queue_parser.add_argument("--event", action="append", help="event ID for show; repeat to batch reads")
+    queue_parser.add_argument("--lane", choices=[*SOURCES, "companies", "projects", "tasks"])
+    queue_parser.add_argument("--id", action="append", help="source or record ID for context; repeat to batch reads")
+    queue_parser.add_argument("--query", help="case-insensitive search through full persisted lane evidence")
     queue_parser.add_argument("--owner")
     queue_parser.add_argument("--previous-owner", help="explicit takeover only after verifying this worker stopped")
     queue_parser.add_argument("--file", help="JSON array of prepare/resolve/cancel/ack/retry/report_failure/reported operations")

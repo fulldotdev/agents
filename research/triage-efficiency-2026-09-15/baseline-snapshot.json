@@ -1,0 +1,29 @@
+{
+  "repository": "/Users/silveltman/.agents",
+  "commit": "9819f8ee46c10b58cdd190f53be1ce1fbf3b1d0a",
+  "captured_at": "2026-09-15T12:00:00+02:00",
+  "paths": [
+    "AGENTS.md",
+    "skills/development/SKILL.md",
+    "skills/work-triage/SKILL.md",
+    "skills/work-triage/references/media.md",
+    "skills/work-triage/references/processing.md",
+    "skills/work-triage/references/t3-routing.md",
+    "skills/work-management/SKILL.md",
+    "skills/work-management/references/timeline.md"
+  ],
+  "implementation_paths": [
+    "skills/work-triage/scripts/calendar.py",
+    "skills/work-triage/scripts/collect.py",
+    "skills/work-triage/scripts/common.py",
+    "skills/work-triage/scripts/gmail.py",
+    "skills/work-triage/scripts/incremental.py",
+    "skills/work-triage/scripts/meetings.py",
+    "skills/work-triage/scripts/notion.py",
+    "skills/work-triage/scripts/pending.py",
+    "skills/work-triage/scripts/slack.py",
+    "skills/work-triage/scripts/t3_threads.py",
+    "skills/work-triage/scripts/watchdog.py",
+    "skills/work-triage/scripts/whatsapp.py"
+  ]
+}

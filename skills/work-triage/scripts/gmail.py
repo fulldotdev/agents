@@ -5,7 +5,7 @@ import argparse
 from urllib.parse import quote
 
 from common import (
-    ATTACHMENTS_DIR, DEFAULT_GMAIL_ACCOUNTS, MAX_ITEMS_PER_LANE,
+    DEFAULT_GMAIL_ACCOUNTS, MAX_ITEMS_PER_LANE, TEMP_ROOT,
     add_common_args, base_result, emit, error_obj, json_cmd, window_from_args,
 )
 
@@ -60,9 +60,9 @@ def collect_account(account, after_dt=None, before_dt=None, query=None, limit=MA
 def read_thread(account, thread_id, download=False):
     cmd = ["gog", "--readonly", "--no-input", "-a", account, "--json", "gmail", "thread", "get", thread_id, "--full"]
     if download:
-        out = ATTACHMENTS_DIR / "gmail" / account / thread_id
+        out = TEMP_ROOT / "attachments" / "gmail" / quote(account, safe="") / quote(thread_id, safe="")
         out.mkdir(parents=True, exist_ok=True)
-        cmd += ["--download", "--out-dir", str(out)]
+        cmd += ["--download", "--use-indexed-attachment-ids", "--out-dir", str(out)]
     return {"source": account, "ok": True, "url": gmail_url(account, thread_id), "thread": json_cmd(cmd)}
 
 

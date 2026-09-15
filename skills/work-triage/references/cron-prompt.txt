@@ -5,3 +5,5 @@ Run one triage cycle on Otis using the current ~/.agents/skills/work-triage/SKIL
 Read Sil's recent Triage chat messages alongside source context. Use run history and persistent state to reconcile earlier work; reopen older evidence only when it affects a decision.
 
 Complete the processing protocol, including pending work and delivery reconciliation. Apply the skill's action, authorization and reporting rules. Return its numbered verified outcomes or exactly NO_REPLY.
+
+If this prompt includes a precollected owner and state file, resume that batch with queue status --compact. Read full evidence with queue show/context and the source tools; do not repeat collection or load the full queue unless the compact view cannot answer a concrete evidence need.
