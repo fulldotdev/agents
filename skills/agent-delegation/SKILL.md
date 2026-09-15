@@ -1,6 +1,6 @@
 ---
 name: agent-delegation
-description: Use when a task needs broad reading (codebase searches, logs, long docs, large CLI or API output), independent parallel research, a second model to clean up code, or browser and computer-use verification, so bulky work runs in a subagent and the main thread keeps only the result.
+description: Use when a task needs broad reading (codebase searches, logs, long docs, large CLI or API output), independent parallel research, or a second model to clean up or validate code, so bulky work runs in a subagent and the main thread keeps only the result.
 ---
 
 # Agent delegation
