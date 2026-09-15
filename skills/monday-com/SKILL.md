@@ -1,13 +1,13 @@
 ---
 name: monday-com
-description: Use when sprint planning, backlog review, QA, release summaries, capacity checks, or retainer checks require evidence from the Teveo or fayn monday.com boards. Read only.
+description: Inspect Teveo or fayn monday.com boards for ticket context, or make an explicitly requested ticket update.
 ---
 
 # monday.com Sprints
 
 ## Ownership
 
-monday is the source for individual Teveo and fayn tickets, updates, statuses, and sprint groups. This skill only reads and reports that context.
+monday is the source for individual Teveo and fayn tickets, updates, statuses, and sprint groups. Use this skill to read that context and for ticket changes the user explicitly requests.
 
 Use `work-management` for planning, Notion routing, and writes. Return ticket-level facts with pulse URLs or IDs for that workflow.
 
@@ -30,10 +30,10 @@ Preserve exact pulse URLs or IDs and version names. Read each relevant ticket or
 
 Read Slack when a ticket links a thread or the user asks; keep its permalink and distinguish its evidence from monday fields. `work-management` owns any resulting Notion writes.
 
-## Read-only boundary
+## Changes
 
-Use only the navigation, filters, previews, and downloads needed to read. Do not edit, comment, move, assign, upload, delete, change status, or trigger automations. If something changes by accident, stop and report it before attempting cleanup.
+Default to reading. Make a change only when the user explicitly requests the exact action and the intended ticket is clear. Keep the change limited to that request, verify it afterwards, and return the ticket link.
 
 Download an attachment only when preview or extraction is insufficient, and keep it in a temporary workspace path. Never alter an attachment.
 
-Report the requested findings with direct sources, inspected scope, and any coverage gaps. No fixed report template is required.
+Report findings with direct sources, inspected scope, and any coverage gaps.
