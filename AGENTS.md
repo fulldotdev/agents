@@ -15,6 +15,7 @@ Never add or change this file without my explicit request.
 
 ## Environments
 
+- Prefer CLIs and other direct tools when available; use the browser or computer when needed.
 - Always use the machine's Chrome default profile for browser tasks.
 - When the user asks to access a site, saved Chrome credentials and password-manager autofill may be used to sign in. Never reveal, copy, export, or change saved credentials, and never enter 2FA codes.
 - We work on my personal MacBook and on a remote always-on Mac mini named Otis.
