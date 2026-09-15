@@ -36,7 +36,7 @@ Do not delegate a known file or single lookup, customer-facing judgment, or tigh
   `codex exec --skip-git-repo-check -m gpt-6-astra -o /tmp/NAME.md "TASK"`
 - Headless `codex exec` has no browser or computer use. For those checks, ask Sil to run them in a T3 Codex thread.
 
-Run long jobs in the background. If a CLI reports it is not logged in or out of usage, say so instead of switching models silently.
+Run long jobs in the background. If `codex exec` hits a usage limit, retry once with `CODEX_HOME=~/.codex-t3/backup` (Codex 2 account). If a CLI is still not logged in or out of usage, say so instead of switching models silently.
 
 ## Brief and return
 
