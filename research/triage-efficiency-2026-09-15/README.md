@@ -54,3 +54,5 @@ The runner stores the exact staged inputs, command metadata, JSONL event stream,
 ## Limits
 
 This tests reasoning over realistic synthetic snapshots and local retrieval. It does not test the latency, authentication, pagination, or failure behavior of live Gmail, Slack, WhatsApp, Notion, Calendar, or T3 services.
+
+Compact trials staged the then-current working-tree instructions, so their Sol-versus-Terra numbers are directional rather than a clean model comparison. The full-context trials use the same frozen Git snapshot. The synthetic compact adapter also makes case-linked retrieval easier than the production queue; production projection and gate behavior are checked separately in the work-triage suite.
