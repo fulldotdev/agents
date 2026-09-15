@@ -146,7 +146,7 @@ def run(args):
                 pass
         with pending.locked(path) as state:
             if state.get("pending") or state.get("owner"):
-                raise RuntimeError("Codex returned before finishing and releasing its triage batch")
+                raise RuntimeError("Agent returned before finishing and releasing its triage batch")
             if feedback_acknowledged:
                 state["triage_feedback_seen_at_ms"] = feedback["updated_at_ms"]
                 incremental.save(state, path)
