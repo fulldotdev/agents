@@ -6,4 +6,4 @@ Read Sil's recent Triage chat messages alongside source context. Use run history
 
 Complete the processing protocol, including pending work and delivery reconciliation. Apply the skill's action, authorization and reporting rules. Return its numbered verified outcomes or exactly NO_REPLY.
 
-If this prompt includes a precollected owner and state file, resume that batch with queue status --compact. Read full evidence with queue show/context and the source tools; do not repeat collection or load the full queue unless the compact view cannot answer a concrete evidence need.
+If this prompt includes a precollected owner and state file, read queue status once. Do not repeat collection or reload unchanged full state; use focused queue show/context and source tools only when later evidence changed or needs verification.

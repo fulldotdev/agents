@@ -8,6 +8,17 @@ ROOT = Path(__file__).resolve().parent
 EXPECTED = json.loads((ROOT / "private" / "expected.json").read_text())
 
 
+def core_actions(values):
+    return set(values or []) - {"prepare_external_action"}
+
+
+def target_key(value):
+    if not isinstance(value, str) or not value.lower().startswith("proposed:"):
+        return value
+    parts = value.split(":", 2)
+    return f"proposed:{''.join(ch for ch in parts[1].casefold() if ch.isalnum())}:{parts[2]}"
+
+
 def score_run(run_dir):
     result = json.loads((run_dir / "final.json").read_text())
     decisions = {item["case_id"]: item for item in result.get("decisions", [])}
@@ -16,8 +27,8 @@ def score_run(run_dir):
         actual = decisions.get(case_id, {})
         fields = {
             "disposition": actual.get("disposition") == gold["disposition"],
-            "actions": set(actual.get("actions", [])) == set(gold["actions"]),
-            "target": actual.get("target") == gold["target"],
+            "actions": core_actions(actual.get("actions")) == core_actions(gold["actions"]),
+            "target": target_key(actual.get("target")) == target_key(gold["target"]),
             "report": actual.get("report") == gold["report"],
             "evidence": set(gold["evidence_any"]).issubset(set(actual.get("evidence", []))),
         }

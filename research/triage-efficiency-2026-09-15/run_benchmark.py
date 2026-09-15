@@ -22,7 +22,10 @@ TRIALS = (
     ("b2", "compact", "gpt-5.6-sol"),
     ("c1", "compact", "gpt-5.6-terra"),
     ("c2", "compact", "gpt-5.6-terra"),
+    ("d1", "full", "gpt-5.6-terra"),
+    ("d2", "full", "gpt-5.6-terra"),
 )
+TRIAL_TIMEOUT_SECONDS = 600
 
 
 def sha256(path):
@@ -146,7 +149,7 @@ def run_trial(trial_id, mode, model, remote=None):
     run_dir = RUNS / trial_id
     if run_dir.exists():
         old_meta = run_dir / "metadata.json"
-        if not old_meta.exists() or json.loads(old_meta.read_text()).get("returncode") == 0:
+        if old_meta.exists() and json.loads(old_meta.read_text()).get("returncode") == 0:
             raise SystemExit(f"Run already exists: {run_dir}")
         failed = ROOT / "failed-attempts"
         failed.mkdir(exist_ok=True)
@@ -196,7 +199,27 @@ def run_trial(trial_id, mode, model, remote=None):
 
     started = time.monotonic()
     try:
-        result = subprocess.run(command, input=prompt, text=True, capture_output=True)
+        try:
+            result = subprocess.run(
+                command,
+                input=prompt,
+                text=True,
+                capture_output=True,
+                timeout=TRIAL_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired as exc:
+            stdout = exc.stdout or ""
+            stderr = exc.stderr or ""
+            if isinstance(stdout, bytes):
+                stdout = stdout.decode(errors="replace")
+            if isinstance(stderr, bytes):
+                stderr = stderr.decode(errors="replace")
+            result = subprocess.CompletedProcess(
+                command,
+                124,
+                stdout=stdout,
+                stderr=stderr + f"\nTrial timed out after {TRIAL_TIMEOUT_SECONDS} seconds.\n",
+            )
     finally:
         if remote_stage:
             subprocess.run(["ssh", "-A", remote, "rm", "-rf", "--", remote_stage], check=False)
@@ -214,11 +237,23 @@ def run_trial(trial_id, mode, model, remote=None):
         if event.get("type") == "item.completed" and event.get("item", {}).get("type") == "agent_message":
             final_text = event["item"].get("text", "")
     (run_dir / "final.json").write_text(final_text + ("\n" if final_text else ""))
-    metadata.update({"returncode": result.returncode, "elapsed_seconds": round(elapsed, 3), "usage": parse_usage(events)})
+    usage = parse_usage(events)
+    returncode = result.returncode
+    failure = None
+    if returncode == 0 and (not final_text.strip() or not usage):
+        returncode = 2
+        failure = "Codex exited without a final response and usage record"
+    metadata.update({
+        "returncode": returncode,
+        "process_returncode": result.returncode,
+        "elapsed_seconds": round(elapsed, 3),
+        "usage": usage,
+        "failure": failure,
+    })
     write_json(run_dir / "metadata.json", metadata)
     shutil.rmtree(stage)
-    if result.returncode != 0:
-        raise SystemExit(f"Trial {trial_id} failed with code {result.returncode}")
+    if returncode != 0:
+        raise SystemExit(f"Trial {trial_id} failed with code {returncode}")
 
 
 def main():

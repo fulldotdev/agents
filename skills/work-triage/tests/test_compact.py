@@ -117,7 +117,10 @@ class RunnerQualityTests(unittest.TestCase):
         incremental.save(state, self.path)
 
     def test_empty_run_finishes_checkpoints_without_model(self):
-        with patch.object(run.collect, "triage", side_effect=self.collect), patch.object(run.subprocess, "run") as model:
+        feedback = {"changed": False, "reason": None, "updated_at_ms": 100}
+        with patch.object(run.collect, "triage", side_effect=self.collect), \
+             patch.object(run, "feedback_status", return_value=feedback), \
+             patch.object(run.subprocess, "run") as model:
             self.assertEqual(run.run(self.args), "NO_REPLY")
             model.assert_not_called()
         state = incremental.load(self.path)
@@ -136,9 +139,64 @@ class RunnerQualityTests(unittest.TestCase):
             state.pop("owner")
             incremental.save(state, self.path)
             return subprocess.CompletedProcess(command, 0, json.dumps({"status": "ok", "result": {"payloads": [{"text": "1. Verified report"}], "meta": {}}}), "")
-        with patch.object(run.collect, "triage", side_effect=lambda a: self.collect(a, True)) as collector, patch.object(run.subprocess, "run", side_effect=model):
+        feedback = {"changed": False, "reason": None, "updated_at_ms": 100}
+        with patch.object(run.collect, "triage", side_effect=lambda a: self.collect(a, True)) as collector, \
+             patch.object(run, "feedback_status", return_value=feedback), \
+             patch.object(run.subprocess, "run", side_effect=model):
             self.assertEqual(run.run(self.args), "1. Verified report")
             collector.assert_called_once()
+        self.assertNotIn("triage_feedback_seen_at_ms", incremental.load(self.path))
+
+    def test_new_or_unreadable_triage_feedback_runs_model(self):
+        def model(command, **kwargs):
+            state = incremental.load(self.path)
+            pending.finish(state, state["owner"])
+            state.pop("owner")
+            incremental.save(state, self.path)
+            return subprocess.CompletedProcess(
+                command, 0,
+                json.dumps({"status": "ok", "result": {"payloads": [{"text": "NO_REPLY"}], "meta": {}}}),
+                "",
+            )
+        for feedback in [
+            {"changed": True, "reason": "triage_feedback_changed", "updated_at_ms": 200},
+            {"changed": True, "reason": "triage_feedback_unavailable", "updated_at_ms": None},
+        ]:
+            with self.subTest(feedback=feedback), \
+                 patch.object(run.collect, "triage", side_effect=self.collect), \
+                 patch.object(run, "feedback_status", return_value=feedback), \
+                 patch.object(run.subprocess, "run", side_effect=model):
+                self.assertEqual(run.run(self.args), "NO_REPLY")
+
+    def test_feedback_status_uses_the_triage_session_checkpoint(self):
+        payload = {"sessions": [{"key": run.TRIAGE_SESSION_KEY, "updatedAt": 200}]}
+        response = subprocess.CompletedProcess([], 0, json.dumps(payload), "")
+        with patch.object(run.subprocess, "run", return_value=response):
+            self.assertFalse(run.feedback_status(200)["changed"])
+            self.assertTrue(run.feedback_status(199)["changed"])
+        with patch.object(run.subprocess, "run", side_effect=subprocess.SubprocessError):
+            self.assertEqual(run.feedback_status(200)["reason"], "triage_feedback_unavailable")
+
+    def test_feedback_checkpoint_advances_only_after_model_acknowledgement(self):
+        feedback = {"changed": True, "reason": "triage_feedback_changed", "updated_at_ms": 200}
+        def model(command, **kwargs):
+            prompt = command[command.index("--message") + 1]
+            marker = prompt.split("write exactly 200 to ", 1)[1].split(". Do not write", 1)[0]
+            Path(marker).write_text("200\n")
+            state = incremental.load(self.path)
+            pending.finish(state, state["owner"])
+            state.pop("owner")
+            incremental.save(state, self.path)
+            return subprocess.CompletedProcess(
+                command, 0,
+                json.dumps({"status": "ok", "result": {"payloads": [{"text": "NO_REPLY"}], "meta": {}}}),
+                "",
+            )
+        with patch.object(run.collect, "triage", side_effect=self.collect), \
+             patch.object(run, "feedback_status", return_value=feedback), \
+             patch.object(run.subprocess, "run", side_effect=model):
+            self.assertEqual(run.run(self.args), "NO_REPLY")
+        self.assertEqual(incremental.load(self.path)["triage_feedback_seen_at_ms"], 200)
 
     def test_retained_owner_reaches_recovery_without_automatic_takeover(self):
         state = empty_state()

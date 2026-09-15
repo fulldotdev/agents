@@ -1,0 +1,64 @@
+{
+  "trial_id": "b1",
+  "condition": "compact",
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "high",
+  "sandbox": "read-only",
+  "command": [
+    "codex",
+    "exec",
+    "-",
+    "--model",
+    "gpt-5.6-sol",
+    "--sandbox",
+    "read-only",
+    "--ignore-user-config",
+    "--skip-git-repo-check",
+    "--cd",
+    "/var/folders/t3/32glx_094x31ydb87gs2vt8w0000gn/T/triage-trial-rkd8paar",
+    "--output-schema",
+    "/var/folders/t3/32glx_094x31ydb87gs2vt8w0000gn/T/triage-trial-rkd8paar/output-schema.json",
+    "--json",
+    "--color",
+    "never",
+    "-c",
+    "model_reasoning_effort=\"high\"",
+    "-c",
+    "project_doc_max_bytes=0"
+  ],
+  "remote": null,
+  "instruction_snapshot": {
+    "kind": "working_tree",
+    "files": {
+      "/Users/silveltman/.agents/AGENTS.md": "71c57ad4021216ebee2cf7944de862a963d39e401e5e7730a6f087e7052d1928",
+      "/Users/silveltman/.agents/skills/development/SKILL.md": "df76e49a21d4704ff9098a086c23681972868a78aed3a6b63697c1f80fd95d40",
+      "/Users/silveltman/.agents/skills/work-triage/SKILL.md": "69e7b6b0ec61c964e1d6e3c1fb1f4351e5e2e3b2a33586ac8fdd98c6c5aabb91",
+      "/Users/silveltman/.agents/skills/work-triage/references/media.md": "ad9c25f8460dbc642001fd8cfe9894c663c5312fd2c4c485b7083aff785a29fa",
+      "/Users/silveltman/.agents/skills/work-triage/references/processing.md": "5615d9c0a1b485760f1664e2dd2b39a0adb05b045dee82ca88cbf0de55961f86",
+      "/Users/silveltman/.agents/skills/work-triage/references/t3-routing.md": "01773fa100a79b802f3c27fc4e57602f3dc2f892b40cb69b2c2c5037d232f9b9",
+      "/Users/silveltman/.agents/skills/work-management/SKILL.md": "eb40741c1ec3334017773b7081db93c26354f7620967199435eda071f81a8804",
+      "/Users/silveltman/.agents/skills/work-management/references/timeline.md": "b198b3f427c62752114d53eec7ed02f20a7d2e540dd55bc68aee04bd3cc56978"
+    },
+    "implementation_files": {
+      "/Users/silveltman/.agents/skills/work-triage/scripts/collect.py": "ad7f5bc2f2978062de69e5cc92da5458c16b775cfff7fe17ecdd9a88181260c9",
+      "/Users/silveltman/.agents/skills/work-triage/scripts/compact.py": "ee074bf34bb531120c6e4c089178219677adb526f8c5f0b64cae9e28acd519b6",
+      "/Users/silveltman/.agents/skills/work-triage/scripts/pending.py": "4c8636749971ab7d56c35e5a08d7fa7426829e1086481df26d83eb5ebcf6369e",
+      "/Users/silveltman/.agents/skills/work-triage/scripts/run.py": "59659ec1dad381c796a4fa989b0bf295bdb5cee406e21e07a89ec05234917047"
+    }
+  },
+  "staged_input_hashes": {
+    "compact-index.json": "73ba3c497d434d00f8262eb74510588cd3f772f76f6373f08f927d2b5cfa7a65",
+    "output-schema.json": "1e49f9aadf809c0419879fd15665277d652a0ba771683e0b1919e61e9279b831",
+    "triage.py": "02ba05825f9502dc4af4394a29a6e35656bad597a949a09589bca609615373fd",
+    "task.md": "604d7acd5a30dae7ddbdf91f3c385a9e618412c1174a5c65a126ee1f5ecc82fa",
+    "instructions/development-skill.md": "df76e49a21d4704ff9098a086c23681972868a78aed3a6b63697c1f80fd95d40",
+    "instructions/work-management-skill.md": "eb40741c1ec3334017773b7081db93c26354f7620967199435eda071f81a8804",
+    "instructions/processing.md": "5615d9c0a1b485760f1664e2dd2b39a0adb05b045dee82ca88cbf0de55961f86",
+    "instructions/timeline.md": "b198b3f427c62752114d53eec7ed02f20a7d2e540dd55bc68aee04bd3cc56978",
+    "instructions/media.md": "ad9c25f8460dbc642001fd8cfe9894c663c5312fd2c4c485b7083aff785a29fa",
+    "instructions/work-triage-skill.md": "69e7b6b0ec61c964e1d6e3c1fb1f4351e5e2e3b2a33586ac8fdd98c6c5aabb91",
+    "instructions/agents.md": "71c57ad4021216ebee2cf7944de862a963d39e401e5e7730a6f087e7052d1928",
+    "instructions/t3-routing.md": "01773fa100a79b802f3c27fc4e57602f3dc2f892b40cb69b2c2c5037d232f9b9",
+    ".data/evidence.json": "a79d0fa2570739e1eb4adbbd663403b9427969265ad35ef15444a38842a48573"
+  }
+}

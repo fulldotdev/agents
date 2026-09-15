@@ -16,12 +16,12 @@ Read [media.md](references/media.md) for relevant attachments, [meeting-analysis
 For each twice-daily OpenClaw run:
 
 ```bash
-python3 ~/.agents/skills/work-triage/scripts/collect.py triage --incremental --compact --owner UNIQUE_RUN_ID --format yaml
+python3 ~/.agents/skills/work-triage/scripts/collect.py triage --incremental --owner UNIQUE_RUN_ID --format yaml
 ```
 
 Follow [processing.md](references/processing.md) for ownership, durable actions, acknowledgments, checkpoints, interrupted runs and report delivery. Each run refreshes context from yesterday at 00:00 Europe/Amsterdam through now, including outgoing messages; unfinished fetch windows can extend it. Windows are half-open: `after <= item < before`. The action ledger retains older pending work and deduplicates acknowledged revisions. Visible context does not authorize repeating actions.
 
-When the scheduler supplies an already collected owner and state file, resume it with `queue status --compact` instead of collecting again. Compact output contains the complete record index and source/event headers; previews are not decision evidence. Use `queue show --event ID` (repeatable) for pending evidence and `queue context --lane LANE --id ID` or `--query TEXT` for related records and already handled/outgoing context. Batch independent reads. These commands read the persisted full snapshot; destination bodies and current source details still require the relevant source tools.
+When the scheduler supplies an already collected owner and state file, read `queue status` once instead of collecting again. Use `queue show --event ID` or `queue context --lane LANE --id ID` for a later focused reread; do not reload unchanged full state. `queue status --compact` is available for focused inspection, but its previews are not decision evidence. Destination bodies and current source details still require the relevant source tools.
 
 Read-only validation adds `--no-commit-state --state-file /absolute/isolated/cursors.json`; this also skips WhatsApp media recovery so sync is not interrupted. Explicit `--after`/`--before` bound reconciliation. A focused read uses:
 

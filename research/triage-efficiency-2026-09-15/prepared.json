@@ -37,6 +37,16 @@
       "c2",
       "compact",
       "gpt-5.6-terra"
+    ],
+    [
+      "d1",
+      "full",
+      "gpt-5.6-terra"
+    ],
+    [
+      "d2",
+      "full",
+      "gpt-5.6-terra"
     ]
   ]
 }
