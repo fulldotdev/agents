@@ -6,16 +6,16 @@ Otis uses OpenClaw for Telegram, Discord, Slack and scheduled work. Normal turns
 
 - OpenCode Go uses the same account on both Macs. Its API key stays in machine-local OpenCode auth and the OpenClaw credential store, never Git. OpenCode 1.18.31 is installed at `~/.opencode/bin/opencode` on both machines; its model defaults to GLM 5.3 Flash with `reasoningEffort: high`.
 - OpenClaw's bundled `opencode-go` provider is enabled. Its GLM model entry explicitly records the official endpoint, capabilities and supported reasoning efforts because catalog discovery alone did not make the new model executable in 2026.9.4.
-- Default chat, utility text, image understanding and PDF analysis use GLM. Subagents inherit their caller's model with high thinking. All agent cron jobs inherit the default. Automatic triage passes `opencode-go/glm-5.3-flash` with high thinking explicitly, from the 16 September 17:00 run onward; the triage instructions were rewritten in plain steps for it. T3 development model choices remain independent.
-- Sol is a temporary automatic model fallback during the rollout. It does not automatically rescue a failed browser/tool call. Keep the fallback until real runs have been reviewed; Astra and Sol remain available for explicit recovery.
+- Default chat, utility text, image understanding and PDF analysis use GLM with high thinking. Subagents inherit their caller's model. All agent cron jobs inherit the default; triage passes GLM explicitly. There is no automatic fallback model. T3 development model choices remain independent.
 - Native OpenClaw loads `.agents/AGENTS.md` through `bootstrap-extra-files`, with workspace and cwd `/Users/otis` and `skipBootstrap: true`. This preserves the canonical file without copying or editing it.
-- The bundled `document-extract` plugin is enabled (added to `plugins.allow`) since 16 September so GLM's `pdf` tool can read attachments; the first GLM triage run failed on PDFs without it. Media paths must stay under `/Users/otis`, not `/tmp`.
-- Chrome uses OpenClaw's bundled browser plugin, profile `user`, driver `existing-session`, attach-only, targeting the existing default Chrome profile. Chrome's attach consent is required. The official app `cua_repl` was tested through generic MCP but browser calls failed without Codex turn metadata; that experimental mapping was removed. Codex-specific desktop/browser tools are not established GLM capabilities.
-- Verification receipts and rollback configuration: `~/backups/openclaw-glm-20260915`. GLM executed shell and read-only collection across all nine intake/context lanes. High thinking was verified in request metadata and an API response with reasoning content. Existing triage checks: 72 passed.
-- The frozen synthetic benchmark scored 50/80 with the original output wording, then 77/80 and 74/80 with an explicit serialization contract. Both revised runs got all decisions, reports, evidence and batch checks right. The repeat omitted reconciliation for an uncertain prepared write (kept pending, without proposing a duplicate write) and had five target mismatches. Sil chose to move triage to GLM anyway on 16 September, with clearer instructions and review of real runs. These are prompt-adaptation results, not a directly comparable model ranking. The first two attempts lacked instruction filenames and are excluded.
-- Read-only rollout reviews are scheduled for 17 and 23 September at 18:00 Europe/Amsterdam. They must not remove the fallback or change models automatically.
+- The bundled `document-extract` plugin is enabled (added to `plugins.allow`) so GLM's `pdf` tool can read attachments. Media paths must stay under `/Users/otis`, not `/tmp`.
+- Chrome uses OpenClaw's bundled browser plugin, profile `user`, driver `existing-session`, attach-only, targeting the existing default Chrome profile. Chrome's attach consent is required. Codex-specific desktop/browser tools are not established GLM capabilities.
 
-The Codex-specific details below describe the retained fallback setup and earlier verification, not the normal GLM runtime.
+## Work triage
+
+The `work-triage` cron job runs `~/.agents/skills/work-triage/scripts/run.py` at 07:00, 12:00 and 17:00 Europe/Amsterdam and delivers the final answer to the Telegram Triage chat. The runner collects everything new since the previous run, writes one batch file under `~/.local/state/fulldev/work-triage/`, hands it to GLM through `openclaw agent`, and keeps only per-source timestamps, the report number and items the agent asked to retry in `state.json`. A batch with nothing new skips the model. A launchd watchdog (`com.fulldev.work-triage-watchdog`) checks every five minutes that the gateway is up and the job ran on time.
+
+The Codex-specific details below describe the Codex runtime that stays available for explicit use, not the normal GLM runtime.
 
 ## Shared configuration
 
@@ -45,7 +45,7 @@ The Codex-specific details below describe the retained fallback setup and earlie
 - Chat-owned automation creation, manual execution and removal were verified through the native `automations` tool. This does not establish unrestricted scheduler administration: OpenClaw grants cross-session management to fresh authenticated Control UI administrators, not Telegram owner IDs. See <https://docs.openclaw.ai/automation/cron-jobs/managing-jobs>.
 - A remaining limitation in OpenClaw 2026.9.4: the tested chat-created isolated cron stored a finite default tool cap. Its run had native Codex/Astra and filesystem access but lacked `cua_repl` and the native skills catalog. Requesting `toolsAllow: ["*"]` through the creator's automation tool did not broaden the stored cap. Do not claim that chat-created crons inherit all interactive native tools. The existing migrated operator jobs retain their original explicit full tool policies. No scheduler authority or OS lock checks were bypassed.
 
-- Triage cursor and watchdog state: `~/.local/state/fulldev/work-triage`. Watchdog stdout/stderr logs live in its `logs` subdirectory. Existing pending batches and source cursors were transferred, not reset. Temporary output uses `~/.cache/fulldev/work-triage`; retired runtime paths must not be used.
+- Triage state and watchdog logs: `~/.local/state/fulldev/work-triage`. Temporary output uses `~/.cache/fulldev/work-triage`.
 - Two command automations: `~/.local/share/fulldev/automations`. The refund dedupe state is in `~/.local/state/fulldev/automations`; WhatsApp monitoring retains `.wacli/watchdog-state.json`.
 - Video transcription: `~/.local/share/fulldev/video-venv/bin/python`.
 - Historical job migration identifiers are in `~/backups/openclaw-migration-20260911/cron-map.json`. Use the authenticated administrator Automations page for the current inventory.
@@ -66,7 +66,7 @@ For Computer Use, run an OpenClaw native turn on a local test page, follow the i
 
 ## Recovery
 
-Use the retained OpenClaw configuration and state backups under `~/backups/openclaw-migration-20260911`. Preserve current Notion batches, send claims, receipts and source cursors when recovering. Reconcile uncertain deliveries before retrying any send. Old verification reports describe their dated state, not the current installation.
+Use the retained OpenClaw configuration and state backups under `~/backups/openclaw-migration-20260911`. Old verification reports describe their dated state, not the current installation.
 
 ## Known limitation and verification history
 

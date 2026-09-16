@@ -13,7 +13,7 @@ Without an explicit instruction from Sil to proceed, automatic feedback dispatch
 
 Do not automatically revive a settled thread, including one referenced by an older pending event. Explicit new authorization from Sil is required to revisit it. Do not automatically create a thread or reopen completed work merely because a client makes a new proposal. Prepare source-grounded context when the gate does not pass. Report only an outcome allowed by the main skill, not every declined dispatch.
 
-Use `work-management` to append the exact new source to the Task before dispatch, and `t3-code` for the helper commands. Keep at most one owning thread per Task. Journal the action before the external call; on interruption inspect the existing thread before retrying.
+Use `work-management` to append the exact new source to the Task before dispatch, and `t3-code` for the helper commands. Keep at most one owning thread per Task. Before starting a thread, check the Task and the open T3 threads in the index for one that already exists.
 
 The handoff briefly explains the automatic trigger, the new feedback, and the expected result. Derive the current brief from the Task's history and latest source, including superseded decisions. Include source links, scope, repository/branch, and Sil's authorization limits. Pass through actual task requirements; do not add development workflow, testing, review, or preview instructions. The executing thread owns those decisions through its applicable skills and repository instructions.
 

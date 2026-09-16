@@ -1,42 +1,64 @@
 #!/usr/bin/env python3
-"""Collect once, skip proven-empty batches, otherwise run the OpenClaw agent."""
+"""Collect everything new since the last run, hand it to the OpenClaw agent, keep what must come back."""
 
 import argparse
 import json
+import os
+import re
 import subprocess
 import sys
 import time
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from uuid import uuid4
 
 import collect
-import compact
-import incremental
-import pending
+from common import iso_utc, parse_iso, yaml_lines
 
-TRIAGE_SESSION_KEY = "agent:main:telegram:group:-1003914987491"
+STATE_DIR = Path(os.environ.get("WORK_TRIAGE_STATE_DIR", Path.home() / ".local/state/fulldev/work-triage")).expanduser()
+STATE_FILE = STATE_DIR / "state.json"
+LOCK_FILE = STATE_DIR / "run.lock"
+BATCH_FILE = STATE_DIR / "batch.yaml"
+TRIAGE_CHAT = "-1003914987491"
+TRIAGE_SESSION_KEY = f"agent:main:telegram:group:{TRIAGE_CHAT}"
+FIRST_RUN_HOURS = 24
+RETRY_LINE = re.compile(r"^\s*RETRY:\s*(\S+)\s*(.*?)\s*$")
+NUMBERED_LINE = re.compile(r"^\s*(\d+)\.\s")
 
 
-def feedback_status(last_seen):
-    """Return a fail-closed checkpoint for direct feedback in the Triage chat."""
+def load_state():
+    if not STATE_FILE.exists():
+        return {"lanes": {}, "retry": [], "last_number": 0}
+    return json.loads(STATE_FILE.read_text())
+
+
+def save_state(state):
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    tmp = STATE_FILE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n")
+    os.replace(tmp, STATE_FILE)
+
+
+def lock():
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    if LOCK_FILE.exists():
+        try:
+            os.kill(int(LOCK_FILE.read_text().strip()), 0)
+            return False
+        except (ValueError, ProcessLookupError, PermissionError):
+            pass
+    LOCK_FILE.write_text(str(os.getpid()))
+    return True
+
+
+def triage_chat_updated_at():
+    """Timestamp of the last activity in the Triage chat, or None when unavailable."""
     try:
-        result = subprocess.run(
-            ["openclaw", "sessions", "--agent", "main", "--limit", "all", "--json"],
-            text=True,
-            capture_output=True,
-            timeout=30,
-            check=True,
-        )
+        result = subprocess.run(["openclaw", "sessions", "--agent", "main", "--limit", "all", "--json"],
+                                text=True, capture_output=True, timeout=30, check=True)
         sessions = json.loads(result.stdout).get("sessions") or []
-        session = next(item for item in sessions if item.get("key") == TRIAGE_SESSION_KEY)
-        updated_at = int(session["updatedAt"])
+        return int(next(s["updatedAt"] for s in sessions if s.get("key") == TRIAGE_SESSION_KEY))
     except (subprocess.SubprocessError, ValueError, TypeError, KeyError, StopIteration, json.JSONDecodeError):
-        return {"changed": True, "reason": "triage_feedback_unavailable", "updated_at_ms": None}
-    return {
-        "changed": last_seen is None or updated_at > last_seen,
-        "reason": "triage_feedback_changed" if last_seen is None or updated_at > last_seen else None,
-        "updated_at_ms": updated_at,
-    }
+        return None
 
 
 def final_text(envelope):
@@ -45,145 +67,137 @@ def final_text(envelope):
     result = envelope.get("result", envelope)
     meta = result.get("meta") or {}
     payloads = result.get("payloads") or []
-    if meta.get("aborted") or meta.get("error") or meta.get("yielded") or any(p.get("isError") for p in payloads):
-        raise RuntimeError("Agent returned an incomplete or failed triage run; retain the batch for recovery")
+    if meta.get("aborted") or meta.get("error") or any(p.get("isError") for p in payloads):
+        raise RuntimeError("Agent returned an incomplete or failed run")
     text = "\n".join(p["text"] for p in payloads if p.get("text") and not p.get("isReasoning")).strip()
     if not text:
-        raise RuntimeError("Agent returned no final text; delivery outcome is unknown")
+        raise RuntimeError("Agent returned no final text")
     return text
+
+
+def split_output(text, known_items):
+    """Separate the report from RETRY lines; attach the batch item to each retry."""
+    report, retries = [], []
+    for line in text.splitlines():
+        match = RETRY_LINE.match(line)
+        if match:
+            ref, note = match.group(1).rstrip(".,;:"), match.group(2)
+            retries.append({"ref": ref, "note": note, "item": known_items.get(ref)})
+        else:
+            report.append(line)
+    report_text = "\n".join(report).strip()
+    return ("" if report_text == "NO_REPLY" else report_text), retries
 
 
 def run(args):
     started = time.monotonic()
-    path = Path(args.state_file or incremental.DEFAULT_STATE_FILE).expanduser()
-    owner = "triage-" + uuid4().hex
-    with pending.locked(path) as state:
-        previous_owner = state.get("owner")
-    if previous_owner:
-        decision = {"run_model": True, "reasons": ["retained_owner_requires_recovery"]}
-        feedback = {"changed": True, "reason": "retained_owner_requires_recovery", "updated_at_ms": None}
-    else:
-        collection_args = collect.build_parser().parse_args([
-            "triage", "--incremental", "--owner", owner, "--state-file", str(path),
-        ])
-        collect.triage(collection_args)
-        with pending.locked(path) as state:
-            pending.require_owner(state, owner)
-            last_feedback = state.get("triage_feedback_seen_at_ms")
-        feedback = feedback_status(last_feedback)
-        with pending.locked(path) as state:
-            pending.require_owner(state, owner)
-            decision = compact.gate(state)
-            if feedback["changed"]:
-                decision["run_model"] = True
-                decision["reasons"].append(feedback["reason"])
-            if not decision["run_model"]:
-                pending.finish(state, owner)
-                state.pop("owner")
-                incremental.save(state, path)
-    receipt = {"owner": owner, "model": args.model, "thinking": args.thinking,
-               "gate": decision, "feedback": feedback}
-    if not decision["run_model"]:
-        receipt.update(status="empty", duration_seconds=round(time.monotonic() - started, 2))
-        write_receipt(path, receipt)
-        return "NO_REPLY"
-    skill = Path(__file__).resolve().parents[1]
-    prompt = (skill / "references/cron-prompt.txt").read_text()
-    if previous_owner:
-        prompt += (
-            f"\nRecovery required: state {path} is still owned by {previous_owner}. No collection or "
-            "takeover was performed. Verify that worker has stopped using native session and cron run "
-            "history before claiming its queue. Age alone is not proof. If it is still active or its "
-            "status is uncertain, do not take over or write external data. Once verified stopped, use "
-            f"queue claim --owner {owner} --previous-owner {previous_owner}, then collect with "
-            f"triage --incremental --owner {owner} --state-file {path}. "
-        )
-    else:
-        prompt += (
-            "\nCollection has already completed and the full evidence is persisted. "
-            "Do not collect a second time unless you identify stale evidence. "
-        )
-    prompt += (
-        "This is the authorized scheduled triage worker. "
-        f"Use owner {owner}, state file {path}, and read queue status once. Use queue show/context "
-        "for full evidence. Pass this --state-file to every queue command. Finish and release this owner "
-        "under the processing protocol. Read recent Triage chat history from telegram:-1003914987491 "
-        "when reconciling feedback or delivery. Return only the final report or NO_REPLY; "
-        "the existing work-triage scheduler delivers it. Do not send a separate report."
-    )
-    feedback_ack = None
-    if feedback["changed"] and feedback["updated_at_ms"] is not None:
-        feedback_ack = path.parent / "logs" / "feedback" / f"{owner}.txt"
-        feedback_ack.parent.mkdir(parents=True, exist_ok=True)
-        feedback_ack.unlink(missing_ok=True)
-        prompt += (
-            f" New Triage chat activity through stored session timestamp {feedback['updated_at_ms']} caused this run. "
-            "Read and reconcile that chat feedback. Only after it is fully inspected and handled or durably retained, "
-            f"write exactly {feedback['updated_at_ms']} to {feedback_ack}. Do not write this acknowledgement if chat "
-            "history is unavailable or any feedback would otherwise be lost."
-        )
-    elif feedback["reason"] == "triage_feedback_unavailable":
-        prompt += (
-            " The Triage chat checkpoint was unavailable, so this run may not be skipped. Read and reconcile the "
-            "recent chat, but do not claim its checkpoint was advanced."
-        )
-    remaining = max(1, args.timeout - int(time.monotonic() - started))
-    command = [
-        "openclaw", "agent", "--agent", "main", "--session-key", f"agent:main:triage:{owner}",
-        "--model", args.model, "--thinking", args.thinking, "--timeout", str(remaining),
-        "--message", prompt, "--json",
-    ]
+    state = load_state()
+    now = datetime.now(timezone.utc)
+    windows = {
+        lane: (parse_iso((state["lanes"].get(lane) or {}).get("since")) or now - timedelta(hours=FIRST_RUN_HOURS), now)
+        for lane in collect.SOURCES
+    }
+    collected = collect.batch(windows)
+    failures = state.get("lane_failures") or {}
+    for lane in list(failures):
+        if lane not in collected["failed"]:
+            failures.pop(lane)
+    for lane, error in collected["failed"].items():
+        failures[lane] = {"error": error, "consecutive": (failures.get(lane) or {}).get("consecutive", 0) + 1}
+    state["lane_failures"] = failures
+
+    retry = state.get("retry") or []
+    chat_ms = triage_chat_updated_at()
+    chat_changed = chat_ms is None or chat_ms > (state.get("triage_chat_seen_ms") or 0)
+    new_count = sum(len(items) for items in collected["items"].values())
+    receipt = {"started_at": iso_utc(now), "model": args.model, "thinking": args.thinking,
+               "new_items": new_count, "retry": len(retry), "chat_changed": chat_changed,
+               "lanes_failed": collected["failed"]}
+
+    def advance():
+        for lane in collect.SOURCES:
+            if lane not in collected["failed"]:
+                state["lanes"][lane] = {"since": iso_utc(now)}
+
+    if new_count == 0 and not retry and not chat_changed:
+        advance()
+        save_state(state)
+        return write_receipt(receipt, "empty", started, "NO_REPLY")
+
+    number = (state.get("last_number") or 0) + 1
+    batch = {
+        "collected_at": iso_utc(now),
+        "window": {lane: {"since": iso_utc(a), "until": iso_utc(b)} for lane, (a, b) in windows.items()},
+        "report_numbering_starts_at": number,
+        "triage_chat_changed": chat_changed,
+        "lanes_failed": failures,
+        "retry": retry,
+        "items": collected["items"],
+        "index": collected["index"],
+    }
+    BATCH_FILE.write_text("\n".join(yaml_lines(batch)) + "\n")
+    if args.dry_run:
+        return write_receipt(receipt, "dry-run", started, f"Batch written to {BATCH_FILE} ({BATCH_FILE.stat().st_size:,} bytes)")
+
+    prompt = (Path(__file__).resolve().parents[1] / "references/cron-prompt.txt").read_text().strip()
+    prompt += f"\n\nBatch file: {BATCH_FILE} (read it once). Start report numbering at {number}."
+    if chat_changed:
+        prompt += " The Triage chat changed since the last run: read Sil's recent messages there first."
+    prompt += " Return only the numbered report, or NO_REPLY when there is nothing to report. Put RETRY lines last."
+    remaining = max(60, args.timeout - int(time.monotonic() - started))
+    command = ["openclaw", "agent", "--agent", "main", "--session-key", f"agent:main:triage:{now.strftime('%Y%m%dT%H%M%SZ')}",
+               "--model", args.model, "--thinking", args.thinking, "--timeout", str(remaining), "--message", prompt, "--json"]
     try:
-        response = subprocess.run(command, text=True, capture_output=True,
-                                  timeout=remaining + 30, check=True)
-        envelope = json.loads(response.stdout)
-        text = final_text(envelope)
-        feedback_acknowledged = False
-        if feedback_ack:
-            try:
-                feedback_acknowledged = feedback_ack.read_text().strip() == str(feedback["updated_at_ms"])
-            except OSError:
-                pass
-        with pending.locked(path) as state:
-            if state.get("pending") or state.get("owner"):
-                raise RuntimeError("Agent returned before finishing and releasing its triage batch")
-            if feedback_acknowledged:
-                state["triage_feedback_seen_at_ms"] = feedback["updated_at_ms"]
-                incremental.save(state, path)
-        receipt["feedback_acknowledged"] = feedback_acknowledged
-        receipt.update(status="completed", meta=(envelope.get("result", envelope).get("meta") or {}))
-        return text
+        response = subprocess.run(command, text=True, capture_output=True, timeout=remaining + 30, check=True)
+        text = final_text(json.loads(response.stdout))
     except (subprocess.SubprocessError, ValueError, RuntimeError) as exc:
-        receipt.update(status="error", error=type(exc).__name__)
-        raise RuntimeError(f"Triage worker {owner} failed; inspect its native session and retained queue before retrying") from exc
-    finally:
-        if feedback_ack:
-            feedback_ack.unlink(missing_ok=True)
-        receipt["duration_seconds"] = round(time.monotonic() - started, 2)
-        write_receipt(path, receipt)
+        save_state(state)
+        write_receipt(receipt, "error", started, type(exc).__name__)
+        raise RuntimeError("Triage agent failed; nothing was marked as handled, the next run retries") from exc
+
+    known = {item["ref"]: item for items in collected["items"].values() for item in items}
+    known.update({r["ref"]: r.get("item") for r in retry})
+    report, retries = split_output(text, known)
+    numbers = [int(m.group(1)) for m in map(NUMBERED_LINE.match, report.splitlines()) if m]
+    if numbers:
+        state["last_number"] = max(numbers)
+    state["retry"] = retries
+    if chat_ms:
+        state["triage_chat_seen_ms"] = chat_ms
+    advance()
+    save_state(state)
+    receipt["retry_after"] = len(retries)
+    return write_receipt(receipt, "completed", started, report or "NO_REPLY")
 
 
-def write_receipt(path, receipt):
-    directory = path.parent / "logs" / "runs"
+def write_receipt(receipt, status, started, output):
+    receipt.update(status=status, duration_seconds=round(time.monotonic() - started, 1))
+    directory = STATE_DIR / "logs/runs"
     directory.mkdir(parents=True, exist_ok=True)
-    (directory / (receipt["owner"] + ".json")).write_text(json.dumps(receipt, indent=2) + "\n")
+    (directory / (receipt["started_at"].replace(":", "") + ".json")).write_text(json.dumps(receipt, indent=2) + "\n")
+    return output
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--state-file")
     parser.add_argument("--model", default="opencode-go/glm-5.3-flash")
     parser.add_argument("--thinking", default="high")
     parser.add_argument("--timeout", type=int, default=3600)
+    parser.add_argument("--dry-run", action="store_true", help="collect and write the batch file, no agent, no state change")
     args = parser.parse_args()
+    if not lock():
+        print("Previous triage run is still active; skipping this one", file=sys.stderr)
+        return 0
     try:
         result = run(args)
         if result != "NO_REPLY":
             print(result)
-    except (ValueError, RuntimeError) as exc:
+        return 0
+    except RuntimeError as exc:
         print(str(exc), file=sys.stderr)
         return 1
-    return 0
+    finally:
+        LOCK_FILE.unlink(missing_ok=True)
 
 
 if __name__ == "__main__":

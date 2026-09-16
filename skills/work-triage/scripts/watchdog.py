@@ -1,152 +1,97 @@
 #!/usr/bin/env python3
-"""Check triage scheduling and processing independently of the gateway."""
-import argparse
+"""Every five minutes: is the gateway up, is the triage job scheduled, did the last run finish on time?"""
+
 import json
 import os
-import subprocess
 import sqlite3
+import subprocess
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-OPENCLAW_DIR = Path(os.environ.get('OPENCLAW_STATE_DIR', Path.home() / '.openclaw')).expanduser()
-STATE_DIR = Path.home() / '.local/state/fulldev/work-triage'
-TRIAGE_FILE = Path(os.environ.get('WORK_TRIAGE_STATE_FILE', STATE_DIR / 'cursors.json'))
-STATUS_FILE = STATE_DIR / 'watchdog-status.json'
-ALERT_TARGET = os.environ.get('WORK_TRIAGE_ALERT_TARGET', 'telegram:-1003914987491')
-MAX_AGE = 45 * 60
+OPENCLAW_DIR = Path(os.environ.get("OPENCLAW_STATE_DIR", Path.home() / ".openclaw")).expanduser()
+STATE_DIR = Path.home() / ".local/state/fulldev/work-triage"
+STATUS_FILE = STATE_DIR / "watchdog-status.json"
+ALERT_TARGET = os.environ.get("WORK_TRIAGE_ALERT_TARGET", "telegram:-1003914987491").removeprefix("telegram:")
+GRACE = 45 * 60
 
 
-def timestamp(value):
-    return datetime.fromisoformat(value.replace('Z', '+00:00')).timestamp() if value else None
+def gateway_ok():
+    result = subprocess.run(["openclaw", "health", "--json"], capture_output=True, text=True, timeout=30)
+    return result.returncode == 0 and json.loads(result.stdout).get("ok") is True
 
 
-def gateway_health(current):
-    result = subprocess.run(['openclaw', 'health', '--json'], capture_output=True, text=True, timeout=30)
-    if result.returncode:
-        return {'ok': False, 'error': 'OpenClaw health request failed'}
-    value = json.loads(result.stdout)
-    return {'ok': value.get('ok') is True}
-
-
-def cron_health(current):
-    job = openclaw_job()
-    config = json.loads((OPENCLAW_DIR / 'openclaw.json').read_text())
-    scheduler = config.get('cron', {}).get('enabled', True)
-    state = job.get('state', {})
-    due = state.get('nextRunAtMs')
-    started = state.get('runningAtMs')
-    running = started is not None and current * 1000 - started <= MAX_AGE * 1000
-    paused = not job.get('enabled') or not scheduler
-    return {'ok': not paused and (running or due is not None and due >= (current - 300) * 1000),
-            'paused': paused, 'running': running, 'next_run_at_ms': due,
-            'last_status': state.get('lastStatus')}
-
-
-def openclaw_job():
-    database = OPENCLAW_DIR / 'state/openclaw.sqlite'
-    with sqlite3.connect(f'file:{database}?mode=ro', uri=True) as connection:
-        rows = connection.execute('SELECT job_json,state_json FROM cron_jobs WHERE name=?', ('work-triage',)).fetchall()
+def triage_job():
+    with sqlite3.connect(f"file:{OPENCLAW_DIR / 'state/openclaw.sqlite'}?mode=ro", uri=True) as connection:
+        rows = connection.execute("SELECT job_json, state_json FROM cron_jobs WHERE name=?", ("work-triage",)).fetchall()
     if len(rows) != 1:
-        raise ValueError('Missing or duplicate OpenClaw triage automation')
+        raise ValueError("Missing or duplicate work-triage job")
     job = json.loads(rows[0][0])
-    job['state'] = json.loads(rows[0][1])
+    job["state"] = json.loads(rows[0][1])
     return job
 
 
-def processing_due(current):
-    """Latest daily slot whose processing grace has elapsed, from the actual job."""
-    job = openclaw_job()
-    schedule = job.get('schedule') or {}
-    if schedule.get('kind') != 'cron':
-        return current - MAX_AGE
-    minute, hours, day, month, weekday = schedule['expr'].split()
-    if (day, month, weekday) != ('*', '*', '*'):
-        raise ValueError('Processing watchdog requires a daily cron schedule')
-    local = datetime.fromtimestamp(current, ZoneInfo('Europe/Amsterdam'))
-    candidates = [
-        (local - timedelta(days=offset)).replace(
-            hour=int(hour), minute=int(minute), second=0, microsecond=0
-        ).timestamp()
-        for offset in (0, 1, 2) for hour in hours.split(',')
-    ]
-    return max(slot for slot in candidates if slot + MAX_AGE <= current)
-
-
-def processing_health(current):
-    value = json.loads(TRIAGE_FILE.read_text())
-    batch = value.get('pending') or {}
-    finished = timestamp(value.get('last_finished_at'))
-    # Collection is not completion. Allow each scheduled cycle its full grace.
-    due = processing_due(current)
-    anchor = finished
-    return {'ok': bool(anchor) and anchor >= due,
-            'required_finished_since': datetime.fromtimestamp(due, timezone.utc).isoformat(),
-            'last_finished_at': value.get('last_finished_at'),
-            'age_seconds': current - anchor if anchor else None,
-            'pending_count': sum(e.get('status') != 'done' for e in batch.get('events', {}).values()),
-            'deferred_count': len(value.get('backlog') or {})}
+def latest_due_slot(job, current):
+    """The most recent scheduled slot whose grace period has passed."""
+    minute, hours, *_ = job["schedule"]["expr"].split()
+    local = datetime.fromtimestamp(current, ZoneInfo("Europe/Amsterdam"))
+    slots = [(local - timedelta(days=d)).replace(hour=int(h), minute=int(minute), second=0, microsecond=0).timestamp()
+             for d in (0, 1, 2) for h in hours.split(",")]
+    return max(slot for slot in slots if slot + GRACE <= current)
 
 
 def inspect(current):
-    status = {'checked_at': datetime.fromtimestamp(current, timezone.utc).isoformat()}
-    for name, read in [('gateway', gateway_health), ('cron', cron_health), ('processing', processing_health)]:
-        try:
-            status[name] = read(current)
-        except Exception as exc:
-            status[name] = {'ok': False, 'error': str(exc)}
-    status['paused'] = status['cron'].get('paused', False)
-    status['ok'] = all(status[name]['ok'] for name in ['gateway', 'cron', 'processing'])
+    status = {"checked_at": datetime.fromtimestamp(current, timezone.utc).isoformat(), "problems": []}
+    try:
+        status["gateway_ok"] = gateway_ok()
+    except Exception as exc:
+        status["gateway_ok"], status["gateway_error"] = False, str(exc)
+    if not status["gateway_ok"]:
+        status["problems"].append("gateway")
+    try:
+        job = triage_job()
+        state = job["state"]
+        status["paused"] = not job.get("enabled", True)
+        running = state.get("runningAtMs") and current * 1000 - state["runningAtMs"] <= GRACE * 1000
+        status["cron_ok"] = status["paused"] or bool(running) or (state.get("nextRunAtMs") or 0) >= (current - 300) * 1000
+        if not status["cron_ok"]:
+            status["problems"].append("cron")
+        last_run = state.get("lastRunAtMs") or 0
+        status["run_ok"] = status["paused"] or bool(running) or (
+            last_run / 1000 >= latest_due_slot(job, current) and state.get("lastRunStatus") == "ok")
+        if not status["run_ok"]:
+            status["problems"].append("run")
+    except Exception as exc:
+        status.update(paused=False, cron_ok=False, run_ok=False, cron_error=str(exc))
+        status["problems"].append("cron")
+    status["ok"] = not status["problems"]
     return status
 
 
-def message(status):
-    if not status['gateway']['ok']:
-        return 'OpenClaw gateway is unavailable. The triage watchdog attempted a restart; check gateway health if triage does not resume.'
-    if not status['cron']['ok']:
-        return 'Triage automation is missing, duplicated or overdue. Check OpenClaw cron status and work-triage. Preserve the pending queue when recovering.'
-    return 'Triage has not completed processing recently. Check its current cron run and pending batch. Source collection alone does not mean the work finished.'
+MESSAGES = {
+    "gateway": "OpenClaw gateway is down. The triage watchdog restarted it; check gateway health if triage does not resume.",
+    "cron": "The work-triage job is missing, disabled or overdue. Check `openclaw cron list` on Otis.",
+    "run": "The last scheduled triage run did not finish successfully. Check `openclaw cron runs --id <work-triage>` on Otis.",
+}
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--check', action='store_true', help='Read only; no restart, alert or status write')
-    args = parser.parse_args()
     status = inspect(time.time())
-    if args.check:
-        print(json.dumps(status))
-        return 0 if status['ok'] or status['paused'] else 2
-    previous = {}
-    if STATUS_FILE.exists():
-        try:
-            previous = json.loads(STATUS_FILE.read_text())
-        except (ValueError, OSError):
-            pass
-    if not status['ok'] and not status['paused']:
-        alert_text = message(status)
-        if previous.get('alert_text') != alert_text or not previous.get('alert_sent'):
-            if not status['gateway']['ok']:
-                try:
-                    subprocess.run(['openclaw', 'gateway', 'restart'], capture_output=True, text=True, timeout=90)
-                except (OSError, subprocess.TimeoutExpired):
-                    pass
-            try:
-                command = ['openclaw', 'message', 'send', '--channel', 'telegram', '--target', ALERT_TARGET.removeprefix('telegram:'), '--message', alert_text, '--json']
-                result = subprocess.run(command, capture_output=True, text=True, timeout=45)
-                sent = result.returncode == 0
-            except (OSError, subprocess.TimeoutExpired):
-                sent = False
-            status.update(alert_text=alert_text, alert_sent=sent)
-        else:
-            status.update(alert_text=alert_text, alert_sent=True)
+    previous = json.loads(STATUS_FILE.read_text()) if STATUS_FILE.exists() else {}
+    if not status["ok"] and not status.get("paused"):
+        text = MESSAGES[status["problems"][0]]
+        if previous.get("alert_text") != text:
+            if "gateway" in status["problems"]:
+                subprocess.run(["openclaw", "gateway", "restart"], capture_output=True, text=True, timeout=90)
+            subprocess.run(["openclaw", "message", "send", "--channel", "telegram", "--target", ALERT_TARGET,
+                            "--message", text, "--json"], capture_output=True, text=True, timeout=45)
+        status["alert_text"] = text
     STATUS_FILE.parent.mkdir(parents=True, exist_ok=True)
-    temporary = STATUS_FILE.with_suffix('.tmp')
-    temporary.write_text(json.dumps(status, indent=2) + '\n')
-    os.replace(temporary, STATUS_FILE)
+    STATUS_FILE.write_text(json.dumps(status, indent=2) + "\n")
     print(json.dumps(status))
-    return 0 if status['ok'] or status['paused'] else 2
+    return 0 if status["ok"] or status.get("paused") else 2
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     raise SystemExit(main())

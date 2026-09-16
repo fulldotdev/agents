@@ -381,6 +381,7 @@ def collect_workspace(a,b,query,config):
         "workspace_name": identity.get("team") or _workspace["workspace_name"],
         "workspace_id": identity.get("team_id"),
         "workspace_url": identity.get("url"),
+        "self_user_id": identity.get("user_id"),
     })
     _users = load_users()
     items = []

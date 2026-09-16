@@ -1,341 +1,239 @@
 #!/usr/bin/env python3
-"""Single public CLI for recurring work-triage collection."""
+"""Collect new work for one triage run, or read one source in detail."""
 
 import argparse
-import copy
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
-from zoneinfo import ZoneInfo
 
 import calendar as calendar_source
-import compact
 import gmail
-import incremental
 import meetings
 import notion
-import pending
 import slack
 import t3_threads
 import whatsapp
 from common import (
-    DEFAULT_CALENDAR_ACCOUNTS, DEFAULT_GMAIL_ACCOUNTS, MAX_ITEMS_PER_LANE,
-    base_result, emit, error_obj,
-    iso_utc, window_from_args,
+    DEFAULT_GMAIL_ACCOUNTS, MAX_ITEMS_PER_LANE, base_result, emit, error_obj, iso_utc, parse_iso,
+    window_from_args,
 )
 
 SOURCES = ("gmail", "slack", "whatsapp", "calendar", "meetings", "t3_threads")
-TRIAGE_TZ = ZoneInfo("Europe/Amsterdam")
+UPCOMING_CALENDAR_DAYS = 2
 
 
-def output_args(parser):
-    parser.add_argument("--format", choices=["json", "yaml"], default="json")
-    parser.add_argument("--pretty", action="store_true")
+def with_refs(lane, items, key):
+    for item in items:
+        item["ref"] = f"{lane}:{item.get(key)}"
+    return items
 
 
-def window_args(parser, required=False):
-    parser.add_argument("--after", required=required)
-    parser.add_argument("--before", required=required)
+def gmail_items(after, before):
+    items, errors = [], []
+    for account in DEFAULT_GMAIL_ACCOUNTS:
+        try:
+            threads = gmail.collect_account(account, after, before)["items"]
+        except Exception as exc:
+            errors.append(f"{account}: {exc}")
+            continue
+        for thread in threads:
+            if all(message.get("is_sent_by_me") for message in thread["messages"]):
+                continue
+            thread.pop("index_only", None)
+            thread.pop("requires_thread_read_for_decision", None)
+            items.append(thread)
+    if errors:
+        raise RuntimeError("; ".join(errors))
+    return with_refs("gmail", items, "id")
 
 
-def incoming_window(after, before):
-    before = before or datetime.now(timezone.utc)
-    local_before = before.astimezone(TRIAGE_TZ)
-    local_start = datetime.combine(local_before.date(), datetime.min.time(), TRIAGE_TZ)
-    return after or local_start - timedelta(days=1), before
-
-
-def collect_source(name, after, before, args, triage_context=False):
-    if name == "gmail":
-        accounts = args.account or DEFAULT_GMAIL_ACCOUNTS
-        sources = []
-        for account in accounts:
-            try:
-                sources.append(gmail.read_thread(account, args.thread_id, getattr(args, "download", False)) if args.thread_id else gmail.collect_account(account, after, before, args.query, args.limit))
-            except Exception as exc:
-                sources.append(error_obj(account, exc))
-        return {"sources": sources, "ok": all(item.get("ok", True) for item in sources)}
-    if name == "slack":
-        return slack.collect_result(after, before, args.query, getattr(args, "workspace", None))
-    if name == "whatsapp":
-        return {"complete": True, "items": whatsapp.collect(after, before, recover_media=not getattr(args, "no_commit_state", False))}
-    if name == "calendar":
-        sources = calendar_source.collect(after, before, args.account, args.limit, triage_context)
-        return {"sources": sources, "ok": all(item.get("ok", True) for item in sources)}
-    if name == "meetings":
-        return {"complete": True, "items": meetings.collect(after, before)}
-    return t3_threads.collect(
-        None if triage_context else after, None if triage_context else before,
-        False if triage_context else args.include_archived, args.limit, args.project,
-        args.query, args.thread_id, args.turn_limit,
-    )
-
-
-def mark_errors(result, name, value):
-    failures = [item for item in value.get("items") or [] if isinstance(item, dict) and item.get("ok") is False]
-    failures += [item for item in value.get("sources") or [] if isinstance(item, dict) and item.get("ok") is False]
+def slack_items(after, before):
+    result = slack.collect_result(after, before)
+    failures = [item for item in result["items"] if item.get("ok") is False]
     if failures:
-        value["ok"] = False
-        value["errors"] = failures
-        result["errors"].append({"source": name, "ok": False, "errors": failures, "items": []})
-        result["ok"] = False
-    else:
-        value.setdefault("ok", True)
+        raise RuntimeError("; ".join(str(item.get("error")) for item in failures))
+    items = []
+    for item in result["items"]:
+        own = item.get("sender") and item.get("sender") == item.get("self_user_id")
+        replies = [r for r in item.get("thread_replies") or [] if r.get("in_window") and r.get("sender") != item.get("self_user_id")]
+        if own and not replies:
+            continue
+        items.append(item)
+    return with_refs("slack", items, "ts")
 
 
-def collect_incoming(after, before, args):
-    after, before = incoming_window(after, before)
-    selected = args.source or list(SOURCES)
-    result = base_result("incoming", "window", after, before)
-    result.pop("items")
-    result["sources"] = {}
-    with ThreadPoolExecutor(max_workers=len(selected)) as executor:
-        futures = {executor.submit(collect_source, name, after, before, args, True): name for name in selected}
-        for future in as_completed(futures):
-            name = futures[future]
-            try:
-                value = future.result()
-                mark_errors(result, name, value)
-                result["sources"][name] = value
-            except Exception as exc:
-                error = error_obj(name, exc)
-                result["sources"][name] = error
-                result["errors"].append(error)
-                result["ok"] = False
-    return result
+def whatsapp_items(after, before):
+    chats = [
+        chat for chat in whatsapp.collect(after, before)
+        if chat["chat_id"] != "status@broadcast" and not all(m.get("is_sent_by_me") for m in chat["messages"])
+    ]
+    return with_refs("whatsapp", chats, "chat_id")
 
 
-def triage(args):
-    if args.incremental:
-        return incremental_triage(args)
-    if args.compact:
-        raise ValueError("--compact requires --incremental so full evidence stays available to queue reads")
-    after, before = window_from_args(args.after, args.before)
-    result = base_result("work_triage", "triage", after, before)
-    result.pop("items")
-    result["groups"] = {}
-    calls = {
-        "incoming": lambda: collect_incoming(after, before, args),
-        "work_context": lambda: notion.collect_work_context(after, before, args.limit),
+def calendar_items(after, before):
+    now = datetime.now(timezone.utc)
+    items, errors = [], []
+    for source in calendar_source.collect(after, before, context=True):
+        if source.get("ok") is False:
+            errors.append(str(source.get("error")))
+            continue
+        for event in source["items"]:
+            start = parse_iso(event.get("start"))
+            upcoming = bool(start and now <= start < now + timedelta(days=UPCOMING_CALENDAR_DAYS))
+            if event.get("changed_in_window") or upcoming:
+                event["upcoming"] = upcoming
+                for key in ("event_in_window", "event_in_context_window"):
+                    event.pop(key, None)
+                items.append(event)
+    if errors:
+        raise RuntimeError("; ".join(errors))
+    return with_refs("calendar", items, "id")
+
+
+def meeting_items(after, before):
+    return with_refs("meetings", meetings.collect(after, before), "id")
+
+
+def t3_items(after, before):
+    return with_refs("t3_threads", t3_threads.collect(after, before)["items"], "thread_id")
+
+
+LANES = {
+    "gmail": gmail_items, "slack": slack_items, "whatsapp": whatsapp_items,
+    "calendar": calendar_items, "meetings": meeting_items, "t3_threads": t3_items,
+}
+
+
+def names(ids, table):
+    return [table[i]["name"] for i in ids or [] if i in table]
+
+
+def work_index():
+    """All Tasks (open, plus closed today), Projects and Companies, with names instead of IDs."""
+    work = notion.collect_work_context()
+    if not work.get("ok"):
+        raise RuntimeError("; ".join(str(e.get("error")) for e in work.get("errors") or []) or "Notion index failed")
+    lanes = work["lanes"]
+    companies = {c["id"]: c for c in lanes["companies"]["items"]}
+    projects = {p["id"]: p for p in lanes["projects"]["items"]}
+    return {
+        "companies": [{
+            "code": c["code"], "id": c["id"], "name": c["name"], "status": c["status"],
+            "website": c["website"], "url": c["url"],
+        } for c in companies.values()],
+        "projects": [{
+            "code": p["code"], "id": p["id"], "name": p["name"], "status": p["status"],
+            "companies": names(p["companies"], companies), "parent_project": names(p["parent_project"], projects),
+            "deadline": (p.get("deadline") or {}).get("start"), "url": p["url"],
+        } for p in projects.values()],
+        "tasks": [{
+            "code": t["code"], "id": t["id"], "name": t["name"], "status": t["status"], "area": t["area"],
+            "project": names(t["project"], projects), "companies": names(t["companies"], companies),
+            "date": (t.get("date") or {}).get("start"), "url": t["url"],
+        } for t in lanes["tasks"]["items"]],
     }
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        futures = {executor.submit(fn): name for name, fn in calls.items()}
-        for future in as_completed(futures):
-            name = futures[future]
-            try:
-                value = future.result()
-                result["groups"][name] = value
-                if not value.get("ok", False):
-                    result["errors"].extend(value.get("errors", []))
-                    result["ok"] = False
-            except Exception as exc:
-                error = error_obj(name, exc)
-                result["groups"][name] = error
-                result["errors"].append(error)
-                result["ok"] = False
-    return result
 
 
-def incremental_triage(args):
-    state_path = args.state_file or incremental.DEFAULT_STATE_FILE
-    if args.no_commit_state:
-        return collect_incremental(args, incremental.load(state_path), preview=True)
-    with pending.locked(state_path) as state:
-        pending.claim(state, args.owner)
-        # Persist ownership before source calls, so a crashed collector can only
-        # be replaced deliberately. No processing cursor moves on collection.
-        incremental.save(state, state_path)
-        result = collect_incremental(args, state)
-        incremental.save(state, state_path)
-        return result
+def t3_index():
+    """All open T3 threads."""
+    return [{
+        "thread_id": t["thread_id"], "title": t["title"], "project": t["project"]["name"],
+        "branch": t["checkout"]["branch"], "session": t["state"]["session"], "latest_turn": t["state"]["latest_turn"],
+        "snoozed_until": t["state"]["snoozed_until"], "pending_approval": t["state"]["pending_approval"],
+        "pending_user_input": t["state"]["pending_user_input"], "last_activity_at": t["last_activity_at"],
+    } for t in t3_threads.collect()["items"]]
 
 
-def collect_incremental(args, state, preview=False):
-    before = window_from_args(None, args.before)[1]
-    initial_after, before = incoming_window(window_from_args(args.after, args.before)[0], before)
-    state_path = args.state_file or incremental.DEFAULT_STATE_FILE
-    selected = args.source or list(SOURCES)
-    result = base_result("work_triage", "incremental_triage", initial_after, before)
-    result.pop("items")
-    result["state_file"] = str(state_path)
-    result["groups"] = {"incoming": {"ok": True, "sources": {}, "errors": []}}
-
-    calls = {}
-    windows = {}
-    proposals = {}
-    for name in selected:
-        after, lane_before = incremental.window(
-            state, name, before, args.bootstrap_hours, args.overlap_minutes,
-            None if (state.get("lanes", {}).get(name) or {}).get("cursor") else initial_after
-        )
-        # Always refresh yesterday-to-now context, extending back for unfinished fetches.
-        after = min(after, initial_after)
-        windows[name] = (after, lane_before)
-        calls[name] = lambda name=name, after=after, lane_before=lane_before: collect_source(
-            name, after, lane_before, args, True
-        )
-
-    wc_after, wc_before = incremental.window(
-        state, "work_context", before, args.bootstrap_hours, args.overlap_minutes, initial_after
-    )
-    windows["work_context"] = (wc_after, wc_before)
-    calls["work_context"] = lambda: notion.collect_work_context(initial_after, before, args.limit)
-
-    if not preview:
-        # A failed first collection must not move its bootstrap floor forward
-        # on tomorrow's retry. This is a fetch boundary, never a processed cursor.
-        for name, (after, _) in windows.items():
-            lane = state.setdefault("lanes", {}).setdefault(name, {"seen": []})
-            if not lane.get("cursor"):
-                lane.setdefault("bootstrap_after", iso_utc(after))
-        incremental.save(state, state_path)
-
+def batch(windows):
+    """Collect every lane in parallel. Returns items per lane, the index, and per-lane errors."""
+    result = {"items": {}, "index": {}, "failed": {}}
+    calls = {lane: (lambda lane=lane: LANES[lane](*windows[lane])) for lane in windows}
+    calls["index"] = work_index
+    calls["t3_open_threads"] = t3_index
     with ThreadPoolExecutor(max_workers=len(calls)) as executor:
         futures = {executor.submit(fn): name for name, fn in calls.items()}
         for future in as_completed(futures):
             name = futures[future]
-            after, lane_before = windows[name]
             try:
                 value = future.result()
-                saturated = incremental.is_saturated(name, value, args.limit)
-                if name != "work_context":
-                    lane_result = {"ok": True, "errors": []}
-                    mark_errors(lane_result, name, value)
-                    if not lane_result["ok"]:
-                        value["ok"] = False
-                seen = ((state.get("lanes") or {}).get(name) or {}).get("seen") or []
-                # Context remains visible even when its action revision was acknowledged.
-                unseen, signatures = incremental.filter_value(name, value, seen)
-                value["changed_count"] = unseen["changed_count"]
-                value["after"] = iso_utc(after)
-                value["before"] = iso_utc(lane_before)
-                value["cursor_advanced"] = False
-                proposals[name] = {"before": iso_utc(lane_before), "complete": bool(value.get("ok", True) and not saturated)}
-                if saturated:
-                    value["complete"] = False
-                    value.setdefault("errors", []).append({
-                        "source": name,
-                        "ok": False,
-                        "error_type": "window_saturated",
-                        "error": f"collector reached lane limit {args.limit}; cursor was not advanced",
-                        "items": [],
-                    })
-                if not proposals[name]["complete"]:
-                    result["ok"] = False
-                    result["errors"].extend(value.get("errors") or [{"source": name, "ok": False}])
-                    if name != "work_context":
-                        result["groups"]["incoming"]["ok"] = False
-                        result["groups"]["incoming"]["errors"].extend(value.get("errors") or [])
-                if name == "work_context":
-                    result["groups"]["work_context"] = value
-                else:
-                    result["groups"]["incoming"]["sources"][name] = value
             except Exception as exc:
-                error = error_obj(name, exc)
-                error.update({"after": iso_utc(after), "before": iso_utc(lane_before)})
-                result["ok"] = False
-                result["errors"].append(error)
-                if name == "work_context":
-                    result["groups"]["work_context"] = error
-                else:
-                    result["groups"]["incoming"]["sources"][name] = error
-                    result["groups"]["incoming"]["errors"].append(error)
-                    result["groups"]["incoming"]["ok"] = False
-
-    result["state_committed"] = False
-    result["changed_count"] = sum(
-        value.get("changed_count", 0)
-        for value in result["groups"]["incoming"]["sources"].values()
-    ) + (result["groups"].get("work_context") or {}).get("changed_count", 0)
-    staged = copy.deepcopy(state) if preview else state
-    output = pending.stage(staged, result, proposals)
-    if getattr(args, "compact", False):
-        output = compact.view(staged)
-    if preview:
-        output["state_committed"] = False
-    return output
+                result["failed"][name] = str(exc)
+                continue
+            if name == "index":
+                result["index"].update(value)
+            elif name == "t3_open_threads":
+                result["index"]["t3_open_threads"] = value
+            else:
+                result["items"][name] = value
+    return result
 
 
 def source(args):
-    if args.download and (args.name != "gmail" or not args.thread_id):
-        raise ValueError("--download requires source gmail --thread-id")
-    require_window = args.name in {"whatsapp", "calendar", "meetings"} or (args.name == "slack" and not args.query)
-    after, before = (None, None) if args.all or args.thread_id or (args.query and args.name == "gmail") else window_from_args(
-        args.after, args.before, require=require_window
+    """One focused read, for follow-up during a run."""
+    name = args.name
+    after, before = (None, None) if args.all or args.thread_id or (args.query and name == "gmail") else window_from_args(
+        args.after, args.before, require=name in {"whatsapp", "calendar", "meetings"} or (name == "slack" and not args.query)
     )
-    result = base_result(args.name, "source", after, before)
+    result = base_result(name, "source", after, before)
     result.pop("items")
     try:
-        value = collect_source(args.name, after, before, args, args.context)
-        result["result"] = value
-        mark_errors(result, args.name, value)
+        if name == "gmail":
+            accounts = args.account or DEFAULT_GMAIL_ACCOUNTS
+            result["result"] = [
+                gmail.read_thread(account, args.thread_id, args.download) if args.thread_id
+                else gmail.collect_account(account, after, before, args.query, args.limit)
+                for account in accounts
+            ]
+        elif name == "slack":
+            result["result"] = slack.collect_result(after, before, args.query, args.workspace)
+        elif name == "whatsapp":
+            result["result"] = whatsapp.collect(after, before, recover_media=False)
+        elif name == "calendar":
+            result["result"] = calendar_source.collect(after, before, args.account, args.limit, True)
+        elif name == "meetings":
+            result["result"] = meetings.collect(after, before)
+        else:
+            result["result"] = t3_threads.collect(after, before, args.include_archived, args.limit, args.project, args.query, args.thread_id, args.turn_limit)
     except Exception as exc:
-        error = error_obj(args.name, exc)
-        result["result"] = error
-        result["errors"].append(error)
         result["ok"] = False
+        result["errors"].append(error_obj(name, exc))
     return result
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(description="Collect work triage or one focused source.")
+    parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-
-    triage_parser = commands.add_parser("triage", help="collect incoming lanes plus Notion work context")
-    window_args(triage_parser)
-    output_args(triage_parser)
-    triage_parser.add_argument("--source", action="append", choices=SOURCES)
-    triage_parser.add_argument("--account", action="append")
-    triage_parser.add_argument("--query")
-    triage_parser.add_argument("--limit", type=int, default=MAX_ITEMS_PER_LANE)
-    triage_parser.add_argument("--include-archived", action="store_true")
-    triage_parser.add_argument("--project")
-    triage_parser.add_argument("--thread-id")
-    triage_parser.add_argument("--turn-limit", type=int, default=t3_threads.DEFAULT_TURN_LIMIT)
-    triage_parser.add_argument("--owner", help="unique worker run ID for the durable queue")
-    triage_parser.add_argument("--incremental", action="store_true", help="use per-lane cursors and overlap dedupe")
-    triage_parser.add_argument("--compact", action="store_true", help="return complete indexes and event headers; keep full evidence in the queue")
-    triage_parser.add_argument("--state-file", type=str, help="override incremental cursor state path")
-    triage_parser.add_argument("--overlap-minutes", type=int, default=incremental.DEFAULT_OVERLAP_MINUTES)
-    triage_parser.add_argument("--bootstrap-hours", type=int, default=incremental.DEFAULT_BOOTSTRAP_HOURS)
-    triage_parser.add_argument("--no-commit-state", action="store_true", help="preview incremental results without advancing cursors")
-    queue_parser = commands.add_parser("queue", help="inspect, acknowledge and resume durable triage batches")
-    queue_parser.add_argument("operation", choices=["status", "show", "context", "claim", "apply", "finish", "reports", "release"])
-    queue_parser.add_argument("--compact", action="store_true", help="compact status without full source payloads")
-    queue_parser.add_argument("--event", action="append", help="event ID for show; repeat to batch reads")
-    queue_parser.add_argument("--lane", choices=[*SOURCES, "companies", "projects", "tasks"])
-    queue_parser.add_argument("--id", action="append", help="source or record ID for context; repeat to batch reads")
-    queue_parser.add_argument("--query", help="case-insensitive search through full persisted lane evidence")
-    queue_parser.add_argument("--owner")
-    queue_parser.add_argument("--previous-owner", help="explicit takeover only after verifying this worker stopped")
-    queue_parser.add_argument("--file", help="JSON array of prepare/resolve/cancel/ack/retry/report_failure/reported operations")
-    queue_parser.add_argument("--state-file")
-    output_args(queue_parser)
-    source_parser = commands.add_parser("source", help="collect one source for focused follow-up")
+    batch_parser = commands.add_parser("batch", help="collect all lanes for a window (the runner does this)")
+    batch_parser.add_argument("--after", required=True)
+    batch_parser.add_argument("--before")
+    batch_parser.add_argument("--format", choices=["json", "yaml"], default="yaml")
+    source_parser = commands.add_parser("source", help="read one source in detail")
     source_parser.add_argument("name", choices=SOURCES)
-    window_args(source_parser)
-    output_args(source_parser)
+    source_parser.add_argument("--after")
+    source_parser.add_argument("--before")
+    source_parser.add_argument("--format", choices=["json", "yaml"], default="yaml")
+    source_parser.add_argument("--pretty", action="store_true")
     source_parser.add_argument("--account", action="append")
     source_parser.add_argument("--query")
-    source_parser.add_argument("--workspace", help="Slack workspace slug, such as fulldotdev or small-giants")
-    source_parser.add_argument("--context", action="store_true", help="include short context around Calendar window")
-    source_parser.add_argument("--all", action="store_true", help="ignore the source time window")
+    source_parser.add_argument("--workspace", help="Slack workspace slug")
+    source_parser.add_argument("--all", action="store_true", help="ignore the time window")
     source_parser.add_argument("--include-archived", action="store_true")
     source_parser.add_argument("--limit", type=int, default=MAX_ITEMS_PER_LANE)
     source_parser.add_argument("--project")
-    source_parser.add_argument("--thread-id", help="focused Gmail or T3 thread read")
-    source_parser.add_argument("--download", action="store_true", help="download attachments for a focused Gmail thread")
+    source_parser.add_argument("--thread-id", help="Gmail or T3 thread")
+    source_parser.add_argument("--download", action="store_true", help="download attachments of a Gmail thread")
     source_parser.add_argument("--turn-limit", type=int, default=t3_threads.DEFAULT_TURN_LIMIT)
     return parser
 
 
 def main():
-    parser = build_parser()
-    args = parser.parse_args()
-    try:
-        result = {"triage": triage, "source": source, "queue": pending.command}[args.command](args)
-    except (ValueError, RuntimeError, KeyError, TypeError) as exc:
-        parser.error(str(exc))
-    emit(result, args.pretty, args.format)
+    args = build_parser().parse_args()
+    if args.command == "batch":
+        after, before = window_from_args(args.after, args.before, require=True)
+        result = batch({lane: (after, before) for lane in SOURCES})
+        result.update(after=iso_utc(after), before=iso_utc(before))
+        emit(result, output_format=args.format)
+    else:
+        emit(source(args), getattr(args, "pretty", False), args.format)
 
 
 if __name__ == "__main__":
