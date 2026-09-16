@@ -1,6 +1,6 @@
 ---
 name: productive-io
-description: Use only when the user explicitly asks to inspect, export, correct, create, change, or delete Productive.io time entries. Do not use Productive for routine planning, triage, delivery, or commercial scoping.
+description: Use when the user explicitly asks to inspect, export, correct, create, change, or delete Productive.io time entries. Do not use Productive for routine planning, triage, delivery, or commercial scoping.
 ---
 
 # Productive.io
@@ -16,7 +16,7 @@ description: Use only when the user explicitly asks to inspect, export, correct,
 2. Load credentials without printing secrets and inspect the existing entries for that scope.
 3. Resolve live person, deal, service, and optional task IDs before a write. For retainers, verify that the parent deal covers the entry date.
 4. For a direct read or export, return entries or totals in human units. Keep raw minutes for calculations.
-5. For an explicitly requested reconstruction, apply `references/reconstruction.md`: contract-total-first, preserve existing entries, distribute only from evidence, and flag unresolved mismatches.
+5. For an explicitly requested reconstruction, follow `references/reconstruction.md`. Match the agreed total for the period, preserve existing entries, use evidence to place the remaining time, and flag any mismatch you cannot resolve.
 6. Before a write, show the proposed diff unless Sil explicitly asked to execute that exact change.
 7. Verify created or updated entries by reading them back. Never delete entries without Sil's explicit request.
 
@@ -31,7 +31,7 @@ A proposed entry must include:
 - optional task ID
 - a short note when it helps identify the work
 
-Do not infer a service from its label or an existing note alone. Match the parent deal and entry date first. Fill gaps before changing existing entries. Do not invent precision in reconstructed durations.
+Do not choose a service from its label or an existing note alone. First confirm that its parent deal covers the entry date. Fill gaps before changing existing entries. Do not give reconstructed durations false precision.
 
 Stop when identity is missing, service or deal ownership is unclear, contract totals conflict, or evidence is insufficient. Report the exact missing fact.
 

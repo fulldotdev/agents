@@ -5,12 +5,12 @@ description: Always use when implementing, reviewing, verifying or releasing sof
 
 # Development
 
-Use the repository's instructions and existing framework skills for implementation details. Choose planning, tools, and implementation depth to fit the request.
+Follow the repository's instructions and relevant framework skills. Match the planning, tools, and amount of work to the request.
 
 ## Stack and conventions
 
-- Don't be scared to propose bold ideas if they can meaningfully benefit the work.
-- Stick to best practices according to docs and official guidance.
+- Propose bold ideas when they offer a clear benefit.
+- Follow official documentation and guidance.
 - Follow existing project conventions. Otherwise, prefer kebab-case and shallow folders grouped by file type.
 - Unless the project already specifies otherwise, Sil prefers:
   - Content-driven sites: Astro, Markdown with content-collections, Tailwind, shadcn/ui, fulldev/ui, React, zod, pnpm
@@ -20,36 +20,35 @@ Use the repository's instructions and existing framework skills for implementati
 
 ## Production and shared environments
 
-Read-only inspection of production, live databases, and daily-driver build/preview channels is allowed. Changes require explicit authorization; name the target before changing it.
+You may inspect production, live databases, and builds or previews used for daily work. Changes require explicit authorization. Name the target before changing it.
 
 ## Simplicity and scope
 
-- Choose the simplest solution that works; prefer some duplication over unnecessary abstraction.
-- Implement the requested outcome with the smallest complete change. Prefer existing components, dependencies, and direct code over new layers, packages, helpers, or configuration.
-- Add an abstraction only when it removes real duplication or makes the current behavior clearer. Do not build for hypothetical future features.
-- Avoid speculative fallbacks, redundant checks, comments that narrate obvious code, and boilerplate that adds no behavior. Preserve validation and error handling needed for real failure cases.
-- Remove dead code and temporary scaffolding introduced by this task. Do not turn adjacent problems into a cleanup, migration, or redesign; report material out-of-scope issues separately.
+- Make the smallest complete change that delivers the requested result. Reuse existing components and dependencies.
+- Prefer direct code, even with some duplication. Add an abstraction only when it removes repeated logic or makes the current behavior clearer. Do not build for hypothetical future features.
+- Remove unnecessary fallbacks, redundant checks, obvious comments, and boilerplate that adds no behavior. Keep validation and error handling for real failure cases.
+- Remove dead code and temporary scaffolding introduced by this task. Report important issues outside the request separately; do not turn them into extra cleanup, migration, or redesign work.
 - Review for both correctness and unnecessary complexity. Stop when the requested behavior works and the relevant checks pass.
 
 Use `design` when the task involves visual or interaction decisions. Keep implementation details out of user-facing flows unless they help the user act or decide.
 
 ## Tests
 
-Never create tests unless Sil explicitly asks for them. A request to build a feature, fix a bug, review code, or verify a change is not a request to add tests. This applies to unit, integration, end-to-end and regression tests, test fixtures, test infrastructure, and one-off scripts whose purpose is automated testing. Do not add or extend tests as an automatic part of implementation or reviewer feedback.
+Create or extend tests only when Sil explicitly asks. This includes unit, integration, end-to-end and regression tests, fixtures, test infrastructure, and one-off automated test scripts. Building, fixing, reviewing, or verifying software does not by itself authorize new tests. Reviewer feedback does not provide that authorization either.
 
 Run relevant existing tests, linting, type checks, builds, and browser checks when useful. Do not ask to add tests by default; raise it only when a specific unresolved risk makes that decision necessary. An explicit test or benchmark request authorizes the testing it describes.
 
 ## Work ownership
 
-Continue in the existing checkout and branch by default. Sil prefers one branch with focused commits, not a worktree per task. Check actual Git state when resuming; thread metadata can be stale. If another implementation is using the checkout, coordinate or use an explicitly agreed isolated checkout rather than switching its branch or mixing changes.
+Continue in the existing checkout and branch by default. Sil prefers one branch with focused commits. Check Git when resuming; the thread's recorded branch may be outdated. If another task is using the checkout, coordinate or use a separately agreed checkout. Do not switch its branch or mix changes.
 
 Use `work-management` for tracking and Notion routing. Use `t3-code` when dispatching work through T3; local reviewer sub-agents do not need their own T3 threads or Notion Tasks.
 
 ## Local review
 
-For substantive code changes, use an independent local Astra reviewer sub-agent before handoff. Give it the request, applicable repository instructions, and the actual diff or PR branch, with access to relevant surrounding code. Its assignment is read-only: identify concrete defects, regressions, missed requirements, and consequential maintainability issues, with a location and explanation. Cosmetic preferences alone are not findings.
+For substantive code changes, use an independent local Astra reviewer subagent before handoff. Give it the request, repository instructions, diff or PR branch, and access to surrounding code. Ask for a read-only review of defects, regressions, missed requirements, and maintenance problems that matter, each with a location and explanation. Cosmetic preferences alone are not findings.
 
-Evaluate its findings and fix relevant issues within scope. Recheck affected behavior after fixes; another review is useful when the fixes materially change the code. A review is not a requirement to create a PR, new tests, or a review report file. Tiny copy or formatting changes do not need a reviewer.
+Evaluate the findings and fix relevant issues within scope. Recheck affected behavior after fixes. Use another review when the fixes change enough code to warrant it. A review does not require a PR, new tests, or a report file. Tiny copy or formatting changes do not need a reviewer.
 
 ## Reviewable delivery
 
@@ -59,6 +58,6 @@ Use existing Shopify previews read-only unless theme writes are authorized. For 
 
 Our CMSes are CloudCannon, Sanity, and Shopify. Use their existing skills for implementation details. For CMS changes, verify the affected editing experience as well as the rendered page: CloudCannon's configured editor, Sanity Studio, or Shopify's theme editor and relevant custom-data fields. Use the project's authorized development environment; test only the editing surfaces the change affects.
 
-Give Sil a validated preview when the change has a reviewable UI, with what to inspect and any access or lifetime limitation. On Otis, localhost alone is not a cross-device review link. State relevant verification, unresolved issues, and whether the work is committed, pushed, or released; do not imply that one establishes another.
+For UI changes, give Sil a checked preview, what to inspect, and any access or expiry limits. An Otis localhost URL alone cannot be reviewed from another device. Report what was verified, unresolved issues, and whether the work is committed, pushed, or released. State each separately.
 
 Close task-created research and validation tabs and stop temporary processes no longer needed. Keep requested review previews available and preserve pre-existing resources. Leave lasting work under `~/projects`, not in a temporary directory.

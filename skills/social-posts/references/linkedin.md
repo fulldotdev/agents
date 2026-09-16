@@ -4,9 +4,9 @@ Use this reference for LinkedIn captions and carousels.
 
 ## Reposts in Sil's voice
 
-- Add Sil's perspective instead of summarizing the original post. Lead with a concise belief, then name his role and way of working in the first person.
-- For development work, emphasize bringing and maintaining momentum: get something working quickly, then build, test, learn, and adjust.
-- Keep the client and project as a brief concrete proof point. The main subject is Sil's contribution and what he enjoys about the work.
+- Add Sil's perspective. Start with what he believes, then describe his role and way of working in the first person.
+- For development work, describe how he keeps work moving: get something working quickly, then build, test, learn, and adjust.
+- Use the client and project as a brief example. Focus on Sil's contribution and what he enjoys about the work.
 
 ## Carousels
 

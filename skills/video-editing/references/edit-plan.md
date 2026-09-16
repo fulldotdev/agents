@@ -74,17 +74,17 @@ Use UTF-8 JSON. Resolve relative paths against the job root passed with `--root`
 
 ## Clip fields
 
-- `source` — required source path, relative to the job root or absolute.
-- `in` — required start in seconds, at least `0`.
-- `out` — required end in seconds and greater than `in`.
-- `zoom` — optional constant baseline crop, default `1.0`. Do not use it as a substitute for an animated emphasis zoom.
-- `position_x` / `position_y` — optional crop focal position from `0.0` to `1.0`, default center.
-- `zoom_anchor_x` / `zoom_anchor_y` — optional anchor for animated zooms within the cropped frame. For a portrait talking head, `0.5` and about `0.35` usually keep the face stable.
-- `zoom_events` — optional list of animated emphasis zooms relative to the start of this clip. Events may not overlap or cross the end of the clip.
-- `fade_in` / `fade_out` — optional fade-to/from-black duration in seconds. Keep shorter than half the clip.
-- `audio_gain_db` — optional per-clip audio gain in dB.
+- `source`: required source path, relative to the job root or absolute.
+- `in`: required start in seconds, at least `0`.
+- `out`: required end in seconds and greater than `in`.
+- `zoom`: optional constant baseline crop, default `1.0`. Do not use it instead of an animated emphasis zoom.
+- `position_x` / `position_y`: optional crop focal position from `0.0` to `1.0`, default center.
+- `zoom_anchor_x` / `zoom_anchor_y`: optional anchor for animated zooms within the cropped frame. For a portrait talking head, `0.5` and about `0.35` usually keep the face stable.
+- `zoom_events`: optional list of animated emphasis zooms relative to the start of this clip. Events may not overlap or extend beyond the clip.
+- `fade_in` / `fade_out`: optional fade to or from black in seconds. Keep it shorter than half the clip.
+- `audio_gain_db`: optional audio gain per clip in dB.
 
-Each zoom event accepts `start`, `scale`, `ease_in`, `reset`, and an optional human-readable `reason`. Defaults are `1.12`, `3.5` seconds, and `reset: "cut"`. Cut-reset events hold their scale to the end of the clip, so use at most one in that clip. The next clip starts at the baseline crop.
+Each zoom event accepts `start`, `scale`, `ease_in`, `reset`, and an optional plain-language `reason`. Defaults are `1.12`, `3.5` seconds, and `reset: "cut"`. A cut-reset event holds its scale to the end of the clip, so use no more than one per clip. The next clip starts at the baseline crop.
 
 Set `reset` to `"ease_out"` only when no suitable cut exists. Such an event also accepts `hold` and `ease_out`, defaulting to `0.6` and `1.8` seconds. The renderer uses cosine easing, works at twice the output resolution, and downsamples for smooth motion.
 
@@ -92,33 +92,33 @@ Every clip must contain a video stream. Missing audio is replaced with silence s
 
 ## Output fields
 
-- `path` — required and must not equal any source.
-- `width` / `height` — required positive even integers.
-- `fps` — optional, default `30`; normally preserve the source frame rate unless the destination requires another rate.
-- `video_codec` — optional, default `h264_videotoolbox`; `libx264` is accepted.
-- `video_bitrate` — optional, default `8M`.
-- `audio_bitrate` — optional, default `192k`.
-- `color_range`, `colorspace`, `color_trc`, `color_primaries` — optional output color tags. Social SDR defaults to limited-range BT.709.
+- `path`: required and must not equal any source.
+- `width` / `height`: required positive even integers.
+- `fps`: optional, default `30`. Preserve the source frame rate unless the destination requires another rate.
+- `video_codec`: optional, default `h264_videotoolbox`; `libx264` is accepted.
+- `video_bitrate`: optional, default `8M`.
+- `audio_bitrate`: optional, default `192k`.
+- `color_range`, `colorspace`, `color_trc`, `color_primaries`: optional output color tags. Social SDR defaults to limited-range BT.709.
 
 Use `720x1280` and a lower bitrate for previews. Use `1080x1920` or `1920x1080` for typical final delivery.
 
 ## Audio fields
 
-- `loudnorm` — apply FFmpeg loudness normalization, default `false`. Preserve source dynamics unless measurement and listening show that normalization is needed.
-- `target_i`, `target_tp`, `target_lra` — optional EBU R128 targets.
+- `loudnorm`: apply FFmpeg loudness normalization, default `false`. Preserve source dynamics unless measurement and listening show that normalization is needed.
+- `target_i`, `target_tp`, `target_lra`: optional EBU R128 targets.
 
 When enabled, the renderer performs single-pass normalization. Prefer deliberate gain or measured two-pass loudnorm for a final master.
 
 ## Caption fields
 
-- `path` — SRT or ASS path.
-- `font_name`, `font_size`, `margin_v`, `outline`, `shadow`, `alignment` — optional libass styling overrides.
+- `path`: SRT or ASS path.
+- `font_name`, `font_size`, `margin_v`, `outline`, `shadow`, `alignment`: optional libass styling overrides.
 
 When using ASS, prefer styles inside the ASS file. Styling overrides are mainly intended for SRT.
 
 ## QA points
 
-`qa_points` is an optional list of output-timeline timestamps with a short `reason`. Use it only for risks that `qa_media.py` cannot derive automatically, such as an unusual color change, a prop entering the crop, or a particularly bright caption background.
+`qa_points` is an optional list of output timestamps with a short `reason`. Use it only for risks that `qa_media.py` cannot find automatically, such as an unusual color change, a prop entering the crop, or a particularly bright caption background.
 
 The QA helper already derives review frames for every cut, every zoom phase, evenly distributed caption cues, and an overall contact sheet. Do not duplicate those as manual points.
 

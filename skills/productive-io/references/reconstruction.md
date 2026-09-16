@@ -1,28 +1,28 @@
 # Hours reconstruction
 
-Use this branch to fill, audit, or repair hours after work occurred. Productive is the registration endpoint, not the source of truth.
+Use this guidance to fill, audit, or repair hours after the work happened. Productive stores the entries, but the agreement and work evidence determine what belongs there.
 
 ## Evidence order
 
-1. Contracts, agreements, retainers, and invoices define customer, date range, total hours, and exclusions.
-2. Existing Productive entries define what is already registered and under which live IDs.
-3. Calendar shows meetings, setup, customer contact, and realistic start dates.
-4. Notion Tasks, Projects, Sprints, comments, and status history show likely work and buckets.
+1. Contracts, agreements, retainers, and invoices define the customer, period, total hours, and exclusions.
+2. Existing Productive entries show what is already registered and which live IDs were used.
+3. Calendar events show meetings, setup, customer contact, and realistic start dates.
+4. Notion Tasks, Projects, Sprints, comments, and status history show likely work and categories.
 5. GitHub commits, pull requests, and merges show approximate engineering activity.
 6. Chat or memory may clarify intent but never overrides live commercial or Productive evidence.
 
-Collect only lanes needed for the target scope. If a lane fails, continue with the others, identify the gap, and withhold writes that depend on it.
+Use only the sources needed for the requested scope. If one source is unavailable, continue with the others, report the gap, and do not write entries that depend on the missing evidence.
 
 ## Reconstruction rules
 
-1. Match the contract or invoice total for its exact period unless an explicit exclusion applies.
+1. Match the contract or invoice total for the exact period, unless an explicit exclusion applies.
 2. Preserve existing entries and fill gaps before changing them.
-3. Treat reconstructed dates and task durations as estimates; use calendar and delivery evidence to distribute them plausibly.
+3. Treat reconstructed dates and task durations as estimates. Use calendar and delivery evidence to place them plausibly.
 4. Prefer rounded durations such as 30, 45, 60, 90, 120, or 180 minutes unless stronger evidence or existing patterns support another value.
 5. Match the parent deal and entry date before using a service. A service label or time-entry note is not enough.
-6. Keep weekly totals plausible, but prioritize the agreed period total when the two conflict.
+6. Keep weekly totals plausible. If they conflict with the agreed total for the full period, the full-period total takes priority.
 7. Do not delete entries unless Sil explicitly asks.
-8. Block the write on overlaps, missing identity/service IDs, unclear scope, or contract/invoice mismatch rather than fabricating certainty.
+8. Do not write entries when overlaps, missing person or service IDs, unclear scope, or a contract/invoice mismatch remain unresolved.
 
 ## Small Giants contract buckets
 
@@ -39,7 +39,7 @@ Name project-management/customer-service time `customer lead` in summaries.
 
 Keep automated testing separate from regular Teveo development and CRO. It covers BrowserStack/Percy run review, failure investigation, test maintenance, new test coverage, and regression work tied to the automated suite.
 
-Require a parent deal whose name contains `Automated Testing Retainer` and whose dates cover the entry. Reject `AB testing` services and services under `Teveo - CRO & Development 2026`. A `Development` service is valid only under the automated-testing deal.
+The parent deal name must contain `Automated Testing Retainer`, and its dates must cover the entry. Do not use `AB testing` services or services under `Teveo - CRO & Development 2026`. A `Development` service is valid only under the automated-testing deal.
 
 For July 2026, the known mapping is deal `#2494`, service `15255108`. Treat this as a dated hint and verify it live. Resolve later periods from the matching dated deal.
 

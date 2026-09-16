@@ -2,9 +2,9 @@
 
 ## Credentials
 
-For multi-workspace reads, store one file per workspace under `~/.config/slack/workspaces/<slug>.env`. Each file contains `SLACK_WORKSPACE_NAME` and that workspace's token variables. The work-triage collector reads every `*.env` file in this directory, emits a success/failure summary per workspace, and labels results with the workspace slug, display name, team ID, and URL.
+For multi-workspace reads, store one file per workspace under `~/.config/slack/workspaces/<slug>.env`. Each file contains `SLACK_WORKSPACE_NAME` and that workspace's token variables. The work-triage collector reads every `*.env` file in this directory. It reports success or failure for each workspace and labels results with the workspace slug, display name, team ID, and URL.
 
-Set `SLACK_TRIAGE_MODE=signals` to collect DMs, direct mentions, and messages sent by the authenticated user. This is the default. Set `SLACK_TRIAGE_MODE=all` to collect every accessible message in the triage window, including channel messages and thread replies.
+The default, `SLACK_TRIAGE_MODE=signals`, collects DMs, direct mentions, and messages sent by the authenticated user. Set `SLACK_TRIAGE_MODE=all` to collect every accessible message in the triage window, including channel messages and thread replies.
 
 Set `SLACK_CONFIG_PATH` only when intentionally selecting one config file. If no workspace files exist, exported environment variables are the fallback.
 
@@ -12,7 +12,7 @@ Use `--workspace <slug>` on the work-triage source collector for a focused read.
 
 Token roles:
 
-- `SLACK_USER_TOKEN`: preferred for user-context search, DMs, private channels, and triage reads.
+- `SLACK_USER_TOKEN`: preferred for searches in user context, DMs, private channels, and triage reads.
 - `SLACK_BOT_TOKEN`: bot-scoped operations when appropriate.
 - `SLACK_USER_TOKEN_READONLY`: collector fallback after the user and bot tokens.
 - `SLACK_APP_TOKEN`: Socket Mode only, not normal Web API calls.
@@ -27,12 +27,12 @@ Base URL: `https://slack.com/api`. Use `Authorization: Bearer <token>` and, for 
 
 Useful endpoints:
 
-- `auth.test` — validate the token and identify team/user.
-- `search.messages` — locate candidate messages; URL-encode the query.
-- `conversations.history` — read channel or DM history.
-- `conversations.replies` — read the complete thread using channel ID and parent timestamp.
-- `chat.getPermalink` — create a reopenable source link.
-- `chat.postMessage` — send only after explicit request or approval.
+- `auth.test`: validate the token and identify the team and user.
+- `search.messages`: find candidate messages; URL-encode the query.
+- `conversations.history`: read channel or DM history.
+- `conversations.replies`: read the complete thread using the channel ID and parent timestamp.
+- `chat.getPermalink`: create a link that reopens the message.
+- `chat.postMessage`: send only after an explicit request or approval.
 
 Paginate until the requested time window or relevant thread is complete. Inspect the returned `ok` and `error` fields for every call.
 

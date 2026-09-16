@@ -1,6 +1,6 @@
-# Otis T3 Setup
+# Otis T3 setup
 
-Use this reference only for T3 installation, service, Connect, visibility, or split-server problems.
+Use this reference only for T3 installation, service, Connect, visibility, or split server problems.
 
 ## Current architecture
 
@@ -32,9 +32,9 @@ t3 service update
 t3 connect status --base-dir "$HOME/.t3" --json
 ```
 
-Healthy status has `desired`, `authenticated`, and `linked` all true. Authorization codes and bearer credentials are ephemeral secrets and do not belong in logs or work records.
+A healthy status has `desired`, `authenticated`, and `linked` all set to true. Authorization codes and bearer credentials are temporary secrets. Never put them in logs or work records.
 
-If a remote thread is visible on mobile but not desktop, select the Otis or All Environments filter and open/add the existing remote project under Otis. That registers the remote path; it does not clone it to the MacBook.
+If a remote thread is visible on mobile but not desktop, select the Otis or All Environments filter. Then open or add the existing remote project under Otis. This registers the remote path. It does not clone the project to MacBook.
 
 ## Single-server check
 
@@ -46,7 +46,6 @@ lsof -nP -iTCP:3774 -sTCP:LISTEN
 ps aux | egrep '[T]3 Code|[t]3 serve|cloudflared'
 ```
 
-For the remote-first Otis setup, retain the official service and stop the competing Otis desktop backend. Restart/reconnect clients after restoring one server.
+For the remote-first Otis setup, keep the official service and stop the competing Otis desktop backend. Restart or reconnect clients after restoring a single server.
 
 Primary upstream references are `docs/user/remote-access.md`, `docs/user/updating.md`, `docs/user/background-service.md`, and `docs/internals/t3-connect.md` in the T3 Code repository.
-

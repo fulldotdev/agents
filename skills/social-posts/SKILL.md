@@ -1,22 +1,22 @@
 ---
 name: social-posts
-description: Create, adapt, review, or manage social posts and their media across channels, using Notion Tasks for tracked work. Use for captions, carousels, images, video, channel variants, scheduling preparation, and publishing workflows.
+description: Use when creating, reviewing, adapting, managing, scheduling, or publishing social posts and their media, including work tracked in Notion Tasks.
 ---
 
 # Social posts
 
-Treat the message as the source and each channel as a distribution variant. For tracked work, the existing Notion Task holds the post's caption and media; do not create a separate Post record.
+Start with the message, then adapt it for each channel. For tracked work, keep the caption and media in the existing Notion Task. Do not create a separate Post record.
 
-Do not invent handles, metrics, quotes, results, or client approval. Ask when a missing fact would materially change the post.
+Do not invent handles, metrics, quotes, results, or client approval. Ask for missing facts when they would change the post's meaning or claims.
 
 ## Writing defaults
 
 - Make one point per post.
 - Open with a concrete observation, claim, or situation from the source.
-- Prefer plain language and short paragraphs. Remove filler and repeated conclusions while preserving facts, useful detail and real uncertainty. Do not force slang, jokes or a different personality to make the text sound human.
+- Follow the plain style in `user-communication`. Use short paragraphs and keep Sil's voice.
 - Use real work and named examples instead of broad capability claims when permission and evidence exist.
-- Treat technology as evidence for an outcome unless the technology itself is the subject.
-- Let the caption carry the argument and the media carry proof or context. Avoid needless duplication.
+- Explain what the technology achieved unless the technology itself is the subject.
+- Make the point in the caption. Use media to show evidence or context without repeating it all.
 - Do not add a generic question, comment prompt, DM request, or closing slogan. Add a call to action only when it gives the reader a useful next step and fits the request.
 - Preserve an approved section or asset exactly. Change only the requested part.
 
@@ -24,9 +24,9 @@ Do not invent handles, metrics, quotes, results, or client approval. Ask when a 
 
 - Follow the existing brand and design system.
 - Prefer real screenshots, photography, interfaces, logos, and diagrams over decorative imagery.
-- Keep screenshots legible and preserve their meaningful content. Use consistent aspect ratios and avoid crop when the complete interface or composition matters.
-- Avoid nested cards, decorative borders, repeated headers, and extra chrome unless they communicate structure.
-- In a carousel, each slide must add information. An ending slide is optional and must earn its place.
+- Keep screenshots legible and preserve important content. Use consistent aspect ratios. Keep the whole image when the full interface or composition matters.
+- Avoid nested cards, decorative borders, repeated headers, and interface framing unless they help explain the structure.
+- Each carousel slide must add information. Include an ending slide only when it has something useful to say.
 
 ## Channel guidance
 

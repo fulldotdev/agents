@@ -14,7 +14,7 @@ description: Always use when running commands, using the browser or computer, si
 ## Tools and browser
 
 - Prefer CLIs and other direct tools when available; use the browser or computer when needed.
-- Use the primary work Chrome profile signed into `sil@full.dev` on both machines: `sil@full.dev` on MacBook and the default local profile (`Your Chrome`) on Otis. These are separate local profiles; cookies and app sessions remain separate, so verify site sign-in on the machine being used.
+- Use the work Chrome profile signed into `sil@full.dev`: the `sil@full.dev` profile on MacBook and `Your Chrome` on Otis. Cookies and app sessions are separate on each machine. Check sign-in on the machine you are using.
 - MacBook's `sil+1@full.dev`, `sil+2@full.dev` and `silveltman@gmail.com` profiles are for Sil's separate account workflows; use them only when requested. The `sil+…` names identify separate app sessions, not separate Google accounts.
 - On Otis, OpenClaw uses browser profile `chrome` (extension) by default. Do not select `user` (remote-debugging attach) for routine work; it can require interactive approval again. See [Otis operations](../../operations/openclaw-otis.md).
 - On MacBook, Apple Passwords handles passwords and passkeys; keep Chrome password saving and automatic sign-in disabled.
@@ -22,11 +22,11 @@ description: Always use when running commands, using the browser or computer, si
 
 ## Shared skills and instructions
 
-- Manage shared custom skills in `~/.agents` on the MacBook; sync to Otis through GitHub. Every agent (Codex, Claude, OpenCode, OpenClaw, Cursor) reads `~/.agents/skills` directly; there is no global AGENTS.md. Keep project instructions in their repository and credentials, plugins, and machine configuration local.
+- Manage shared custom skills in `~/.agents` on MacBook and sync to Otis through GitHub. Codex, Claude, OpenCode, OpenClaw, and Cursor all read `~/.agents/skills` directly. There is no global AGENTS.md. Keep project instructions in their repository. Keep credentials, plugins, and machine configuration local.
 - Do not edit installed skills unless Sil explicitly asks. Local changes can block updates or be overwritten.
-- Keep custom skills concise. Remove generic guidance, duplication, and detail that belongs in references or scripts.
+- Write custom skills and references in the plain style defined by `user-communication`. Start descriptions with `Use when` or `Always use when`. Remove generic advice and repetition. Put detailed procedures in references and reusable commands in scripts when that makes the skill easier to use.
 
 ## Automations on Otis
 
 - Recurring agent jobs are OpenClaw cron jobs (`openclaw cron add`); plain scripts run through launchd plists in `~/Library/LaunchAgents`. `~/.agents/operations/openclaw-otis.md` lists what runs.
-- A one-off or temporary job gets a clear name with its purpose and end date in the message, and is deleted as soon as it has done its work. Do not leave finished or expired jobs behind; `system-hygiene` reports any that remain.
+- Give a one-off or temporary job a clear name. Put its purpose and end date in the message, and delete it once the work is done. `system-hygiene` reports finished or expired jobs left behind.

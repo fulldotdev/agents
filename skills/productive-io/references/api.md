@@ -25,11 +25,11 @@ Use:
 - `PATCH /time_entries/{id}` to update.
 - `DELETE /time_entries/{id}` only after explicit approval.
 
-Productive uses JSON:API payloads. A normal time entry includes `person_id`, `service_id`, `date`, and `time`; `task_id` and `note` are optional. Inspect a known live record or current API response rather than guessing relationship or attribute shape.
+Productive uses JSON:API payloads. A time entry normally includes `person_id`, `service_id`, `date`, and `time`; `task_id` and `note` are optional. Check a known live record or current API response instead of guessing the relationship or attribute shape.
 
 ## Filtering
 
-Exact-date filtering uses `filter[date]=YYYY-MM-DD`. Tested date-range operators returned `unsupported_filter_operation` in July 2026, so for a range either fetch exact dates individually or paginate recent entries and filter locally. Revalidate this behavior if the API starts accepting ranges.
+Use `filter[date]=YYYY-MM-DD` for one date. In July 2026, tested date-range operators returned `unsupported_filter_operation`. For a range, fetch dates one by one or paginate recent entries and filter them locally. Recheck this behavior if the API starts accepting ranges.
 
 Resolve a named retainer service with `GET /services/{service_id}?include=deal` and confirm the parent deal and date window before writing.
 

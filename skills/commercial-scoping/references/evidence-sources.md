@@ -1,53 +1,52 @@
-# Evidence Sources
+# Evidence sources
 
-Use the smallest source set that can answer the request reliably. For a full historical calibration, inspect every relevant source below and retain reopenable links or IDs.
+Use the smallest reliable source set. For a full historical comparison, inspect every relevant source below and keep its link or ID.
 
 ## Source routing
 
 1. **Notion and meetings**
-   - Read the current scope, requirements, decisions, meeting summaries, and transcripts when the transcript can change a price or version decision.
+   - Read the current scope, requirements, decisions, and meeting summaries. Read transcripts when they could change the price or version.
    - Capture the version actually presented to the customer and the time of the presentation.
    - Use the `notion-cli` and `work-management` skills.
 
 2. **monday.com**
    - Read relevant boards, tickets, updates, and comments with `monday-com`.
    - Use the original `Hours` or `Expected hours` scoping field.
-   - Exclude `Hours full ticket` from commercial calibration.
-   - Extract scoped deliverables rather than copying full ticket lifecycle work as separate customer lines.
+   - Exclude `Hours full ticket` from pricing comparisons.
+   - Extract agreed deliverables instead of turning each ticket step into a customer line.
 
 3. **Moneybird**
-   - Inspect relevant estimates, invoices, line items, and commercial groupings with `moneybird`.
+   - Inspect relevant estimates, invoices, lines, and groupings with `moneybird`.
    - Distinguish quoted, invoiced, credited, and paid amounts.
    - Use invoice lines as evidence of what was sold, not proof that every line consumed the same effort.
 
 4. **Slack**
    - Search the relevant workspace, DMs, channels, and full threads with `slack`.
-   - Include standalone Small Giants scopes that never reached monday.com.
+   - Include standalone Small Giants scopes that were never added to monday.com.
    - Preserve sender, timestamp, and permalink for price or scope decisions.
 
 5. **Figma**
    - Locate the supplied design and relevant nodes with `figma`.
    - Determine whether the design is complete, partial, absent, or only a visual reference.
-   - Do not expose `incl. design` in customer wording unless requested, but account for missing design work internally.
+   - Write `incl. design` for customers only when requested. Account for missing design work internally.
 
 6. **Code, CMS, and preview**
-   - Inspect current implementation when reuse or remaining work can materially change the price.
-   - Confirm which layouts, blocks, components, queries, routes, schemas, integrations, and environments already exist.
-   - Reuse existing foundations in the estimate and state where reuse lowers effort.
+   - Inspect the current implementation when reuse or remaining work can change the price.
+   - Confirm what already exists, account for reuse in the estimate, and state where it lowers effort.
 
 ## Evidence matrix
 
-For complex calibration, an internal comparison table can help:
+For a complex pricing comparison, an internal table can help:
 
 | Deliverable | Historical scope | Verified delivered state | Current reusable state | New effort | Uncertainty | Sources |
 |---|---|---|---|---:|---|---|
 
-Prefer evidence in this order when sources disagree:
+When sources disagree, prefer them in this order:
 
 1. current verified implementation and current written agreement;
 2. explicit recent customer or stakeholder decision;
 3. matched invoices and verified delivered work;
 4. older estimates and analogous work;
-5. unsupported inference.
+5. unsupported assumption.
 
-State an inference as an inference. Ask for a decision only when the unknown materially changes price or delivery.
+Distinguish conclusions drawn from evidence from confirmed facts, and label assumptions. Ask for a decision only when the unknown could change the price or delivery.

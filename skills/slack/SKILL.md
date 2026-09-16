@@ -16,7 +16,7 @@ metadata:
 
 ## Ownership
 
-Use this skill for direct Slack Web API reads and explicit message operations. Do not reconfigure or use the OpenClaw Slack gateway unless the user specifically asks for a gateway or bot/channel change.
+Use the Slack Web API. Do not use or reconfigure the OpenClaw Slack gateway unless the user asks for a gateway, bot, or channel change.
 
 For `work-triage`, Slack collection is read-only. Triage does not create Slack drafts or send messages.
 
@@ -24,13 +24,13 @@ Read [references/api.md](references/api.md) before making API calls.
 
 ## Reads and messages
 
-Cross-workspace triage reads every configured workspace. For a focused read, use `python3 ~/.agents/skills/work-triage/scripts/collect.py source slack --workspace <slug>`. For a send, select one workspace. Validate the account through `auth.test` without exposing credentials.
+Cross-workspace triage reads every configured workspace. For a focused read, use `python3 ~/.agents/skills/work-triage/scripts/collect.py source slack --workspace <slug>`. Before sending, choose one workspace and validate it with `auth.test`.
 
-Read relevant history and full threads; search snippets alone are insufficient. Preserve timestamps and permalinks, and report any workspace access gap.
+Read the relevant history and complete threads. Search snippets are not enough. Preserve timestamps and permalinks, and report any workspace you could not access.
 
-Slack drafts belong in the current chat, with their intended workspace, destination and thread. Do not create a draft inside Slack.
+Keep Slack drafts in the current chat. State the intended workspace, destination, and thread. Do not create drafts inside Slack.
 
-Send only with explicit authorization for the exact message and destination. An earlier matching instruction remains valid. Suppress rich link previews by default (`unfurl_links: false`, `unfurl_media: false`) unless requested. Verify the API response and return the permalink when available.
+Send only with explicit authorization for the exact message and destination. An earlier matching instruction remains valid. Unless requested otherwise, suppress rich link previews with `unfurl_links: false` and `unfurl_media: false`. Verify the API response and return the permalink when available.
 
 ## Safety
 

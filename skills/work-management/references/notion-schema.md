@@ -1,6 +1,6 @@
-# Notion Schema
+# Notion schema
 
-Use live Notion metadata as the authority for exact property names, option names, relations, IDs, and write validation. Treat these collection IDs as bootstrap hints and verify live metadata before writing.
+Use live Notion metadata for exact property names, option names, relations, IDs, and checking writes. These collection IDs are only starting points. Check live metadata before writing.
 
 - **Tasks** `collection://1cb5979e-268c-80e9-bd7d-000b00ac4424`
 - **Projects** `collection://4f5bd6fe-452e-4fbc-bcf8-cfcc2d19a2ae`

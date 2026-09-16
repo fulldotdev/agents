@@ -1,6 +1,6 @@
 ---
 name: agent-delegation
-description: Use when a task needs broad reading (codebase searches, logs, long docs, large CLI or API output), independent parallel research, or a second model to clean up or validate code, so bulky work runs in a subagent and the main thread keeps only the result.
+description: Use when a task needs extensive reading of code, logs, documents, or tool output, independent research in parallel, or a second model to clean up or verify code.
 ---
 
 # Agent delegation
@@ -13,11 +13,11 @@ Keep the main thread for requirements, decisions, edits that need the whole conv
 - Independent questions that can run in parallel.
 - Cleanup or verification by a model with different strengths.
 
-Do not delegate a known file or single lookup, customer-facing judgment, or tightly coupled steps where a handoff loses context. Every subagent starts with about 25k to 30k tokens of its own setup.
+Read a known file or make a single lookup directly. Keep customer-facing judgment and closely linked steps in the main thread when a handoff would lose context. Each subagent starts with about 25k to 30k tokens of setup.
 
 ## Models
 
-- OpenClaw operations: use native `sessions_spawn` with the caller's inherited model (normally GLM) and high thinking. Do not switch to another model through a CLI unless Sil explicitly requests it. The model choices below apply to development work in T3, Codex, or Claude.
+For OpenClaw operations, use native `sessions_spawn` with the caller's inherited model (normally GLM) and high thinking. Switch models through a CLI only when Sil explicitly asks. The choices below apply to development work in T3, Codex, or Claude.
 
 - **Fable 5.1** (`claude-fable-5-1`): usually best at clean, mergeable code and refactors.
 - **Astra** (`gpt-6-astra`): usually best at tool, browser and computer use, and at validating work end to end.
@@ -42,4 +42,4 @@ Run long jobs in the background. If `codex exec` hits a usage limit, retry with 
 
 ## Brief and return
 
-Give each subagent the goal, scope and paths, whether it may edit, and the expected output. Ask it to return findings with exact file paths, lines, commands or URLs, plus what it did not check, in under about 300 words unless more is needed. Never let two agents edit the same files at once. Check key claims before acting on them.
+Give each subagent the goal, scope, paths, permission to edit or read only, and expected output. Ask for findings with exact paths, lines, commands or URLs, plus anything it did not check. Aim for under 300 words unless more detail is needed. Never let two agents edit the same files at once. Check key claims before acting on them.
