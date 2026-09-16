@@ -7,7 +7,8 @@ Otis is the always-on Mac mini. It runs OpenClaw for Telegram, Discord and Slack
 - Config `~/.openclaw/openclaw.json`, service `ai.openclaw.gateway`, loopback port 18789. Secrets stay in machine-local credential files.
 - Default model `opencode-go/glm-5.3-flash` with high thinking, in the native OpenClaw runtime. Also used for subagents, images and PDFs. No automatic fallback.
 - Astra and Sol stay available for explicit use, through the Codex runtime (`agentRuntime.id: codex`), because Codex brings the good desktop computer use. The four OpenAI auth profiles stay as backups.
-- Plugins: telegram, discord, slack, openai, opencode-go, codex, browser (attach to the existing Chrome profile, consent required), document-extract (PDF reading). Bundled OpenClaw skills are disabled one by one in `skills.entries`; memory plugin off.
+- Plugins: telegram, discord, slack, openai, opencode-go, codex, browser, document-extract (PDF reading). Bundled OpenClaw skills are disabled one by one in `skills.entries`; memory plugin off.
+- Browser: `browser.defaultProfile: "chrome"`, driver `extension`, through the OpenClaw Chrome extension. Uses Otis's default local Chrome profile, signed into `sil@full.dev`, without the remote-debugging approval prompt. The ChatGPT extension is a separate connection used by Codex. The old `user` / `existing-session` connection remains available only when explicitly needed; it can require approval on reconnect.
 - `.agents/AGENTS.md` is loaded through `bootstrap-extra-files`; persona files are not used.
 - Media given to the pdf and image tools must be under `/Users/otis`, not `/tmp`.
 

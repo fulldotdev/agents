@@ -14,7 +14,10 @@ description: Always use when running commands, using the browser or computer, si
 ## Tools and browser
 
 - Prefer CLIs and other direct tools when available; use the browser or computer when needed.
-- Always use the machine's Chrome default profile for browser tasks.
+- Use the primary work Chrome profile signed into `sil@full.dev` on both machines: `sil@full.dev` on MacBook and the default local profile (`Your Chrome`) on Otis. These are separate local profiles; cookies and app sessions remain separate, so verify site sign-in on the machine being used.
+- MacBook's `sil+1@full.dev`, `sil+2@full.dev` and `silveltman@gmail.com` profiles are for Sil's separate account workflows; use them only when requested. The `sil+…` names identify separate app sessions, not separate Google accounts.
+- On Otis, OpenClaw uses browser profile `chrome` (extension) by default. Do not select `user` (remote-debugging attach) for routine work; it can require interactive approval again. See [Otis operations](../../operations/openclaw-otis.md).
+- On MacBook, Apple Passwords handles passwords and passkeys; keep Chrome password saving and automatic sign-in disabled.
 - When Sil asks to access a site, saved Chrome credentials and password-manager autofill may be used to sign in. Never reveal, copy, export, or change saved credentials, and never enter 2FA codes.
 
 ## Shared skills and instructions

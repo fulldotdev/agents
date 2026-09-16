@@ -33,6 +33,6 @@ For conversation links, use the CLI's account-aware output:
 gog --readonly --account user@example.com --no-input gmail url THREAD_ID --json
 ```
 
-For a draft, use `https://mail.google.com/mail/u/ACCOUNT_INDEX/#drafts/MESSAGE_ID` with its current `message.id`. The numeric browser account index must be observed in the machine's default Chrome profile; do not assume `/u/0/` or substitute an email address into `/u/`. The CLI account and browser account order are separate. Verify a direct draft link in the correct mailbox before calling it validated. If browser validation is unavailable, provide the CLI-generated conversation link and say the draft was verified through readback, without claiming the browser link was checked.
+For a draft, use `https://mail.google.com/mail/u/ACCOUNT_INDEX/#drafts/MESSAGE_ID` with its current `message.id`. The numeric browser account index must be observed in the primary work Chrome profile defined in the `environment` skill, on the machine being used; do not assume `/u/0/` or substitute an email address into `/u/`. The CLI account and browser account order are separate. Verify a direct draft link in the correct mailbox before calling it validated. If browser validation is unavailable, provide the CLI-generated conversation link and say the draft was verified through readback, without claiming the browser link was checked.
 
 If a write returns an ambiguous result, read the thread and drafts again before retrying creation. A draft is not a sent message; authorization to prepare one does not authorize sending it.
