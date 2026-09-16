@@ -85,6 +85,7 @@ def previous_lists():
             continue
         day = (entry.get("runAtIso") or "")[:10]
         for name, url in LINK.findall(entry.get("summary") or ""):
+            url = url.rstrip("/")
             suggested.setdefault(url, {"name": name.strip("* "), "url": url, "dates": []})["dates"].append(day)
     return sorted(suggested.values(), key=lambda p: max(p["dates"]), reverse=True)
 
