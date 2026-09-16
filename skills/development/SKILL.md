@@ -1,14 +1,30 @@
 ---
 name: development
-description: Apply Sil's development, local review, and handoff conventions when implementing or reviewing software in his repositories.
+description: Always use when implementing, reviewing, verifying or releasing software in Sil's repositories, including previews, CMS and Shopify changes, and anything touching production.
 ---
 
 # Development
 
 Use the repository's instructions and existing framework skills for implementation details. Choose planning, tools, and implementation depth to fit the request.
 
+## Stack and conventions
+
+- Don't be scared to propose bold ideas if they can meaningfully benefit the work.
+- Stick to best practices according to docs and official guidance.
+- Follow existing project conventions. Otherwise, prefer kebab-case and shallow folders grouped by file type.
+- Unless the project already specifies otherwise, Sil prefers:
+  - Content-driven sites: Astro, Markdown with content-collections, Tailwind, shadcn/ui, fulldev/ui, React, zod, pnpm
+  - Webapps: Vite+, Drizzle for relational data or Convex for reactive data, Tailwind, shadcn/ui, Tanstack libraries, Clerk or WorkOS when B2B/enterprise, Resend with React Email, Stripe, pnpm
+  - Ecommerce in Shopify
+- Work locally first and in preview by default, with the main branch being production. In Shopify, work on main directly and publish production over CLI, unless the project specifies a different workflow.
+
+## Production and shared environments
+
+Read-only inspection of production, live databases, and daily-driver build/preview channels is allowed. Changes require explicit authorization; name the target before changing it.
+
 ## Simplicity and scope
 
+- Choose the simplest solution that works; prefer some duplication over unnecessary abstraction.
 - Implement the requested outcome with the smallest complete change. Prefer existing components, dependencies, and direct code over new layers, packages, helpers, or configuration.
 - Add an abstraction only when it removes real duplication or makes the current behavior clearer. Do not build for hypothetical future features.
 - Avoid speculative fallbacks, redundant checks, comments that narrate obvious code, and boilerplate that adds no behavior. Preserve validation and error handling needed for real failure cases.

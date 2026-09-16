@@ -1,6 +1,6 @@
 ---
 name: design
-description: Apply Sil's simplicity and visual design conventions when designing or reviewing interfaces, websites, and product flows.
+description: Always use when designing, building or reviewing interfaces, websites, emails, product flows or any other visual output.
 ---
 
 # Design

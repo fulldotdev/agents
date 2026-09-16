@@ -7,7 +7,7 @@ Otis uses OpenClaw for Telegram, Discord, Slack and scheduled work. Normal turns
 - OpenCode Go uses the same account on both Macs. Its API key stays in machine-local OpenCode auth and the OpenClaw credential store, never Git. OpenCode 1.18.31 is installed at `~/.opencode/bin/opencode` on both machines; its model defaults to GLM 5.3 Flash with `reasoningEffort: high`.
 - OpenClaw's bundled `opencode-go` provider is enabled. Its GLM model entry explicitly records the official endpoint, capabilities and supported reasoning efforts because catalog discovery alone did not make the new model executable in 2026.9.4.
 - Default chat, utility text, image understanding and PDF analysis use GLM with high thinking. Subagents inherit their caller's model. All agent cron jobs inherit the default; triage passes GLM explicitly. There is no automatic fallback model. T3 development model choices remain independent.
-- Native OpenClaw loads `.agents/AGENTS.md` through `bootstrap-extra-files`, with workspace and cwd `/Users/otis` and `skipBootstrap: true`. This preserves the canonical file without copying or editing it.
+- Native OpenClaw uses workspace and cwd `/Users/otis` with `skipBootstrap: true` and no bootstrap files. Since 16 September there is no global AGENTS.md; all instructions live in `~/.agents/skills` (see `environment` and `user-communication`), which OpenClaw discovers natively.
 - The bundled `document-extract` plugin is enabled (added to `plugins.allow`) so GLM's `pdf` tool can read attachments. Media paths must stay under `/Users/otis`, not `/tmp`.
 - Chrome uses OpenClaw's bundled browser plugin, profile `user`, driver `existing-session`, attach-only, targeting the existing default Chrome profile. Chrome's attach consent is required. Codex-specific desktop/browser tools are not established GLM capabilities.
 
@@ -20,9 +20,9 @@ The Codex-specific details below describe the Codex runtime that stays available
 ## Shared configuration
 
 - Canonical custom skills and instructions: `~/.agents`, GitHub `fulldotdev/agents`, branch `main`, on both Macs.
-- Native discovery reads `~/.agents/skills` directly. Do not symlink the whole `.codex` or `.openclaw` directory. `.codex/AGENTS.md` links to `.agents/AGENTS.md`.
+- Native discovery reads `~/.agents/skills` directly. Do not symlink the whole `.codex` or `.openclaw` directory. There is no global AGENTS.md anymore.
 - T3 and the desktop use machine-local `~/.codex`. OpenClaw uses `appServer.homeScope: agent` and its prepared Codex OAuth profile, with `CODEX_HOME=~/.openclaw/agents/main/agent/codex-home`. This fixes the user-home error when creating scheduled jobs. `HOME` remains `/Users/otis`; credentials were not copied into the agent home.
-- The agent home's `AGENTS.md` links to `~/.agents/AGENTS.md`, and its `plugins` directory links to the desktop-managed `~/.codex/plugins`. Shared skills are discovered natively. Its bundled marketplace wrapper is a real directory under the agent home with links to the official app's manifest and plugin directory.
+- The agent home's `plugins` directory links to the desktop-managed `~/.codex/plugins`. Shared skills are discovered natively. Its bundled marketplace wrapper is a real directory under the agent home with links to the official app's manifest and plugin directory.
 - `appServer.args` supplies the agent-owned `marketplaces.openai-bundled.source` through Codex's supported `-c` option. This is necessary because, with cwd `/Users/otis`, Codex also discovers `~/.codex/config.toml` as project configuration and otherwise overwrites the agent's marketplace path. Do not remove the override without testing actual native tools in a new turn.
 - OpenClaw: `~/.openclaw/openclaw.json`, service `ai.openclaw.gateway`, loopback port 18789. Secrets stay in machine-local credential files, outside Git.
 - Retained OpenAI models: `openai/gpt-6-astra` and `openai/gpt-5.6-sol`, both with `agentRuntime.id: codex`. GLM uses `agentRuntime.id: openclaw`.
