@@ -2,37 +2,34 @@
 
 ## MCP usage
 
-- Endpoint: `https://moneybird.com/mcp/v1/read_write`
-- Use `mcporter` with the URL directly.
-- Inspect the current tool schema when the operation or payload shape is uncertain.
-- Resolve exact administration, contact, project, invoice, estimate, and recurring-document IDs before writes.
+- Endpoint: `https://moneybird.com/mcp/v1/read_write`, called through `mcporter` with the URL.
+- Check the current tool schema when you are unsure about an operation or payload shape.
+- Resolve the exact administration, contact, project, invoice, estimate, and recurring-document IDs before a write.
 
-Pass one complete JSON object to create and update calls through `--args`. Use the resource envelope the tool expects, such as `{"estimate": {...}}`, and keep `details_attributes` as an array. Do not flatten keys into forms such as `estimate.contact_id=...`. If a write fails unexpectedly, compare the envelope and fields with the current tool schema or a known working call before changing business data.
+Pass one complete JSON object to create and update calls through `--args`. Use the envelope the tool expects, such as `{"estimate": {...}}`, and keep `details_attributes` as an array. Do not flatten keys into forms like `estimate.contact_id=...`. If a write fails unexpectedly, compare your envelope and fields with the schema or a known working call before you change business data.
 
-## Verification
+## Checks after a write
 
-After every create or update, fetch the live record and verify:
+Fetch the live record and check:
 
 1. administration and contact;
 2. document type and status;
-3. period, currency, VAT, and due/recurrence settings;
+3. period, currency, VAT, and due or recurrence settings;
 4. quantities, units, rates, discounts, and totals;
 5. line order, descriptions, and optional lines.
 
-Return a direct app URL:
+Return the internal app URL, not a public one:
 
 - Estimate: `https://moneybird.com/<administration_id>/estimates/<estimate_id>`
 - Sales invoice: `https://moneybird.com/<administration_id>/sales_invoices/<sales_invoice_id>`
 - Recurring invoice: `https://moneybird.com/<administration_id>/recurring_sales_invoices/<recurring_sales_invoice_id>`
 - Contact: `https://moneybird.com/<administration_id>/contacts/<contact_id>`
 
-Prefer these internal URLs over public/external variants.
-
 ## Field conventions
 
-- For monthly recurring periods, use the last day of the month when monthly billing is intended.
+- For monthly billing, set the recurring period to the last day of the month.
 - Use `per maand` as the quantity for monthly packages and amounts.
-- For fixed-price estimates and invoices calculated from hours, keep the hours and rate internal. Set the customer-visible quantity to `1` and the price to the calculated line total.
-- Use hour quantities only for explicitly time-based billing or when the user requests them. Express partial hours in clock format, such as `2:30 uur`.
-- Use the period field for dates; use descriptions for scope, corrections, and calculation basis.
-- Update related products and estimates together only when their copy is intentionally shared, then verify both live records.
+- For fixed-price work calculated from hours, keep hours and rate internal. Set quantity to `1` and price to the line total.
+- Use hour quantities only for time-based billing or when the user asks. Write partial hours as clock time, such as `2:30 uur`.
+- Put dates in the period field. Put scope, corrections, and calculation basis in the description.
+- Update a product and an estimate together only when they share copy on purpose, then check both.

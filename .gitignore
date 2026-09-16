@@ -8,3 +8,7 @@ __pycache__/
 # Generated/private collector state; skills should commit code and docs only.
 skills/**/state/
 skills/**/scripts/state/
+
+# Claude Code skill sync artifacts
+skills/.trash/
+skills/synced/

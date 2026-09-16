@@ -1,7 +1,7 @@
 # Browser access failures
 
-Follow the work profile selection in the `environment` skill. On Otis, OpenClaw normally uses the `chrome` extension connection. Check `openclaw browser status --json` and `openclaw browser extension status --json`. A failing extension connection is not a reason to enable Remote Debugging or switch to `user`.
+On Otis, OpenClaw uses the `chrome` extension connection. Check `openclaw browser status --json` and `openclaw browser extension status --json`. A failing extension connection is no reason to switch to another profile or enable Chrome Remote Debugging.
 
-For `Target identities are unavailable`, a Chrome Web Store tab prevented tab enumeration during setup. Close it if it belongs to the current task, then retry; preserve the user's tabs.
+`Target identities are unavailable` means a Chrome Web Store tab blocked tab enumeration during setup. Close it if it belongs to this task, then retry. Leave the user's tabs alone.
 
-If a task explicitly uses remote-debugging attach, recommend enabling Chrome Remote Debugging only after verifying that its switch is disabled on the target machine. `browser_consent_required`, `consumer_profile_endpoint_requires_grant`, or an approval popup that cannot be found or accessed means connection approval is blocked. It does not mean Remote Debugging is disabled. Report the exact approval or access blocker and the target machine. If the popup is inaccessible or the remedy is unknown, say so instead of inventing a fix.
+`browser_consent_required`, `consumer_profile_endpoint_requires_grant`, or an approval popup you cannot find means connection approval is blocked. Report the exact blocker and the machine. If the fix is unknown, say so instead of inventing one.

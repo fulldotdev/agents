@@ -1,17 +1,17 @@
 ---
 name: wacli
-description: Use when an explicit request requires wacli on Otis to authenticate, sync, inspect, search, or send third-party WhatsApp messages and files. This includes history searches, recent-reply reads, and contacting someone else. Normal active WhatsApp conversations use the gateway.
+description: Use when an explicit request needs wacli on Otis to authenticate, sync, inspect, search, or send third-party WhatsApp messages and files, including history searches and reading recent replies. Normal active WhatsApp conversations use the gateway.
 ---
 
 # wacli
 
-1. Run wacli on Otis, where its primary store lives. Use the local CLI when already on Otis. From another machine, connect with the SSH alias `otis`.
-2. Inspect the relevant `wacli <command> --help` on Otis before unfamiliar operations. Use `https://wacli.sh` only when current documentation is needed.
-3. For reads, searches, message context, and recent replies, use bounded non-interactive commands with `--read-only --json`. Limit them to the smallest relevant chat and time window. `work-triage` should normally use its collector instead of running wacli manually.
-4. When a requested recent reply has not reached the store, run one bounded `wacli sync --once` on Otis, then repeat the scoped read. Authentication, history backfill, downloads, and other store changes require an explicit request.
-5. Select the requested named account/store explicitly when multiple accounts exist.
-6. Send only with explicit authorization for the exact recipient and message or file. An earlier instruction that covers the same recipient, content, and action remains valid. If any of these details are unresolved, confirm them before sending.
+- Run wacli on Otis, where its store lives. From another machine, go through `ssh otis`.
+- Check `wacli <command> --help` on Otis before an unfamiliar command. Use `https://wacli.sh` only when you need current docs.
+- For reads, searches, and recent replies, use bounded non-interactive commands with `--read-only --json`, limited to the smallest relevant chat and time window. `work-triage` uses its own collector instead of running wacli by hand.
+- If a recent reply is not in the store yet, run one `wacli sync --once` on Otis and read again. Authentication, history backfill, downloads, and other store changes need an explicit request.
+- When there are several accounts, name the account or store explicitly.
+- Send only when the user has approved that exact recipient and message or file. If any of those is unclear, confirm first.
 
-For WhatsApp reads covered by this skill, do not switch to Computer Use, browser control, Chrome, or WhatsApp Web. If Otis or its wacli store is unavailable, report that boundary instead of changing surfaces.
+Stay on wacli for WhatsApp reads. Do not switch to computer use, the browser, or WhatsApp Web. If Otis or the store is unavailable, report that.
 
-Do not use wacli for the user’s normal active chat. Do not expose private message history, account data, or store contents beyond the requested scope.
+Do not use wacli for the user's own active chat. Show only the messages and account data the request needs.

@@ -1,19 +1,19 @@
 ---
 name: weekly-planning
-description: "Use when running weekly Notion maintenance to clean up active records and report changes or decisions. Does not create customer updates."
+description: "Use when running weekly Notion maintenance to clean up active records and report changes or decisions."
 ---
 
 # Weekly cleanup
 
-Run this maintenance routine on Otis on Sunday at 10:00 Europe/Amsterdam. Sil handles customer updates and planning decisions. Use `work-management` and `notion-cli` for all Notion reads and writes.
+Runs on Otis on Sunday at 10:00 Europe/Amsterdam. The user makes the planning decisions. Use `work-management` and `notion-cli` for every Notion read and write.
 
-1. Read all active Projects, their related Tasks and Companies, and the upcoming Sprint. Include properties, bodies, agreements, and dependencies. Read every results page. Find the Sprint whose dates include the upcoming Monday. If Next has no dates, use it only when there is one Next Sprint and Current ends this Sunday. Do not create a duplicate Sprint.
-2. Repair broken or missing relations when recorded evidence establishes the correct Task, Project, Company, or Sprint. Verify every write.
-3. Correct an outdated status only when a source proves completion, cancellation, pausing, or resumed work. Inactivity is not completion. Keep Task Timeline history and append corrections according to `work-management`.
-4. Consolidate clear duplicate active work, preserving context and links in the retained record and canceling the duplicate. Flag uncertain matches; do not delete ambiguous work.
-5. Remove obsolete dates and correct Sprint assignments only under existing agreements. Flag overdue work and unclear planning. Never invent deadlines or commitments, and never roll unfinished work forward automatically.
-6. Fill in known owners and dependency owners from recorded agreements. Flag accepted work without an owner or clear next action. Do not turn inferred next actions into new commitments or generated Task-body summaries.
-7. Update Project scope and agreements only when newer dated decisions replace them. Keep historical Timeline entries and commercial decisions. Ignore finished or canceled history and Reservations. Goals remain read-only. Read back every changed record.
-8. Return one concise numbered list for the cron to deliver to Telegram Planning. Group related changes in one line, link affected records, and prefix every item with **Changed**, **Needs you**, or **Blocked**. Put changes first, decisions second, and blockers last. Omit empty categories, unchanged records, and per-project coverage recaps. If nothing changed or needs attention, return `NO_REPLY`. Do not send a second report yourself.
+1. Read all active Projects with their Tasks and Companies, and the upcoming Sprint: properties, bodies, agreements, dependencies, and every results page. The upcoming Sprint is the one whose dates include next Monday. If Next has no dates, use it only when there is one Next Sprint and Current ends this Sunday. Do not create a duplicate Sprint.
+2. Repair broken or missing relations when the record's own evidence shows the right Task, Project, Company, or Sprint.
+3. Correct a stale status only when a source proves completion, cancellation, pausing, or resumed work. Inactivity is not completion. Keep the Timeline history and append corrections as `work-management` describes.
+4. Merge clear duplicate active work: keep context and links in the surviving record and cancel the other. Flag uncertain matches. Do not delete ambiguous work.
+5. Remove obsolete dates and fix Sprint assignments only under existing agreements. Flag overdue work and unclear planning. Never invent deadlines or commitments, and never roll unfinished work forward on your own.
+6. Fill in known owners and dependency owners from recorded agreements. Flag accepted work without an owner or a clear next action. Do not turn an inferred next action into a commitment or a generated Task summary.
+7. Update Project scope and agreements only when a newer dated decision replaces them. Keep Timeline entries and commercial decisions. Ignore finished or canceled history and Reservations. Goals are read-only.
+8. Return one numbered list for the cron to deliver to Telegram Planning. Group related changes on one line, link the records, and start each item with **Changed**, **Needs you**, or **Blocked**, in that order. Skip empty categories, unchanged records, and per-project recaps. If nothing changed or needs attention, return `NO_REPLY`. Do not send a second report yourself.
 
-Do not create customer drafts, outboxes, approval lists, or send claims, process old Planning approvals, or send customer messages. The Sunday preparation and Monday sending workflows are retired. Follow `work-management` for preserving send evidence; remove legacy unsent updates only during an explicitly requested cleanup.
+Do not create customer drafts or send customer messages.

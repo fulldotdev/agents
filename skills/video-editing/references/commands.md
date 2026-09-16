@@ -1,6 +1,6 @@
 # Commands
 
-Use these commands when running the Otis video pipeline manually. Replace every placeholder with a resolved path or ID before execution.
+Commands for running the Otis video pipeline by hand. Replace every placeholder with a real path or ID first.
 
 ## Preflight
 
@@ -12,7 +12,7 @@ ssh otis '/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg -version | head -n 1
 df -h / | tail -n 1'
 ```
 
-## Create and ingest
+## Create a job and copy the source
 
 ```bash
 ssh otis 'mkdir -p /Users/otis/video-work/<job-id>/{source,work,output}'

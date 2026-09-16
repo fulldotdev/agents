@@ -1,16 +1,16 @@
 # Otis T3 setup
 
-Use this reference only for T3 installation, service, Connect, visibility, or split server problems.
+Use this only for installation, service, Connect, visibility, or split-server problems.
 
-## Current architecture
+## Architecture
 
-- Otis uses the official headless T3 service with `~/.t3` as its state directory.
-- T3 Connect exposes that environment to desktop and mobile clients signed into the same account.
-- Exactly one server process may own `~/.t3`. Running the Otis desktop backend beside the service can create a second port, conflicting state, and duplicate relay tunnels.
+- Otis runs the official headless T3 service with `~/.t3` as its state directory.
+- T3 Connect exposes that environment to desktop and mobile clients on the same account.
+- Exactly one server process may own `~/.t3`. Running the Otis desktop backend next to the service creates a second port, conflicting state, and duplicate relay tunnels.
 
 ## Update and service
 
-Keep the Otis server channel/version aligned with the client:
+Keep the Otis server channel and version in line with the client:
 
 ```bash
 npm view t3@nightly version
@@ -20,11 +20,11 @@ t3 service update
 t3 service status
 ```
 
-The macOS service is normally `~/Library/LaunchAgents/com.t3tools.t3code.service.plist` and listens locally on port 3773.
+The macOS service is `~/Library/LaunchAgents/com.t3tools.t3code.service.plist` and listens locally on port 3773.
 
 ## T3 Connect
 
-Link or relink Otis with:
+Link or relink Otis:
 
 ```bash
 t3 connect link --base-dir "$HOME/.t3" --headless
@@ -32,13 +32,13 @@ t3 service update
 t3 connect status --base-dir "$HOME/.t3" --json
 ```
 
-A healthy status has `desired`, `authenticated`, and `linked` all set to true. Authorization codes and bearer credentials are temporary secrets. Never put them in logs or work records.
+Healthy means `desired`, `authenticated`, and `linked` are all true. Authorization codes and bearer credentials are temporary secrets. Keep them out of logs and work records.
 
-If a remote thread is visible on mobile but not desktop, select the Otis or All Environments filter. Then open or add the existing remote project under Otis. This registers the remote path. It does not clone the project to MacBook.
+If a remote thread shows on mobile but not on desktop, pick the Otis or All Environments filter, then open or add the remote project under Otis. That registers the remote path without cloning to MacBook.
 
 ## Single-server check
 
-When thread state diverges or duplicate projects appear, inspect listeners and processes:
+When thread state diverges or projects appear twice, look at listeners and processes:
 
 ```bash
 lsof -nP -iTCP:3773 -sTCP:LISTEN
@@ -46,6 +46,6 @@ lsof -nP -iTCP:3774 -sTCP:LISTEN
 ps aux | egrep '[T]3 Code|[t]3 serve|cloudflared'
 ```
 
-For the remote-first Otis setup, keep the official service and stop the competing Otis desktop backend. Restart or reconnect clients after restoring a single server.
+Keep the official service and stop the competing desktop backend. Restart or reconnect clients afterwards.
 
-Primary upstream references are `docs/user/remote-access.md`, `docs/user/updating.md`, `docs/user/background-service.md`, and `docs/internals/t3-connect.md` in the T3 Code repository.
+Upstream references: `docs/user/remote-access.md`, `docs/user/updating.md`, `docs/user/background-service.md`, and `docs/internals/t3-connect.md` in the T3 Code repository.

@@ -1,52 +1,29 @@
 # Evidence sources
 
-Use the smallest reliable source set. For a full historical comparison, inspect every relevant source below and keep its link or ID.
+Use the smallest set of sources that answers the question. For a full historical comparison, check every relevant source below and keep its link or ID.
 
-## Source routing
+## Sources
 
-1. **Notion and meetings**
-   - Read the current scope, requirements, decisions, and meeting summaries. Read transcripts when they could change the price or version.
-   - Capture the version actually presented to the customer and the time of the presentation.
-   - Use the `notion-cli` and `work-management` skills.
+1. **Notion and meetings.** Read the current scope, requirements, decisions, and meeting summaries. Read transcripts when they could change the price or version. Note which version the customer saw and when. Use `notion-cli` and `work-management`.
+2. **monday.com.** Read the boards, tickets, updates, and comments with `monday-com`. Use the original `Hours` or `Expected hours` field, not `Hours full ticket`. Extract agreed deliverables instead of turning each ticket step into a customer line.
+3. **Moneybird.** Read estimates, invoices, lines, and groupings with `moneybird`. Keep quoted, invoiced, credited, and paid amounts apart. Invoice lines show what was sold, not how much effort each line took.
+4. **Slack.** Search the workspace, DMs, channels, and full threads with `slack`. Include Small Giants scopes that never reached monday. Keep sender, timestamp, and permalink for price or scope decisions.
+5. **Figma.** Find the supplied design with `figma`. Decide whether it is complete, partial, absent, or only a visual reference. Write `incl. design` for the customer only when asked. Account for missing design work internally.
+6. **Code, CMS, and preview.** Look at the current implementation when reuse or remaining work can change the price. Confirm what exists, count reuse in the estimate, and say where it lowers effort.
 
-2. **monday.com**
-   - Read relevant boards, tickets, updates, and comments with `monday-com`.
-   - Use the original `Hours` or `Expected hours` scoping field.
-   - Exclude `Hours full ticket` from pricing comparisons.
-   - Extract agreed deliverables instead of turning each ticket step into a customer line.
+## Weighing evidence
 
-3. **Moneybird**
-   - Inspect relevant estimates, invoices, lines, and groupings with `moneybird`.
-   - Distinguish quoted, invoiced, credited, and paid amounts.
-   - Use invoice lines as evidence of what was sold, not proof that every line consumed the same effort.
-
-4. **Slack**
-   - Search the relevant workspace, DMs, channels, and full threads with `slack`.
-   - Include standalone Small Giants scopes that were never added to monday.com.
-   - Preserve sender, timestamp, and permalink for price or scope decisions.
-
-5. **Figma**
-   - Locate the supplied design and relevant nodes with `figma`.
-   - Determine whether the design is complete, partial, absent, or only a visual reference.
-   - Write `incl. design` for customers only when requested. Account for missing design work internally.
-
-6. **Code, CMS, and preview**
-   - Inspect the current implementation when reuse or remaining work can change the price.
-   - Confirm what already exists, account for reuse in the estimate, and state where it lowers effort.
-
-## Evidence matrix
-
-For a complex pricing comparison, an internal table can help:
+For a complex comparison, an internal table helps:
 
 | Deliverable | Historical scope | Verified delivered state | Current reusable state | New effort | Uncertainty | Sources |
 |---|---|---|---|---:|---|---|
 
-When sources disagree, prefer them in this order:
+When sources disagree, trust them in this order:
 
-1. current verified implementation and current written agreement;
-2. explicit recent customer or stakeholder decision;
+1. the current implementation and the current written agreement;
+2. a recent explicit decision by the customer or stakeholder;
 3. matched invoices and verified delivered work;
-4. older estimates and analogous work;
-5. unsupported assumption.
+4. older estimates and similar work;
+5. an assumption.
 
-Distinguish conclusions drawn from evidence from confirmed facts, and label assumptions. Ask for a decision only when the unknown could change the price or delivery.
+Keep facts, conclusions, and assumptions labeled as such. Ask for a decision only when the unknown could change the price or delivery.

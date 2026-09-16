@@ -1,25 +1,25 @@
 # Meeting transcript analysis
 
-Use this process once for each new transcript revision marked `transcript_ready` by the Meetings collector.
+Do this once for each new transcript revision marked `transcript_ready` by the Meetings collector.
 
-You may use a read-only local subagent when a long transcript would crowd the triage context. Give it the meeting ID and revision, linked records, and relevant source references. Direct analysis is also fine. Never place meeting context from the Notion summary alone.
+A read-only local subagent may do the analysis when a long transcript would crowd the triage context. Give it the meeting ID and revision, the linked records, and the relevant source references. Direct analysis is fine too. Never place meeting context from the Notion summary alone.
 
 ## Context
 
-The analysis reads:
+Read:
 
-- the complete transcript from `GET v1/pages/{page_id}/markdown?include_transcript=true`;
-- the current properties and body of linked Tasks and Projects;
+- the full transcript from `GET v1/pages/{page_id}/markdown?include_transcript=true`;
+- the properties and body of linked Tasks and Projects;
 - linked Company context when it changes where the meeting belongs;
 - the full body of plausible active Tasks found from the transcript when relations are missing;
-- a prior meeting, source message, or T3 thread only when the transcript relies on it or it can change where the context belongs.
+- a prior meeting, source message, or T3 thread only when the transcript depends on it or it changes where the context belongs.
 
-Keep lookup focused on the meeting's subjects. Do not scan broad mail, chat, repository, or company history.
+Stay on the meeting's subjects. Do not scan broad mail, chat, repository, or company history.
 
 ## Result
 
-Return the meeting ID and revision. Include commitments, decisions, feedback, and blockers that affect the work, with source references, likely records, and recommendations for where they belong. State uncertainty about speakers, ownership, and scope. Do not treat a possible commitment as confirmed.
+Return the meeting ID and revision with the commitments, decisions, feedback, and blockers that affect the work, each with source references, likely records, and where it should go. Say when you are unsure about speakers, ownership, or scope. A possible commitment is not a confirmed one.
 
-Triage applies `work-management`, performs writes, and decides whether the result meets the conditions for starting T3 work. A delegated analyst returns findings only.
+Triage then applies `work-management`, does the writes, and decides whether T3 work may start. A delegated analyst returns findings only.
 
-Meeting summaries live in Notion's meeting-notes block. Do not recreate a separate Summary property.
+Meeting summaries live in Notion's meeting-notes block. Do not add a separate Summary property.

@@ -1,9 +1,9 @@
 # Hourly work
 
-Use the agreed hourly rate and billing period. Keep estimated hours, an approved limit, and actual billable hours distinct. An estimate is not automatically a fixed price or approval to spend that amount.
+Use the agreed rate and billing period. Keep estimated hours, an approved limit, and actual billable hours apart. An estimate is not a fixed price and not approval to spend that amount.
 
-Show hours and rate when explaining time-based pricing. Keep the explanation tied to the requested work. Do not force category prices or separate internal and customer documents when they add no value.
+Show hours and rate when explaining time-based pricing, tied to the requested work. Do not force category prices or separate internal and customer documents when they add nothing.
 
-Check whether the work is covered by an existing package or agreement before adding it. If expected effort exceeds an agreed limit, explain the extra work and the decision needed before increasing the commitment.
+Check whether an existing package or agreement already covers the work. If expected effort exceeds an agreed limit, explain the extra work and the decision needed before raising the commitment.
 
-Use actual hours only from the requested, verified source. Access Productive only when Sil explicitly asks for it.
+Take actual hours only from the source the user names. Open Productive only when the user asks.

@@ -3,52 +3,52 @@
 ## Cuts and pacing
 
 - Prefer hard cuts. Use fades only for an intentional opening, ending, or change of scene.
-- Shorten dead air and weak repetition when it improves the pace. Keep rhetorical pauses, breaths, and reactions that make the speaker sound human.
-- Do not clip consonants or first and last syllables. Use very short audio fades around joins when needed to prevent clicks.
-- A visible jump cut is acceptable when the meaning and rhythm improve. Do not hide every edit with motion.
+- Cut dead air and weak repetition when it helps the pace. Keep the pauses, breaths, and reactions that make the speaker sound human.
+- Do not clip consonants or first and last syllables. Use very short audio fades around joins against clicks.
+- A visible jump cut is fine when meaning and rhythm improve. Do not hide every edit with motion.
 
 ## Portrait framing
 
-- Reframe per shot or segment. A single center crop is not enough when the speaker moves.
-- Sample at least the start, middle, and end of each segment. Base the crop on the full movement of the face, shoulders, hands, and important props, not one flattering frame.
+- Reframe per shot or segment. One center crop is not enough when the speaker moves.
+- Sample at least the start, middle, and end of each segment. Base the crop on the full movement of face, shoulders, hands, and important props, not one flattering frame.
 - Keep the face near the vertical centerline with natural headroom. Include enough shoulders and hands to preserve body language.
-- Check the entire segment, not one representative frame. Prevent the face, captions, and important gestures from entering unsafe social-app regions.
-- When a crop or zoom moves, anchor it on the face and upper body. Do not let the face drift during the move.
+- Check the whole segment. Keep the face, captions, and important gestures out of the areas social apps cover with their interface.
+- When a crop or zoom moves, anchor it on the face and upper body so the face does not drift.
 
 ## Captions
 
-- Include burned-in captions in social previews and finals unless the user opts out. Also retain SRT or ASS when useful.
-- Generate captions from the final cut or retime them after editing. Source timestamps do not survive a reordered montage.
-- Prefer one or two short lines. Break on a breath, sentence, or clause. Useful defaults are a new cue after a pause around `500 ms`, after a strong comma with about `250 ms` of space, or before a cue exceeds roughly `7` words or `2.5` seconds. Treat these as editorial defaults, not rigid language rules.
-- Keep each cue visible for about `0.5` seconds or longer when speech spacing allows it. Avoid a one-word second line. Remove filler, exact stutters, and abandoned self-corrections only when the meaning stays truthful.
-- Use ASS for controlled styling and safe margins. Judge caption size and position on the actual portrait output.
-- Before rendering, check the background behind captions at representative dark, mid-tone, and bright moments. Use a glyph-local outline, shadow, or scrim when needed; do not grade or reserve a dead band merely to make captions readable.
+- Burn captions into social previews and finals unless the user opts out. Keep the SRT or ASS too when useful.
+- Make captions from the final cut, or retime them after editing. Source timestamps do not survive a reordered montage.
+- One or two short lines per cue. Break on a breath, sentence, or clause. Good defaults: a new cue after a pause of about `500 ms`, after a strong comma with about `250 ms` of space, or before a cue passes roughly `7` words or `2.5` seconds. These are defaults, not rules.
+- Show each cue for at least about `0.5` seconds when the speech allows. Avoid a one-word second line. Drop filler, stutters, and abandoned self-corrections only when the meaning stays true.
+- Use ASS for controlled styling and safe margins. Judge size and position on the real portrait output.
+- Before rendering, check the background behind the captions at dark, mid-tone, and bright moments. Use an outline, shadow, or scrim around the glyphs when needed. Do not grade the image or reserve a dead band just for caption readability.
 
 ## Semantic zooms
 
-- Use zooms for emphasis, not as constant background motion. Approved examples may use almost none.
-- Prefer a slow push-in when a new subject or distinct argument begins. A thesis, reframing, reveal, or payoff can also justify one. Skip examples, lists, filler, and weak passages.
-- Skip the zoom when a posture change or large gesture already supplies emphasis.
-- As a default, use at most one zoom in a video under 90 seconds, normally one under 150 seconds, and two or three under 220 seconds. Leave about 35 seconds between zooms. Break this pattern only when the content has clear separate chapters.
-- Ease from `1.0` to about `1.12` over roughly `3` to `4` seconds. Then keep the tighter framing for the rest of that thought.
-- Reset to the baseline crop on the next meaningful hard cut. The cut hides the reset and makes the two scales read as deliberate camera framings. Do not automatically zoom out a few seconds after zooming in.
-- Choose a moment whose next cut arrives naturally. Avoid holding the tighter crop for a long, unrelated passage. Use a slow eased return only when no suitable cut exists and the content clearly calls for one.
-- Use cosine or equivalent easing. Calculate moving zooms at twice the delivery resolution and downscale so motion does not step.
-- Review baseline, movement, held framing, and the reset after the cut. A compact montage of only zoom windows is the fastest approval artifact.
+- Zoom for emphasis, not as constant background motion. Approved examples use almost none.
+- Prefer a slow push-in when a new subject or argument starts. A thesis, reframing, reveal, or payoff can also justify one. Skip examples, lists, filler, and weak passages.
+- Skip the zoom when a posture change or big gesture already gives emphasis.
+- Default to at most one zoom under 90 seconds, normally one under 150 seconds, and two or three under 220 seconds, about 35 seconds apart. Break this only when the content has clear separate chapters.
+- Ease from `1.0` to about `1.12` over roughly `3` to `4` seconds, then hold the tighter framing for the rest of that thought.
+- Reset to the baseline crop on the next meaningful hard cut. The cut hides the reset, so the two scales read as deliberate framings. Do not zoom back out a few seconds after zooming in.
+- Pick a moment whose next cut comes naturally. Do not hold the tighter crop through a long unrelated passage. Use a slow eased return only when no suitable cut exists.
+- Use cosine or similar easing. Compute moving zooms at twice the delivery resolution and downscale so the motion does not step.
+- Review the baseline, the move, the held framing, and the reset after the cut. A short montage of only the zoom windows is the fastest way to get approval.
 
 ## Color
 
-- Match approved references before adding a look. Compare neutral frames and skin tones side by side.
-- Start with correct camera-to-Rec.709 conversion. Make the smallest grade that fixes an observed problem.
+- Match the approved references before adding a look. Compare neutral frames and skin tones side by side.
+- Start with a correct camera-to-Rec.709 conversion. Make the smallest grade that fixes a problem you can see.
 - Protect skin tone. Avoid green casts, over-warm skin, crushed clothing detail, and oversaturated backgrounds.
-- Tag social masters as BT.709 with limited range when that matches the encode. Check the rendered file in a normal player because metadata mistakes can change apparent contrast and saturation.
-- Check a few representative graded stills or short windows against the brief or approved reference before rendering a batch.
+- Tag social masters as BT.709 limited range when that matches the encode. Check the file in a normal player, because wrong metadata changes apparent contrast and saturation.
+- Check a few graded stills or short windows against the brief or reference before rendering a batch.
 
 ## Audio
 
-- Preserve the source audio unless an audible problem needs correction. More processing is not automatically better.
-- Compare against the clean source and pauses from the same recording. A generic voice curve does not justify a filter. If the source and its pauses do not reveal the problem, state the uncertainty instead of inventing a processing chain.
-- Work from the camera audio or a lossless intermediate. Avoid transcoding a previous delivery.
-- Do not apply a low-pass filter, compressor, denoiser, or loudness normalization by default. Use a light high-pass only for real low-frequency rumble and transparent peak limiting only when peaks require it.
-- Measure loudness and true peak. If level correction is needed, prefer deliberate gain or measured two-pass normalization over blind single-pass processing.
-- Final social audio should normally be `48 kHz` AAC at about `320 kbps`; previews may use a lower bitrate. Listen to the output, not only the meters.
+- Keep the source audio unless you can hear a problem. More processing is not better.
+- Compare with the clean source and the pauses in the same recording. A generic voice curve does not justify a filter. If you cannot find the problem there, say so instead of inventing a processing chain.
+- Work from the camera audio or a lossless intermediate, not a previous delivery.
+- No low-pass filter, compressor, denoiser, or loudness normalization by default. Use a light high-pass only for real rumble and transparent peak limiting only when peaks need it.
+- Measure loudness and true peak. If the level needs correcting, prefer deliberate gain or measured two-pass normalization over blind single-pass processing.
+- Final social audio is normally `48 kHz` AAC at about `320 kbps`. Previews can use less. Listen to the output, not only the meters.
