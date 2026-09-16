@@ -1,63 +1,80 @@
-# Durable processing
+# Processing protocol
 
-Use the collector CLI for state changes, never edit its JSON state manually. This is recoverable processing with reconciliation of external writes, not an atomic transaction across Gmail, Notion, T3 and message delivery.
+The state file is the ledger for a run: which events are open, which external writes were started, and which reports are not yet delivered. Change it only through `collect.py queue ...`, never by editing the JSON. Pass `--state-file STATE` to every queue command.
 
-## Claim and collect
+## Owner
 
-Choose one unique owner for this worker run, or use the owner and state file supplied by the scheduler. Keep it when resuming an interrupted run. `triage --incremental --owner RUN --format yaml` persists and returns the full batch. For a scheduler-precollected batch, read `queue status` once without recollecting. Use `queue show` or `queue context` for later focused rereads instead of reloading unchanged full state. Pass a supplied `--state-file` to every queue command.
+One owner per run. The scheduler supplies it; keep it for the whole run, also after an interruption.
 
-Another owner blocks execution. Verify the old worker has actually stopped before `queue claim --owner NEW --previous-owner OLD`. Age alone is not permission to take over. After a normally released run, `queue claim --owner NEW` can claim outstanding reports before collecting.
+If the state is owned by another worker, prove that worker stopped before taking over: its session in `openclaw sessions --agent main --limit all --json` is failed or stopped with no recent activity, and the cron run history shows it ended. Age alone is not proof. Then run `queue claim --owner NEW --previous-owner OLD`. If you cannot prove it stopped, make no external writes and return.
 
-Only unfinished `queue.events` require decisions. Read the full event and relevant context before deciding, including no-action decisions. `queue context --lane companies|projects|tasks|gmail|slack|whatsapp|calendar|meetings|t3_threads --id ID` (repeatable) or `--query TEXT` reads matching full snapshot records. WhatsApp event reads also include the refreshed chat context, including outgoing messages. Missing matches do not prove that no destination exists: use the authoritative source when evidence is absent or stale. `queue status --compact` remains available for focused inspection, but its index and previews are not decision evidence.
+## Reading events
 
-Never reexecute an acknowledged revision just because it remains visible. When an event has `superseded_by`, use the newer source for decisions; reconcile its old intents, then acknowledge the obsolete event without new execution or drafts. Older pending payloads stay in the ledger even when absent from today's context. Read each event's current source and relevant existing artifacts before deciding. On the first deployment, the overlap may include events already handled under the old collector; reconcile them. Old checkpoints do not prove that historical processing completed. On migration, the first refreshed WhatsApp/Slack content seeds the edit baseline for legacy receipts without replaying them. Earlier edits cannot be distinguished from previously handled content; reconcile suspected corrections against the destination. Later same-ID content edits create new action revisions.
+Only events whose status is not `done` need a decision. Read the full event with `queue show --event ID`. Read a Notion record, T3 thread or chat with `queue context --lane companies|projects|tasks|gmail|slack|whatsapp|calendar|meetings|t3_threads --id ID` (repeatable) or `--query TEXT`. WhatsApp events include the refreshed chat with Sil's outgoing messages. When the context lookup finds nothing, check the live source before concluding that no record exists.
 
-The scheduler's `scripts/run.py` collects once before starting Codex. It finishes and releases without a model only when every required lane is complete, the queue is empty, there are no unresolved intents/failures/reports, and no due task or near-term calendar work. Otherwise it passes the persisted batch to the same Codex runtime. Its per-run metadata is under the state directory's `logs/runs/`; scheduled delivery receipts remain authoritative for reports.
+Events acknowledged in an earlier run stay visible as context; never redo their actions. When an event has `superseded_by`, decide on the newer event and acknowledge the old one with `no_action`. A message edited after it was handled becomes a new event: compare it with what was already written to the destination and add only the difference.
 
-## Record outcomes
+## Recording writes
 
-`queue apply --owner RUN --file /absolute/path/decisions.json` accepts a JSON array. Batch independent acknowledgments in one file. Use event IDs from the queue, not invented examples below.
+Apply decisions with `queue apply --owner RUN --file /absolute/path/decisions.json`. The file is a JSON array; put independent operations in one file. Use real event IDs from the queue.
 
-For Gmail drafts, use the persisted source event and Gmail's actual thread/drafts to recover: inspect the latest sent reply and matching drafts before creating or updating, preserve Sil's edits, and verify the result through readback. No separate pre-write intent is needed. Record the native draft ID and acknowledge the event once all its work is handled:
-
-```json
-[
-  {"op":"record_draft","event":"gmail:EVENT_HASH","kind":"draft_created","receipt":"GMAIL_DRAFT_ID","report":{"title":"Draft created: concrete subject","url":"VERIFIED_NATIVE_URL"}},
-  {"op":"ack","event":"gmail:EVENT_HASH","outcome":"handled","note":"Matching draft verified"}
-]
-```
-
-Use `draft_updated` for a material update. After interruption, reconcile Gmail before retrying a write; an unchanged pre-existing draft is not a newly created outcome. The record key is derived from the event and draft ID, so repeating the same record does not duplicate its report. An existing prepared draft action from an older run still needs `resolve` or `cancel` below; do not also record it as a new action. Saving a draft never authorizes sending.
-
-For other external writes, save an intent with a stable key identifying the result and source revision, plus a target that lets a future worker find it:
-
-```json
-[{"op":"prepare","event":"EVENT_ID","key":"ACTION_KEY","kind":"task_created","target":"Notion Task for source SOURCE_URL; search before creating"}]
-```
-
-Reportable kinds are `task_created`, `project_created`, `company_created`, `task_canceled`, `task_done`, `project_status_changed`, `company_status_changed`, `draft_created`, `draft_updated`, `t3_started`, `t3_continued`, `calendar_created`, `calendar_updated`, `calendar_rescheduled`, and `calendar_canceled`. Use `context_updated` or `other` for quiet actions. `t3_started` requires work covered by Sil's authorization.
-
-Inspect an existing intent and external state before retrying a write with uncertain outcome. Reuse a verified artifact, preserve human edits, and never create a duplicate merely because its receipt is missing. After successful readback:
+**Gmail drafts.** Gmail itself is the ledger. Before writing, read the thread's latest sent reply and its existing drafts. After writing, read the draft back and record it:
 
 ```json
 [
-  {"op":"resolve","key":"ACTION_KEY","receipt":"VERIFIED_EXTERNAL_ID","report":{"title":"Task created: concrete outcome","url":"VERIFIED_NATIVE_URL"}},
-  {"op":"ack","event":"EVENT_ID","outcome":"handled","note":"Task verified"}
+  {"op":"record_draft","event":"gmail:EVENT_HASH","kind":"draft_created","receipt":"GMAIL_DRAFT_ID","report":{"title":"Draft created: subject","url":"VERIFIED_DRAFT_URL"}},
+  {"op":"ack","event":"gmail:EVENT_HASH","outcome":"handled","note":"Draft read back"}
 ]
 ```
 
-Reportable action kinds require a title and native URL; status-change titles include the verified `old → new` transition. Omit `report` for quiet context updates. Every prepared action must be resolved or explicitly canceled before acknowledging its event.
+Use `draft_updated` for a material update of an existing draft. Recording the same draft twice does not duplicate its report. Saving a draft never authorizes sending.
 
-For no action, first pass the main skill's destination, media, Resources and context completion checks, then use `ack` with `outcome: "no_action"` and a factual `note` identifying the checked evidence. For an unfinished event, use `retry` with its event ID and the missing evidence or failure in `note`. A prepared intent that has become unnecessary needs `{"op":"cancel","key":"ACTION_KEY","note":"Sil already answered before the write","evidence":"Verified sent-message locator and absence of an existing artifact"}`, not a fabricated success receipt. Reconcile an uncertain external write before canceling; completed actions cannot be canceled.
+**Every other external write** (Notion, Dex, T3, Calendar) takes three steps:
 
-Before finishing the batch, a qualifying failure can be queued with `{"op":"report_failure","lane":"slack","title":"Practical problem and required fix"}` after two consecutive failed collections. For failed execution, replace `lane` with the `event` ID; this requires retry decisions in at least two distinct batches, not two repeated calls in one run. Only escalate when Sil needs to act. Source recovery or event completion suppresses an undelivered stale failure report.
+1. Before writing, `prepare` with a stable key and a target that a later worker can search for:
 
-## Finish and report
+```json
+[{"op":"prepare","event":"EVENT_ID","key":"ACTION_KEY","kind":"task_created","target":"Notion Task for SOURCE_URL; search before creating"}]
+```
 
-`queue finish --owner RUN` saves completed decisions. Only complete, successfully collected lanes advance their checkpoint. Unfinished events, source payloads and action intents remain in the backlog, so independent lanes can progress. A failed or saturated lane remains incomplete; never advance its checkpoint merely to clear an error. Per-run downloads are retained for pending work and are not canonical document storage.
+2. Write, then read the result back.
+3. `resolve` with the real ID, then `ack` the event:
 
-Read `queue reports --owner RUN` and apply the main skill's reporting gate. Reconcile outstanding reports against actual Triage chat messages or matching OpenClaw run receipts (`openclaw cron runs --id JOB_ID --json`). A receipt must confirm delivery (`delivered: true` and `deliveryStatus: "delivered"`) to the intended Triage chat and identify the reported output. A successful run or a silent `NO_REPLY` is not delivery evidence. Mark an entry with `{"op":"reported","key":"ACTION_KEY"}` only when delivery is verified. A prepared answer is not delivery evidence.
+```json
+[
+  {"op":"resolve","key":"ACTION_KEY","receipt":"NOTION_PAGE_ID","report":{"title":"Task created: outcome","url":"VERIFIED_NOTION_URL"}},
+  {"op":"ack","event":"EVENT_ID","outcome":"handled","note":"Task read back"}
+]
+```
 
-Runtime and scheduler alerts belong to the watchdog. Triage owns actionable source and execution failure reports.
+Kinds that appear in the report: `task_created`, `project_created`, `company_created`, `task_canceled`, `task_done`, `project_status_changed`, `company_status_changed`, `draft_created`, `draft_updated`, `t3_started`, `t3_continued`, `calendar_created`, `calendar_updated`, `calendar_rescheduled`, `calendar_canceled`. These need a `report` with title and native URL; status titles include `old → new`. Quiet writes such as a Timeline append or a Resources link use `context_updated` or `other` without `report`. `t3_started` needs Sil's authorization per `t3-routing.md`.
 
-Release with `queue release --owner RUN` after finishing the batch, then return the concise final response or `NO_REPLY`. Leave reports first emitted in that final response unmarked until the next run can observe it. If a session change makes delivery uncertain, inspect available conversation history before repeating or acknowledging. This preserves recovery without pretending final-message delivery is exactly once.
+**A prepared action without a resolve.** This happens when a run stopped between prepare and resolve, or when an earlier run left one behind. Do this, in this order:
+
+1. Search the target named in the prepare: the Notion database, Gmail thread, T3 thread list or Calendar.
+2. Found: `resolve` it with the ID you found. Do not create a second one.
+3. Not found: do the write now, read it back, then `resolve`.
+4. No longer needed, for example Sil already did it or the request was withdrawn: `cancel` it with a note and evidence.
+
+```json
+[{"op":"cancel","key":"ACTION_KEY","note":"Sil already answered","evidence":"Sent message LOCATOR; no Task found in search"}]
+```
+
+5. Cannot search the target because the service is down: leave the action prepared, mark its event `retry` with a note naming the target that still has to be checked, and finish the batch.
+
+Never acknowledge an event while one of its prepared actions is still open.
+
+**No action:** `{"op":"ack","event":"EVENT_ID","outcome":"no_action","note":"what was checked"}`.
+
+**Not finished:** `{"op":"retry","event":"EVENT_ID","note":"what is missing"}`.
+
+**Failure report.** After a lane failed to collect in two runs in a row: `{"op":"report_failure","lane":"slack","title":"What is broken and what Sil must do"}`. For an event that needed `retry` in two different batches, use `"event":"EVENT_ID"` instead of `lane`. Only report when Sil has to act. A later success removes an undelivered failure report.
+
+## Finish
+
+1. `queue finish --owner RUN` saves the decisions. Unfinished events and open prepared actions stay in the backlog for the next run. Only complete lanes whose events are all done move their cursor forward.
+2. `queue reports --owner RUN` lists reports that are not yet confirmed delivered. Check the Triage chat history or the cron run receipt (`openclaw cron runs --id JOB_ID --json` with `delivered: true` and `deliveryStatus: "delivered"`). Mark an entry `{"op":"reported","key":"ACTION_KEY"}` only when that earlier message is proven delivered. Reports you put in this run's final answer stay unmarked; the next run confirms them. A `NO_REPLY` or a successful run is not delivery.
+3. `queue release --owner RUN`.
+4. Return the numbered report or `NO_REPLY`. The scheduler delivers it; do not send a separate message.
+
+Per-run downloads in the cache directory are scratch files, not document storage. Runtime and scheduler alerts belong to the watchdog.

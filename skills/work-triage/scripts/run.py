@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect once, skip proven-empty batches, otherwise run the existing Codex agent."""
+"""Collect once, skip proven-empty batches, otherwise run the OpenClaw agent."""
 
 import argparse
 import json
@@ -41,15 +41,15 @@ def feedback_status(last_seen):
 
 def final_text(envelope):
     if envelope.get("status") not in {None, "ok", "completed"}:
-        raise RuntimeError("Codex did not complete: " + str(envelope.get("summary") or envelope.get("status")))
+        raise RuntimeError("Agent did not complete: " + str(envelope.get("summary") or envelope.get("status")))
     result = envelope.get("result", envelope)
     meta = result.get("meta") or {}
     payloads = result.get("payloads") or []
     if meta.get("aborted") or meta.get("error") or meta.get("yielded") or any(p.get("isError") for p in payloads):
-        raise RuntimeError("Codex returned an incomplete or failed triage run; retain the batch for recovery")
+        raise RuntimeError("Agent returned an incomplete or failed triage run; retain the batch for recovery")
     text = "\n".join(p["text"] for p in payloads if p.get("text") and not p.get("isReasoning")).strip()
     if not text:
-        raise RuntimeError("Codex returned no final text; delivery outcome is unknown")
+        raise RuntimeError("Agent returned no final text; delivery outcome is unknown")
     return text
 
 
@@ -172,7 +172,7 @@ def write_receipt(path, receipt):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--state-file")
-    parser.add_argument("--model", default="openai/gpt-5.6-sol")
+    parser.add_argument("--model", default="opencode-go/glm-5.3-flash")
     parser.add_argument("--thinking", default="high")
     parser.add_argument("--timeout", type=int, default=3600)
     args = parser.parse_args()

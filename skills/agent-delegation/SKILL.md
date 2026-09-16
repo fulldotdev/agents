@@ -17,7 +17,7 @@ Do not delegate a known file or single lookup, customer-facing judgment, or tigh
 
 ## Models
 
-- OpenClaw operations: use native `sessions_spawn` with the caller's inherited model (normally GLM) and high thinking. The temporary Sol triage worker must retain Sol for its own subagents. Do not switch to another model through a CLI unless Sil explicitly requests it. The model choices below apply to development work in T3, Codex, or Claude.
+- OpenClaw operations: use native `sessions_spawn` with the caller's inherited model (normally GLM) and high thinking. Do not switch to another model through a CLI unless Sil explicitly requests it. The model choices below apply to development work in T3, Codex, or Claude.
 
 - **Fable 5.1** (`claude-fable-5-1`): usually best at clean, mergeable code and refactors.
 - **Astra** (`gpt-6-astra`): usually best at tool, browser and computer use, and at validating work end to end.
