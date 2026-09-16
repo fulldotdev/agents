@@ -10,6 +10,7 @@ Help Sil relevante mensen te leren kennen bij bedrijven waarmee FullDev zou kunn
 ## Selectie en context
 
 - Lees via `work-management` en `notion-cli` de actuele Companies met Status `Target` en hun bedrijfsnotities. Die bepalen de doelgroep en mogelijke samenwerking; houd geen tweede bedrijvenlijst in deze skill of de automatiseringsprompt bij.
+- Bureaus moeten aantoonbaar website- of webshopprojecten oppakken, via ontwerp of realisatie; alleen branding, flyers of packaging is onvoldoende. Eigen developers in-house zijn geen harde eis.
 - Kies mensen die betrokken zijn bij klanten, partnerships, ontwerp, marketing, commerce of development. Beoordeel wat FullDev kan aanvullen. Een vergelijkbare technische stack of een groeiend bureau bewijst geen behoefte aan uitbesteding; neem eigen developmentcapaciteit en tijdzone mee wanneer die de samenwerking beïnvloeden.
 - Iemand buiten een targetbedrijf past alleen bij een aantoonbare verbinding, zoals samenwerking of een relevante eerdere rol. Benoem die verbinding; dezelfde branche of alleen een gezamenlijke LinkedIn-connectie is onvoldoende.
 - Gebruik `dex-skill`, recente Sales-gesprekshistorie en eerdere onderzoeksuitkomsten om relaties, verstuurde verzoeken en eerdere suggesties te herkennen. Dex-aanwezigheid, een verzonden verzoek en een geaccepteerde connectie zijn verschillende feiten. Een eerdere suggestie bewijst geen contact.
@@ -17,7 +18,7 @@ Help Sil relevante mensen te leren kennen bij bedrijven waarmee FullDev zou kunn
 
 ## Contactaanleiding
 
-Een inhoudelijke post, event of bevestigd gedeeld partnerschap kan een korte contactsuggestie verdienen. Voeg alleen dan een menselijk conceptbericht toe, in de taal van de ontvanger. Gebruik `customer-communication` voor de formulering. Benoem de concrete aanleiding zonder een bestaande relatie, bekendheid of behoefte te suggereren die niet is vastgesteld. Geen algemene salespitch of verplicht bericht bij ieder item. Herhaal dezelfde kennismakingsaanleiding niet zonder nieuwe context.
+Een inhoudelijke post, event of bevestigd gedeeld partnerschap kan een korte contactsuggestie verdienen. Voeg alleen dan een menselijk conceptbericht toe, in de taal van de ontvanger. Lees vóór het schrijven de actuele Notion-pagina met Sils LinkedIn DM-voorbeelden (https://app.notion.com/p/3db5979e268c8193a787dbd704257d2f) als stijlhouvast, niet als template: kort, oprecht en concreet, zonder verplichte pitch of afsluitende vraag, en zonder typefouten of onbewezen aanleidingen uit de voorbeelden over te nemen. Is de pagina niet leesbaar, meld dat kort en laat conceptberichten weg. Gebruik `customer-communication` voor de formulering. Benoem de concrete aanleiding zonder een bestaande relatie, bekendheid of behoefte te suggereren die niet is vastgesteld. Geen algemene salespitch of verplicht bericht bij ieder item. Herhaal dezelfde kennismakingsaanleiding niet zonder nieuwe context.
 
 Dit blijft onderzoek en voorbereiding: wijzig geen Notion- of Dex-records en verstuur geen connectieverzoeken, berichten, reacties of likes. Sil kiest en voert het contact uit. Gebruik voor browserwerk Chrome volgens de globale browserregels. Sluit eigen onderzoekstabs na afloop en behoud bestaande tabs.
 

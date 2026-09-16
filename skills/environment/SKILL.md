@@ -22,3 +22,8 @@ description: Always use when running commands, using the browser or computer, si
 - Manage shared custom skills in `~/.agents` on the MacBook; sync to Otis through GitHub. Every agent (Codex, Claude, OpenCode, OpenClaw, Cursor) reads `~/.agents/skills` directly; there is no global AGENTS.md. Keep project instructions in their repository and credentials, plugins, and machine configuration local.
 - Do not edit installed skills unless Sil explicitly asks. Local changes can block updates or be overwritten.
 - Keep custom skills concise. Remove generic guidance, duplication, and detail that belongs in references or scripts.
+
+## Automations on Otis
+
+- Recurring agent jobs are OpenClaw cron jobs (`openclaw cron add`); plain scripts run through launchd plists in `~/Library/LaunchAgents`. `~/.agents/operations/openclaw-otis.md` lists what runs.
+- A one-off or temporary job gets a clear name with its purpose and end date in the message, and is deleted as soon as it has done its work. Do not leave finished or expired jobs behind; `system-hygiene` reports any that remain.

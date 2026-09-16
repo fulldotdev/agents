@@ -8,7 +8,7 @@
 
 4. **Previews and processes.** Identify local servers, editor processes and tunnels that appear abandoned. Match each to its project, output path and current owner before recommending shutdown. Open files, process arguments and listeners are evidence; a `dist` or cache directory may power a daily-used preview. Never stop it during inspection.
 
-5. **Automations.** Read schedules and recent run/delivery status for expired one-offs, duplicates, stale disabled jobs and actionable failures. A successful run does not establish delivery. Do not rerun jobs, inspect business decisions in depth, or rebuild a workflow as routine maintenance. Respect previously deferred investigations. Some system-owned jobs cannot be removed through the ordinary CLI; do not bypass that restriction.
+5. **Automations.** Compare `openclaw cron list` and the launchd plists on Otis with `~/.agents/operations/openclaw-otis.md`. Flag one-off or temporary jobs that have run or expired, duplicates, disabled leftovers, and jobs whose recent runs fail; propose deleting them. A successful run does not establish delivery. Do not rerun jobs, inspect business decisions in depth, or rebuild a workflow as routine maintenance. Respect previously deferred investigations. Some system-owned jobs cannot be removed through the ordinary CLI; do not bypass that restriction.
 
 6. **CLI tooling.** Compare actual command resolution, installed versions and required dependencies across Macs. Detect stale shims and competing installations. Different Node versions or machine-specific tools are not defects without consequences. Use each machine's existing manager; credentials and machine configuration remain local.
 
