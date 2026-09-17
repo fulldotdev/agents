@@ -15,7 +15,7 @@ Base the message on what the recipients have seen: their threads and the meeting
 
 Give the answer or result first, with enough explanation to be useful. Follow the plain style from `user-communication` and match the language and familiarity of the conversation. In Dutch, use `ik`, `je`, and `jullie`. A short acknowledgment or a fitting emoji can add warmth. Pick greetings, thanks, lists, and sign-offs to match the exchange. Do not copy typos or force informality.
 
-When scope is unclear, say what is included, what is missing, and what that means for the customer. Then explain any extra work or decision. For a problem, keep confirmed facts apart from possible causes and offer a next step within the agreed work.
+Describe the agreed work positively. Omit unconfirmed details; raise unclear scope only when it needs a decision. Present examples as examples, not exhaustive limits. For a problem, keep confirmed facts apart from possible causes and offer a next step within the agreed work.
 
 Decide implementation details yourself. Mention them only when the customer needs them to decide, use, or review something. Keep your own checks and permission rules out of the message.
 

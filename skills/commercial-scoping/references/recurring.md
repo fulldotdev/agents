@@ -1,6 +1,6 @@
 # Recurring services
 
-Start from the current agreement: what is included, for whom, at what price, and how often it is billed. Keep a fixed service fee apart from reserved hours or usage-based billing. Do not invent rollover, overage, cancellation, or availability terms.
+Start from the current agreement: what is included, for whom, at what price, and how often it is billed. Keep a fixed service fee apart from reserved hours or usage-based billing. Describe the included service without adding unagreed limits, exclusions, or license terms.
 
 Keep one-off setup separate from the ongoing service.
 
