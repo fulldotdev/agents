@@ -36,6 +36,10 @@ Healthy means `desired`, `authenticated`, and `linked` are all true. Authorizati
 
 If a remote thread shows on mobile but not on desktop, pick the Otis or All Environments filter, then open or add the remote project under Otis. That registers the remote path without cloning to MacBook.
 
+## Browser choice
+
+Keep `enableAgentBrowserAccess: false` in each environment's `~/.t3/userdata/settings.json`. It disables agent access to T3's embedded browser and its injected routing instructions. Native Chrome integrations remain available. Provider sessions already running can retain their earlier tools until restarted. Follow [environment's Chrome setup](../../environment/references/chrome.md) for Codex and Claude; do not disable the whole T3 MCP server or modify the installed app.
+
 ## Single-server check
 
 When thread state diverges or projects appear twice, look at listeners and processes:
