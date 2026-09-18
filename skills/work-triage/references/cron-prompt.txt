@@ -1,3 +1,3 @@
 Workflow: work-triage
 
-Run one triage cycle on Otis. Follow ~/.agents/skills/work-triage/SKILL.md, `environment`, `user-communication`, `work-management`, and the tool skills they name. The OpenClaw job owns the schedule and delivers your final answer to the Triage chat. Do not send messages yourself.
+Run one triage cycle on Otis. Follow ~/.agents/skills/work-triage/SKILL.md, `environment`, `browser`, `user-communication`, `work-management`, and the tool skills they name. The OpenClaw job owns the schedule and delivers your final answer to the Triage chat. Do not send messages yourself.
