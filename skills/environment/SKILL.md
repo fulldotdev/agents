@@ -28,5 +28,5 @@ description: Always use when running commands or working with files, projects, m
 
 ## Automations on Otis
 
-- Recurring agent jobs are OpenClaw cron jobs. Plain scripts run through launchd plists in `~/Library/LaunchAgents`. `~/.agents/operations/openclaw-otis.md` lists what runs.
+- Recurring agent jobs are OpenClaw cron jobs. Plain scripts run through launchd plists in `~/Library/LaunchAgents`. [otis.md](references/otis.md) lists what runs.
 - Give a one-off job a clear name and an end date in its message, and delete it when done.

@@ -67,7 +67,7 @@ Return one numbered list in English, starting at the number in the prompt. One l
 - A Company follows the Project formats. Report a draft when it is new or meaningfully updated.
 - Put the link on the title. No IDs or host names.
 - End a line with a reason of at most ten words only when the user must act: a deadline, a decision, something not sent.
-- Report a failing source after two or more consecutive failed runs. For browser problems, use [browser-troubleshooting.md](references/browser-troubleshooting.md).
+- Report a failing source after two or more consecutive failed runs. For browser problems, use the access failures in `browser`'s [chrome.md](../browser/references/chrome.md).
 - Report nothing else: no routine messages, context appends, or no-action decisions.
 
 Items you could not finish go after the list, one line each:

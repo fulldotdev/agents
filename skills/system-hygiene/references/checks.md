@@ -7,7 +7,7 @@
 
 4. **Previews and processes.** Find local servers, editor processes, and tunnels that look abandoned. Match each to its project, output path, and owner before proposing a shutdown. A `dist` or cache directory may power a preview used daily.
 
-5. **Automations.** Compare `openclaw cron list` and the launchd plists on Otis with `~/.agents/operations/openclaw-otis.md`. Flag one-off jobs that ran or expired, duplicates, disabled leftovers, and jobs with recent failures, and propose deleting them. Do not rerun jobs or rebuild a workflow as maintenance. Some system-owned jobs cannot be removed through the CLI; leave those.
+5. **Automations.** Compare `openclaw cron list` and the launchd plists on Otis with `environment/references/otis.md`. Flag one-off jobs that ran or expired, duplicates, disabled leftovers, and jobs with recent failures, and propose deleting them. Do not rerun jobs or rebuild a workflow as maintenance. Some system-owned jobs cannot be removed through the CLI; leave those.
 
 6. **CLI tooling.** Compare command resolution, installed versions, and dependencies across both Macs. Look for stale shims and competing installs. Different Node versions or machine-specific tools are fine unless they cause a problem. Use each machine's own package manager. Credentials and machine config stay local.
 
