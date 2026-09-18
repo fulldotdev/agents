@@ -30,21 +30,21 @@ Keep one small JSON file at `~/.local/state/fulldev/system-hygiene/state.json` w
 
 ## Output
 
-One Dutch message in this format:
+One English message in this format:
 
 ```text
 System hygiene · 20-09
 
-1. Otis · ~/.cache/fulldev: 14 GB oude triage-batches, schijf 91% vol. Voorstel: alles ouder dan 30 dagen verwijderen, scheelt 12 GB.
-2. MacBook · Node: 18 en 22 staan naast elkaar, pnpm kiest soms 18. Voorstel: 18 verwijderen; geen project gebruikt het nog.
+1. Otis · ~/.cache/fulldev: 14 GB of old triage batches, disk 91% full. Proposal: delete everything older than 30 days, frees 12 GB.
+2. MacBook · Node: 18 and 22 are both installed, pnpm sometimes picks 18. Proposal: remove 18; no project uses it.
 
-Bereik: Otis en MacBook. Niet gecontroleerd: Shopify CLI op MacBook.
+Covered: Otis and MacBook. Not checked: Shopify CLI on MacBook.
 ```
 
-- Each finding: machine and target, what you found and why it matters, then `Voorstel:` with the action and its cost or saving. One or two short sentences.
+- Each finding: machine and target, what you found and why it matters, then `Proposal:` with the action and its cost or saving. One or two short sentences.
 - At most five findings, ordered by impact. Urgent findings may exceed five. Group only closely related targets.
 - Normally under 1,500 characters. No tables, nested lists, generic advice, or checks that passed.
 
-With no new findings, write `System hygiene · DD-MM: geen nieuwe actiepunten.` If coverage was incomplete, say what was missing and do not imply everything is healthy.
+With no new findings, write `System hygiene · DD-MM: no new action points.` If coverage was incomplete, say what was missing and do not imply everything is healthy.
 
 In a scheduled run, return only this report. In an interactive review, answer in the conversation.
