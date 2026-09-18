@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Every 15 minutes on Otis: gateway up, WhatsApp synced, triage ran on time, contact sync finished. One Telegram message when that changes."""
+"""Every 15 minutes on Otis: gateway up, WhatsApp synced, triage ran on time, contact sync finished, T3 and local proxy reachable. One Telegram message when that changes."""
 
 import json
 import os
 import sqlite3
 import subprocess
 import time
+import urllib.request
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -49,6 +50,31 @@ def check_whatsapp(state, now):
             return "wacli is niet meer gekoppeld aan WhatsApp"
     except (ValueError, AttributeError):
         return "wacli-koppeling kon niet worden gecontroleerd"
+    return None
+
+
+
+def check_agent_services():
+    for label, port, name in (
+        ("com.t3tools.t3code.service", 3773, "T3"),
+        ("com.fulldev.cliproxyapi", 8317, "CLIProxyAPI"),
+    ):
+        service = run(["launchctl", "print", f"gui/{os.getuid()}/{label}"])
+        if service.returncode or "state = running" not in service.stdout:
+            return f"{name} draait niet; controleer de launchd-service"
+        try:
+            with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=5) as response:
+                if response.status != 200:
+                    return f"{name} antwoordt niet normaal op poort {port}"
+        except OSError:
+            return f"{name} is niet bereikbaar op lokale poort {port}"
+    status = run(["t3", "connect", "status", "--base-dir", str(HOME / ".t3"), "--json"])
+    try:
+        config = json.loads(status.stdout)
+    except ValueError:
+        return "T3 Connect-configuratie kon niet worden gecontroleerd"
+    if status.returncode or not all(config.get(key) for key in ("desired", "authenticated", "linked")):
+        return "T3 Connect is niet volledig gekoppeld of ingelogd"
     return None
 
 
@@ -107,7 +133,7 @@ def main():
     if not gateway_ok:
         problems.append("OpenClaw gateway is down; herstart geprobeerd")
         run(["openclaw", "gateway", "restart"], timeout=90)
-    for check in (lambda: check_whatsapp(state, now), lambda: check_triage(now_local), lambda: check_contacts(now_local)):
+    for check in (lambda: check_whatsapp(state, now), lambda: check_triage(now_local), lambda: check_contacts(now_local), check_agent_services):
         try:
             problem = check()
         except Exception as exc:
