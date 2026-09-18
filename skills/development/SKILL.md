@@ -47,11 +47,14 @@ Continue in the existing checkout and branch, with focused commits. Check Git wh
 
 Use `work-management` for tracking and Notion. Use `t3-code` when dispatching work through T3. Local reviewer subagents do not need their own T3 thread or Notion Task.
 
-## Local review
+## Client delivery
 
-For a substantive change, get a read-only review from an independent local Astra subagent before handoff. Give it the request, the repository instructions, the diff or branch, and access to the surrounding code. Ask for defects, regressions, missed requirements, and maintenance problems, each with a location and explanation. Cosmetic preferences are not findings.
+This flow applies to work a customer will see or receive. Internal work, experiments, and tiny copy or formatting changes skip the review and the screenshots.
 
-Fix what matters within scope and recheck the affected behavior. Review again only after large fixes. A review needs no PR, new tests, or report file. Tiny copy or formatting changes need no reviewer.
+1. Implement locally or in a preview.
+2. QA in Chrome. Open the affected pages on mobile and desktop, walk through the flow that changed, and take screenshots of the end result.
+3. For a change with logic, get one read-only review from an independent reviewer subagent. Give it the request, the repository instructions, and the diff. Ask for defects, regressions, and missed requirements, each with a location. Fix what matters within scope and recheck. Review again only after large fixes.
+4. Hand off with the checked preview URL, the screenshots, what is unresolved, and a draft customer message written with `customer-communication`. Do not send it or release.
 
 ## Delivery
 

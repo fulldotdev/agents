@@ -15,6 +15,6 @@ Reviving a settled thread needs new, explicit approval from the user, also when 
 
 Before starting, append the new source to the Task with `work-management`, and check the Task and the index for an existing thread. At most one T3 thread per Task. Use `t3-code` for the helper commands.
 
-The handoff says briefly why work starts automatically, what the new feedback is, and what result is expected. Build it from the Task's history and latest source, ignoring decisions that newer sources replaced. Include source links, scope, repository and branch, and the user's limits. Pass the actual requirements through. Leave development, testing, review, and preview choices to the thread.
+The handoff says briefly why work starts automatically, what the new feedback is, and what result is expected. Build it from the Task's history and latest source, ignoring decisions that newer sources replaced. Include source links, scope, repository and branch, and the user's limits. Pass the actual requirements through. Leave development choices to the thread. For customer work it follows the client delivery flow in `development`: implement locally, validate, and hand off a preview URL and a draft message.
 
 Automatically started work never covers release, production changes, payment, destructive changes, or external messages. Triage confirms the dispatch and leaves execution to the thread.

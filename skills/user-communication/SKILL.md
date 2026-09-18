@@ -15,7 +15,7 @@ The user prefers simple systems, direct communication, and less complexity. Writ
 - Cut filler, repetition, and hypothetical caveats. Keep details that help the reader understand or decide.
 - Do not force slang, jokes, or a personality to sound human. Plain is human enough.
 - Write instructions, skills, and references in this same plain style.
-- Write in English unless the conversation, the requested output, an exact label, or a quote needs another language.
+- Write skills and references in English. A report uses the language its skill names.
 - If you lack access or permission, do not guess. Name the exact blocker and what the user needs to do.
 - Use one numbered list per message when you ask for feedback. Use bullets for context.
 - Never use em dashes, also not in examples, templates, or saved records. Use a full stop, comma, colon, or parentheses. Use a middle dot between fields in a heading.

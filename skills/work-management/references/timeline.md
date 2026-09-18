@@ -24,4 +24,4 @@ Do not edit old entries. Correct a mistake with a new entry that names the old o
 
 Store only what a source said. Do not store generated `Next` steps, `Done when` criteria, or summaries; work those out when reading. A handoff brief goes in the work prompt, not in the Task.
 
-Task titles name the work package or the outcome, not every substep. Prefer English unless the work is clearly in Dutch. Keep customer wording literal. A tiny reminder may have an empty body.
+Task titles name the work package or the outcome, not every substep. Pick one language per Task: English, or the customer's language. Keep customer wording literal. A tiny reminder may have an empty body.
