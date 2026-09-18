@@ -139,10 +139,15 @@ def run(args):
     if args.dry_run:
         return write_receipt(receipt, "dry-run", started, f"Batch written to {BATCH_FILE} ({BATCH_FILE.stat().st_size:,} bytes)")
 
-    prompt = (Path(__file__).resolve().parents[1] / "references/cron-prompt.txt").read_text().strip()
+    prompt = (
+        "Workflow: work-triage\n\n"
+        "Run one triage cycle on Otis. Follow ~/.agents/skills/work-triage/SKILL.md, `environment`, `browser`, "
+        "`user-communication`, `work-management`, and the tool skills they name. The OpenClaw job owns the schedule "
+        "and delivers your final answer to the Triage chat. Do not send messages yourself."
+    )
     prompt += f"\n\nBatch file: {BATCH_FILE} (read it once). Start report numbering at {number}."
     if chat_changed:
-        prompt += " The Triage chat changed since the last run: read Sil's recent messages there first."
+        prompt += " The Triage chat changed since the last run: read the user's recent messages there first."
     prompt += " Return only the numbered report, or NO_REPLY when there is nothing to report. Put RETRY lines last."
     remaining = max(60, args.timeout - int(time.monotonic() - started))
     command = ["openclaw", "agent", "--agent", "main", "--session-key", f"agent:main:triage:{now.strftime('%Y%m%dT%H%M%SZ')}",
