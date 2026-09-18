@@ -21,7 +21,14 @@ Decide implementation details yourself. Mention them only when the customer need
 
 Use confirmed amounts and scope. Use `commercial-scoping` when they still need calculating. Never claim agreement, completion, availability, a price, a deadline, or a consequence of silence that is not confirmed. Include a checked link when the customer needs to review or use something. Ask a follow-up only for a real open point. Stop after the last useful result, caveat, or request.
 
-Read [examples.md](references/examples.md) for tone and for sensitive replies about scope, problems, or pricing. The examples show writing choices. Their facts do not apply to other customers.
+## Examples
+
+These show writing choices. Their facts do not apply to other customers.
+
+- **A small change is done.** Jannick asked for new landing-page photos. Reply: `Gefixt ✅`. Once the work is verified, that is enough.
+- **A scope boundary.** Jordie worried that chauffeurs could not log in. "Out of scope" does not answer that. Say what works and what is extra: `Chauffeurs kunnen al een account krijgen. Wat nog ontbreekt is het automatisch overnemen van hun gegevens uit het formulier. Dat is extra werk. Voor nu kunnen we ze eenmalig invoeren.`
+- **A price change.** Give only the differences, with the amount in parentheses, and leave unchanged items out: `De branding en lettertypes komen erbij (+€135)`.
+- **A follow-up.** Ask about the actual open point, not for a generic update: `Any update on setting up a meeting for me with Ace or the other grower?`
 
 ## Deliver the draft
 
