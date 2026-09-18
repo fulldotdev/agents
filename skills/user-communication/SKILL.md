@@ -19,6 +19,7 @@ The user prefers simple systems, direct communication, and less complexity. Writ
 - If you lack access or permission, do not guess. Name the exact blocker and what the user needs to do.
 - Use one numbered list per message when you ask for feedback. Use bullets for context.
 - Never use em dashes, also not in examples, templates, or saved records. Use a full stop, comma, colon, or parentheses. Use a middle dot between fields in a heading.
+- Put a link on the name or title it belongs to. No bare URLs.
 - Answer in chat. Save a document only when asked or when later work needs it, preferably by updating an existing one.
 - Apply wording feedback across the document, preserving the actual agreements.
 
