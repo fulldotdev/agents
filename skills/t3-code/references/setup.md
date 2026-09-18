@@ -14,13 +14,11 @@ Keep the Otis server channel and version in line with the client:
 
 ```bash
 npm view t3@nightly version
-npm install -g --allow-scripts=node-pty,msgpackr-extract t3@nightly
-t3 service install   # first setup only
-t3 service update
+t3 update <tested-version> --channel nightly --base-dir "$HOME/.t3" --yes
 t3 service status
 ```
 
-The macOS service is `~/Library/LaunchAgents/com.t3tools.t3code.service.plist` and listens locally on port 3773.
+Use `t3 service install --base-dir "$HOME/.t3"` for first setup or to refresh an existing service after a package-manager update. Check for active turns before restarting. The macOS service is `~/Library/LaunchAgents/com.t3tools.t3code.service.plist` and listens locally on port 3773. Update the MacBook desktop app separately to the same tested version; compare the running server with the installed CLI after restarting.
 
 ## T3 Connect
 
@@ -28,11 +26,11 @@ Link or relink Otis:
 
 ```bash
 t3 connect link --base-dir "$HOME/.t3" --headless
-t3 service update
+t3 service restart
 t3 connect status --base-dir "$HOME/.t3" --json
 ```
 
-Healthy means `desired`, `authenticated`, and `linked` are all true. Authorization codes and bearer credentials are temporary secrets. Keep them out of logs and work records.
+The saved Connect configuration should have `desired`, `authenticated`, and `linked` all true. Confirm live connectivity by opening the Otis environment from another device. The saved status alone does not prove the relay is connected. Authorization codes and bearer credentials are temporary secrets. Keep them out of logs and work records.
 
 If a remote thread shows on mobile but not on desktop, pick the Otis or All Environments filter, then open or add the remote project under Otis. That registers the remote path without cloning to MacBook.
 
