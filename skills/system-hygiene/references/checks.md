@@ -1,5 +1,4 @@
-1. **Skills and instructions.** Check the custom skills in `~/.agents/skills` against these rules and propose fixes for what drifted:
-   Use the rules in `environment/references/writing-skills.md`. Also check that links between skills and references resolve, commands still match the installed tools, and no `__pycache__`, empty folders, or stray files sit inside a skill.
+1. **Skills and instructions.** Check the custom skills in `~/.agents/skills` against `environment/references/writing-skills.md` and propose fixes for what drifted. Also check that links between skills and references resolve, commands still match the installed tools, and no `__pycache__`, empty folders, or stray files sit inside a skill.
    Installed skills update through their own path, not local edits. Shared conventions belong in `~/.agents`, project instructions in their repositories.
 
 2. **Files and storage.** Measure free space and meaningful growth. Look at large temporary files, downloads, trash, caches, and old backups. For each deletion candidate, say what it is for and whether it can be recovered. `~/Library` holds settings and app data, not cache. Report reclaimable space, which APFS clones and hard links make smaller than folder size.
