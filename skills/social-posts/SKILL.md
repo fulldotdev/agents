@@ -36,4 +36,6 @@ Do not invent handles, metrics, quotes, results, or client approval. Ask for a m
 
 ## Notion Tasks
 
-For posts tracked in Notion, read [references/notion-posts.md](references/notion-posts.md) and use `work-management`. Schedule or publish only after the user approves, then check the public result and save its URL.
+A tracked post lives in its existing Task, through `work-management`. Keep the editable post above `## Timeline`, in this order: `Caption`, `Platform captions` when needed, `Media` as native uploads in order, and `Publication` for confirmed facts. Feedback and approvals go in the Timeline. Use the Task's Status, `Date` for an agreed publication date, and Sprint as usual.
+
+Schedule or publish only after the user approves that post. Then check the public result and save its URL in Resources as `LinkedIn post` or similar. Never invent a public URL.

@@ -24,7 +24,7 @@ description: Always use when running commands or working with files, projects, m
 
 - Custom skills live in `~/.agents` on MacBook and sync to Otis through GitHub. Codex, Claude, OpenCode, OpenClaw, and Cursor all read `~/.agents/skills`. Project instructions stay in their repository. Credentials, plugins, and machine configuration stay local.
 - Edit a skill, installed or custom, only when the user asks. Local edits to installed skills block updates or get overwritten.
-- Write custom skills in the plain style from `user-communication`. Start the description with `Use when` or `Always use when`. Say each rule once, do not repeat the rules above, and leave out what a model already knows. Long procedures go in references, reusable commands in scripts.
+- Read [writing-skills.md](references/writing-skills.md) before you write or edit a custom skill.
 
 ## Automations on Otis
 

@@ -1,9 +1,5 @@
 1. **Skills and instructions.** Check the custom skills in `~/.agents/skills` against these rules and propose fixes for what drifted:
-   - The description starts with `Use when` or `Always use when` and contains only the trigger, not body rules.
-   - Sentences use everyday words and direct verbs, one job per sentence, no em dashes, and say "the user", not a name.
-   - Each rule appears once. The shared permission and evidence rules live only in `environment`. A tool skill does not restate them, and two skills do not describe the same responsibility.
-   - No text about retired systems or old workflows, no dated provenance that the agent does not need, and nothing a current model already knows or does by default.
-   - Links between skills and references resolve, commands still match the installed tools, and no `__pycache__`, empty folders, or stray files sit inside a skill.
+   Use the rules in `environment/references/writing-skills.md`. Also check that links between skills and references resolve, commands still match the installed tools, and no `__pycache__`, empty folders, or stray files sit inside a skill.
    Installed skills update through their own path, not local edits. Shared conventions belong in `~/.agents`, project instructions in their repositories.
 
 2. **Files and storage.** Measure free space and meaningful growth. Look at large temporary files, downloads, trash, caches, and old backups. For each deletion candidate, say what it is for and whether it can be recovered. `~/Library` holds settings and app data, not cache. Report reclaimable space, which APFS clones and hard links make smaller than folder size.
