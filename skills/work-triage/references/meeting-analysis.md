@@ -2,7 +2,7 @@
 
 Do this once for each new transcript revision marked `transcript_ready` by the Meetings collector.
 
-A read-only local subagent may do the analysis when a long transcript would crowd the triage context. Give it the meeting ID and revision, the linked records, and the relevant source references. Direct analysis is fine too. Never place meeting context from the Notion summary alone.
+Analyze the full transcript, never the Notion summary alone. For a long transcript, a read-only local subagent may do it. Give it the meeting ID and revision, the linked records, and the relevant source references.
 
 ## Context
 

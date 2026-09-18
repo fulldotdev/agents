@@ -17,7 +17,7 @@ Do not invent handles, metrics, quotes, results, or client approval. Ask for a m
 - Use real work and named examples instead of broad capability claims, when permission and evidence exist.
 - Say what the technology achieved unless the technology itself is the subject.
 - Make the point in the caption. Use media for evidence or context, not to repeat it.
-- No generic question, comment prompt, DM request, or closing slogan. Add a call to action only when it gives the reader a useful next step and fits the request.
+- No generic question, comment prompt, DM request, or closing slogan. A call to action must give the reader a useful next step.
 - Keep an approved section or asset exactly as it is. Change only what was asked.
 
 ## Media
@@ -32,7 +32,7 @@ Do not invent handles, metrics, quotes, results, or client approval. Ask for a m
 
 - LinkedIn copy or carousels: read [references/linkedin.md](references/linkedin.md).
 - X copy or launch media: read [references/x.md](references/x.md).
-- Add a channel reference only after that channel has real requirements or repeated feedback. Do not apply LinkedIn conventions to every platform.
+- Other channels have no reference yet. Do not apply LinkedIn conventions to them.
 
 ## Notion Tasks
 

@@ -13,4 +13,4 @@ Export assets through Figma's own controls. Reuse project assets that already ma
 
 For implementation, use `design` and `development`. Follow the supplied design and existing project patterns, then compare the result with the Figma reference. Do not redesign nearby screens or invent missing functionality. Say when something is an estimate.
 
-Reading or implementing a design is not permission to change the Figma file. Edit Figma only when asked, inside the named frames, and check the visible result.
+Edit the Figma file only when asked, inside the named frames, and check the visible result.

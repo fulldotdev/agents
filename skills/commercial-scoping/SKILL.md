@@ -5,11 +5,11 @@ description: Use when defining or revising customer scope and pricing for fixed-
 
 # Commercial scoping
 
-Answer the pricing question directly. A small addition may need only an amount and a short explanation. A substantial quote needs a calculation you can show. Use the existing agreement to pick the billing basis.
+Answer the pricing question directly. A small addition needs an amount and a short explanation; a substantial quote needs a calculation you can show. Take the billing basis from the existing agreement.
 
 Read only the guidance you need: [fixed-price.md](references/fixed-price.md), [hourly.md](references/hourly.md), or [recurring.md](references/recurring.md). For historical comparisons or several sources, read [evidence-sources.md](references/evidence-sources.md).
 
-Use the rate from this project's accepted estimate, contract, or direct agreement. Do not reuse a rate from another project unless it was confirmed here. Use Productive hours only when the user asks for them.
+Use the rate from this project's accepted estimate, contract, or direct agreement, not one from another project. Use Productive hours only when the user asks for them.
 
 Before pricing extra work, check what is already included, billed, done, or reusable. For a defect, check the agreed scope and support terms before deciding whether the fix is covered or billable. Do not promise a free fix or add a charge without evidence. Keep broader requests separate from the existing commitment.
 

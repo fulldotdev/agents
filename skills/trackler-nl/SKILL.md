@@ -23,6 +23,6 @@ Read comments and attachments, including planner photos and coaching transcripts
 
 ## Read-only boundary
 
-Use only the navigation, previews, and downloads you need to read. Do not create, edit, comment, upload, move, complete, assign, delete, or change a status. If something changes by accident, stop and report it before trying to fix it.
+Use only the navigation, previews, and downloads you need to read. Change nothing: no edits, comments, uploads, moves, completions, assignments, or status changes. If something changes by accident, stop and report it before trying to fix it.
 
 Download a file only when the preview or text extraction is not enough, and keep it in a temporary path.
