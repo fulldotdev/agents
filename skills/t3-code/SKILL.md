@@ -5,9 +5,7 @@ description: "Use when inspecting, creating, resuming, or settling T3 agent thre
 
 # T3 Code on Otis
 
-Otis runs the T3 server and provider processes. T3 Connect shows managed threads on the signed-in MacBook and mobile clients but does not start work. OpenClaw starts work through the local helper below.
-
-Use a T3 thread when work must be visible across devices. T3 does not import a standalone provider resume such as `codex exec resume`.
+Otis runs the T3 server. Use a T3 thread when work must be visible on the user's other devices, and start it through the helper below.
 
 Read [references/setup.md](references/setup.md) only for installing, updating, linking, or troubleshooting the service or T3 Connect.
 

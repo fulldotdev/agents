@@ -18,7 +18,7 @@ Use the Slack Web API. Leave the OpenClaw Slack gateway alone unless the user as
 
 ## Reading
 
-Triage reads every configured workspace and is read-only. For a focused read, use `python3 ~/.agents/skills/work-triage/scripts/collect.py source slack --workspace <slug>`.
+For a focused read, use `python3 ~/.agents/skills/work-triage/scripts/collect.py source slack --workspace <slug>`.
 
 Read the full history and complete threads. Search snippets are not enough. Keep timestamps and permalinks, and report any workspace you could not reach.
 

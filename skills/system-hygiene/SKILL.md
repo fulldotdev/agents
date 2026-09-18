@@ -5,17 +5,17 @@ description: Use when reviewing the user's Macs, shared skills, tooling, project
 
 # System hygiene
 
-Runs on Otis each Sunday at 09:00 Europe/Amsterdam and reports to Telegram System (`-5094134988`). You propose, the user decides. Do not clean up, install, upgrade, change Git, stop processes, restart services, deploy, or change schedulers during a review. Large migrations are separate projects.
+You propose, the user decides. Do not clean up, install, upgrade, change Git, stop processes, restart services, deploy, or change schedulers during a review. Large migrations are separate projects.
 
 ## Review
 
 Read `environment`, `user-communication`, [checks.md](references/checks.md), and `~/.local/state/fulldev/system-hygiene/state.json`. Read the user's recent replies in the System chat for decisions.
 
-Inspect Otis and, when reachable, MacBook at `silveltman@macbook-pro-2.tailb5cb80.ts.net`. Use non-interactive SSH with a short timeout. Do not change authentication or network settings to get in. If MacBook is unreachable, continue on Otis and mention the gap. Unreachable does not mean unhealthy.
+Inspect Otis and, when reachable, MacBook at `silveltman@macbook-pro-2.tailb5cb80.ts.net`. Use non-interactive SSH with a short timeout. Do not change authentication or network settings to get in. If MacBook is unreachable, continue on Otis and mention the gap.
 
 Cover all eight check areas each week. The skills check in `checks.md` describes what a clean skill looks like; propose edits when a skill drifts from it. Start with an overview, then look closer at changes that could affect work. Review apps, plugins, and models in depth once a month, or sooner for a specific issue. Use CLI help and official docs when needed. Do not scan every project's dependencies, fetch every repository, or propose an upgrade just because a newer version exists.
 
-For each finding, name the machine and the exact target. Give the evidence, the effect on work, the proposed action, and what deleting or stopping it would cost. Say when you are unsure. Old, oddly named, or version-mismatched does not mean unused.
+For each finding, name the machine and the exact target. Give the evidence, the effect on work, the proposed action, and what deleting or stopping it would cost. Prove that something is unused before you propose removing it, and say when you are unsure.
 
 ## Boundaries
 

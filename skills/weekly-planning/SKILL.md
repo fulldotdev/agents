@@ -5,7 +5,7 @@ description: "Use when running weekly Notion maintenance to clean up active reco
 
 # Weekly cleanup
 
-Runs on Otis on Sunday at 10:00 Europe/Amsterdam. The user makes the planning decisions. Use `work-management` and `notion-cli` for every Notion read and write.
+The user makes the planning decisions. Use `work-management` and `notion-cli` for every Notion read and write.
 
 1. Read all active Projects with their Tasks and Companies, and the upcoming Sprint: properties, bodies, agreements, dependencies, and every results page. The upcoming Sprint is the one whose dates include next Monday. If Next has no dates, use it only when there is one Next Sprint and Current ends this Sunday. Do not create a duplicate Sprint.
 2. Repair broken or missing relations when the record's own evidence shows the right Task, Project, Company, or Sprint.

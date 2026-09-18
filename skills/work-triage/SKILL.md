@@ -5,7 +5,7 @@ description: "Use when processing recurring intake from Gmail, Slack, WhatsApp, 
 
 # Work triage
 
-The runner collects new items into one batch file. For each item: find where it belongs, add missing context, draft a reply when needed, then report. Use `work-management` for all Notion work. Weekly maintenance belongs to `weekly-planning`.
+The runner collects new items into one batch file. For each item: find where it belongs, add missing context, draft a reply when needed, then report. Use `work-management` for all Notion work.
 
 Read [media.md](references/media.md) for attachments, [meeting-analysis.md](references/meeting-analysis.md) for a meeting with `transcript_ready`, and [t3-routing.md](references/t3-routing.md) before starting or continuing a T3 thread.
 

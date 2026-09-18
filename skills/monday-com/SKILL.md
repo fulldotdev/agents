@@ -12,7 +12,7 @@ monday holds the Teveo and fayn tickets, updates, statuses, and sprint groups. `
 - Teveo: `https://teveo-bunch.monday.com/boards/1853861128`
 - fayn: `https://teveo-bunch.monday.com/boards/1780576681`
 
-Use Chrome with the work profile from `environment`. Do not use the monday API.
+Use Chrome with the work profile from `browser`. Do not use the monday API.
 
 ## Reading
 

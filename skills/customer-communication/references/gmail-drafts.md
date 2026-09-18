@@ -1,6 +1,6 @@
 # Gmail drafts
 
-Our draft workflow lives here so updates to the installed `gog` skill do not overwrite it. Read `gog` for sign-in and tool rules. The commands below match gog v0.37.0. Recheck `--help` if the installed version differs.
+Read `gog` for sign-in and tool rules. If a command below fails, check `--help`.
 
 ## Before writing
 

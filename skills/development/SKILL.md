@@ -15,7 +15,6 @@ Follow the repository's instructions and the relevant framework skills.
   - Web apps: Vite+, Drizzle for relational data or Convex for reactive data, Tailwind, shadcn/ui, TanStack libraries, Clerk or WorkOS for B2B or enterprise, Resend with React Email, Stripe, pnpm.
   - Ecommerce: Shopify.
 - Work locally first and in a preview by default. The main branch is production. In Shopify, work on main and publish through the CLI unless the project says otherwise.
-- Suggest a bold idea when it has a clear benefit.
 
 ## Production and shared environments
 

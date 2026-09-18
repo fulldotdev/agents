@@ -13,7 +13,7 @@ Trackler is read-only. Read it for coaching messages, track structure, items, co
 
 Main track: `https://app.trackler.nl/tracks/47eec07f-397c-4779-b307-5ab504027aac?referer=https%3A%2F%2Fapp.trackler.nl%2Ftracks`
 
-Use Chrome with the work profile from `environment`. Do not use the Trackler API.
+Use Chrome with the work profile from `browser`. Do not use the Trackler API.
 
 ## Reading
 

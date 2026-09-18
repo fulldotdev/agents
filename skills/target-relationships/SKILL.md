@@ -17,11 +17,11 @@ Run the collection script and read the file it names:
 python3 ~/.agents/skills/target-relationships/scripts/collect.py
 ```
 
-It contains the Notion Companies with Status `Target` with their notes and website, the people linked to them in Dex, the people listed in the past three weeks, and the user's DM examples. Do not look these up again. Then read the user's latest messages in the Telegram Sales chat (session `agent:main:telegram:group:-5101802924`) for feedback on earlier lists. The rest is LinkedIn and web research, in Chrome with the work profile from `environment`.
+It contains the Notion Companies with Status `Target` with their notes and website, the people linked to them in Dex, the people listed in the past three weeks, and the user's DM examples. Do not look these up again. Then read the user's latest messages in the Telegram Sales chat (session `agent:main:telegram:group:-5101802924`) for feedback on earlier lists. The rest is LinkedIn and web research, in Chrome with the work profile from `browser`.
 
 ## Who to pick
 
-- The target companies and their notes define the audience and the possible collaboration. Keep no second company list in this skill or the automation prompt.
+- The target companies and their notes define the audience and the possible collaboration.
 - An agency must demonstrably take on website or webshop projects, through design or implementation. Branding, flyers, or packaging alone is not enough. In-house developers are not required.
 - Pick people involved in clients, partnerships, design, marketing, commerce, or development. Assess what FullDev could add. A similar stack or a growing agency does not prove a need to outsource. Consider in-house capacity and time zone when they affect the collaboration.
 - Include someone outside a target company only with a proven connection, such as a collaboration or a relevant former role. Same industry or one shared LinkedIn connection is not enough.

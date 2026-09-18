@@ -27,14 +27,14 @@ Use `Parent project` / `Subprojects` for separately scoped deliveries inside a m
 
 A Task has at most one Project and one Sprint. Its Companies are the delivery's real stakeholders, which can be both an agency and an end customer. Insights and Someday items keep their context in the page body, without a Summary property.
 
-Meeting titles name the topic. `When` holds the event date and time. Remove imported HTML and appended timestamps only after saving their date in `When`, or an uncertain timestamp in the body. Resolve conflicting dates from the source, not from the page's creation date. Link proven Companies and Projects. Add Tasks only when the meeting relates to tracked work.
+Meeting titles name the topic. `When` holds the event date and time. Resolve conflicting dates from the source, not from the page's creation date. Link proven Companies and Projects. Add Tasks only when the meeting relates to tracked work.
 
 ## Sources and record bodies
 
 Before routing, read the source, the user's recent replies, completion evidence, and the destination record. Confirm the owner from the sender and topic, not from a similar name or an AI summary. Copy IDs and references from the source. A proposal, meeting suggestion, quoted request, or draft does not prove the user accepted the work.
 
 - **Task Timeline**: dated requirements, progress, feedback, decisions, and verification, written as `timeline.md` describes. Keep incoming requirements apart from implementation evidence.
-- **Project body**: agreed outcomes, scope, project-wide agreements, and main document links. Update it only when a dated source changes the agreement. Keep old send receipts for customer updates here, including uncertain ones.
+- **Project body**: agreed outcomes, scope, project-wide agreements, and main document links. Update it only when a dated source changes the agreement.
 - **Company body**: organization context and customer-wide agreements, not project progress or Dex contact details.
 - **Properties**: status, ownership, and planning.
 

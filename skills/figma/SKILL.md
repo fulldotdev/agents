@@ -5,7 +5,7 @@ description: Use when inspecting or editing Figma files, or when using a Figma d
 
 # Figma
 
-Use computer or browser control with the work Chrome profile from `environment`. Do not use Figma MCP, the API, or a Figma connector for this.
+Use computer or browser control with the work Chrome profile from `browser`. Do not use Figma MCP, the API, or a Figma connector for this.
 
 Open the link and confirm the file, page, frame, and variant. Look at the canvas, layers, properties, and prototype interactions. Zoom in where needed and take screenshots you can use later. Report anything hidden by access limits.
 
