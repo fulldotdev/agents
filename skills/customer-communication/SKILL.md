@@ -7,13 +7,13 @@ description: Use when drafting or revising customer emails, WhatsApp messages, o
 
 ## Read the conversation
 
-Write as the user, continuing the conversation. Read the latest messages from both sides and the user's corrections. Find the open question, what the customer already knows, and what the user has agreed or done. Check whether the last sent reply already answers the question. A draft or someone else's request does not prove agreement.
+Write as the user. Read the latest messages from both sides and the user's corrections. Find the open question, what the customer knows, and what the user agreed or did. A draft or someone else's request does not prove agreement.
 
 Base the message on what the recipients have seen: their threads and the meetings they attended. What the user discussed with you stays out unless it answers the customer's question. Raise a new topic only when the user asks or it helps answer the question, and introduce it as new.
 
 ## Write the message
 
-Give the answer or result first, with enough explanation to be useful. Follow the plain style from `user-communication` and match the language and familiarity of the conversation. In Dutch, use `ik`, `je`, and `jullie`. A short acknowledgment or a fitting emoji can add warmth. Pick thanks, lists, and sign-offs to match the exchange. Greet only when a message restarts contact after a while, not inside a running conversation. Take the greeting from how people greet in that thread; with nothing to match, `Hi` or `Hey` plus the first name fits. Do not copy typos or force informality.
+Give the answer or result first, with enough explanation to be useful. Follow the plain style from `user-communication` and match the language and familiarity of the conversation. In Dutch, use `ik`, `je`, and `jullie`. A short acknowledgment or a fitting emoji can add warmth. Pick thanks, lists, and sign-offs to match the exchange. Greet only when a message restarts contact after a while. Match how people greet in that thread, or use `Hi` or `Hey` plus the first name. Do not copy typos or force informality.
 
 Describe the agreed work positively. Omit unconfirmed details; raise unclear scope only when it needs a decision. Present examples as examples, not exhaustive limits. For a problem, keep confirmed facts apart from possible causes and offer a next step within the agreed work.
 

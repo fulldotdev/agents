@@ -36,9 +36,9 @@ The helper creates the thread, then starts its first turn. It also supports sett
 
 ## Before and after
 
-Use `list` or `status` to see the current state and pending requests. Do not start a turn on a thread that is already running. When the user has given a requested approval or answer, pass it through T3's response mechanism and continue. Otherwise leave the request pending. A stopped, ready, or settled thread can be resumed directly when the work is approved.
+Use `list` or `status` to see the current state and pending requests. Do not start a turn on a running thread. Pass an approval or answer the user gave through T3's response mechanism; otherwise leave the request pending. A stopped, ready, or settled thread can be resumed when the work is approved.
 
-Look at Git in the target checkout and pass its current branch as `--branch`. Resolve a detached HEAD first. Do not invent a branch. The prompt carries the task context and what is allowed, not development instructions; the thread picks its own skills.
+Pass the checkout's current Git branch as `--branch`. Resolve a detached HEAD first. The prompt gives context and limits, not development instructions.
 
 After starting, confirm the thread exists and its state. For a tracked Task, save the T3 reference and checkout information through `work-management`. T3 stores model and session metadata itself.
 

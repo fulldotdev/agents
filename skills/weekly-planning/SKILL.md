@@ -14,6 +14,14 @@ Runs on Otis on Sunday at 10:00 Europe/Amsterdam. The user makes the planning de
 5. Remove obsolete dates and fix Sprint assignments only under existing agreements. Flag overdue work and unclear planning. Never invent deadlines or commitments, and never roll unfinished work forward on your own.
 6. Fill in known owners and dependency owners from recorded agreements. Flag accepted work without an owner or a clear next action. Do not turn an inferred next action into a commitment or a generated Task summary.
 7. Update Project scope and agreements only when a newer dated decision replaces them. Keep Timeline entries and commercial decisions. Ignore finished or canceled history and Reservations. Goals are read-only.
-8. Return one numbered list for the cron to deliver to Telegram Planning. Group related changes on one line, link the records, and start each item with **Changed**, **Needs you**, or **Blocked**, in that order. Skip empty categories, unchanged records, and per-project recaps. If nothing changed or needs attention, return `NO_REPLY`. Do not send a second report yourself.
+8. Return one numbered list, first the `Changed` lines, then `Needs you`, then `Blocked`. One line per item, related changes grouped, link on the title:
+
+   ```text
+   1. Changed: [Title](notion-url) · Doing → Done
+   2. Needs you: [Title](notion-url) · the decision or question
+   3. Blocked: [Title](notion-url) · the blocker
+   ```
+
+   Skip unchanged records and per-project recaps. With nothing to report, return `NO_REPLY`.
 
 Do not create customer drafts or send customer messages.

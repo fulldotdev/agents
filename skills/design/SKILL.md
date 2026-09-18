@@ -21,4 +21,4 @@ Fix the usability or visual problem that was asked. A small correction is not pe
 
 Keep keyboard access, readable contrast, labels, and useful empty, loading, and error states. Simplicity must not hide information or functionality people need.
 
-Look at the result at the screen sizes and states the change affects. Check alignment, spacing, text wrapping, hierarchy, and the primary action. Review in the existing preview or output. Make a separate presentation or report only when asked.
+Check the result in the existing preview, at the screen sizes and states the change affects: alignment, spacing, wrapping, hierarchy, primary action.
