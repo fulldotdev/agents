@@ -28,11 +28,14 @@ Do not invent handles, metrics, quotes, results, or client approval. Ask for a m
 - Skip nested cards, decorative borders, repeated headers, and interface framing unless they explain structure.
 - Every carousel slide must add information. Add an ending slide only when it says something useful.
 
-## Channels
+## LinkedIn
 
-- LinkedIn copy or carousels: read [references/linkedin.md](references/linkedin.md).
-- X copy or launch media: read [references/x.md](references/x.md).
-- Other channels have no reference yet. Do not apply LinkedIn conventions to them.
+- In a repost, add the user's perspective. Start with what he believes, then describe his role and way of working in the first person.
+- For development work, describe how he keeps work moving: get something working quickly, then build, test, learn, and adjust.
+- Use the client and project as a short example. Focus on his contribution and what he enjoys about the work.
+- Portrait carousel slides are 1080 × 1350 px unless the request says otherwise.
+
+Do not apply LinkedIn conventions to other channels.
 
 ## Notion Tasks
 

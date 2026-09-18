@@ -7,7 +7,7 @@ description: "Use when processing recurring intake from Gmail, Slack, WhatsApp, 
 
 The runner collects new items into one batch file. For each item: find where it belongs, add missing context, draft a reply when needed, then report. Use `work-management` for all Notion work.
 
-Read [media.md](references/media.md) for attachments, [meeting-analysis.md](references/meeting-analysis.md) for a meeting with `transcript_ready`, and [t3-routing.md](references/t3-routing.md) before starting or continuing a T3 thread.
+Read [t3-routing.md](references/t3-routing.md) before starting or continuing a T3 thread.
 
 ## The batch file
 
@@ -45,6 +45,23 @@ Then take every action that applies. One item may need several.
 - **Start work.** Start or continue a T3 thread only when `t3-routing.md` allows it. Tell the thread the required outcome and where the context is, not how to develop it.
 - **Calendar.** Create, move, or cancel an event only when a source supports it.
 - **Cannot finish now.** Add a retry line as described below.
+
+## Attachments
+
+An attachment matters when it can change where work belongs, its scope or price, approval, execution, or completion. View images, transcribe audio, watch only the needed parts of video, and extract text from documents.
+
+- Downloads are scratch files under `~/.cache/fulldev/work-triage/`, not `/tmp`, because the PDF and image tools reject files there. WhatsApp media is already on disk at the path in the item.
+- Inspect the original. Make a smaller copy or selected frames only when a tool needs them, and do not rely on a preview for details you cannot read in it.
+- When a file defines a requirement, decision, acceptance condition, blocker, or proof of completion, add the full-resolution original or a permanent URL to the right `Resources`, and reference the source in the Task Timeline. Other media stays at its source.
+- Retry the item when a needed file cannot be read. A missing duplicate does not block an outcome that other evidence supports.
+
+## Meetings
+
+Analyze each new transcript revision marked `transcript_ready` once. Read the full transcript from `GET v1/pages/{page_id}/markdown?include_transcript=true`, never the Notion summary alone. A read-only subagent may do this for a long transcript.
+
+- Also read the linked Tasks and Projects, the linked Company when it changes where the meeting belongs, and plausible active Tasks when relations are missing. Read an earlier meeting, message, or T3 thread only when the transcript depends on it.
+- Take out the commitments, decisions, feedback, and blockers that affect work, each with its source and the record it belongs to. A possible commitment is not a confirmed one. Say when speakers, ownership, or scope are unclear.
+- Then route them like any other item. The summary stays in Notion's meeting-notes block, without a separate Summary property.
 
 ## Report
 

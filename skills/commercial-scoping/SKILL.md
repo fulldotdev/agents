@@ -20,7 +20,7 @@ This is the default. Group outcomes into categories with one customer price each
 
 ## Hourly and recurring
 
-Hourly: use the agreed rate, show hours and rate, and keep estimate, approved limit, and actual hours apart. An estimate is not approval to spend it. Use Productive hours only when the user asks.
+Hourly: use the agreed rate, show hours and rate, and keep estimate, approved limit, and actual hours apart. An estimate is not approval to spend it.
 
 Recurring: start from the current agreement. Keep the fixed fee apart from reserved hours and one-off setup. For a package change, give what changes, the new amount, and the start date. The old terms hold until approved.
 
