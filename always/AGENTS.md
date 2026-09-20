@@ -43,7 +43,7 @@ The user prefers simple systems, direct communication, and less complexity. Writ
 
 - Custom skills live in `~/.agents` on MacBook and sync to Otis through GitHub. Codex, Claude, OpenCode, OpenClaw, and Cursor all read `~/.agents/skills`. Project instructions stay in their repository. Credentials, plugins, and machine configuration stay local.
 - Edit a skill, installed or custom, only when the user asks. Local edits to installed skills block updates or get overwritten.
-- Read `~/.agents/references/writing-skills.md` before you write or edit a custom skill or this file.
+- Read `~/.agents/references/writing-skills.md` before you write or edit a custom skill or this file, `~/.agents/always/AGENTS.md`.
 
 ## Automations on Otis
 
