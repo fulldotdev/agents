@@ -23,6 +23,7 @@ Otis is the always-on Mac mini. It runs OpenClaw for Telegram, Discord and Slack
 | com.fulldev.wacli-sync (launchd) | always | `wacli sync --follow` |
 | dev.fulldev.contact-enrichment.dex-google (launchd) | daily 04:15 | `~/projects/contact-enrichment/sync-dex-google.ts daily` |
 | com.fulldev.otis-health (launchd) | every 15 min | `~/.agents/skills/system-hygiene/scripts/otis-health.py`, one message to Telegram System when something breaks or recovers |
+| com.fulldev.pool-usage (launchd) | daily 08:03 | `~/.agents/skills/system-hygiene/scripts/pool-usage.py`, weekly quota left per pooled account to Telegram System |
 
 Agent jobs are created with `openclaw cron add`; plain scripts run through launchd plists in `~/Library/LaunchAgents`. Give a one-off or temporary job a clear name and delete it when done.
 
