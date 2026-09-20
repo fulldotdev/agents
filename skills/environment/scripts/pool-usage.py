@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Account-pool usage: share of quota left per pooled Codex and Claude account.
 
-Reads the local CLIProxyAPI management API. Prints a monospace block; --telegram sends it to the Telegram System chat instead.
+Reads the local CLIProxyAPI management API. Prints an aligned block; --telegram sends it to the Telegram System chat instead.
 """
 import json
 import os
@@ -49,10 +49,11 @@ def management(path, data=None):
 
 
 def left(used):
-    return f"{max(0, 100 - int(round(used))):>3}%"
+    return f"{max(0, 100 - int(round(used)))}%"
 
 
 def usage(account):
+    """Weekly quota left and, for Claude, the model-scoped weekly window."""
     if account["type"] == "codex":
         url = "https://chatgpt.com/backend-api/wham/usage"
         header = {"Authorization": "Bearer $TOKEN$", "Content-Type": "application/json", "OpenAI-Beta": "codex-1", "Originator": "Codex Desktop"}
@@ -69,19 +70,18 @@ def usage(account):
     if account["type"] == "codex":
         windows = [w for w in (body["rate_limit"].get("primary_window"), body["rate_limit"].get("secondary_window")) if w]
         weekly = max(windows, key=lambda w: w.get("limit_window_seconds", 0))
-        short = [w for w in windows if w is not weekly]
-        session = left(short[0]["used_percent"]) if short else "   -"
-        return row(left(weekly["used_percent"]), "", session, datetime.fromtimestamp(weekly["reset_at"], timezone.utc))
+        return row(left(weekly["used_percent"]), "", datetime.fromtimestamp(weekly["reset_at"], timezone.utc))
     weekly = body["seven_day"]
     scoped = [l for l in body.get("limits", []) if l.get("kind") == "weekly_scoped"]
-    extra = " ".join(f"{(((l.get('scope') or {}).get('model') or {}).get('display_name') or 'scoped')[:5]} {left(l['percent']).strip()}" for l in scoped)
-    session = left(body["five_hour"]["utilization"]) if body.get("five_hour") else "   -"
-    return row(left(weekly["utilization"]), extra, session, datetime.fromisoformat(weekly["resets_at"]))
+    fable = left(scoped[0]["percent"]) if scoped else ""
+    return row(left(weekly["utilization"]), fable, datetime.fromisoformat(weekly["resets_at"]))
 
 
-def row(weekly, extra, session, reset):
-    """Fixed-width columns so the lines align in a monospace block."""
-    return f"{weekly}  {extra:<9}  {session}   {when(reset)}"
+def row(weekly, fable, reset):
+    return f"{weekly:>7}  {fable:>5}  {when(reset)}"
+
+
+HEADER = f"{'Account':<9} {'Weekly':>7}  {'Fable':>5}  Resets"
 
 
 def main():
@@ -95,12 +95,12 @@ def main():
         try:
             rows[name] = usage(account)
         except Exception as error:  # one broken account must not hide the others
-            rows[name] = f" ??%  {str(error)[:20]}"
+            rows[name] = f"{'??%':>7}  {str(error)[:20]}"
     lines = [f"{name:<9} {rows[name]}" for name in ORDER if name in rows]
     missing = [name for name in ORDER if name not in rows]
     if missing:
         lines.append("not in pool: " + ", ".join(missing))
-    text = "Weekly left · 5h left · weekly resets\n```\n" + "\n".join(lines) + "\n```"
+    text = "Weekly quota left\n```\n" + "\n".join([HEADER] + lines) + "\n```"
     if "--telegram" in sys.argv:
         subprocess.run(["openclaw", "message", "send", "--channel", "telegram", "--target", SYSTEM_CHAT, "--message", text, "--json"], check=True, capture_output=True)
         return

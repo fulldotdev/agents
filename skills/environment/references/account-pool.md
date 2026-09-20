@@ -23,10 +23,11 @@ python3 ~/.agents/skills/environment/scripts/pool-usage.py
 ```
 
 ```text
-Weekly left · 5h left · weekly resets
-Codex       0%                -   Sun 22:07
-Claude     43%  Fable 0%    98%   Mon 13:59
-Claude 0   80%  Fable 65%   39%   27 Sep 19:00
+Weekly quota left
+Account    Weekly  Fable  Resets
+Codex          0%         Sun 22:07
+Claude        43%     0%  Mon 13:59
+Claude 0      78%    62%  27 Sep 19:00
 ```
 
 `--telegram` sends the same block to the Telegram System chat (Otis only). Do not call the Codex or Claude usage endpoints yourself; they reject direct calls, and T3's "Account pool" usage source reads the same data.
