@@ -20,6 +20,10 @@ description: Always use when running commands or working with files, projects, m
 - After you write or change something, read it back before you report it.
 - If you are blocked, name the exact blocker and what the user can do. Do not work around it with another tool or account.
 
+## Account pool
+
+- Codex and Claude run through a local account pool on each machine. To check usage limits, run `python3 ~/.agents/skills/environment/scripts/pool-usage.py` and report its output unchanged. Setup, accounts, and errors are in [account-pool.md](references/account-pool.md).
+
 ## Shared skills
 
 - Custom skills live in `~/.agents` on MacBook and sync to Otis through GitHub. Codex, Claude, OpenCode, OpenClaw, and Cursor all read `~/.agents/skills`. Project instructions stay in their repository. Credentials, plugins, and machine configuration stay local.

@@ -9,7 +9,7 @@ Otis runs the T3 server. Use a T3 thread when work must be visible on the user's
 
 Read [references/setup.md](references/setup.md) only for installing, updating, linking, or troubleshooting the service or T3 Connect.
 
-Read [references/account-pools.md](references/account-pools.md) for provider accounts, automatic account selection, or pool health.
+Read [references/account-pools.md](references/account-pools.md) for how T3 connects to the account pool. The pool itself, its accounts, and usage limits are in the environment skill's [account-pool.md](../environment/references/account-pool.md).
 
 ## Dispatch
 
