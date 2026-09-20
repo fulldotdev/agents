@@ -9,7 +9,7 @@ You propose, the user decides. Do not clean up, install, upgrade, change Git, st
 
 ## Review
 
-Read `environment`, `user-communication`, [checks.md](references/checks.md), and `~/.local/state/fulldev/system-hygiene/state.json`. Read the user's recent replies in the System chat for decisions.
+Read [checks.md](references/checks.md) and `~/.local/state/fulldev/system-hygiene/state.json`. Read the user's recent replies in the System chat for decisions.
 
 Inspect Otis and, when reachable, MacBook at `silveltman@macbook-pro-2.tailb5cb80.ts.net`. Use non-interactive SSH with a short timeout. Do not change authentication or network settings to get in. If MacBook is unreachable, continue on Otis and mention the gap.
 

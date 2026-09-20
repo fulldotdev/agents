@@ -13,7 +13,7 @@ Do not invent handles, metrics, quotes, results, or client approval. Ask for a m
 
 - One point per post.
 - Open with a concrete observation, claim, or situation from the source.
-- Follow the plain style from `user-communication`. Short paragraphs, the user's voice.
+- Short paragraphs, the user's voice.
 - Use real work and named examples instead of broad capability claims, when permission and evidence exist.
 - Say what the technology achieved unless the technology itself is the subject.
 - Make the point in the caption. Use media for evidence or context, not to repeat it.

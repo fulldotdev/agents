@@ -64,7 +64,7 @@ On Otis, OpenClaw uses the `chrome` extension connection. Check `openclaw browse
 
 `browser_consent_required`, `consumer_profile_endpoint_requires_grant`, or an approval popup you cannot find means connection approval is blocked. Report the exact blocker and the machine. If the fix is unknown, say so instead of inventing one.
 
-See [Otis](../../environment/references/otis.md) and https://docs.openclaw.ai/tools/chrome-extension.
+See [Otis](../../../references/otis.md) and https://docs.openclaw.ai/tools/chrome-extension.
 
 ## T3 embedded browser
 

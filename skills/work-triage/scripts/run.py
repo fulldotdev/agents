@@ -141,8 +141,8 @@ def run(args):
 
     prompt = (
         "Workflow: work-triage\n\n"
-        "Run one triage cycle on Otis. Follow ~/.agents/skills/work-triage/SKILL.md, `environment`, `browser`, "
-        "`user-communication`, `work-management`, and the tool skills they name. The OpenClaw job owns the schedule "
+        "Run one triage cycle on Otis. Follow ~/.agents/skills/work-triage/SKILL.md, `browser`, "
+        "`work-management`, and the tool skills they name. The OpenClaw job owns the schedule "
         "and delivers your final answer to the Triage chat. Do not send messages yourself."
     )
     prompt += f"\n\nBatch file: {BATCH_FILE} (read it once). Start report numbering at {number}."

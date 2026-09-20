@@ -13,7 +13,7 @@ Base the message on what the recipients have seen: their threads and the meeting
 
 ## Write the message
 
-Give the answer or result first, with enough explanation to be useful. Follow the plain style from `user-communication` and match the language and familiarity of the conversation. In Dutch, use `ik`, `je`, and `jullie`. A short acknowledgment or a fitting emoji can add warmth. Pick thanks, lists, and sign-offs to match the exchange. Greet only when a message restarts contact after a while. Match how people greet in that thread, or use `Hi` or `Hey` plus the first name. Do not copy typos or force informality.
+Give the answer or result first, with enough explanation to be useful. Match the language and familiarity of the conversation. In Dutch, use `ik`, `je`, and `jullie`. A short acknowledgment or a fitting emoji can add warmth. Pick thanks, lists, and sign-offs to match the exchange. Greet only when a message restarts contact after a while. Match how people greet in that thread, or use `Hi` or `Hey` plus the first name. Do not copy typos or force informality.
 
 Describe the agreed work positively. Omit unconfirmed details; raise unclear scope only when it needs a decision. Present examples as examples, not exhaustive limits. For a problem, keep confirmed facts apart from possible causes and offer a next step within the agreed work.
 
