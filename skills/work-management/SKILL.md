@@ -49,15 +49,7 @@ Accepted monday tickets stay in monday. Create a Notion Task only for a distinct
 
 Name the Company's Moneybird contact link `Moneybird` in Resources, and resolve the administration and contact ID from that URL. Use `moneybird` for quote and invoice state and links. Track follow-up on sent estimates in the Project's sales work. On verified acceptance, finish the sales Task and create or link delivery work, or keep the Task if it already represents delivery.
 
-`Resources` (Files & media) holds named URLs, files, and images:
-
-- Company Resources: shared material and links named Website, Moneybird, LinkedIn, or Instagram.
-- Project Resources: repositories, hosting, CMS, database dashboards, Figma, and deployment links.
-- Task Resources: evidence used only for that Task.
-
-Read the record's Resources and its parent Project's Resources; Notion does not inherit them. Keep existing entries when writing. One source per item, without copying shared assets into each delivery. Link editable documents by a useful name at their Drive, Docs, Figma, or other location.
-
-Notion IDs use `TASK`, `PROJECT`, and `COMPANY` prefixes. Resolve the ID before using its short URL. Paste PR URLs into the Task's `GitHub PR` field; repository links go in Resources. For approved PR work, add `References TASK-n` to the PR description. Keep automatic status mappings off, since merging does not prove delivery. Never create or change a PR just to fill this field.
+`Resources` (Files & media) holds the named links, files, and images that help with a record: on a Company shared material such as Website, Moneybird, LinkedIn, or Instagram; on a Project the repository, hosting, CMS, design, and deployment links; on a Task the evidence for that Task, including PRs and issues. Name each entry by what it is, such as `Moneybird` or `PR #79`. Read the record's Resources and its parent Project's Resources; Notion does not inherit them. Keep existing entries when writing, and keep one source per item.
 
 ## Planning and status
 

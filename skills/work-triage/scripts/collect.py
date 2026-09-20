@@ -117,16 +117,16 @@ def work_index():
     projects = {p["id"]: p for p in lanes["projects"]["items"]}
     return {
         "companies": [{
-            "code": c["code"], "id": c["id"], "name": c["name"], "status": c["status"],
+            "id": c["id"], "name": c["name"], "status": c["status"],
             "website": c["website"], "url": c["url"],
         } for c in companies.values()],
         "projects": [{
-            "code": p["code"], "id": p["id"], "name": p["name"], "status": p["status"],
+            "id": p["id"], "name": p["name"], "status": p["status"],
             "companies": names(p["companies"], companies), "parent_project": names(p["parent_project"], projects),
             "deadline": (p.get("deadline") or {}).get("start"), "url": p["url"],
         } for p in projects.values()],
         "tasks": [{
-            "code": t["code"], "id": t["id"], "name": t["name"], "status": t["status"], "area": t["area"],
+            "id": t["id"], "name": t["name"], "status": t["status"], "area": t["area"],
             "project": names(t["project"], projects), "companies": names(t["companies"], companies),
             "date": (t.get("date") or {}).get("start"), "url": t["url"],
         } for t in lanes["tasks"]["items"]],

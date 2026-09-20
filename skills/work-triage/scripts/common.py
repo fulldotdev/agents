@@ -162,14 +162,6 @@ def resources(row):
     return prop(row, "Resources").get("files", [])
 
 
-def record_code(row):
-    value = prop(row, "ID").get("unique_id") or {}
-    number = value.get("number")
-    if number is None:
-        return None
-    prefix = value.get("prefix")
-    return f"{prefix}-{number}" if prefix else str(number)
-
 
 def resource_url(row, name):
     return next((item.get("external", {}).get("url") for item in resources(row)
@@ -189,7 +181,7 @@ def company_item(row):
     return {
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row), "website": resource_url(row, "Website"),
-        "code": record_code(row), "resources": resources(row),
+        "resources": resources(row),
         "edited": prop_time(row, "Edited"), "created": prop_time(row, "Created"),
     }
 
@@ -199,7 +191,7 @@ def project_item(row):
         "id": row.get("id"), "url": row.get("url"), "name": title(row),
         "status": status_value(row),
         "companies": relation_ids(row, "Companies"),
-        "code": record_code(row), "resources": resources(row),
+        "resources": resources(row),
         "parent_project": relation_ids(row, "Parent project"),
         "subprojects": relation_ids(row, "Subprojects"),
         "tasks": relation_ids(row, "Tasks"), "meetings": relation_ids(row, "Meetings"),
@@ -215,8 +207,7 @@ def task_item(row):
         "companies": relation_ids(row, "Companies"),
         "project": relation_ids(row, "Project"),
         "sprint": relation_ids(row, "Sprint"), "meetings": relation_ids(row, "Meetings"),
-        "code": record_code(row), "resources": resources(row),
-        "github_pr": relation_ids(row, "GitHub PR"),
+        "resources": resources(row),
         "date": prop(row, "Date").get("date"),
         "edited": prop_time(row, "Edited"),
         "created": prop_time(row, "Created"),
