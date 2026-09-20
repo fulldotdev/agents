@@ -13,6 +13,7 @@ Make the user's task clear and easy to complete. Follow the existing product, br
 - Reuse existing components and patterns. Add a variant or interaction only when this task needs it. Prefer fewer steps and choices over more explanation.
 - Every element must help people understand, navigate, act, trust the product, or see its state. Remove anything this task added that does not.
 - Skip decoration without a purpose: gradients, badges, small labels above headings, icon tiles, nested cards, oversized headings, repeated calls to action, animation. Keep them when they are a deliberate part of the supplied design or brand.
+- When you offer options, give a few distinct, restrained concepts with one strong idea each. The user picks single details from them, not whole directions.
 - Use concrete labels and truthful content. Do not invent testimonials, statistics, customer logos, features, or extra sections to fill a layout. Placeholders must look like placeholders.
 
 ## Scope and review
