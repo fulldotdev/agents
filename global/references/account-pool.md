@@ -19,7 +19,7 @@ Use these names in reports. Each machine holds its own OAuth files; subscription
 Run the script and report its output unchanged. It prints the share left per account, not the share used.
 
 ```bash
-python3 ~/.agents/scripts/pool-usage.py
+python3 ~/.agents/global/scripts/pool-usage.py
 ```
 
 ```text

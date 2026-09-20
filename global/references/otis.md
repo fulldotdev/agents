@@ -9,7 +9,7 @@ Otis is the always-on Mac mini. It runs OpenClaw for Telegram, Discord and Slack
 - Astra and Sol stay available for explicit use, through the Codex runtime (`agentRuntime.id: codex`), because Codex brings the good desktop computer use. The four OpenAI auth profiles stay as backups.
 - Plugins: telegram, discord, slack, openai, opencode-go, codex, browser, document-extract (PDF reading). Bundled OpenClaw skills are disabled one by one in `skills.entries`; memory plugin off.
 - Browser: `browser.defaultProfile: "chrome"`, driver `extension`, through the OpenClaw Chrome extension, in Otis's existing Chrome profile signed into `sil@full.dev`. Agent-created tabs use the OpenClaw group. The built-in `user` profile is a separate Chrome MCP existing-session driver, not Codex's ChatGPT Chrome extension. Use the `chrome` profile. Connection details and recovery are in [Chrome setup](../skills/browser/references/chrome.md).
-- Shared instructions come from `~/.agents/always/AGENTS.md` through the `bootstrap-extra-files` hook; the Codex runtime reads the same file through `codex-home/AGENTS.md`. No persona or memory files, the session-memory hook and memory flush are off. Skills come from `~/.agents/skills` directly.
+- Shared instructions come from `~/.agents/global/AGENTS.md` through the `bootstrap-extra-files` hook; the Codex runtime reads the same file through `codex-home/AGENTS.md`. No persona or memory files, the session-memory hook and memory flush are off. Skills come from `~/.agents/skills` directly.
 - Media given to the pdf and image tools must be under `/Users/otis`, not `/tmp`.
 
 ## Scheduled work
@@ -23,7 +23,7 @@ Otis is the always-on Mac mini. It runs OpenClaw for Telegram, Discord and Slack
 | com.fulldev.wacli-sync (launchd) | always | `wacli sync --follow` |
 | dev.fulldev.contact-enrichment.dex-google (launchd) | daily 04:15 | `~/projects/contact-enrichment/sync-dex-google.ts daily` |
 | com.fulldev.otis-health (launchd) | every 15 min | `~/.agents/skills/system-hygiene/scripts/otis-health.py`, one message to Telegram System when something breaks or recovers |
-| com.fulldev.pool-usage (launchd) | daily 08:03 | `~/.agents/scripts/pool-usage.py --telegram`, weekly quota left per pooled account to Telegram System |
+| com.fulldev.pool-usage (launchd) | daily 08:03 | `~/.agents/global/scripts/pool-usage.py --telegram`, weekly quota left per pooled account to Telegram System |
 
 Agent jobs are created with `openclaw cron add`; plain scripts run through launchd plists in `~/Library/LaunchAgents`. Give a one-off or temporary job a clear name and delete it when done.
 

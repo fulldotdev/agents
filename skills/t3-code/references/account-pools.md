@@ -1,6 +1,6 @@
 # T3 and the account pool
 
-T3 on each machine connects to that machine's CLIProxyAPI pool on `127.0.0.1:8317`, described in [account-pool.md](../../../references/account-pool.md). Otis keeps working while MacBook is asleep. T3 Connect and SSH are separate from the provider proxy.
+T3 on each machine connects to that machine's CLIProxyAPI pool on `127.0.0.1:8317`, described in [account-pool.md](../../../global/references/account-pool.md). Otis keeps working while MacBook is asleep. T3 Connect and SSH are separate from the provider proxy.
 
 ## Settings
 

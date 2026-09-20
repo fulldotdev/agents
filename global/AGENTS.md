@@ -37,15 +37,15 @@ The user prefers simple systems, direct communication, and less complexity. Writ
 - We work on the user's MacBook and on Otis, an always-on Mac mini. From MacBook, reach Otis with `ssh -A otis`.
 - Determine the current machine from the session environment. Stay on that machine unless the task requires another machine or the user asks you to switch.
 - Projects live in `~/projects` on both machines and sync through GitHub. Keep T3 Code's project list on both machines in line when you create, move, or sync a project.
-- Codex and Claude run through a local account pool on each machine. To check usage limits, run `python3 ~/.agents/scripts/pool-usage.py` and report its output unchanged. Setup, accounts, and errors are in `~/.agents/references/account-pool.md`.
+- Codex and Claude run through a local account pool on each machine. To check usage limits, run `python3 ~/.agents/global/scripts/pool-usage.py` and report its output unchanged. Setup, accounts, and errors are in `~/.agents/global/references/account-pool.md`.
 
 ## Shared skills
 
 - Custom skills live in `~/.agents` on MacBook and sync to Otis through GitHub. Codex, Claude, OpenCode, OpenClaw, and Cursor all read `~/.agents/skills`. Project instructions stay in their repository. Credentials, plugins, and machine configuration stay local.
 - Edit a skill, installed or custom, only when the user asks. Local edits to installed skills block updates or get overwritten.
-- Read `~/.agents/references/writing-skills.md` before you write or edit a custom skill or this file, `~/.agents/always/AGENTS.md`.
+- Read `~/.agents/global/references/writing-skills.md` before you write or edit a custom skill or this file, `~/.agents/global/AGENTS.md`.
 
 ## Automations on Otis
 
-- Recurring agent jobs are OpenClaw cron jobs. Plain scripts run through launchd plists in `~/Library/LaunchAgents`. `~/.agents/references/otis.md` lists what runs.
+- Recurring agent jobs are OpenClaw cron jobs. Plain scripts run through launchd plists in `~/Library/LaunchAgents`. `~/.agents/global/references/otis.md` lists what runs.
 - Give a one-off job a clear name and an end date in its message, and delete it when done.
