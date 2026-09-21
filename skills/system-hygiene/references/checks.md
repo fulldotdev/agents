@@ -3,7 +3,11 @@
 
 2. **Files and storage.** Measure free space and meaningful growth. Look at large temporary files, downloads, trash, caches, and old backups. For each deletion candidate, say what it is for and whether it can be recovered. `~/Library` holds settings and app data, not cache. Report reclaimable space, which APFS clones and hard links make smaller than folder size.
 
-3. **Projects.** Look for abandoned generated output, temporary copies, and stale checkouts. Read Git status, worktree ownership, and process use. Keep uncommitted files and unique commits. A Git bundle can keep unique history when removal is approved separately. pnpm already shares package data, so do not propose deduplication. `.dev` can hold source and review work.
+3. **Projects and completed worktrees.** Look for abandoned generated output, temporary copies, and worktrees whose tasks have finished. Use `git worktree list --porcelain` to identify extra checkouts on both machines, including those outside `~/projects`.
+   - Verify that the current worktree commit has landed on its intended target branch using current GitHub branch and PR evidence. Account for squash merges and commits added after a PR merged. Age, a clean working tree, or a pushed feature branch alone does not establish that the work is finished. If remote evidence is unavailable or stale, leave the candidate unconfirmed.
+   - Check tracked changes, untracked and ignored files, active threads, open files, processes, and previews. Keep unique commits and explicitly retained experiments. Ignored `.env` files, `.dev` output, and local databases can contain work that is not in Git; identify what needs preserving before proposing removal.
+   - For a confirmed candidate, report the machine, path, branch, evidence that it landed, folder size, and any local data to preserve. Propose `git worktree remove` rather than deleting the folder directly; keep the main checkout and branches. Treat loose reports, research, and media separately because merged code does not prove those files are redundant.
+   A Git bundle can keep unique history when removal is approved separately. pnpm already shares package data, so do not propose deduplication.
 
 4. **Previews and processes.** Find local servers, editor processes, and tunnels that look abandoned. Match each to its project, output path, and owner before proposing a shutdown. A `dist` or cache directory may power a preview used daily.
 
