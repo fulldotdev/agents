@@ -12,7 +12,7 @@ The user makes the planning decisions. Use `work-management` and `notion-cli` fo
 3. Correct a stale status only when a source proves completion, cancellation, pausing, or resumed work. Inactivity is not completion. Keep the Timeline history and append corrections as `work-management` describes.
 4. Merge clear duplicate active work: keep context and links in the surviving record and cancel the other. Flag uncertain matches. Do not delete ambiguous work.
 5. Remove obsolete dates and fix Sprint assignments only under existing agreements. Flag overdue work and unclear planning. Never invent deadlines or commitments, and never roll unfinished work forward on your own.
-6. Fill in known owners and dependency owners from recorded agreements. Flag accepted work without an owner or a clear next action. Do not turn an inferred next action into a commitment or a generated Task summary.
+6. Fill in known owners and dependency owners from recorded agreements. Flag accepted work without an owner or a clear next action. Do not turn an inferred next action into a commitment; keep the Brief limited to supported facts.
 7. Update Project scope and agreements only when a newer dated decision replaces them. Keep Timeline entries and commercial decisions. Ignore finished or canceled history and Reservations. Goals are read-only.
 8. Return one numbered list, first the `Changed` lines, then `Needs you`, then `Blocked`. One line per item, related changes grouped, link on the title:
 

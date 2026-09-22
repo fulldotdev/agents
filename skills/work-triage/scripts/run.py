@@ -191,7 +191,7 @@ def write_receipt(receipt, status, started, output):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", default="opencode-go/glm-5.3-flash")
+    parser.add_argument("--model", default="openai/gpt-6-astra")
     parser.add_argument("--thinking", default="high")
     parser.add_argument("--timeout", type=int, default=3600)
     parser.add_argument("--dry-run", action="store_true", help="collect and write the batch file, no agent, no state change")

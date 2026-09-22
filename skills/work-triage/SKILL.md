@@ -15,7 +15,7 @@ For a requested quality review, read [assess-quality.md](references/assess-quali
 
 Read the batch file named in the prompt once. It contains:
 
-- `items`: new source items since the last run, including the user's outgoing messages and recently settled T3 threads. Outgoing messages can confirm agreements, delivery, or changed plans. Gmail items are thread headers only, so read the thread before deciding. WhatsApp and Slack items include the text.
+- `items`: new source items since the last run, including the user's outgoing messages and recently settled T3 threads. Outgoing messages can confirm agreements, delivery, or changed plans. Gmail items are thread headers only, so read the thread before deciding. WhatsApp and Slack items include the text. Meeting items contain names, relations, readiness, revision, and source references; fetch the meeting record as described below.
 - `retry`: items an earlier run could not finish, with the reason.
 - `index`: all open Tasks, Tasks closed today, Projects, Companies, and open T3 threads, with codes, statuses, and URLs. Use it to find the right record.
 - `lanes_failed`: sources that could not be collected, with the number of consecutive failures.
@@ -35,14 +35,14 @@ Use `wacli` for more WhatsApp history, `gog` for Gmail and Calendar, and `ntn` f
 
 Handle messages from the same person about the same topic together. Check three things:
 
-1. **What does the source say?** Read the whole thread or chat, including the user's replies. Open attachments that matter. Transcribe voice messages. If you cannot read something you need, retry the item and say what is missing.
+1. **What does the source say?** Read the new exchange, including the user's replies. For Gmail read the thread; for Slack read the containing thread; for WhatsApp read the conversation around the new exchange. Expand backwards when a reply, quote, changed agreement, ownership, or completion depends on earlier context. Read the full relevant conversation when that context cannot be resolved. A header or excerpt alone is not enough to decide an actionable item. Open attachments that matter. Transcribe voice messages. If you cannot read something you need, retry the item and say what is missing.
 2. **Which record owns it?** Find the Company, Project, Task, or T3 thread in the index. A sender can represent several companies. Match the message's website, product, and topic with the destination; the sender alone is not enough. If nothing matches, search Notion before concluding there is no record. Retry unresolved ownership rather than guessing.
-3. **What is already there?** Read the record's body, Timeline, and Resources, plus the parent Project's Resources. Compare dated source events with the latest replies and delivery evidence. A stored status or old blocker is not proof of the current situation. Add only context that is missing, including when another agent already recorded this source.
+3. **What is already there?** Read the record's Brief, Updates or existing Timeline, and Resources, plus the parent Project's Resources. Compare dated source events with the latest replies and delivery evidence. A stored status or old blocker is not proof of the current situation. Add only context that is missing, including when another agent already recorded this source.
 
 Then take every action that applies. One item may need several.
 
 - **Nothing new.** Move on when the record already has the context or the item needs no tracking: small talk, an FYI, a notification, a question the user already answered.
-- **Add context to Notion.** Put a new requirement, feedback, decision, agreement, deadline, file, or link in the Task Timeline or the right Project or Company body. Create a Task, Project, or Company only when `work-management` says so. Send contact details to Dex through `dex-skill`.
+- **Add context to Notion.** Put a new requirement, feedback, decision, agreement, deadline, file, or link in the Task body or the right Project or Company body. Create a Task, Project, or Company only when `work-management` says so. Resolve people and company relationships through `work-management`.
 - **Update status.** After adding context, check the recorded dependency and completion condition. When a requested reply or document arrives, clear that dependency and apply the supported status through `work-management`.
 - **Draft a reply.** For a human email with a real open question. Read the thread again right before writing, and skip it if the user already replied. Create or update one Gmail draft with `customer-communication` and `gog`. Keep the user's edits. No placeholders. Never send.
 - **Start work.** Start or continue a T3 thread only when `t3-routing.md` allows it. Tell the thread the required outcome and where the context is, not how to develop it.
@@ -56,16 +56,17 @@ An attachment matters when it can change where work belongs, its scope or price,
 
 - Downloads are scratch files under `~/.cache/fulldev/work-triage/`, not `/tmp`, because the PDF and image tools reject files there. WhatsApp media is already on disk at the path in the item.
 - Inspect the original. Make a smaller copy or selected frames only when a tool needs them, and do not rely on a preview for details you cannot read in it.
-- When a file defines a requirement, decision, acceptance condition, blocker, or proof of completion, add the full-resolution original or a permanent URL to the right `Resources`, and reference the source in the Task Timeline. Other media stays at its source.
-- Retry the item when a needed file cannot be read. Mentioning a PDF, CSV, image, or video in the Timeline is not the same as inspecting it. A missing duplicate does not block an outcome that other evidence supports.
+- When a file defines a requirement, decision, acceptance condition, blocker, or proof of completion, add the full-resolution original or a permanent URL to the right `Resources`, and explain the evidence in the Task update. Other media stays at its source.
+- Retry the item when a needed file cannot be read. Mentioning a PDF, CSV, image, or video in an update is not the same as inspecting it. A missing duplicate does not block an outcome that other evidence supports.
 
 ## Meetings
 
-For each meeting marked `transcript_ready`, read the full transcript from `GET v1/pages/{page_id}/markdown?include_transcript=true` and compare its work commitments with the owning records. A summary saying "Full transcript: read" does not show that those commitments were recorded. A read-only subagent may do this for a long transcript.
+Read the meeting page and its complete summary and manual notes first, using `ntn` and `GET v1/pages/{page_id}/markdown`. An index entry or truncated body excerpt is not the summary. Keep every topic, including tentative requests, disagreement, delivery claims, and unanswered questions. Use the meeting date and source wording; let the triage model decide what affects tracked work.
 
-- Also read the linked Tasks and Projects, the linked Company when it changes where the meeting belongs, and plausible active Tasks when relations are missing. Read an earlier meeting, message, or T3 thread only when the transcript depends on it.
-- Take out the commitments, decisions, feedback, and blockers that affect work, each with its source and the record it belongs to. A possible commitment is not a confirmed one. Say when speakers, ownership, or scope are unclear.
-- Then route them like any other item. The summary stays in Notion's meeting-notes block, without a separate Summary property.
+- Read [meeting-summary.md](references/meeting-summary.md) when creating or assessing the factual summary instruction. Until summaries produced with that instruction have been checked against representative full transcripts, use full transcripts for commitment extraction. A generic short recap or action list does not meet it. For older or incomplete summaries, read the full transcript through `GET v1/pages/{page_id}/markdown?include_transcript=true`. A summary cannot prove that something was absent from the meeting.
+- Open transcript passages when a speaker, company, scope, date, dependency, contradiction, or tentative commitment is unclear. Verify transcript evidence before recording approval, price or scope acceptance, or completion. Read the full transcript when the needed passage cannot be located or the summary misses discussion coverage. If unavailable, preserve uncertainty and retry the affected item.
+- Read linked Tasks and Projects, and plausible active Tasks when relations are missing. Compare facts already recorded by T3 or another triage run before appending. An old Timeline or the words "Full transcript: read" do not establish completeness.
+- Route supported commitments, decisions, feedback, and blockers through `work-management`. Leave the summary in Notion's meeting-notes block, without a separate Summary property. Keep the original transcript for verification.
 
 ## Report
 

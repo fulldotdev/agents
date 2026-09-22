@@ -14,7 +14,7 @@ Read [timeline.md](references/timeline.md) before you read or write a Task body.
 - **Task**: one stakeholder and one executable outcome, usually hours to a few days and under a week.
 - **Project**: a lasting home for a maintained site or app, or a confirmed finite outcome with several independent Tasks or more than about a week of work.
 - **Company**: organization-level sales, delivery, finance, or relationship context.
-- **Contact**: people, contact details, LinkedIn profiles, and relationships live in Dex, through `dex-skill`. Check identity and keep existing fields. An introduction or a casual mention is not a reason for a new contact.
+- **Person**: use Notion People for names, linked Companies, and relationship context when that database is available. Google Contacts owns phone numbers, email addresses, and other contact details. Match names and company links first; fetch Google details through `gog` only to resolve identity or use a contact detail. A person can belong to several companies, so use the message topic to choose the work owner. Keep uncertain matches unresolved. Do not write to Dex or create a parallel contact cache. An introduction or casual mention alone does not require a new contact.
 - **Sprint**: a Monday to Sunday commitment. A new Task goes in the current Sprint unless it is explicitly later, backlog, Someday, or otherwise outside this week.
 - **Goal**: an accepted long-term outcome. Read-only.
 - **Someday**: a vague or maybe-later idea that is not executable yet.
@@ -33,9 +33,9 @@ Meeting titles name the topic. `When` holds the event date and time. Resolve con
 
 Before routing, read the source, the user's recent replies, completion evidence, and the destination record. Confirm the owner from the sender and topic, not from a similar name or an AI summary. Copy IDs and references from the source. A proposal, meeting suggestion, quoted request, or draft does not prove the user accepted the work.
 
-- **Task Timeline**: dated requirements, progress, feedback, decisions, and verification, written as `timeline.md` describes. Keep incoming requirements apart from implementation evidence.
+- **Task body**: a current Brief and dated Updates, written as `timeline.md` describes. Existing Timeline sections remain the event log. Triage and T3 read the current record and add only missing facts.
 - **Project body**: agreed outcomes, scope, project-wide agreements, and main document links. Update it only when a dated source changes the agreement.
-- **Company body**: organization context and customer-wide agreements, not project progress or Dex contact details.
+- **Company body**: organization context and customer-wide agreements, not project progress or a second editable list of Google contact details.
 - **Properties**: status, ownership, and planning.
 
 ## Routing and files
@@ -43,13 +43,13 @@ Before routing, read the source, the user's recent replies, completion evidence,
 1. Search active Tasks before creating one. Reuse a Task for the same stakeholder, outcome, and short execution window, keeping its preparation, calls, feedback, blockers, and follow-up together. Split work that can be finished independently or belongs to another stakeholder.
 2. Create a Task only for agreed work that needs tracking beyond its source: a deliverable, a multi-step action, a deadline, a dependency, or a lasting follow-up. Quick replies, scheduling, questions, reviews, ideas, and unconfirmed requests stay at their source.
 3. Leave Tasks completed before today closed. Give new work a related Task unless the user or a newer source reopens the same deliverable. Do not keep dormant Tasks for hypothetical requests, and do not infer work because a Paused or Discovery Project has no Tasks.
-4. Add missing source context even when no new Task is needed. Keep source relations and Timeline references that can reopen the source.
+4. Add missing source context even when no new Task is needed. Keep source relations and source references that can reopen the source.
 
-Accepted monday tickets stay in monday. Create a Notion Task only for a distinct commitment of the user or an overall delivery, such as one customer-sprint Task linked to the Company and the user's Sprint. Record tickets as separate Timeline events with their pulse URLs or IDs.
+Accepted monday tickets stay in monday. Create a Notion Task only for a distinct commitment of the user or an overall delivery, such as one customer-sprint Task linked to the Company and the user's Sprint. Record tickets as dated updates with their pulse URLs or IDs.
 
 Name the Company's Moneybird contact link `Moneybird` in Resources, and resolve the administration and contact ID from that URL. Use `moneybird` for quote and invoice state and links. Track follow-up on sent estimates in the Project's sales work. On verified acceptance, finish the sales Task and create or link delivery work, or keep the Task if it already represents delivery.
 
-`Resources` (Files & media) holds the named links, files, and images that help with a record: on a Company shared material such as Website, Moneybird, LinkedIn, or Instagram; on a Project the repository, hosting, CMS, design, and deployment links; on a Task the evidence for that Task, including PRs and issues. Name each entry by what it is, such as `Moneybird` or `PR #79`. Read the record's Resources and its parent Project's Resources; Notion does not inherit them. Keep existing entries when writing, and keep one source per item.
+`Resources` (Files & media) holds the named links, files, and images that help with a record: on a Company shared material such as Website, Moneybird, LinkedIn, or Instagram; on a Project the repository, hosting, CMS, design, and deployment links; on a Task the evidence for that Task, including PRs and issues. Name each entry by what it is, such as `Moneybird` or `PR #79`. Read the record's Resources and its parent Project's Resources; Notion does not inherit them. Keep existing entries when writing, and keep one source per item. Save the original of media that defines requirements or proves approval, delivery, or completion, including video. A durable original URL is enough; expiring download URLs and local scratch paths are not durable references. Use a body link or embed when the context belongs next to an update. Upload once and reuse that file. Incidental media stays at its source.
 
 ## Planning and status
 
@@ -69,7 +69,7 @@ Task Status:
 - **Done**: completed and verified. Reopen only for the same deliverable.
 - **Canceled**: duplicate, replaced, moved to Someday, no longer executable, or explicitly dropped. Clear the Sprint and Date.
 
-Apply a status change that a source supports without asking again. Evidence goes in the Timeline, status in properties. Plan routine work through Sprints. Use the Task `Date` only for a deadline or commitment that needs a specific date. Tell hard cutoffs apart from scheduled follow-ups. Never invent dates, silently move overdue planning forward, or drop a reminder when moving its date.
+Apply a status change that a source supports without asking again. Evidence goes in Updates (or the existing Timeline), status in properties. Plan routine work through Sprints. Use the Task `Date` only for a deadline or commitment that needs a specific date. Tell hard cutoffs apart from scheduled follow-ups. Never invent dates, silently move overdue planning forward, or drop a reminder when moving its date.
 
 Project Status:
 

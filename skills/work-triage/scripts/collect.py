@@ -14,7 +14,7 @@ import t3_threads
 import whatsapp
 from common import (
     DEFAULT_GMAIL_ACCOUNTS, MAX_ITEMS_PER_LANE, base_result, emit, error_obj, iso_utc, parse_iso,
-    window_from_args,
+    window_from_args, title, prop_time,
 )
 
 SOURCES = ("gmail", "slack", "whatsapp", "calendar", "meetings", "t3_threads")
@@ -81,7 +81,13 @@ def calendar_items(after, before):
 
 
 def meeting_items(after, before):
-    return with_refs("meetings", meetings.collect(after, before), "id")
+    items = meetings.collect(after, before, include_body=False)
+    for item in items:
+        item["name"] = title(item)
+        item["created"] = prop_time(item, "Created")
+        item["edited"] = prop_time(item, "Edited")
+        item.pop("properties", None)
+    return with_refs("meetings", items, "id")
 
 
 def t3_items(after, before):

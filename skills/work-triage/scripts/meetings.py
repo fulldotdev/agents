@@ -52,6 +52,8 @@ def meeting_notes_metadata(blocks_, seen=None, depth=0):
                 "block_id": block_id,
                 "status": data.get("status"),
                 "transcript_block_id": transcript_id,
+                "summary_block_id": children.get("summary_block_id"),
+                "notes_block_id": children.get("notes_block_id"),
             }
             if transcript_id and data.get("status") == "notes_ready":
                 try:
@@ -118,7 +120,7 @@ def query_pages(payload):
         payload["start_cursor"] = cursor
 
 
-def collect(a,b):
+def collect(a,b, include_body=True):
     when_data=query_pages({"filter":{"property":"When","date":{"on_or_after":iso_utc(a),"before":iso_utc(b)}},"sorts":[{"property":"When","direction":"descending"}],"page_size":100})
     changed_data=query_pages({"filter":{"or":[{"property":"Created","created_time":{"on_or_after":iso_utc(a),"before":iso_utc(b)}},{"property":"Edited","last_edited_time":{"on_or_after":iso_utc(a),"before":iso_utc(b)}}]},"sorts":[{"property":"Edited","direction":"descending"}],"page_size":100})
     rows=dedupe_rows((when_data.get("results") or []) + (changed_data.get("results") or []))
@@ -133,7 +135,10 @@ def collect(a,b):
         item["tasks"] = relation_ids(row, "Tasks")
         try:
             page_blocks = blocks(row.get("id"))
-            item["body_excerpt"]=compact_text(body_text(page_blocks),20000)
+            if include_body:
+                body = body_text(page_blocks)
+                item["body_excerpt"] = compact_text(body,20000)
+                item["body_truncated"] = len(body) > 20000
             meeting_notes = meeting_notes_metadata(page_blocks)
             if meeting_notes:
                 item["meeting_notes"] = meeting_notes
