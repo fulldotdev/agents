@@ -1,6 +1,6 @@
 ---
 name: work-management
-description: "Use when reading, creating, routing, or updating Notion Tasks, Projects, Companies, Sprints, Goals, Someday items, Insights, or the Documents page."
+description: "Use when reading, creating, routing, or updating Notion Tasks, Projects, Companies, Persons, Sprints, Goals, Someday items, Insights, or the Documents page."
 ---
 
 # Work management
