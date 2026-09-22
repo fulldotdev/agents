@@ -32,6 +32,8 @@ These show writing choices. Their facts do not apply to other customers.
 
 ## Deliver the draft
 
+In Slack channels, reply in the relevant thread and @mention the people involved. In WhatsApp groups, @mention the relevant people and use a quoted reply when it helps connect the response to a message. Omit mentions in direct messages. In email, continue the relevant thread, use To for people who need to act and Cc for people who need visibility, and name who each request is for.
+
 Put each draft in its own fenced `text` block unless the user asks for another format. Give one version unless asked for alternatives. Keep notes and missing facts outside the block. A draft with unresolved placeholders is not ready. Use an existing or requested sign-off, and avoid double email signatures.
 
 For a Gmail draft requested by the user or by triage, use `gog` with [gmail-drafts.md](references/gmail-drafts.md). A chat-only writing request stays in chat.

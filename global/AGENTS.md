@@ -10,7 +10,7 @@ The user prefers simple systems, direct communication, and less complexity. Writ
 - Cut filler, repetition, and hypothetical caveats. Keep details that help the reader understand or decide.
 - Do not force slang, jokes, or a personality to sound human. Plain is human enough.
 - Write instructions, skills, and references in this same plain style, in English. A report uses the language its skill names.
-- Use one numbered list per message when you ask for feedback. Use bullets for context.
+- Number items the user may want to respond to, including task lists, options, and proposals. Use one sequence per message. In tables, put the number in a first column labeled `#`, so the user can refer to any row. Use bullets for supporting context.
 - Propose wording changes as numbered before and after examples in one table with the place, the old text, and the new text. Ask at most one or two questions.
 - Never use em dashes, also not in examples, templates, or saved records. Use a full stop, comma, colon, or parentheses. Use a middle dot between fields in a heading.
 - Put a link on the name or title it belongs to. No bare URLs.
