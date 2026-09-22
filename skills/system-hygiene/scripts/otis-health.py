@@ -40,7 +40,9 @@ def check_google():
         return "Google-toegang kon niet worden gecontroleerd"
     if result.returncode or not accounts:
         return "Google-toegang ontbreekt; controleer gog auth"
-    invalid = [account.get("email", "onbekend account") for account in accounts if account.get("valid") is not True]
+    configured = {account.get("email"): account for account in accounts}
+    required = ("sil@full.dev", "silveltman@gmail.com")
+    invalid = [email for email in required if configured.get(email, {}).get("valid") is not True]
     if invalid:
         return "Google-toegang werkt niet voor " + ", ".join(invalid)
     return None
