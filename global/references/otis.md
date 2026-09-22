@@ -24,13 +24,13 @@ Otis is the always-on Mac mini. It runs OpenClaw for Telegram, Discord and Slack
 | dev.fulldev.contact-enrichment.dex-google (launchd) | daily 04:15 | `~/projects/contact-enrichment/sync-dex-google.ts daily` |
 | com.fulldev.otis-health (launchd) | every 15 min | `~/.agents/skills/system-hygiene/scripts/otis-health.py`, one message to Telegram System when something breaks or recovers |
 | com.fulldev.pool-usage (launchd) | daily 08:03 | `~/.agents/global/scripts/pool-usage.py --telegram`, weekly quota left per pooled account to Telegram System |
-| com.fulldev.otis-restart (installed, disabled) | first eligible day of each month, 05:00 when enabled | `~/.agents/global/scripts/otis-restart.py`; paused after the 22 September test required manual login; postpone when busy and report service recovery to Telegram System |
+| com.fulldev.otis-restart (launchd) | first eligible day of each month, 05:00 | `~/.agents/global/scripts/otis-restart.py`; postpone to the next day when busy and report service recovery to Telegram System |
 
 Agent jobs are created with `openclaw cron add`; plain scripts run through launchd plists in `~/Library/LaunchAgents`. Give a one-off or temporary job a clear name and delete it when done.
 
 State lives under `~/.local/state/fulldev/`: `work-triage/` (batch, state, run receipts), `health/`. Scratch files under `~/.cache/fulldev/`.
 
-The monthly restart was installed and tested on 22 September. Otis restarted, but required manual login before Tailscale and user services returned. Keep the LaunchAgent disabled until an unattended login and service-recovery test passes. The installer `bash ~/.agents/global/scripts/install-otis-restart.sh` authorizes only `/sbin/shutdown -r now`, registers the 05:00 LaunchAgent, and attempts a restart after checking for active work. The recovery check reuses the existing health checks. State lives in `~/.local/state/fulldev/restart/`; logs in `~/Library/Logs/fulldev/otis-restart.log`.
+The monthly restart is enabled. An unattended restart passed on 22 September at 22:04 after automatic login was re-saved in Users & Groups. Tailscale, OpenClaw, T3, the account proxy and WhatsApp sync returned without manual login. The installer `bash ~/.agents/global/scripts/install-otis-restart.sh` authorizes only `/sbin/shutdown -r now`, registers the 05:00 LaunchAgent, and attempts a restart after checking for active work. The recovery check reuses the existing health checks. State lives in `~/.local/state/fulldev/restart/`; logs in `~/Library/Logs/fulldev/otis-restart.log`.
 
 ## Telegram chats
 
