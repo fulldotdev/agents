@@ -127,9 +127,9 @@ def check_contacts(now_local):
     due = latest_slot([CONTACT_SLOT[0]], CONTACT_SLOT[1], now_local, CONTACT_GRACE)
     completed = health.get("lastCompletedAt")
     if not completed or datetime.fromisoformat(completed.replace("Z", "+00:00")) < due:
-        return "contactsync Dex → Google van vannacht is niet afgerond"
+        return "contactsync full.dev → Gmail van vannacht is niet afgerond"
     if health.get("status") == "failed":
-        return "contactsync Dex → Google is mislukt: " + str(health.get("error") or health.get("phase") or "")[:120]
+        return "contactsync full.dev → Gmail is mislukt: " + str(health.get("error") or health.get("phase") or "")[:120]
     if health.get("issues"):
         return f"contactsync heeft {len(health['issues'])} waarschuwingen, zie ~/projects/contact-enrichment/reports"
     return None
