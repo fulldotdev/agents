@@ -89,12 +89,15 @@ def report_recovery(state):
             issue = health.check_whatsapp(whatsapp, int(time.time()))
             if issue:
                 problems.append(issue)
+            issue = health.check_google()
+            if issue:
+                problems.append(issue)
         except Exception as exc:
             problems.append(str(exc)[:200])
         if not problems:
             break
         time.sleep(30)
-    message = ('Otis: restart completed. OpenClaw, T3, account proxy and WhatsApp sync are online.'
+    message = ('Otis: restart completed. OpenClaw, T3, account proxy, WhatsApp sync and Google access are ready.'
                if not problems else 'Otis restarted, but recovery needs attention: ' + '; '.join(problems))
     run(['openclaw', 'message', 'send', '--channel', 'telegram', '--target', '-5094134988',
          '--message', message, '--json'])

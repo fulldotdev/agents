@@ -32,6 +32,20 @@ def check_gateway():
     return result.returncode == 0 and json.loads(result.stdout).get("ok") is True
 
 
+def check_google():
+    result = run(["gog", "auth", "list", "--check", "--json", "--no-input"])
+    try:
+        accounts = json.loads(result.stdout).get("accounts") or []
+    except (ValueError, AttributeError):
+        return "Google-toegang kon niet worden gecontroleerd"
+    if result.returncode or not accounts:
+        return "Google-toegang ontbreekt; controleer gog auth"
+    invalid = [account.get("email", "onbekend account") for account in accounts if account.get("valid") is not True]
+    if invalid:
+        return "Google-toegang werkt niet voor " + ", ".join(invalid)
+    return None
+
+
 def check_whatsapp(state, now):
     service = run(["launchctl", "print", f"gui/{os.getuid()}/com.fulldev.wacli-sync"])
     if service.returncode or "state = running" not in service.stdout:
@@ -133,7 +147,7 @@ def main():
     if not gateway_ok:
         problems.append("OpenClaw gateway is down; herstart geprobeerd")
         run(["openclaw", "gateway", "restart"], timeout=90)
-    for check in (lambda: check_whatsapp(state, now), lambda: check_triage(now_local), lambda: check_contacts(now_local), check_agent_services):
+    for check in (lambda: check_whatsapp(state, now), lambda: check_triage(now_local), lambda: check_contacts(now_local), check_agent_services, check_google):
         try:
             problem = check()
         except Exception as exc:
