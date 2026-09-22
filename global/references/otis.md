@@ -6,7 +6,7 @@ Otis is the always-on Mac mini. It runs OpenClaw for Telegram, Discord and Slack
 
 - Config `~/.openclaw/openclaw.json`, service `ai.openclaw.gateway`, loopback port 18789. Secrets stay in machine-local credential files.
 - Default model `opencode-go/glm-5.3-flash` with high thinking, in the native OpenClaw runtime. Also used for subagents, images and PDFs. No automatic fallback.
-- Astra and Sol stay available for explicit use, through the Codex runtime (`agentRuntime.id: codex`), because Codex brings the good desktop computer use. The four OpenAI auth profiles stay as backups.
+- Astra and Sol use the Codex runtime (`agentRuntime.id: codex`), including its desktop computer use. Work triage uses `openai/gpt-6-astra` with high thinking through OpenClaw's own Codex OAuth profiles and the existing subscriptions. Other jobs retain their configured models.
 - Plugins: telegram, discord, slack, openai, opencode-go, codex, browser, document-extract (PDF reading). Bundled OpenClaw skills are disabled one by one in `skills.entries`; memory plugin off.
 - Browser: `browser.defaultProfile: "chrome"`, driver `extension`, through the OpenClaw Chrome extension, in Otis's existing Chrome profile signed into `sil@full.dev`. Agent-created tabs use the OpenClaw group. The built-in `user` profile is a separate Chrome MCP existing-session driver, not Codex's ChatGPT Chrome extension. Use the `chrome` profile. Connection details and recovery are in [Chrome setup](../skills/browser/references/chrome.md).
 - Shared instructions come from `~/.agents/global/AGENTS.md` through the `bootstrap-extra-files` hook; the Codex runtime reads the same file through `codex-home/AGENTS.md`. No persona or memory files, the session-memory hook and memory flush are off. Skills come from `~/.agents/skills` directly.
@@ -16,7 +16,7 @@ Otis is the always-on Mac mini. It runs OpenClaw for Telegram, Discord and Slack
 
 | Job | When | Runs |
 |---|---|---|
-| work-triage (OpenClaw cron) | 07:00, 12:00, 17:00 | `~/.agents/skills/work-triage/scripts/run.py`, report to Telegram Triage |
+| work-triage (OpenClaw cron) | 07:00, 12:00, 17:00 | `~/.agents/skills/work-triage/scripts/run.py`, Astra high, report to Telegram Triage |
 | target-relationships (OpenClaw cron, disabled) | daily 08:00 when enabled | paused on 22 September 2026 pending improvements; agent turn, list to Telegram Sales |
 | weekly-planning (OpenClaw cron) | Sunday 10:00 | agent turn, report to Telegram Planning |
 | system-hygiene (OpenClaw cron) | Sunday 09:00 | agent turn, report to Telegram System |
