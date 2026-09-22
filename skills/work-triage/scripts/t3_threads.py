@@ -41,6 +41,9 @@ def activity_at(item):
         item.get("latestTurnCompletedAt"),
         item.get("latestTurnStartedAt"),
         item.get("latestTurnRequestedAt"),
+        item.get("latestUserMessageAt"),
+        item.get("settledAt"),
+        item.get("archivedAt"),
         item.get("createdAt"),
     )
     parsed = [parse_iso(value) for value in candidates if value]
@@ -94,7 +97,7 @@ def compact_item(item):
     }
 
 
-def collect(after_dt=None, before_dt=None, include_archived=False, limit=DEFAULT_LIMIT, project=None, query=None, thread_id=None, turn_limit=DEFAULT_TURN_LIMIT):
+def collect(after_dt=None, before_dt=None, include_archived=False, limit=DEFAULT_LIMIT, project=None, query=None, thread_id=None, turn_limit=DEFAULT_TURN_LIMIT, include_settled=False):
     if thread_id:
         return {
             "ok": True,
@@ -112,7 +115,7 @@ def collect(after_dt=None, before_dt=None, include_archived=False, limit=DEFAULT
             continue
         if before_dt and activity and activity >= before_dt:
             continue
-        if item["state"]["settled"] or (not include_archived and item["state"]["archived"]):
+        if (not include_settled and item["state"]["settled"]) or (not include_archived and item["state"]["archived"]):
             continue
         haystack = " ".join(
             str(value or "")
@@ -135,6 +138,7 @@ def main():
     add_common_args(parser)
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--include-archived", action="store_true")
+    parser.add_argument("--include-settled", action="store_true")
     parser.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
     parser.add_argument("--project")
     parser.add_argument("--query")
@@ -145,7 +149,7 @@ def main():
     result = base_result("t3_threads", "targeted_thread" if args.thread_id else "thread_index", after, before)
     result.pop("items")
     try:
-        result["result"] = collect(after, before, args.include_archived, args.limit, args.project, args.query, args.thread_id, args.turn_limit)
+        result["result"] = collect(after, before, args.include_archived, args.limit, args.project, args.query, args.thread_id, args.turn_limit, args.include_settled)
     except Exception as exc:
         result["ok"] = False
         result["errors"].append({"source": "t3_threads", "ok": False, "error": str(exc), "items": []})

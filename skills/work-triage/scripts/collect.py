@@ -36,8 +36,6 @@ def gmail_items(after, before):
             errors.append(f"{account}: {exc}")
             continue
         for thread in threads:
-            if all(message.get("is_sent_by_me") for message in thread["messages"]):
-                continue
             thread.pop("index_only", None)
             thread.pop("requires_thread_read_for_decision", None)
             items.append(thread)
@@ -51,20 +49,13 @@ def slack_items(after, before):
     failures = [item for item in result["items"] if item.get("ok") is False]
     if failures:
         raise RuntimeError("; ".join(str(item.get("error")) for item in failures))
-    items = []
-    for item in result["items"]:
-        own = item.get("sender") and item.get("sender") == item.get("self_user_id")
-        replies = [r for r in item.get("thread_replies") or [] if r.get("in_window") and r.get("sender") != item.get("self_user_id")]
-        if own and not replies:
-            continue
-        items.append(item)
-    return with_refs("slack", items, "ts")
+    return with_refs("slack", result["items"], "ts")
 
 
 def whatsapp_items(after, before):
     chats = [
         chat for chat in whatsapp.collect(after, before)
-        if chat["chat_id"] != "status@broadcast" and not all(m.get("is_sent_by_me") for m in chat["messages"])
+        if chat["chat_id"] != "status@broadcast"
     ]
     return with_refs("whatsapp", chats, "chat_id")
 
@@ -94,7 +85,9 @@ def meeting_items(after, before):
 
 
 def t3_items(after, before):
-    return with_refs("t3_threads", t3_threads.collect(after, before)["items"], "thread_id")
+    return with_refs("t3_threads", t3_threads.collect(
+        after, before, include_archived=True, include_settled=True,
+    )["items"], "thread_id")
 
 
 LANES = {
@@ -192,7 +185,7 @@ def source(args):
         elif name == "meetings":
             result["result"] = meetings.collect(after, before)
         else:
-            result["result"] = t3_threads.collect(after, before, args.include_archived, args.limit, args.project, args.query, args.thread_id, args.turn_limit)
+            result["result"] = t3_threads.collect(after, before, args.include_archived, args.limit, args.project, args.query, args.thread_id, args.turn_limit, args.include_settled)
     except Exception as exc:
         result["ok"] = False
         result["errors"].append(error_obj(name, exc))
@@ -217,6 +210,7 @@ def build_parser():
     source_parser.add_argument("--workspace", help="Slack workspace slug")
     source_parser.add_argument("--all", action="store_true", help="ignore the time window")
     source_parser.add_argument("--include-archived", action="store_true")
+    source_parser.add_argument("--include-settled", action="store_true")
     source_parser.add_argument("--limit", type=int, default=MAX_ITEMS_PER_LANE)
     source_parser.add_argument("--project")
     source_parser.add_argument("--thread-id", help="Gmail or T3 thread")

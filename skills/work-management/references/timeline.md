@@ -16,6 +16,8 @@ Social-post Tasks may keep an editable Caption, Platform captions, Media, and Pu
 
 The Timeline is a dated log of what each source added. One entry per source, newest last. Link the channel to the message, thread, meeting, document, PR, or file. Without a URL, write the shortest reference a tool can reopen, such as `T3 Code · thread <id>` or `Telegram · chat <id> · message <id>`. With nothing to point to, write `source unavailable`.
 
+Use `ntn` and the Notion Markdown API for body changes. Append to the Timeline with a targeted `update_content` operation against its freshly read ending, with a blank line before the new heading. Avoid replacing the whole page to add an event. Read back the changed section and any changed properties. An API success response alone does not verify the saved content.
+
 Keep exact names, IDs, filenames, branches, deadlines, and decisions, and mark uncertainty such as `draft` or `not yet tested`. Write enough to prevent a wrong decision later. The full message or document stays at its source.
 
 ## Corrections

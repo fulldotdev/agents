@@ -77,12 +77,18 @@ def final_text(envelope):
 
 def split_output(text, known_items):
     """Separate the report from RETRY lines; attach the batch item to each retry."""
-    report, retries = [], []
+    report, retries, seen = [], [], set()
     for line in text.splitlines():
         match = RETRY_LINE.match(line)
         if match:
             ref, note = match.group(1).rstrip(".,;:"), match.group(2)
-            retries.append({"ref": ref, "note": note, "item": known_items.get(ref)})
+            item = known_items.get(ref)
+            if not item or not note.strip() or ref in seen:
+                raise RuntimeError(f"Invalid retry: {ref}; use one exact batch ref and reason per item")
+            seen.add(ref)
+            retries.append({"ref": ref, "note": note.strip(), "item": item})
+        elif line.lstrip().startswith("RETRY:"):
+            raise RuntimeError("Invalid retry: missing batch ref or reason")
         else:
             report.append(line)
     report_text = "\n".join(report).strip()
@@ -152,17 +158,17 @@ def run(args):
     remaining = max(60, args.timeout - int(time.monotonic() - started))
     command = ["openclaw", "agent", "--agent", "main", "--session-key", f"agent:main:triage:{now.strftime('%Y%m%dT%H%M%SZ')}",
                "--model", args.model, "--thinking", args.thinking, "--timeout", str(remaining), "--message", prompt, "--json"]
+    known = {r["ref"]: r.get("item") for r in retry}
+    known.update({item["ref"]: item for items in collected["items"].values() for item in items})
     try:
         response = subprocess.run(command, text=True, capture_output=True, timeout=remaining + 30, check=True)
         text = final_text(json.loads(response.stdout))
+        report, retries = split_output(text, known)
     except (subprocess.SubprocessError, ValueError, RuntimeError) as exc:
         save_state(state)
         write_receipt(receipt, "error", started, type(exc).__name__)
         raise RuntimeError("Triage agent failed; nothing was marked as handled, the next run retries") from exc
 
-    known = {item["ref"]: item for items in collected["items"].values() for item in items}
-    known.update({r["ref"]: r.get("item") for r in retry})
-    report, retries = split_output(text, known)
     numbers = [int(m.group(1)) for m in map(NUMBERED_LINE.match, report.splitlines()) if m]
     if numbers:
         state["last_number"] = max(numbers)
