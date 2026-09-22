@@ -30,6 +30,8 @@ Agent jobs are created with `openclaw cron add`; plain scripts run through launc
 
 State lives under `~/.local/state/fulldev/`: `work-triage/` (batch, state, run receipts), `health/`. Scratch files under `~/.cache/fulldev/`.
 
+Google automation uses `gog`'s encrypted file keyring. `~/.local/bin/gog` loads its generated unlock key from the owner-only file `~/.config/gogcli/keyring-password` and runs the Homebrew binary. Keep `~/.local/bin` before Homebrew in shell and service PATHs; direct calls to `/opt/homebrew/bin/gog` omit the unlock key. OpenClaw's service environment and the contact-sync, health, and restart LaunchAgents use this path. The key and credentials stay local to Otis. Health and restart recovery check `gog auth list --check --json --no-input`; revoked Google authorization still requires consent.
+
 The monthly restart is enabled. An unattended restart passed on 22 September at 22:04 after automatic login was re-saved in Users & Groups. Tailscale, OpenClaw, T3, the account proxy and WhatsApp sync returned without manual login. The installer `bash ~/.agents/global/scripts/install-otis-restart.sh` authorizes only `/sbin/shutdown -r now`, registers the 05:00 LaunchAgent, and attempts a restart after checking for active work. The recovery check reuses the existing health checks. State lives in `~/.local/state/fulldev/restart/`; logs in `~/Library/Logs/fulldev/otis-restart.log`.
 
 ## Telegram chats
