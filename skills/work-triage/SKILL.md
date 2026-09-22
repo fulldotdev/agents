@@ -9,6 +9,8 @@ The runner collects new items into one batch file. For each item: find where it 
 
 Read [t3-routing.md](references/t3-routing.md) before starting or continuing a T3 thread.
 
+For a requested quality review, read [assess-quality.md](references/assess-quality.md). Keep that review separate from recurring intake.
+
 ## The batch file
 
 Read the batch file named in the prompt once. It contains:
