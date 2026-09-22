@@ -38,6 +38,7 @@ PY
 # Initialize state without restarting, then register the 05:00 schedule.
 "$python_bin" "$restart_script"
 launchctl bootout "gui/$(id -u)/com.fulldev.otis-restart" 2>/dev/null || true
+launchctl enable "gui/$(id -u)/com.fulldev.otis-restart"
 launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.fulldev.otis-restart.plist"
 echo 'Monthly 05:00 restart installed. Running the authorized restart test now.'
 sleep 2
