@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import timedelta
 from pathlib import Path
 from urllib.parse import parse_qs, urlencode, urlparse
-from common import save_snapshot, MAX_ITEMS_PER_LANE, add_common_args, base_result, compact_text, emit, error_obj, window_from_args
+from common import MAX_ITEMS_PER_LANE, add_common_args, base_result, compact_text, emit, error_obj, window_from_args
 
 SLACK_API_TIMEOUT_SECONDS = float(os.environ.get("SLACK_API_TIMEOUT_SECONDS", "8"))
 SLACK_CONNECT_TIMEOUT_SECONDS = float(os.environ.get("SLACK_CONNECT_TIMEOUT_SECONDS", "3"))
@@ -366,46 +366,7 @@ def dm_history(a,b):
             except Exception as exc: items.append({"ok": False, "query": "dm_history", "error": str(exc)})
     return items
 
-def hydrate_threads(items, a, b, max_chars=60000):
-    """Read each selected conversation once, including replies before the window."""
-    result, groups = [], {}
-    for item in items:
-        if item.get("ok") is False:
-            result.append(item)
-        else:
-            groups.setdefault((item["channel_id"], item["thread_ts"]), []).append(item)
-    for (channel, thread_ts), matches in groups.items():
-        item = dict(matches[0])
-        item.pop("collection_error", None)
-        item.pop("conversation_file", None)
-        item["matched_messages"] = list(dict.fromkeys(m["ts"] for m in matches))
-        try:
-            conversation = replies(channel, thread_ts, a, b, item.get("channel_name"))
-            if not {m["ts"] for m in matches}.issubset({m["ts"] for m in conversation}):
-                raise RuntimeError("Slack thread is missing selected messages")
-            item["thread_replies"] = conversation
-            item["conversation_complete"] = True
-            content = json.dumps(conversation, ensure_ascii=False, indent=2)
-            if len(content) > max_chars:
-                identity = f"{_workspace.get('workspace_id')}:{channel}:{thread_ts}"
-                item["conversation_file"] = save_snapshot("slack", identity, content)
-                item["conversation_complete"] = False
-                remaining = max_chars
-                for message in conversation:
-                    text = message["text"]
-                    message["text"] = text[:remaining]
-                    message["text_truncated"] = len(text) > remaining
-                    remaining = max(0, remaining - len(message["text"]))
-            item["text"] = compact_text(item.get("text"), 12000)
-        except Exception as exc:
-            item["thread_replies"] = []
-            item["collection_error"] = str(exc)
-            item["conversation_complete"] = False
-        result.append(item)
-    return result
-
-
-def collect_workspace(a,b,query,config,retry_items=()):
+def collect_workspace(a,b,query,config):
     global _deadline, _token_value, _users, _workspace
     _deadline = time.monotonic() + SLACK_COLLECT_TIMEOUT_SECONDS
     _token_value = select_token(config)
@@ -440,19 +401,18 @@ def collect_workspace(a,b,query,config,retry_items=()):
             except Exception as exc: items.append({"ok": False, "query": q, "error": str(exc)})
         try: items.extend(dm_history(a,b))
         except Exception as exc: items.append({"ok": False, "query": "dm_history", "error": str(exc)})
-    items.extend(retry_items)
-    tagged = [tag_item(item) for item in hydrate_threads(deduplicate(items), a, b)]
+    tagged = [tag_item(item) for item in deduplicate(items)]
     failures = [item for item in tagged if item.get("ok") is False]
     summary = dict(_workspace)
     summary.update({"ok": not failures, "complete": not failures, "item_count": len(tagged) - len(failures)})
     return tagged, summary
 
-def collect_result(a,b,query=None,workspace=None,retry_items=()):
+def collect_result(a,b,query=None,workspace=None):
     items = []
     workspaces = []
     for config in workspace_configs(workspace):
         try:
-            workspace_items, summary = collect_workspace(a, b, query, config, [i for i in retry_items if i.get("workspace_slug") == config["slug"]])
+            workspace_items, summary = collect_workspace(a, b, query, config)
             items.extend(workspace_items)
             workspaces.append(summary)
         except Exception as exc:

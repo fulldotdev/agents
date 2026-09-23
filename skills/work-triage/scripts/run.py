@@ -112,6 +112,7 @@ def prepare_agent_items(items, state):
     by_ref = {item["ref"]: item for item in grouped}
     pending = {}
     for entry in retry:
+        entry = {key: entry[key] for key in ("ref", "note", "item")}
         if not entry["ref"].startswith("calendar:"):
             entry = dict(entry)
             if entry["ref"].startswith("meetings:") and entry["item"].get("content_kind") != "meeting_source":
@@ -122,7 +123,7 @@ def prepare_agent_items(items, state):
                 entry["ref"] = collect.slack_ref(entry["item"])
                 entry["item"] = {**entry["item"], "ref": entry["ref"]}
             if entry["ref"] in pending:
-                merge_retry(pending[entry["ref"]], entry)
+                pending[entry["ref"]]["note"] += "; " + entry["note"]
             else:
                 pending[entry["ref"]] = entry
             continue
@@ -132,7 +133,7 @@ def prepare_agent_items(items, state):
             item = next(by_copy[c["ref"]] for c in collect.calendar_copies(old) if c["ref"] in by_copy)
         ref = item["ref"]
         if ref in pending:
-            merge_retry(pending[ref], entry)
+            pending[ref]["note"] += "; " + entry["note"]
         else:
             pending[ref] = {**entry, "ref": ref, "item": item}
     items["calendar"] = grouped
@@ -151,64 +152,12 @@ def prepare_agent_items(items, state):
     return list(pending.values())
 
 
-def merge_retry(target, entry):
-    target["note"] += "; " + entry["note"]
-    dates = [r["first_failed_at"] for r in (target, entry) if r.get("first_failed_at")]
-    if dates:
-        target["first_failed_at"] = min(dates)
-    target["attempts"] = max(target.get("attempts", 0), entry.get("attempts", 0))
-    notices = [r["last_notice_at"] for r in (target, entry) if r.get("last_notice_at")]
-    if notices:
-        target["last_notice_at"] = max(notices)
-
-
-def track_retries(retries, previous, now, attempted=False):
-    old = {r["ref"]: r for r in previous}
-    result = []
-    for entry in retries:
-        prior = old.get(entry["ref"], {})
-        first = prior.get("first_failed_at") or entry.get("first_failed_at") or iso_utc(now)
-        attempts = prior.get("attempts", entry.get("attempts", 0)) + int(attempted)
-        item = {**entry, "first_failed_at": first, "attempts": attempts,
-                "age_hours": round(max(0, (now - parse_iso(first)).total_seconds() / 3600), 1)}
-        if attempted:
-            item["last_attempt_at"] = iso_utc(now)
-        elif prior.get("last_attempt_at"):
-            item["last_attempt_at"] = prior["last_attempt_at"]
-        if prior.get("last_notice_at"):
-            item["last_notice_at"] = prior["last_notice_at"]
-        result.append(item)
-    return result
-
-
 def retain_collection_failures(retries, known):
     pending = {r["ref"]: r for r in retries}
     for ref, item in known.items():
         if item.get("collection_error"):
             pending[ref] = {"ref": ref, "note": item["collection_error"], "item": item}
     return list(pending.values())
-
-
-def retry_notices(report, retries, now, first_number):
-    """Surface persistent blockers once per day through the normal job report."""
-    numbers = [int(m.group(1)) for m in map(NUMBERED_LINE.match, report.splitlines()) if m]
-    number = max([first_number - 1, *numbers])
-    lines = [report] if report else []
-    for entry in retries:
-        if entry["attempts"] < 3 and entry["age_hours"] < 48:
-            continue
-        last = parse_iso(entry.get("last_notice_at"))
-        if last and now - last < timedelta(days=1):
-            continue
-        item = entry["item"]
-        name = item.get("subject") or item.get("name") or item.get("title") or item.get("channel_name") or entry["ref"].split(":")[0].title()
-        name = " ".join(name.split()).replace("[", "(").replace("]", ")")[:120]
-        label = f"[{name}]({item['url']})" if item.get("url") else name
-        reason = " ".join(entry["note"].split()[:10])
-        number += 1
-        lines.append(f"{number}. Retry blocked: {label} · {entry['attempts']} attempts · {entry['age_hours']:g} hours · {reason}")
-        entry["last_notice_at"] = iso_utc(now)
-    return "\n".join(lines)
 
 
 def separate_calendar_context(items):
@@ -257,7 +206,6 @@ def run(args):
     state["lane_failures"] = failures
 
     retry = prepare_agent_items(collected["items"], state)
-    retry = track_retries(retry, retry, now)
     collected["index"]["upcoming_meetings"] = separate_calendar_context(collected["items"])
     chat_ms = triage_chat_updated_at()
     chat_changed = chat_ms is None or chat_ms > (state.get("triage_chat_seen_ms") or 0)
@@ -313,14 +261,12 @@ def run(args):
         text = final_text(json.loads(response.stdout))
         report, retries = split_output(text, known)
     except (subprocess.SubprocessError, ValueError, RuntimeError) as exc:
-        state["retry"] = track_retries(retry, retry, now, attempted=True)
+        state["retry"] = retry
         save_state(state)
         write_receipt(receipt, "error", started, type(exc).__name__)
         raise RuntimeError("Triage agent failed; nothing was marked as handled, the next run retries") from exc
 
     retries = retain_collection_failures(retries, known)
-    retries = track_retries(retries, retry, now, attempted=True)
-    report = retry_notices(report, retries, now, number)
     numbers = [int(m.group(1)) for m in map(NUMBERED_LINE.match, report.splitlines()) if m]
     if numbers:
         state["last_number"] = max(numbers)
