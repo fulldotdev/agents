@@ -61,6 +61,10 @@ An attachment matters when it can change where work belongs, its scope or price,
 
 ## Meetings
 
+The runner prepares meeting pages before triage. Calendar items include `meeting_page`: its URL, manual notes block ID, or an error. Use that page for preparation. Read its existing notes, then add only missing agenda topics and context from relevant conversations and Tasks under **Preparation**. Keep **Notes** for the meeting itself. Link proven Companies, Projects and Tasks through `work-management`. When routing a new conversation topic, check upcoming calendar items for its meeting page even if the calendar event itself did not change.
+
+The script owns page creation, calendar attachments, event dates and cancellation flags. It uses **Calendar event ID** to reuse the same page across accounts and retries; recurring occurrences have separate pages. **Canceled** preserves the notes while marking a canceled event. A `meeting_page` error is retried by the runner. Report persistent errors through the failing-source rule; leave page creation and attachment repair to the script so triage does not create a duplicate.
+
 Read the meeting page and its complete summary and manual notes first, using `ntn` and `GET v1/pages/{page_id}/markdown`. Check `truncated` and `unknown_block_ids` and fetch any missing content. An index entry or truncated body excerpt is not the summary. Keep every topic, including tentative requests, disagreement, delivery claims, and unanswered questions. Use the meeting date and source wording; let the triage model decide what affects tracked work.
 
 - Read [meeting-summary.md](references/meeting-summary.md) when creating or assessing the factual summary instruction. Until summaries produced with that instruction have been checked against representative full transcripts, use full transcripts for commitment extraction. A generic short recap or action list does not meet it. For older or incomplete summaries, read the full transcript through `GET v1/pages/{page_id}/markdown?include_transcript=true`. A summary cannot prove that something was absent from the meeting.

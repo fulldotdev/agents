@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Google Calendar collector for work triage."""
 
+import json
 import os
 from datetime import timedelta
 
@@ -16,11 +17,62 @@ def in_window(value, after, before):
     return bool(dt and after <= dt < before)
 
 
-def fetch_events(account, after, before, limit):
-    return json_cmd([
-        "gog", "--readonly", "--no-input", "-a", account, "--json", "--results-only", "calendar", "events",
-        "--from", iso_utc(after), "--to", iso_utc(before), "--all", "--all-pages", "--max", str(limit),
-    ])
+def google(account, method, params, body=None):
+    cmd = ["gog", "--no-input", "--gmail-no-send", "-a", account, "--json"]
+    if body is None:
+        cmd.append("--readonly")
+    cmd += ["api", "call", "calendar", "v3", "calendar." + method,
+            "--params", json.dumps(params), "--scope", "https://www.googleapis.com/auth/calendar" +
+            (".readonly" if body is None else "")]
+    if body is not None:
+        cmd += ["--allow-write", "--force", "--body", json.dumps(body)]
+    return json_cmd(cmd)
+
+
+def google_pages(account, method, params):
+    params = dict(params)
+    rows, seen = [], set()
+    while True:
+        data = google(account, method, params)
+        rows.extend(data.get("items") or [])
+        token = data.get("nextPageToken")
+        if not token:
+            return rows
+        if token in seen:
+            raise RuntimeError("Repeated Google Calendar pagination token")
+        seen.add(token)
+        params["pageToken"] = token
+
+
+def fetch_events(account, after, before, limit, changed_after=None):
+    rows = []
+    for cal in google_pages(account, "calendarList.list", {"maxResults": 250}):
+        if cal.get("accessRole") == "freeBusyReader":
+            continue
+        base = {"calendarId": cal["id"], "maxResults": min(limit, 2500)}
+        events = google_pages(account, "events.list", {
+            **base, "timeMin": iso_utc(after), "timeMax": iso_utc(before),
+            "singleEvents": True, "showDeleted": True,
+        })
+        if changed_after:
+            # No event-date bound: a new invitation next month is still incoming work.
+            changes = google_pages(account, "events.list", {
+                **base, "updatedMin": iso_utc(changed_after), "showDeleted": True,
+                "singleEvents": False,
+            })
+            for event in changes:
+                if event.get("recurrence") and event.get("status") != "cancelled":
+                    events.extend(google_pages(account, "events.instances", {
+                        **base, "eventId": event["id"], "timeMin": iso_utc(changed_after),
+                        "timeMax": iso_utc(before + timedelta(days=30)), "showDeleted": True,
+                    }))
+                else:
+                    events.append(event)
+        for event in events:
+            event["calendar_id"] = cal["id"]
+            event["calendar_access"] = cal.get("accessRole")
+            rows.append(event)
+    return rows
 
 
 def collect_account(account, after, before, limit=MAX_ITEMS_PER_LANE, context=False):
@@ -32,8 +84,8 @@ def collect_account(account, after, before, limit=MAX_ITEMS_PER_LANE, context=Fa
     fetch_before = before + timedelta(days=lookahead)
     items = []
     seen = set()
-    for event in fetch_events(account, fetch_after, fetch_before, limit):
-        key = event.get("id") or event.get("iCalUID")
+    for event in fetch_events(account, fetch_after, fetch_before, limit, after if context else None):
+        key = (event.get("calendar_id"), event.get("id"))
         if not key or key in seen:
             continue
         seen.add(key)
@@ -44,6 +96,10 @@ def collect_account(account, after, before, limit=MAX_ITEMS_PER_LANE, context=Fa
             "event_type": event.get("eventType"), "url": event.get("htmlLink"),
             "start": event_time(event.get("start")), "end": event_time(event.get("end")),
             "created": event.get("created"), "updated": event.get("updated"),
+            "calendar_id": event["calendar_id"], "calendar_access": event["calendar_access"],
+            "recurring_event_id": event.get("recurringEventId"),
+            "original_start": event_time(event.get("originalStartTime")),
+            "recurrence": event.get("recurrence"),
             "organizer": {
                 "email": (event.get("organizer") or {}).get("email"),
                 "name": (event.get("organizer") or {}).get("displayName"),

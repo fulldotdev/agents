@@ -77,7 +77,9 @@ def calendar_items(after, before):
                 items.append(event)
     if errors:
         raise RuntimeError("; ".join(errors))
-    return with_refs("calendar", items, "id")
+    for item in items:
+        item["ref"] = f"calendar:{item['source_account']}:{item['calendar_id']}:{item['id']}"
+    return items
 
 
 def meeting_items(after, before):

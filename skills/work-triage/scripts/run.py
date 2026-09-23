@@ -2,6 +2,7 @@
 """Collect everything new since the last run, hand it to the OpenClaw agent, keep what must come back."""
 
 import argparse
+import fcntl
 import json
 import os
 import re
@@ -12,6 +13,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import collect
+import meeting_pages
 from common import iso_utc, parse_iso, yaml_lines
 
 STATE_DIR = Path(os.environ.get("WORK_TRIAGE_STATE_DIR", Path.home() / ".local/state/fulldev/work-triage")).expanduser()
@@ -23,6 +25,7 @@ TRIAGE_SESSION_KEY = f"agent:main:telegram:group:{TRIAGE_CHAT}"
 FIRST_RUN_HOURS = 24
 RETRY_LINE = re.compile(r"^\s*RETRY:\s*(\S+)\s*(.*?)\s*$")
 NUMBERED_LINE = re.compile(r"^\s*(\d+)\.\s")
+LOCK_HANDLE = None
 
 
 def load_state():
@@ -39,14 +42,19 @@ def save_state(state):
 
 
 def lock():
+    global LOCK_HANDLE
     STATE_DIR.mkdir(parents=True, exist_ok=True)
-    if LOCK_FILE.exists():
-        try:
-            os.kill(int(LOCK_FILE.read_text().strip()), 0)
-            return False
-        except (ValueError, ProcessLookupError, PermissionError):
-            pass
-    LOCK_FILE.write_text(str(os.getpid()))
+    LOCK_HANDLE = LOCK_FILE.open("a+")
+    try:
+        fcntl.flock(LOCK_HANDLE, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        LOCK_HANDLE.close()
+        LOCK_HANDLE = None
+        return False
+    LOCK_HANDLE.seek(0)
+    LOCK_HANDLE.truncate()
+    LOCK_HANDLE.write(str(os.getpid()))
+    LOCK_HANDLE.flush()
     return True
 
 
@@ -104,6 +112,13 @@ def run(args):
         for lane in collect.SOURCES
     }
     collected = collect.batch(windows)
+    if not args.dry_run:
+        collected["items"]["calendar"] = meeting_pages.prepare_batch(
+            collected["items"].get("calendar", []), state, lambda: save_state(state),
+        )
+        errors = [i["meeting_page"]["error"] for i in state.get("meeting_page_retry", [])]
+        if errors:
+            collected["failed"]["meeting_pages"] = "; ".join(dict.fromkeys(errors))
     failures = state.get("lane_failures") or {}
     for lane in list(failures):
         if lane not in collected["failed"]:
@@ -125,7 +140,7 @@ def run(args):
             if lane not in collected["failed"]:
                 state["lanes"][lane] = {"since": iso_utc(now)}
 
-    if new_count == 0 and not retry and not chat_changed:
+    if new_count == 0 and not retry and not chat_changed and not args.dry_run:
         advance()
         save_state(state)
         return write_receipt(receipt, "empty", started, "NO_REPLY")
@@ -208,7 +223,7 @@ def main():
         print(str(exc), file=sys.stderr)
         return 1
     finally:
-        LOCK_FILE.unlink(missing_ok=True)
+        LOCK_HANDLE.close()
 
 
 if __name__ == "__main__":
