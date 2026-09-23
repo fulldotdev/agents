@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Prepare and attach meeting pages before the triage agent runs."""
 
-import html
 import json
 import re
 from datetime import datetime, timezone
@@ -100,7 +99,7 @@ def sync_block_title(page, block, name):
     match = matches[0]
     notion("pages/" + page["id"] + "/markdown", {
         "type": "update_content", "update_content": {"content_updates": [{
-            "old_str": match.group(0), "new_str": match.group(1) + html.escape(name.replace("\n", " ")),
+            "old_str": match.group(0), "new_str": match.group(1) + name.replace("\n", " "),
         }]},
     })
     updated = meeting_block(page)
@@ -202,7 +201,7 @@ def prepare(item, bindings, save):
     }
     created = page is None
     if created:
-        safe_title = html.escape((event.get("summary") or "Meeting").replace("\n", " "))
+        safe_title = (event.get("summary") or "Meeting").replace("\n", " ")
         page = notion("pages", {
             "parent": {"data_source_id": NOTION_MEETINGS_DATA_SOURCE_ID}, "properties": properties,
             "markdown": f"<meeting-notes>\n\t{safe_title}\n\t<notes>\n\t\t## Preparation\n\t\t## Notes\n\t</notes>\n</meeting-notes>",
