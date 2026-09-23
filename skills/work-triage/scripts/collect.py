@@ -141,8 +141,8 @@ def group_calendar_items(items):
     return result
 
 
-def meeting_items(after, before):
-    items = meetings.collect(after, before, include_body=False)
+def meeting_items(after, before, retry_items=()):
+    items = meetings.collect(after, before, retry_items=retry_items)
     for item in items:
         item["name"] = title(item)
         item["created"] = prop_time(item, "Created")
@@ -207,10 +207,10 @@ def batch(windows, retries=()):
     """Collect every lane in parallel. Returns items per lane, the index, and per-lane errors."""
     result = {"items": {}, "index": {}, "failed": {}}
     calls = {lane: (lambda lane=lane: LANES[lane](*windows[lane])) for lane in windows}
-    for lane in ("gmail", "slack"):
+    for lane in ("gmail", "slack", "meetings"):
         if lane in windows:
             pending = [r["item"] for r in retries if r["ref"].startswith(lane + ":")
-                       and r["item"].get("collection_error")]
+                       and (lane == "meetings" or r["item"].get("collection_error"))]
             calls[lane] = lambda lane=lane, pending=pending: LANES[lane](*windows[lane], retry_items=pending)
     calls["index"] = work_index
     calls["t3_open_threads"] = t3_index
