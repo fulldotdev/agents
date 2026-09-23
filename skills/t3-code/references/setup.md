@@ -6,7 +6,7 @@ Use this for project setup, installation, service, Connect, visibility, or split
 
 Use the exact GitHub repository name as the T3 project name, without the owner prefix. New checkouts go in `~/projects/<repo-name>`. Check each machine's `origin` and T3 workspace path against the intended repository, then verify that MacBook and Otis have matching registrations. Existing paths can stay when threads or tools depend on them.
 
-Keep Project grouping off for plain repository names. The combined repository view can replace a matching project title with `owner/repo`; verify the labels in the app after changing this setting.
+Keep Project grouping on so each repository appears once with MacBook and Otis as environments. Keep the project titles equal to the repository name, and accept `owner/repo` when T3 uses it as the combined label. Verify that the command palette shows one project and that a new chat offers both environments.
 
 GitHub transfers committed work through pushes and fetches or pulls. It does not sync uncommitted files, ignored files, or the branch checked out on the other machine. Report those separately from broken project links. Compare patches before calling divergent commits unique; cherry-picked changes can have different commit IDs.
 
