@@ -17,13 +17,11 @@ Otis is the always-on Mac mini. It runs OpenClaw for Telegram, Discord and Slack
 | Job | When | Runs |
 |---|---|---|
 | work-triage (OpenClaw cron) | 07:00, 18:00 | `~/.agents/skills/work-triage/scripts/run.py`, Astra high, report to Telegram Triage |
-| target-relationships (OpenClaw cron, disabled) | daily 08:00 when enabled | paused on 22 September 2026 pending improvements; agent turn, list to Telegram Sales |
 | weekly-planning (OpenClaw cron) | Sunday 10:00 | Astra high; compare seven days of incoming sources with Notion, then maintain active records; report to Telegram Planning |
 | system-hygiene (OpenClaw cron) | Sunday 09:00 | agent turn, report to Telegram System |
 | com.fulldev.wacli-sync (launchd) | always | `wacli sync --follow` |
-| dev.fulldev.contact-enrichment.google-google (launchd) | daily 04:15 | `~/projects/contact-enrichment/sync-google-google.ts daily`, copies `sil@full.dev` contacts to `silveltman@gmail.com` |
+| dev.fulldev.contact-enrichment.google-google (launchd) | daily 04:15 | `~/projects/contact-enrichment/sync-google-google.ts daily`, work Google contacts to personal Google contacts |
 | com.fulldev.otis-health (launchd) | every 15 min | `~/.agents/skills/system-hygiene/scripts/otis-health.py`, one message to Telegram System when something breaks or recovers |
-| com.fulldev.pool-usage (launchd) | daily 08:03 | `~/.agents/global/scripts/pool-usage.py --telegram`, weekly quota left per pooled account to Telegram System |
 | com.fulldev.otis-restart (launchd) | first eligible day of each month, 05:00 | `~/.agents/global/scripts/otis-restart.py`; postpone to the next day when busy and report service recovery to Telegram System |
 
 Agent jobs are created with `openclaw cron add`; plain scripts run through launchd plists in `~/Library/LaunchAgents`. Give a one-off or temporary job a clear name and delete it when done.

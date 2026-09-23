@@ -37,7 +37,7 @@ The user prefers simple systems, direct communication, and less complexity. Writ
 - We work on the user's MacBook and on Otis, an always-on Mac mini. From MacBook, reach Otis with `ssh -A otis`.
 - Determine the current machine from the session environment. Stay on that machine unless the task requires another machine or the user asks you to switch.
 - Projects live in `~/projects` on both machines and sync through GitHub. Keep T3 Code's project list on both machines in line when you create, move, or sync a project.
-- Codex and Claude run through a local account pool on each machine. To check usage limits, run `python3 ~/.agents/global/scripts/pool-usage.py` and report its output unchanged. Setup, accounts, and errors are in `~/.agents/global/references/account-pool.md`.
+- Codex and Claude run through a local account pool on each machine. Check usage limits in T3 Code’s Account pool view. Setup, accounts, and errors are in `~/.agents/global/references/account-pool.md`.
 
 ## Shared skills
 

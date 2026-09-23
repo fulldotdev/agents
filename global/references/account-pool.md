@@ -16,21 +16,7 @@ Use these names in reports. Each machine holds its own OAuth files; subscription
 
 ## Checking limits
 
-Run the script and report its output unchanged. It prints the share left per account, not the share used.
-
-```bash
-python3 ~/.agents/global/scripts/pool-usage.py
-```
-
-```text
-Weekly quota left
-Account    Weekly  Fable  Resets
-Codex          0%         Sun 22:07
-Claude        43%     0%  Mon 13:59
-Claude 0      78%    62%  27 Sep 19:00
-```
-
-`--telegram` sends the same block to the Telegram System chat (Otis only). Do not call the Codex or Claude usage endpoints yourself; they reject direct calls, and T3's "Account pool" usage source reads the same data.
+Check usage limits in T3 Code’s Account pool view. Its usage source reads each machine’s local CLIProxyAPI pool.
 
 ## Local setup
 
