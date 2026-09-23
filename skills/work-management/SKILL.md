@@ -27,7 +27,7 @@ Use `Parent project` / `Subprojects` for separately scoped deliveries inside a m
 
 A Task has at most one Project and one Sprint. Its Companies are the delivery's real stakeholders, which can be both an agency and an end customer. Insights and Someday items keep their context in the page body, without a Summary property.
 
-Meeting titles name the topic. `When` holds the event date and time. Resolve conflicting dates from the source, not from the page's creation date. Link proven Companies and Projects. Add Tasks only when the meeting relates to tracked work.
+Meeting titles name the topic. `When` holds the event date and time. Resolve conflicting dates from the source, not from the page's creation date. Link proven Companies and Projects. Link confirmed participants through Persons; that relation appears as Meetings on each Person. A mentioned name or a calendar invitation alone does not establish attendance. Resolve identities through existing Persons and Google Contacts; leave uncertain matches unlinked. Add Tasks only when the meeting relates to tracked work.
 
 ## Sources and record bodies
 

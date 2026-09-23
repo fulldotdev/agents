@@ -18,7 +18,7 @@ Otis is the always-on Mac mini. It runs OpenClaw for Telegram, Discord and Slack
 |---|---|---|
 | work-triage (OpenClaw cron) | 07:00, 18:00 | `~/.agents/skills/work-triage/scripts/run.py`, Astra high, report to Telegram Triage |
 | target-relationships (OpenClaw cron, disabled) | daily 08:00 when enabled | paused on 22 September 2026 pending improvements; agent turn, list to Telegram Sales |
-| weekly-planning (OpenClaw cron) | Sunday 10:00 | agent turn, report to Telegram Planning |
+| weekly-planning (OpenClaw cron) | Sunday 10:00 | Astra high; compare seven days of incoming sources with Notion, then maintain active records; report to Telegram Planning |
 | system-hygiene (OpenClaw cron) | Sunday 09:00 | agent turn, report to Telegram System |
 | com.fulldev.wacli-sync (launchd) | always | `wacli sync --follow` |
 | dev.fulldev.contact-enrichment.dex-google (launchd) | daily 04:15 | `~/projects/contact-enrichment/sync-dex-google.ts daily` |

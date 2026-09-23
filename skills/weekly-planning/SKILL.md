@@ -1,11 +1,15 @@
 ---
 name: weekly-planning
-description: "Use when running weekly Notion maintenance to clean up active records and report changes or decisions."
+description: "Use when reviewing the past week’s incoming sources against Notion and cleaning up active work records."
 ---
 
-# Weekly cleanup
+# Weekly review
 
 The user makes the planning decisions. Use `work-management` and `notion-cli` for every Notion read and write.
+
+Start by comparing the previous seven days of incoming sources with Notion, following [Assess triage quality](../work-triage/references/assess-quality.md). Fix the review window at the run’s start in Europe/Amsterdam. Use the strongest available model, as configured for this job. Collect all source pages, outgoing replies, relevant media and T3 activity, including settled or archived threads. Use the source collectors directly so daily triage bookmarks and retries stay unchanged. Read full meeting transcripts for this weekly check.
+
+Find missed accepted work, later corrections, delivery evidence, wrong routing and duplicates. Compare the actual owning records, including records not edited this week. Save missing context and make source-supported corrections through `work-management`, then perform the maintenance below. Flag ambiguous scope, ownership or planning instead of choosing for the user. A failed or incomplete source stays a reported gap, not an empty result. This review does not execute the work it discovers.
 
 1. Read all active Projects with their Tasks and Companies, and the upcoming Sprint: properties, bodies, agreements, dependencies, and every results page. The upcoming Sprint is the one whose dates include next Monday. If Next has no dates, use it only when there is one Next Sprint and Current ends this Sunday. Do not create a duplicate Sprint.
 2. Repair broken or missing relations when the record's own evidence shows the right Task, Project, Company, or Sprint.
@@ -22,6 +26,6 @@ The user makes the planning decisions. Use `work-management` and `notion-cli` fo
    3. Blocked: [Title](notion-url) · the blocker
    ```
 
-   Skip unchanged records and per-project recaps. With nothing to report, return `NO_REPLY`.
+   Skip unchanged records and per-project recaps. Include one short `Checked` line with the source-review dates and coverage. Name unavailable or incomplete sources in `Blocked`; do not claim a complete check when a source could not be read. With no changes or questions, return only the coverage line.
 
 Do not create customer drafts or send customer messages.
