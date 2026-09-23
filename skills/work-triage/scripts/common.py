@@ -2,6 +2,8 @@
 """Shared work-triage collector helpers."""
 
 import argparse
+import hashlib
+import tempfile
 import json
 import os
 import re
@@ -35,6 +37,19 @@ NOTION_TASKS_DATA_SOURCE_ID = os.environ.get("NOTION_TASKS_DATA_SOURCE_ID", "1cb
 NOTION_MEETINGS_DATA_SOURCE_ID = os.environ.get("NOTION_MEETINGS_DATA_SOURCE_ID", "1cb5979e-268c-808d-888d-000bfa3a527c")
 NOTION_SPRINTS_DATA_SOURCE_ID = os.environ.get("NOTION_SPRINTS_DATA_SOURCE_ID", "3555979e-268c-807b-bdb4-000b86b48f90")
 NOTION_VERSION = os.environ.get("NOTION_API_VERSION") or os.environ.get("NOTION_VERSION", "2026-03-11")
+
+
+def save_snapshot(source, identity, content, suffix=".json"):
+    """Save immutable source text so retries keep the snapshot they refer to."""
+    directory = TEMP_ROOT / source
+    directory.mkdir(parents=True, exist_ok=True)
+    digest = hashlib.sha256((identity + "\0" + content).encode()).hexdigest()
+    path = directory / (digest + suffix)
+    if not path.exists():
+        with tempfile.NamedTemporaryFile(mode="w", dir=directory, delete=False) as temp:
+            temp.write(content)
+        os.replace(temp.name, path)
+    return str(path)
 
 
 def run(cmd):
