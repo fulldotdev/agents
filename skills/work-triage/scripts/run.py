@@ -103,6 +103,50 @@ def split_output(text, known_items):
     return ("" if report_text == "NO_REPLY" else report_text), retries
 
 
+def prepare_agent_items(items, state):
+    """Group calendar retries with fresh copies and skip acknowledged meeting content."""
+    retry = state.get("retry") or []
+    old_calendar = [r["item"] for r in retry if r["ref"].startswith("calendar:")]
+    grouped = collect.group_calendar_items(old_calendar + items.get("calendar", []))
+    by_copy = {copy["ref"]: item for item in grouped for copy in item["calendar_copies"]}
+    by_ref = {item["ref"]: item for item in grouped}
+    pending = {}
+    for entry in retry:
+        if not entry["ref"].startswith("calendar:"):
+            pending[entry["ref"]] = dict(entry)
+            continue
+        old = entry["item"]
+        item = by_ref.get(entry["ref"])
+        if item is None:
+            item = next(by_copy[c["ref"]] for c in collect.calendar_copies(old) if c["ref"] in by_copy)
+        ref = item["ref"]
+        if ref in pending:
+            pending[ref]["note"] += "; " + entry["note"]
+        else:
+            pending[ref] = {"ref": ref, "note": entry["note"], "item": item}
+    items["calendar"] = grouped
+    handled = state.get("meeting_content") or {}
+    items["meetings"] = [item for item in items.get("meetings", []) if
+        item["ref"] in pending or item.get("ok") is False or not item.get("content_fingerprint")
+        or handled.get(item["id"]) != item["content_fingerprint"]]
+    # An unresolved item appears once, with fresh source data when available.
+    for lane, lane_items in items.items():
+        for item in lane_items:
+            if item["ref"] in pending:
+                pending[item["ref"]]["item"] = item
+        items[lane] = [item for item in lane_items if item["ref"] not in pending]
+    return list(pending.values())
+
+
+def acknowledge_meetings(state, known, retries):
+    unresolved = {r["ref"] for r in retries}
+    handled = state.setdefault("meeting_content", {})
+    for ref, item in known.items():
+        if (ref.startswith("meetings:") and ref not in unresolved and item.get("ok") is not False
+                and item.get("content_fingerprint")):
+            handled[item["id"]] = item["content_fingerprint"]
+
+
 def run(args):
     started = time.monotonic()
     state = load_state()
@@ -127,7 +171,7 @@ def run(args):
         failures[lane] = {"error": error, "consecutive": (failures.get(lane) or {}).get("consecutive", 0) + 1}
     state["lane_failures"] = failures
 
-    retry = state.get("retry") or []
+    retry = prepare_agent_items(collected["items"], state)
     chat_ms = triage_chat_updated_at()
     chat_changed = chat_ms is None or chat_ms > (state.get("triage_chat_seen_ms") or 0)
     new_count = sum(len(items) for items in collected["items"].values())
@@ -188,6 +232,7 @@ def run(args):
     if numbers:
         state["last_number"] = max(numbers)
     state["retry"] = retries
+    acknowledge_meetings(state, known, retries)
     if chat_ms:
         state["triage_chat_seen_ms"] = chat_ms
     advance()

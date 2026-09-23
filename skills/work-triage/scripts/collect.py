@@ -2,6 +2,8 @@
 """Collect new work for one triage run, or read one source in detail."""
 
 import argparse
+import hashlib
+import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 
@@ -31,14 +33,21 @@ def gmail_items(after, before):
     items, errors = [], []
     for account in DEFAULT_GMAIL_ACCOUNTS:
         try:
-            threads = gmail.collect_account(account, after, before)["items"]
+            result = gmail.collect_account(account, after, before)
+            if not result["complete"]:
+                raise RuntimeError("Incomplete Gmail message index")
+            threads = result["items"]
         except Exception as exc:
             errors.append(f"{account}: {exc}")
             continue
-        for thread in threads:
-            thread.pop("index_only", None)
-            thread.pop("requires_thread_read_for_decision", None)
-            items.append(thread)
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures = {executor.submit(gmail.conversation, thread): thread["id"] for thread in threads}
+            for future in as_completed(futures):
+                try:
+                    items.append(future.result())
+                except Exception as exc:
+                    # Keep the lane watermark so a failed read comes back next run.
+                    errors.append(f"{account} thread {futures[future]}: {exc}")
     if errors:
         raise RuntimeError("; ".join(errors))
     return with_refs("gmail", items, "id")
@@ -80,6 +89,46 @@ def calendar_items(after, before):
     for item in items:
         item["ref"] = f"calendar:{item['source_account']}:{item['calendar_id']}:{item['id']}"
     return items
+
+
+def calendar_copies(item):
+    """Expand a grouped item; each copy stores its differences from the first."""
+    base = {k: v for k, v in item.items() if k != "calendar_copies"}
+    return [{**base, **copy} for copy in item["calendar_copies"]] if "calendar_copies" in item else [base]
+
+
+def group_calendar_items(items):
+    copies = {}
+    for item in items:
+        for copy in calendar_copies(item):
+            copies[copy["ref"]] = copy
+    groups = {}
+    for copy in copies.values():
+        uid, original = copy.get("ical_uid"), copy.get("original_start")
+        # A tombstone without a UID or an occurrence without its original start
+        # cannot safely be matched with another calendar.
+        if uid and (original or not copy.get("recurring_event_id")):
+            key = [uid, parse_iso(original).isoformat() if original else None]
+            ref = "calendar:meeting:" + hashlib.sha256(json.dumps(key).encode()).hexdigest()[:24]
+        else:
+            ref = copy["ref"]
+        groups.setdefault(ref, []).append(copy)
+    result = []
+    for ref, group in groups.items():
+        group.sort(key=lambda c: (
+            bool((c.get("meeting_page") or {}).get("url")), c.get("updated") or "", c["ref"],
+        ), reverse=True)
+        item = dict(group[0])
+        item["ref"] = ref
+        item["calendar_copies"] = [
+            {k: v for k, v in copy.items() if k in {"ref", "source_account", "calendar_id", "id"}
+             or item.get(k) != v} for copy in group
+        ]
+        # Preserve a missing field too, rather than inheriting it from another copy.
+        for copy, differences in zip(group, item["calendar_copies"]):
+            differences.update({k: None for k in item if k not in copy and k != "calendar_copies"})
+        result.append(item)
+    return result
 
 
 def meeting_items(after, before):

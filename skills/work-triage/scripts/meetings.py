@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # Meeting collection for work-triage.
 import argparse
-from common import NOTION_MEETINGS_DATA_SOURCE_ID, MAX_ITEMS_PER_LANE, add_common_args, base_result, compact_text, emit, error_obj, in_window_value, iso_utc, notion_block, notion_blocks, notion_query, parse_iso, prop_time, relation_ids, row_item, window_from_args
+import hashlib
+import json
+from common import NOTION_VERSION, json_cmd, NOTION_MEETINGS_DATA_SOURCE_ID, MAX_ITEMS_PER_LANE, add_common_args, base_result, compact_text, emit, error_obj, in_window_value, iso_utc, notion_block, notion_blocks, notion_query, parse_iso, prop_time, relation_ids, row_item, window_from_args
 
 
 def blocks(pid):
@@ -140,6 +142,15 @@ def collect(a,b, include_body=True):
                 item["body_excerpt"] = compact_text(body,20000)
                 item["body_truncated"] = len(body) > 20000
             meeting_notes = meeting_notes_metadata(page_blocks)
+            markdown = json_cmd(["ntn", "api", f"v1/pages/{row['id']}/markdown", "include_transcript==true",
+                                 "--notion-version", NOTION_VERSION])
+            if not markdown.get("truncated") and not markdown.get("unknown_block_ids") and "markdown" in markdown:
+                content = {"markdown": markdown["markdown"], "transcripts": [
+                    {key: note.get(key) for key in ("status", "transcript_block_id")}
+                    for note in meeting_notes
+                ]}
+                item["content_fingerprint"] = hashlib.sha256(
+                    json.dumps(content, sort_keys=True).encode()).hexdigest()
             if meeting_notes:
                 item["meeting_notes"] = meeting_notes
                 item["transcript_ready"] = any(
