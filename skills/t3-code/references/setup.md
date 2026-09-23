@@ -48,7 +48,7 @@ If a remote thread shows on mobile but not on desktop, pick the Otis or All Envi
 
 Use T3's embedded browser for local and preview checks that need no login. Use the user's Chrome profile for signed-in sites and Shopify previews, following [Chrome setup](../../browser/references/chrome.md).
 
-Set `enableAgentBrowserAccess: true` in the owning environment's `~/.t3/userdata/settings.json` to give agents access to the embedded browser. Check project overrides. Existing provider sessions may need a new session to receive the tools. Keep the rest of the T3 MCP server enabled.
+Enable **Agent browser access** in Settings → Integrations for the owning environment. This controls `enableAgentBrowserAccess` in `~/.t3/userdata/settings.json`; T3 omits values equal to its defaults. Use the settings UI while T3 is running so cached settings do not overwrite a file edit. Check project overrides. Existing provider sessions may need a new session to receive the tools.
 
 ## Single-server check
 
