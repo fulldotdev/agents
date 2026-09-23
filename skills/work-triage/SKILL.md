@@ -1,13 +1,11 @@
 ---
 name: work-triage
-description: "Use when processing recurring intake from Gmail, Slack, WhatsApp, Calendar, meetings, T3 Code, and Notion into saved context, started work, or draft replies."
+description: "Use when processing recurring intake from Gmail, Slack, WhatsApp, Calendar, meetings, T3 Code, and Notion into saved context or draft replies."
 ---
 
 # Work triage
 
 The runner collects new items into one batch file. For each item: find where it belongs, add missing context, draft a reply when needed, then report. Use `work-management` for all Notion work. Keep triage to intake and routing. When access or a tool fails, retry the item and report the blocker; leave installations, browser repairs, and other tooling work to a separate request.
-
-Read [t3-routing.md](references/t3-routing.md) before starting or continuing a T3 thread.
 
 For a requested quality review, read [assess-quality.md](references/assess-quality.md). Keep that review separate from recurring intake.
 
@@ -45,7 +43,6 @@ Then take every action that applies. One item may need several.
 - **Add context to Notion.** Put a new requirement, feedback, decision, agreement, deadline, file, or link in the Task body or the right Project or Company body. Create a Task, Project, or Company only when `work-management` says so. Resolve people and company relationships through `work-management`.
 - **Update status.** After adding context, check the recorded dependency and completion condition. When a requested reply or document arrives, clear that dependency and apply the supported status through `work-management`.
 - **Draft a reply.** For a human email with a real open question. Read the thread again right before writing, and skip it if the user already replied. Create or update one Gmail draft with `customer-communication` and `gog`. Keep the user's edits. No placeholders. Never send.
-- **Start work.** Start or continue a T3 thread only when `t3-routing.md` allows it. Tell the thread the required outcome and where the context is, not how to develop it.
 - **Archive.** Archive a Gmail thread when nothing remains for the user: no reply, decision, payment, or follow-up. A thread with an unsent draft stays in the inbox. Use `gog gmail archive THREAD_ID --thread` with the account.
 - **Calendar.** Create, move, or cancel an event only when a source supports it.
 - **Cannot finish now.** Add a retry line as described below.
@@ -85,11 +82,9 @@ Return one numbered list in English, starting at the number in the prompt. One l
 16. Project created: [Name](notion-url) · Company
 17. Project: [Name](notion-url) · Planned → In Progress
 18. Draft: [Subject or recipient](gmail-url)
-19. T3 started: [Title](t3-url)
-20. T3 continued: [Title](t3-url)
-21. Calendar: [Title](event-url) · Thu 16:00 → Fri 10:00
-22. Source failing: Slack, 3 runs. Action: sign in again in Chrome on Otis.
-23. Heads-up: Google security alert for info@example.nl · check if the login was you
+19. Calendar: [Title](event-url) · Thu 16:00 → Fri 10:00
+20. Source failing: Slack, 3 runs. Action: sign in again in Chrome on Otis.
+21. Heads-up: Google security alert for info@example.nl · check if the login was you
 ```
 
 - A Company follows the Project formats. Report a draft when it is new or meaningfully updated.

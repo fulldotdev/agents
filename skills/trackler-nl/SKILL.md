@@ -19,7 +19,7 @@ Use Chrome with the work profile from `browser`. Do not use the Trackler API.
 
 With a specific URL, stay in that track unless you need linked context. For "current Trackler work", check the track list before choosing items. Keep exact item URLs or IDs and visible labels.
 
-Read comments and attachments, including planner photos and coaching transcripts, when they affect the answer. Read Slack when Trackler links a thread or the user asks, keep the permalink, and say which source each fact comes from. Report anything you could not read and what that means for the answer.
+Read comments and attachments, including planner photos and coaching transcripts, when they affect the answer. Read Slack when Trackler links a thread or the user asks, keep the permalink, and say which source each fact comes from.
 
 ## Read-only boundary
 

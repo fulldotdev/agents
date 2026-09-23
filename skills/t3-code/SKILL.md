@@ -42,4 +42,4 @@ Threads run on the project checkout under `~/projects`. Pass the checkout's curr
 
 After starting, confirm the thread exists and its state. For a tracked Task, save the T3 reference and checkout information through `work-management`. T3 stores model and session metadata itself.
 
-For automatic triage, `work-triage` and its [t3-routing.md](../work-triage/references/t3-routing.md) decide whether work may start. This skill adds no permission of its own.
+Triage does not start or continue threads. Starting work needs the user's instruction; this skill adds no permission of its own.
