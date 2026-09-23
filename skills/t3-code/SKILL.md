@@ -13,6 +13,8 @@ Read [references/account-pools.md](references/account-pools.md) for how T3 conne
 
 ## Dispatch
 
+Use one thread per PR. A Task may have several threads over time; reuse the thread for follow-up work on the same PR.
+
 Use the helper instead of raw HTTP requests or bearer tokens:
 
 ```bash

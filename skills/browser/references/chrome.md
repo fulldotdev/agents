@@ -68,6 +68,4 @@ See [Otis](../../../global/references/otis.md) and https://docs.openclaw.ai/tool
 
 ## T3 embedded browser
 
-Set `enableAgentBrowserAccess: false` in the owning environment's T3 server settings. This disables T3 preview automation and its browser-routing instructions for new provider sessions; it does not disable the native Chrome extensions or remove the user's Browser panel.
-
-Check for per-project overrides when enabling a new project. Keep the setting disabled on both MacBook and Otis. Do not disable the entire `t3-code` MCP server: it also serves unrelated thread features.
+Follow the browser choice and `enableAgentBrowserAccess` setting in [T3 setup](../../t3-code/references/setup.md#browser-choice).

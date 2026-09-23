@@ -38,20 +38,18 @@ Use `design` for visual or interaction decisions.
 
 Add or change tests only when the user asks. Run the existing tests, lint, type checks, builds, and browser checks when they help.
 
-## Work ownership
+## Pull requests and review
 
-Work on a branch in the project checkout under `~/projects`, with focused commits. If you create a worktree, remove it when the work is merged or dropped. Check Git when you resume; the recorded branch may be stale. If another task uses the checkout, do not switch its branch or mix changes.
+The PR is the record. Open a draft PR from the first commit. Keep its description current with the preview URL, screenshots, open questions, and unresolved work. Request customer feedback on the PR's preview.
 
-Use `work-management` for tracking and Notion. Use `t3-code` when dispatching work through T3. Local reviewer subagents do not need their own T3 thread or Notion Task.
+Use one T3 thread per PR. A Task may have several threads over time. Use `work-management` for Notion and `t3-code` for thread dispatch.
 
-## Client delivery
+1. Before marking ready, run the CodeRabbit CLI review once in the background while doing QA. For customer-facing work, check the changed flow on mobile and desktop and take screenshots. Use `browser` for the browser choice.
+2. Fix major CLI findings without another CLI review loop.
+3. Mark the PR ready to trigger CodeRabbit and Codex. Address their comments, push, and request one re-review by comment from each bot. No third round.
+4. Hand off with the PR, checked preview URL, screenshots, unresolved work, and a draft customer message written with `customer-communication`. Do not send it or release.
 
-This flow applies to work a customer will see or receive. Internal work, experiments, and tiny copy or formatting changes skip the review and the screenshots.
-
-1. Implement locally or in a preview.
-2. QA in Chrome. Open the affected pages on mobile and desktop, walk through the flow that changed, and take screenshots of the end result.
-3. When the change is risky or you are unsure, get one read-only review from an independent reviewer subagent. Give it the request, the repository instructions, and the diff. Ask for defects, regressions, and missed requirements, each with a location. Fix what matters within scope and recheck.
-4. Hand off with the checked preview URL, the screenshots, what is unresolved, and a draft customer message written with `customer-communication`. Do not send it or release.
+Internal work, experiments, and tiny copy or formatting changes do not need QA screenshots.
 
 ## Delivery
 

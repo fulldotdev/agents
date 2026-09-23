@@ -46,7 +46,9 @@ If a remote thread shows on mobile but not on desktop, pick the Otis or All Envi
 
 ## Browser choice
 
-Keep `enableAgentBrowserAccess: false` in each environment's `~/.t3/userdata/settings.json`. It disables agent access to T3's embedded browser and its injected routing instructions. Native Chrome integrations remain available. Provider sessions already running can retain their earlier tools until restarted. Follow [environment's Chrome setup](../../environment/references/chrome.md) for Codex and Claude; do not disable the whole T3 MCP server or modify the installed app.
+Use T3's embedded browser for local and preview checks that need no login. Use the user's Chrome profile for signed-in sites and Shopify previews, following [Chrome setup](../../browser/references/chrome.md).
+
+Set `enableAgentBrowserAccess: true` in the owning environment's `~/.t3/userdata/settings.json` to give agents access to the embedded browser. Check project overrides. Existing provider sessions may need a new session to receive the tools. Keep the rest of the T3 MCP server enabled.
 
 ## Single-server check
 
