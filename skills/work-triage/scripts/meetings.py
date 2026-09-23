@@ -1,40 +1,13 @@
 #!/usr/bin/env python3
 # Meeting collection for work-triage.
 import argparse
-import hashlib
-import json
-from common import save_snapshot, NOTION_VERSION, json_cmd, NOTION_MEETINGS_DATA_SOURCE_ID, MAX_ITEMS_PER_LANE, add_common_args, base_result, compact_text, emit, error_obj, in_window_value, iso_utc, notion_block, notion_blocks, notion_query, parse_iso, prop_time, relation_ids, row_item, window_from_args
+from common import save_snapshot, NOTION_VERSION, json_cmd, NOTION_MEETINGS_DATA_SOURCE_ID, add_common_args, base_result, emit, error_obj, in_window_value, iso_utc, notion_blocks, notion_query, parse_iso, prop_time, relation_ids, row_item, window_from_args
+
+from meeting_summary import source_markdown, source_fingerprint
 
 
 def blocks(pid):
     return notion_blocks(pid)
-
-def text(b):
-    node=b.get(b.get("type") or "") or {}
-    return "".join(p.get("plain_text","") for p in node.get("rich_text") or []).strip()
-
-def body_text(blocks_, seen=None, depth=0):
-    seen = seen or set()
-    lines = []
-    for block in blocks_:
-        block_id = block.get("id")
-        if block_id in seen:
-            continue
-        if block_id:
-            seen.add(block_id)
-
-        if block.get("type") == "meeting_notes":
-            children = ((block.get("meeting_notes") or {}).get("children") or {})
-            for key in ("summary_block_id", "notes_block_id"):
-                child_id = children.get(key)
-                if child_id:
-                    lines.append(body_text(blocks(child_id), seen, depth + 1))
-            continue
-
-        lines.append(text(block))
-        if block.get("has_children") and block_id and depth < 6:
-            lines.append(body_text(blocks(block_id), seen, depth + 1))
-    return "\n".join(filter(None, lines))
 
 def meeting_notes_metadata(blocks_, seen=None, depth=0):
     seen = seen or set()
@@ -57,13 +30,6 @@ def meeting_notes_metadata(blocks_, seen=None, depth=0):
                 "summary_block_id": children.get("summary_block_id"),
                 "notes_block_id": children.get("notes_block_id"),
             }
-            if transcript_id and data.get("status") == "notes_ready":
-                try:
-                    transcript = notion_block(transcript_id)
-                    item["transcript_revision"] = transcript.get("last_edited_time") or transcript_id
-                except Exception as exc:
-                    item["transcript_revision"] = transcript_id
-                    item["transcript_revision_error"] = str(exc)
             notes.append(item)
             continue
 
@@ -122,39 +88,38 @@ def query_pages(payload):
         payload["start_cursor"] = cursor
 
 
-def collect(a,b, include_body=True):
+def collect(a,b, retry_items=()):
     when_data=query_pages({"filter":{"property":"When","date":{"on_or_after":iso_utc(a),"before":iso_utc(b)}},"sorts":[{"property":"When","direction":"descending"}],"page_size":100})
     changed_data=query_pages({"filter":{"or":[{"property":"Created","created_time":{"on_or_after":iso_utc(a),"before":iso_utc(b)}},{"property":"Edited","last_edited_time":{"on_or_after":iso_utc(a),"before":iso_utc(b)}}]},"sorts":[{"property":"Edited","direction":"descending"}],"page_size":100})
     rows=dedupe_rows((when_data.get("results") or []) + (changed_data.get("results") or []))
     items=[]
+    retry_ids = {item["id"] for item in retry_items}
+    for page_id in retry_ids - {row["id"] for row in rows}:
+        try:
+            rows.append(json_cmd(["ntn", "api", f"v1/pages/{page_id}", "--notion-version", NOTION_VERSION]))
+        except Exception as exc:
+            items.append({"id": page_id, "ok": False, "collection_error": str(exc)})
     for row in rows:
-        if not include_row(row,a,b):
+        if row["id"] not in retry_ids and not include_row(row,a,b):
             continue
         item=row_item(row)
         item["when"] = meeting_date(row)
         item["companies"] = relation_ids(row, "Companies")
         item["projects"] = relation_ids(row, "Projects")
         item["tasks"] = relation_ids(row, "Tasks")
+        item["persons"] = relation_ids(row, "Persons")
         try:
             page_blocks = blocks(row.get("id"))
-            if include_body:
-                body = body_text(page_blocks)
-                item["body_excerpt"] = compact_text(body,20000)
-                item["body_truncated"] = len(body) > 20000
             meeting_notes = meeting_notes_metadata(page_blocks)
             markdown = json_cmd(["ntn", "api", f"v1/pages/{row['id']}/markdown", "include_transcript==true",
                                  "--notion-version", NOTION_VERSION])
             if "markdown" in markdown:
-                item["content_file"] = save_snapshot("meetings", row["id"], markdown["markdown"], ".md")
+                item["content_file"] = save_snapshot("meetings", row["id"], source_markdown(markdown["markdown"]), ".md")
+                item["content_kind"] = "meeting_source"
                 item["content_complete"] = not markdown.get("truncated") and not markdown.get("unknown_block_ids")
                 item["content_unknown_block_ids"] = markdown.get("unknown_block_ids") or []
             if item.get("content_complete"):
-                content = {"markdown": markdown["markdown"], "transcripts": [
-                    {key: note.get(key) for key in ("status", "transcript_block_id")}
-                    for note in meeting_notes
-                ]}
-                item["content_fingerprint"] = hashlib.sha256(
-                    json.dumps(content, sort_keys=True).encode()).hexdigest()
+                item["content_fingerprint"] = source_fingerprint(markdown["markdown"])
             if meeting_notes:
                 item["meeting_notes"] = meeting_notes
                 item["transcript_ready"] = any(
@@ -162,9 +127,7 @@ def collect(a,b, include_body=True):
                     for note in meeting_notes
                 )
         except Exception as exc:
-            item.update(ok=False, body_error=str(exc))
-        if any(note.get("transcript_revision_error") for note in item.get("meeting_notes") or []):
-            item["ok"] = False
+            item.update(ok=False, collection_error=str(exc))
         items.append(item)
     return items
 

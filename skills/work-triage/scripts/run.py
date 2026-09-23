@@ -114,6 +114,10 @@ def prepare_agent_items(items, state):
     for entry in retry:
         if not entry["ref"].startswith("calendar:"):
             entry = dict(entry)
+            if entry["ref"].startswith("meetings:") and entry["item"].get("content_kind") != "meeting_source":
+                entry["item"] = {k: v for k, v in entry["item"].items() if k not in
+                                 {"content_file", "body_excerpt", "body_truncated", "content_fingerprint"}}
+                entry["item"]["collection_error"] = "Meeting source snapshot needs refresh"
             if entry["ref"].startswith("slack:") and entry["item"].get("channel_id"):
                 entry["ref"] = collect.slack_ref(entry["item"])
                 entry["item"] = {**entry["item"], "ref": entry["ref"]}
