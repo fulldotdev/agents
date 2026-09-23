@@ -15,8 +15,8 @@ For a requested quality review, read [assess-quality.md](references/assess-quali
 
 Read the batch file named in the prompt once. It contains:
 
-- `items`: new source items since the last run, including the user's outgoing messages and recently settled T3 threads. Outgoing messages can confirm agreements, delivery, or changed plans. Gmail items include the conversation and attachment details. When `conversation_complete` is false, read `conversation_file` for the complete text. Download and inspect relevant attachments separately. WhatsApp items include the text. Slack items include complete threads; read `conversation_file` when `conversation_complete` is false. Meeting items point to a saved content file, including the transcript when available.
-- `retry`: unresolved items, with the reason, `first_failed_at`, `attempts`, and `age_hours`. The runner retains items with `collection_error` and refreshes them next run. Leave those reads to the collector; their partial content is not enough for a decision.
+- `items`: new source items since the last run, including the user's outgoing messages and recently settled T3 threads. Outgoing messages can confirm agreements, delivery, or changed plans. Gmail items contain message headers. Slack and WhatsApp items contain new messages. Read conversations and relevant attachments as needed before deciding what to do. Meeting items point to a saved content file, including the transcript when available.
+- `retry`: unresolved items with the reason. Read the source again and handle the item, or keep it in your RETRY lines. Meeting items with `collection_error` are refreshed by the collector; their partial content is not enough for a decision.
 - `index`: all open Tasks, Tasks closed today, Projects, Companies, and open T3 threads, with codes, statuses, and URLs. Use it to find the right record. `upcoming_meetings` contains unchanged upcoming events for routing preparation notes; these are context, not new intake.
 - `lanes_failed`: sources that could not be collected, with the number of consecutive failures.
 - `triage_chat_changed`: when true, first read the user's recent messages in the Triage chat (session `agent:main:telegram:group:-1003914987491`). They can correct earlier triage decisions.
@@ -35,7 +35,7 @@ Use `wacli` for more WhatsApp history, `gog` for Gmail and Calendar, and `ntn` f
 
 Handle messages from the same person about the same topic together. Check three things:
 
-1. **What does the source say?** Read the new exchange, including the user's replies. For Gmail read the collected conversation (or its complete saved file); for Slack read the collected thread (or its complete saved file); for WhatsApp read the conversation around the new exchange. Expand backwards when a reply, quote, changed agreement, ownership, or completion depends on earlier context. Read the full relevant conversation when that context cannot be resolved. A header or excerpt alone is not enough to decide an actionable item. Open attachments that matter. Transcribe voice messages. If you cannot read something you need, retry the item and say what is missing.
+1. **What does the source say?** Read the new exchange, including the user's replies. For Gmail read the thread; for Slack read the containing thread; for WhatsApp read the conversation around the new exchange. Expand backwards when a reply, quote, changed agreement, ownership, or completion depends on earlier context. Read the full relevant conversation when that context cannot be resolved. A header or excerpt alone is not enough to decide an actionable item. Open attachments that matter. Transcribe voice messages. If you cannot read something you need, retry the item and say what is missing.
 2. **Which record owns it?** Find the Company, Project, Task, or T3 thread in the index. A sender can represent several companies. Match the message's website, product, and topic with the destination; the sender alone is not enough. If nothing matches, search Notion before concluding there is no record. Retry unresolved ownership rather than guessing.
 3. **What is already there?** Read the record's Brief, Updates or existing Timeline, and Resources, plus the parent Project's Resources. Compare dated source events with the latest replies and delivery evidence. A stored status or old blocker is not proof of the current situation. Add only context that is missing, including when another agent already recorded this source.
 
@@ -97,7 +97,6 @@ Return one numbered list in English, starting at the number in the prompt. One l
 - End a line with a reason of at most ten words only when the user must act: a deadline, a decision, something not sent.
 - `Heads-up` is only for a security alert or an outage the user must act on today and that has no record. Anything else becomes a Task or is dropped.
 - Report a failing source after two or more consecutive failed runs. For browser problems, use the access failures in `browser`'s [chrome.md](../browser/references/chrome.md).
-- The runner adds a `Retry blocked` line after three failed attempts or 48 hours, at most once every 24 hours per item. Keep unresolved items in your RETRY lines; leave their age notices to the runner.
 - Report nothing else: no routine messages, context appends, archived mail, or no-action decisions.
 
 Items you could not finish go after the list, one line each:

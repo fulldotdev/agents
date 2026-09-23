@@ -29,36 +29,23 @@ def with_refs(lane, items, key):
     return items
 
 
-def gmail_items(after, before, retry_items=()):
+def gmail_items(after, before):
     items, errors = [], []
     for account in DEFAULT_GMAIL_ACCOUNTS:
         try:
             result = gmail.collect_account(account, after, before)
             if not result["complete"]:
                 raise RuntimeError("Incomplete Gmail message index")
-            threads = {t["id"]: t for t in retry_items if t.get("account") == account}
-            threads.update({t["id"]: t for t in result["items"]})
+            items.extend(result["items"])
         except Exception as exc:
             errors.append(f"{account}: {exc}")
-            continue
-        with ThreadPoolExecutor(max_workers=4) as executor:
-            futures = {executor.submit(gmail.conversation, thread): thread for thread in threads.values()}
-            for future in as_completed(futures):
-                try:
-                    item = future.result()
-                    item.pop("collection_error", None)
-                    items.append(item)
-                except Exception as exc:
-                    item = dict(futures[future])
-                    item["collection_error"] = str(exc)
-                    items.append(item)
     if errors:
         raise RuntimeError("; ".join(errors))
     return with_refs("gmail", items, "id")
 
 
-def slack_items(after, before, retry_items=()):
-    result = slack.collect_result(after, before, retry_items=retry_items)
+def slack_items(after, before):
+    result = slack.collect_result(after, before)
     failures = [item for item in result["items"] if item.get("ok") is False]
     if failures:
         raise RuntimeError("; ".join(str(item.get("error")) for item in failures))
@@ -68,7 +55,7 @@ def slack_items(after, before, retry_items=()):
 
 
 def slack_ref(item):
-    return f"slack:{item.get('workspace_slug')}:{item.get('channel_id')}:{item.get('thread_ts') or item.get('ts')}"
+    return f"slack:{item.get('workspace_slug')}:{item.get('channel_id')}:{item.get('ts')}"
 
 
 def whatsapp_items(after, before):
@@ -207,11 +194,9 @@ def batch(windows, retries=()):
     """Collect every lane in parallel. Returns items per lane, the index, and per-lane errors."""
     result = {"items": {}, "index": {}, "failed": {}}
     calls = {lane: (lambda lane=lane: LANES[lane](*windows[lane])) for lane in windows}
-    for lane in ("gmail", "slack", "meetings"):
-        if lane in windows:
-            pending = [r["item"] for r in retries if r["ref"].startswith(lane + ":")
-                       and (lane == "meetings" or r["item"].get("collection_error"))]
-            calls[lane] = lambda lane=lane, pending=pending: LANES[lane](*windows[lane], retry_items=pending)
+    if "meetings" in windows:
+        pending = [r["item"] for r in retries if r["ref"].startswith("meetings:")]
+        calls["meetings"] = lambda: meeting_items(*windows["meetings"], retry_items=pending)
     calls["index"] = work_index
     calls["t3_open_threads"] = t3_index
     with ThreadPoolExecutor(max_workers=len(calls)) as executor:
