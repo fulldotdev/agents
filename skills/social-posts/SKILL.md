@@ -39,6 +39,6 @@ Do not apply LinkedIn conventions to other channels.
 
 ## Notion Tasks
 
-A tracked post lives in its existing Task, through `work-management`. Keep the editable post above `## Timeline`, in this order: `Caption`, `Platform captions` when needed, `Media` as native uploads in order, and `Publication` for confirmed facts. Feedback and approvals go in the Timeline. Use the Task's Status, `Date` for an agreed publication date, and Sprint as usual.
+A tracked post lives in its existing Task, through `work-management`. Keep the editable post above `## Updates` (or an existing `## Timeline`), in this order: `Caption`, `Platform captions` when needed, `Media` as native uploads in order, and `Publication` for confirmed facts. Feedback and approvals go in that same log. Use the Task's Status, `Date` for an agreed publication date, and Sprint as usual.
 
 Schedule or publish only after the user approves that post. Then check the public result and save its URL in Resources as `LinkedIn post` or similar. Never invent a public URL.
