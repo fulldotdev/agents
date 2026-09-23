@@ -61,7 +61,7 @@ def busy_reasons():
         if Path(command).name in ('ffmpeg', 'whisper-cli', 'whisper', 'HandBrakeCLI'):
             reasons.append('Video or audio processing is running')
         elif any(marker in args for marker in ('codex exec', 'claude -p ', 'opencode run ',
-                                               'work-triage/scripts/run.py', 'sync-google-google.ts', 'sync-dex-google.ts')):
+                                               'work-triage/scripts/run.py', 'sync-google-google.ts')):
             reasons.append('An agent or contact-sync process is running')
     if time.time() - boot_time() < 900:
         reasons.append('Otis started less than 15 minutes ago')

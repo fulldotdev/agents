@@ -7,7 +7,7 @@ description: Use when researching people around the user's target companies, pre
 
 Help the user meet relevant people at companies that could work with FullDev. Finding new people comes first. A recent post, event, or shared relationship gives a natural reason to reach out.
 
-This is research and preparation only. Do not change Notion or Dex records, and do not send connection requests, messages, comments, or likes. The user does all outreach himself.
+This is research and preparation only. Do not change Notion records, and do not send connection requests, messages, comments, or likes. The user does all outreach himself.
 
 ## Start
 
@@ -17,7 +17,7 @@ Run the collection script and read the file it names:
 python3 ~/.agents/skills/target-relationships/scripts/collect.py
 ```
 
-It contains the Notion Companies with Status `Target` with their notes and website, the people linked to them in Dex, the people listed in the past three weeks, and the user's DM examples. Do not look these up again. Then read the user's latest messages in the Telegram Sales chat (session `agent:main:telegram:group:-5101802924`) for feedback on earlier lists. The rest is LinkedIn and web research, in Chrome with the work profile from `browser`.
+It contains the Notion Companies with Status `Target` with their notes and website, the people linked to them in Notion Persons and their relationship context, the people listed in the past three weeks, and the user's DM examples. Do not look these up again. Then read the user's latest messages in the Telegram Sales chat (session `agent:main:telegram:group:-5101802924`) for feedback on earlier lists. The rest is LinkedIn and web research, in Chrome with the work profile from `browser`.
 
 ## Who to pick
 
@@ -25,7 +25,7 @@ It contains the Notion Companies with Status `Target` with their notes and websi
 - An agency must demonstrably take on website or webshop projects, through design or implementation. Branding, flyers, or packaging alone is not enough. In-house developers are not required.
 - Pick people involved in clients, partnerships, design, marketing, commerce, or development. Assess what FullDev could add. A similar stack or a growing agency does not prove a need to outsource. Consider in-house capacity and time zone when they affect the collaboration.
 - Include someone outside a target company only with a proven connection, such as a collaboration or a relevant former role. Same industry or one shared LinkedIn connection is not enough.
-- Use Dex, the Sales chat, and the earlier lists to recognize relationships, sent requests, and past suggestions.
+- Use Notion Persons, the Sales chat, and the earlier lists to recognize relationships, sent requests, and past suggestions.
 - Check the person's current role and profile. Read their recent posts, preferably from the past week. Spread the research across target companies. Repeat a person only with a new reason.
 
 ## Draft

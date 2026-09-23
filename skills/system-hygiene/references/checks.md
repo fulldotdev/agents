@@ -8,7 +8,7 @@
 
 5. **Automations.** Compare `openclaw cron list` and the launchd plists on Otis with `~/.agents/global/references/otis.md`. Flag one-off jobs that ran or expired, duplicates, disabled leftovers, and jobs with recent failures. Do not rerun jobs. Some system-owned jobs cannot be removed through the CLI; leave those.
 
-6. **CLI tooling.** Compare installed and running versions across both Macs for the agent setup: T3 desktop app, CLI and servers, Codex, Claude Code, CLIProxyAPI, OpenClaw, OpenCode, Tailscale, wacli, gh, Node, Python, bun, gog, resend, poppler, flyctl, gcloud, and the npm globals on Otis (netlify-cli, mcporter, ntn, Stripe, Dex, pnpm, npm). Look for stale shims and competing installs. After an OpenClaw update run `openclaw doctor`. Recommend a coordinated update when versions drift; review alone does not install or restart anything.
+6. **CLI tooling.** Compare installed and running versions across both Macs for the agent setup: T3 desktop app, CLI and servers, Codex, Claude Code, CLIProxyAPI, OpenClaw, OpenCode, Tailscale, wacli, gh, Node, Python, bun, gog, resend, poppler, flyctl, gcloud, and the npm globals on Otis (netlify-cli, mcporter, ntn, Stripe, pnpm, npm). Look for stale shims and competing installs. After an OpenClaw update run `openclaw doctor`. Recommend a coordinated update when versions drift; review alone does not install or restart anything.
 
 7. **Sync and Git.** Compare shared skill and instruction commits across both Macs. Find uncommitted or unpushed work that may be forgotten. Compare T3 project registrations on both machines against [project setup](../../t3-code/references/setup.md); check archived threads before proposing removal of a stale entry.
 

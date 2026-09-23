@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect what the daily network list needs: Target companies with notes, Dex contacts there, people already suggested, and Sil's DM examples."""
+"""Collect target companies, linked Notion people, earlier suggestions and DM examples."""
 
 import json
 import re
@@ -10,6 +10,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 COMPANIES_DATA_SOURCE = "2635979e-268c-8191-b322-000bd3109d1c"
+PERSONS_DATA_SOURCE = "8f27fe8c-5e47-4f6a-9cd9-a03de782a9f1"
 DM_EXAMPLES_PAGE = "3db5979e-268c-8193-a787-dbd704257d2f"
 CRON_JOB_NAME = "target-relationships"
 LOOKBACK_DAYS = 21
@@ -30,18 +31,26 @@ def text_of(prop):
     return "".join(part.get("plain_text", "") for part in values or [])
 
 
-def target_companies():
+def query(data_source, filter=None):
     rows, cursor = [], None
     while True:
-        cmd = ["ntn", "datasources", "query", COMPANIES_DATA_SOURCE, "--json", "--limit", "100",
-               "--filter", json.dumps({"property": "Status", "status": {"equals": "Target"}})]
+        body = {"page_size": 100}
+        if filter:
+            body["filter"] = filter
         if cursor:
-            cmd += ["--start-cursor", cursor]
-        data = json.loads(run(cmd))
+            body["start_cursor"] = cursor
+        data = json.loads(run(["ntn", "api", f"v1/data_sources/{data_source}/query", "-d", json.dumps(body)]))
         rows += data.get("results", [])
         cursor = data.get("next_cursor")
-        if not data.get("has_more") or not cursor:
+        if not data.get("has_more"):
             break
+        if not cursor:
+            raise RuntimeError("Notion returned an incomplete page without a cursor")
+    return rows
+
+
+def target_companies():
+    rows = query(COMPANIES_DATA_SOURCE, {"property": "Status", "status": {"equals": "Target"}})
     companies = []
     for row in rows:
         props = row.get("properties", {})
@@ -53,24 +62,25 @@ def target_companies():
 
 def notes(company):
     try:
-        body = run(["ntn", "pages", "get", company["id"]])
-        body = body.split("\n---\n", 2)[-1].strip() if body.count("\n---\n") >= 1 else body.strip()
-        return body[:6000]
+        data = json.loads(run(["ntn", "api", f"v1/pages/{company['id']}/markdown"]))
+        return data["markdown"][:6000]
     except Exception as exc:
         return f"(notities niet leesbaar: {exc})"
 
 
-def dex_contacts(company):
-    try:
-        data = json.loads(run(["dex", "dex-filter-contacts", "--company", company["name"], "--limit", "25"], timeout=60))
-    except Exception as exc:
-        return [f"(Dex niet gelezen: {str(exc)[:80]})"]
-    people = []
-    for item in data.get("items", []):
-        name = item.get("full_name") or " ".join(filter(None, [item.get("first_name"), item.get("last_name")]))
-        title = item.get("job_title") or item.get("title") or ""
-        linkedin = item.get("linkedin") or item.get("linkedin_url") or ""
-        people.append(" · ".join(filter(None, [name, title, linkedin])))
+def linked_people(companies):
+    company_ids = {company["id"] for company in companies}
+    rows = [row for row in query(PERSONS_DATA_SOURCE)
+            if any(rel["id"] in company_ids for rel in row["properties"]["Companies"]["relation"])]
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        bodies = list(pool.map(notes, rows))
+    people = {company_id: [] for company_id in company_ids}
+    for row, body in zip(rows, bodies):
+        name = text_of(row["properties"]["Name"])
+        entry = f"[{name}]({row['url']})\n\n{body or '(geen relatiecontext)'}"
+        for relation in row["properties"]["Companies"]["relation"]:
+            if relation["id"] in people:
+                people[relation["id"]].append(entry)
     return people
 
 
@@ -94,7 +104,7 @@ def main():
     companies = target_companies()
     with ThreadPoolExecutor(max_workers=6) as pool:
         bodies = list(pool.map(notes, companies))
-    dex = [dex_contacts(c) for c in companies]  # sequential: the Dex API rate-limits
+    people_by_company = linked_people(companies)
     try:
         suggested = previous_lists()
     except Exception as exc:
@@ -106,9 +116,10 @@ def main():
 
     lines = [f"# Netwerklijst-input · {datetime.now().strftime('%Y-%m-%d')}", "",
              f"## Targetbedrijven ({len(companies)})", ""]
-    for company, body, people in zip(companies, bodies, dex):
+    for company, body in zip(companies, bodies):
+        people = people_by_company[company["id"]]
         lines += [f"### {company['name']}", f"Website: {company['website'] or 'onbekend'} · Notion: {company['url']}", "",
-                  body or "(geen notities)", "", "Bekend in Dex: " + ("; ".join(people) if people else "niemand"), ""]
+                  body or "(geen notities)", "", "Bekend in Notion:\n\n" + ("\n\n".join(people) if people else "niemand"), ""]
     lines += [f"## Al gesuggereerd in de laatste {LOOKBACK_DAYS} dagen ({len(suggested)})", ""]
     lines += [f"- {p['name']} · {p['url']} · {', '.join(sorted(set(p['dates'])))}" for p in suggested] or ["- niemand"]
     lines += ["", "## Sils LinkedIn DM-voorbeelden", "", examples, ""]
