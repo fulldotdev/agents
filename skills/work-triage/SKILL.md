@@ -42,8 +42,8 @@ Then take every action that applies. One item may need several.
 - **Nothing new.** Move on when the record already has the context or the item needs no tracking: small talk, an FYI, a notification, a question the user already answered.
 - **Add context to Notion.** Put a new requirement, feedback, decision, agreement, deadline, file, or link in the Task body or the right Project or Company body. Create a Task, Project, or Company only when `work-management` says so. Resolve people and company relationships through `work-management`.
 - **Update status.** After adding context, check the recorded dependency and completion condition. When a requested reply or document arrives, clear that dependency and apply the supported status through `work-management`.
-- **Draft a reply.** For a human email with a real open question. Read the thread again right before writing, and skip it if the user already replied. Create or update one Gmail draft with `customer-communication` and `gog`. Keep the user's edits. No placeholders. Never send.
-- **Archive.** Archive a Gmail thread when nothing remains for the user: no reply, decision, payment, or follow-up. A thread with an unsent draft stays in the inbox. Use `gog gmail archive THREAD_ID --thread` with the account.
+- **Draft a reply.** For a human email addressed to the user where the user did not reply last. Read the thread again right before writing, and skip it if the user already replied. Create or update one Gmail draft with `customer-communication` and `gog`. Keep the user's edits. No placeholders. Never send. When the reply is a decision only the user can make, such as a quote, a hire, or a purchase, create a Task instead of a draft.
+- **Archive.** Archive Gmail threads from automated senders: notifications, reports, receipts, newsletters. A thread with a message from a person stays in the inbox until the user handles it, also when it looks done. If you archive such a thread anyway, report it. Use `gog gmail archive THREAD_ID --thread` with the account.
 - **Calendar.** Create, move, or cancel an event only when a source supports it.
 - **Cannot finish now.** Add a retry line as described below.
 
@@ -82,9 +82,10 @@ Return one numbered list in English, starting at the number in the prompt. One l
 16. Project created: [Name](notion-url) · Company
 17. Project: [Name](notion-url) · Planned → In Progress
 18. Draft: [Subject or recipient](gmail-url)
-19. Calendar: [Title](event-url) · Thu 16:00 → Fri 10:00
-20. Source failing: Slack, 3 runs. Action: sign in again in Chrome on Otis.
-21. Heads-up: Google security alert for info@example.nl · check if the login was you
+19. Archived: [Subject](gmail-url) · why, only for a thread with a message from a person
+20. Calendar: [Title](event-url) · Thu 16:00 → Fri 10:00
+21. Source failing: Slack, 3 runs. Action: sign in again in Chrome on Otis.
+22. Heads-up: Google security alert for info@example.nl · check if the login was you
 ```
 
 - A Company follows the Project formats. Report a draft when it is new or meaningfully updated.
@@ -92,7 +93,7 @@ Return one numbered list in English, starting at the number in the prompt. One l
 - End a line with a reason of at most ten words only when the user must act: a deadline, a decision, something not sent.
 - `Heads-up` is only for a security alert or an outage the user must act on today and that has no record. Anything else becomes a Task or is dropped.
 - Report a failing source after two or more consecutive failed runs. For browser problems, use the access failures in `browser`'s [chrome.md](../browser/references/chrome.md).
-- Report nothing else: no routine messages, context appends, archived mail, or no-action decisions.
+- Report nothing else: no routine messages, context appends, archived automated mail, or no-action decisions.
 
 Items you could not finish go after the list, one line each:
 
