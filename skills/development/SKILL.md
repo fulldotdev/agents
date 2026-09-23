@@ -40,9 +40,9 @@ Add or change tests only when the user asks. Run the existing tests, lint, type 
 
 ## Pull requests and review
 
-The PR is the record. Open a draft PR from the first commit. Keep its description current with the preview URL, screenshots, open questions, and unresolved work. Request customer feedback on the PR's preview.
+A thread that changes a repository delivers one PR. A plan, review, investigation, or answer stays in the thread and Notion, with no commit and no PR. When a plan is approved, implementation continues in that thread and opens the PR then.
 
-Use one T3 thread per PR. A Task may have several threads over time. Use `work-management` for Notion and `t3-code` for thread dispatch.
+The PR is the record. Open a draft PR from the first code commit. Keep its description current with the preview URL, screenshots, open questions, and unresolved work. Request customer feedback on the PR's preview. A Task may have several threads over time. Use `work-management` for Notion and `t3-code` for thread dispatch.
 
 1. Before marking ready, run the CodeRabbit CLI review once in the background while doing QA. For customer-facing work, check the changed flow on mobile and desktop and take screenshots. Use `browser` for the browser choice.
 2. Fix major CLI findings without another CLI review loop.
