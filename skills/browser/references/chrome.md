@@ -18,7 +18,7 @@ Select the returned `extension` browser with `family: 'chrome'` and `profileName
 
 Use `browser.tabs.new()` for task tabs. To use an existing user tab, find it through `browser.user.openTabs()` and pass the returned object to `browser.user.claimTab()`. Reuse the browser and tab handles while valid. Follow the runtime's handoff and deliverable rules so pages waiting for the user remain open.
 
-If browser discovery is empty or connection fails, check the ChatGPT Chrome extension in the correct Chrome profile and its native messaging host. Installation on disk alone does not prove a live connection. A missing `node_repl` tool requires fixing the provider's tool configuration or opening a fresh session, not using the terminal to imitate the browser runtime. Do not rewrite application-managed runtime paths from a remembered version.
+If browser discovery is empty or connection fails, check the ChatGPT Chrome extension in the correct Chrome profile and its native messaging host. A missing `node_repl` tool requires fixing the provider's tool configuration or opening a fresh session, not using the terminal to imitate the browser runtime. Do not rewrite application-managed runtime paths from a remembered version.
 
 Chrome may deny automation on its Web Store or internal pages. Hand those setup steps to the user; do not bypass the restriction.
 
@@ -28,7 +28,7 @@ Use the official Claude in Chrome extension in the same `sil@full.dev` Chrome pr
 
 Claude Code needs a direct Claude account signed in through `/login`. API keys and `claude setup-token` are not sufficient for this integration. Start with `claude --chrome`, then use `/chrome` to select the connected browser and check for `Status: Enabled` and `Extension: Installed`. Enable Chrome by default through that menu when configuring standalone Claude Code.
 
-In T3, add `--chrome` to the Claude provider instance's launch arguments. Check that instance's configured home and account, since it can differ from standalone Claude. The Claude account must match the account signed into the Chrome extension; the Chrome profile's email alone does not establish this. If the browser list is empty, check this match before asking for another Connect attempt. A fresh provider session may be needed to load the flag and browser tools. An installed extension is not proof that a T3 Claude session can control it; verify the connection there.
+In T3, add `--chrome` to the Claude provider instance's launch arguments. Check that instance's configured home and account, since it can differ from standalone Claude. The Claude account must match the account signed into the Chrome extension; the Chrome profile's email alone does not establish this. If the browser list is empty, check this match before asking for another Connect attempt. A fresh provider session may be needed to load the flag and browser tools.
 
 On macOS, `claude auth status` over SSH can report signed out when Keychain access requires user interaction. If a login was just completed, check the exact instance and Keychain accessibility before asking the user to repeat it. Error `-25308` means interaction is not allowed, not that credentials are absent. Verify through the running T3 provider when possible; do not export credentials or weaken Keychain permissions.
 

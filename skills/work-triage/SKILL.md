@@ -29,15 +29,15 @@ python3 ~/.agents/skills/work-triage/scripts/collect.py source t3_threads --thre
 python3 ~/.agents/skills/work-triage/scripts/collect.py source slack --query TEXT
 ```
 
-Use `wacli` for more WhatsApp history, `gog` for Gmail and Calendar, and `ntn` for Notion pages. Collector output is YAML by default; pass `--format json` before parsing it as JSON. Check a command's help after a syntax error instead of trying guessed variants.
+Use `wacli` for more WhatsApp history, `gog` for Gmail and Calendar, and `ntn` for Notion pages. Collector output is YAML by default; pass `--format json` before parsing it as JSON.
 
 ## Per item
 
 Handle messages from the same person about the same topic together. Check three things:
 
-1. **What does the source say?** Read the new exchange, including the user's replies. For Gmail read the thread; for Slack read the containing thread; for WhatsApp read the conversation around the new exchange. Expand backwards when a reply, quote, changed agreement, ownership, or completion depends on earlier context. Read the full relevant conversation when that context cannot be resolved. A header or excerpt alone is not enough to decide an actionable item. Open attachments that matter. Transcribe voice messages. If you cannot read something you need, retry the item and say what is missing.
+1. **What does the source say?** Read the new exchange, including the user's replies. For Gmail read the thread; for Slack read the containing thread; for WhatsApp read the conversation around the new exchange. Expand backwards when a reply, quote, changed agreement, ownership, or completion depends on earlier context. Read the full relevant conversation when that context cannot be resolved. Open attachments that matter. Transcribe voice messages. If you cannot read something you need, retry the item and say what is missing.
 2. **Which record owns it?** Find the Company, Project, Task, or T3 thread in the index. A sender can represent several companies. Match the message's website, product, and topic with the destination; the sender alone is not enough. If nothing matches, search Notion before concluding there is no record. Retry unresolved ownership rather than guessing.
-3. **What is already there?** Read the record's Brief, Updates or existing Timeline, and Resources, plus the parent Project's Resources. Compare dated source events with the latest replies and delivery evidence. A stored status or old blocker is not proof of the current situation. Add only context that is missing, including when another agent already recorded this source.
+3. **What is already there?** Read the record's Brief, Updates or existing Timeline, and Resources, plus the parent Project's Resources. Compare dated source events with the latest replies and delivery evidence. Add only context that is missing, including when another agent already recorded this source.
 
 Then take every action that applies. One item may need several.
 
@@ -55,9 +55,9 @@ Then take every action that applies. One item may need several.
 An attachment matters when it can change where work belongs, its scope or price, approval, execution, or completion. View images, transcribe audio, watch only the needed parts of video, and extract text from documents.
 
 - Downloads are scratch files under `~/.cache/fulldev/work-triage/`, not `/tmp`, because the PDF and image tools reject files there. WhatsApp media is already on disk at the path in the item.
-- Inspect the original. Make a smaller copy or selected frames only when a tool needs them, and do not rely on a preview for details you cannot read in it.
+- Inspect the original. Make a smaller copy or selected frames only when a tool needs them.
 - When a file defines a requirement, decision, acceptance condition, blocker, or proof of completion, add the full-resolution original or a permanent URL to the right `Resources`, and explain the evidence in the Task update. Other media stays at its source.
-- Retry the item when a needed file cannot be read. Mentioning a PDF, CSV, image, or video in an update is not the same as inspecting it. A missing duplicate does not block an outcome that other evidence supports.
+- Retry the item when a needed file cannot be read. A missing duplicate does not block an outcome that other evidence supports.
 
 ## Meetings
 
@@ -65,11 +65,11 @@ The runner prepares meeting pages before triage. Calendar items group the same o
 
 The script owns page creation, calendar attachments, event dates and cancellation flags. It uses **Calendar event ID** to reuse the same page across accounts and retries; recurring occurrences have separate pages. **Canceled** preserves the notes while marking a canceled event. A `meeting_page` error is retried by the runner. Report persistent errors through the failing-source rule; leave page creation and attachment repair to the script so triage does not create a duplicate.
 
-Meeting items return when their source changes. The collector excludes generated summaries from `content_file` and `content_fingerprint`, so saving Astra's summary does not trigger another run. Property-only edits are skipped after the source was successfully handled; unresolved retries still return.
+Meeting items return when their source changes. The collector excludes generated summaries from `content_file` and `content_fingerprint`, so saving the generated summary does not trigger another run. Property-only edits are skipped after the source was successfully handled; unresolved retries still return.
 
 Read `content_file` once. It contains manual notes and the available transcript, without Notion's generated summary. When `content_complete` is false, fetch missing blocks with `ntn`; keep summary blocks out of the model input. If no snapshot exists, use `python3 ~/.agents/skills/work-triage/scripts/meeting_summary.py read PAGE_ID` for source text and its fingerprint. Wait until each recording has finished (`meeting_notes.status` is `notes_ready`); retry a meeting whose transcript is still being produced or is incomplete. Upcoming meetings with preparation notes and no recording stay in the preparation flow above.
 
-For each new or changed completed meeting, follow [meeting-summary.md](references/meeting-summary.md): Astra writes the summary directly from the transcript and manual notes, then routes work from that same reading. Read linked Persons, Companies, Projects and Tasks only as needed to resolve identities and context. Invitations and job roles do not prove who spoke or accepted work.
+For each new or changed completed meeting, follow [meeting-summary.md](references/meeting-summary.md): write the summary directly from the transcript and manual notes, then route work from that same reading. Read linked Persons, Companies, Projects and Tasks only as needed to resolve identities and context.
 
 Save through `meeting_summary.py save` as that reference describes. It replaces only the existing Summary tab and verifies the result without feeding the old summary into the model. Retry a failed save or a source that changed during processing. Keep the transcript and manual notes intact. Compare destination records and T3 evidence before routing supported commitments, decisions, feedback and blockers through `work-management`.
 
@@ -93,7 +93,7 @@ Return one numbered list in English, starting at the number in the prompt. One l
 ```
 
 - A Company follows the Project formats. Report a draft when it is new or meaningfully updated.
-- Put the link on the title. No IDs or host names.
+- Put the link on the title. No IDs or host names. Use a middle dot between fields.
 - End a line with a reason of at most ten words only when the user must act: a deadline, a decision, something not sent.
 - `Heads-up` is only for a security alert or an outage the user must act on today and that has no record. Anything else becomes a Task or is dropped.
 - Report a failing source after two or more consecutive failed runs. For browser problems, use the access failures in `browser`'s [chrome.md](../browser/references/chrome.md).

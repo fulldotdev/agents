@@ -28,7 +28,7 @@ Recurring: start from the current agreement. Keep the fixed fee apart from reser
 
 Use the rate from this project's accepted estimate, contract, or direct agreement, not one from another project. Before pricing extra work, check what is already included, billed, done, or reusable. For a defect, check the agreed scope and support terms before deciding whether the fix is covered.
 
-Compare with past work you have verified, and adjust for reuse, supplied designs, data readiness, and integration risk. When sources disagree, trust the current implementation and written agreement first, then a recent explicit decision, then invoices and delivered work, then older estimates. Make underpricing visible. Charge shared costs once.
+Compare with past work you have verified, and adjust for reuse, supplied designs, data readiness, and integration risk. When sources disagree, trust the written agreement and current implementation over older estimates. Make underpricing visible. Charge shared costs once.
 
 When revising a price that was already presented, keep that version, its source, and its date. Keep proposed, approved, and customer-presented amounts apart.
 

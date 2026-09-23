@@ -7,7 +7,7 @@ description: "Use when reading, creating, routing, or updating Notion Tasks, Pro
 
 Check live Notion for current records and fields. This skill owns their context, files, and status. `work-triage` handles intake and drafts, `weekly-planning` handles weekly maintenance, and the user sends customer updates himself.
 
-Read [timeline.md](references/timeline.md) before you read or write a Task body. Read [notion-schema.md](references/notion-schema.md) before exact property writes.
+Read [task-body.md](references/task-body.md) before you read or write a Task body. Read [notion-schema.md](references/notion-schema.md) before exact property writes.
 
 ## Records
 
@@ -27,13 +27,13 @@ Use `Parent project` / `Subprojects` for separately scoped deliveries inside a m
 
 A Task has at most one Project and one Sprint. Its Companies are the delivery's real stakeholders, which can be both an agency and an end customer. Insights and Someday items keep their context in the page body, without a Summary property.
 
-Meeting titles name the topic. `When` holds the event date and time. Resolve conflicting dates from the source, not from the page's creation date. Link proven Companies and Projects. Link confirmed participants through Persons; that relation appears as Meetings on each Person. A mentioned name or a calendar invitation alone does not establish attendance. Resolve identities through existing Persons and Google Contacts; leave uncertain matches unlinked. Add Tasks only when the meeting relates to tracked work. For later meeting context, read the saved Astra summary first and verify original passages when a decision depends on exact wording. Use `work-triage`'s [meeting-summary.md](../work-triage/references/meeting-summary.md) when generating or refreshing it.
+Meeting titles name the topic. `When` holds the event date and time. Resolve conflicting dates from the source, not from the page's creation date. Link proven Companies and Projects. Link confirmed participants through Persons; that relation appears as Meetings on each Person. A mentioned name or a calendar invitation alone does not establish attendance. Resolve identities through existing Persons and Google Contacts; leave uncertain matches unlinked. Add Tasks only when the meeting relates to tracked work. For later meeting context, read the saved meeting summary first and verify original passages when a decision depends on exact wording. Use `work-triage`'s [meeting-summary.md](../work-triage/references/meeting-summary.md) when generating or refreshing it.
 
 ## Sources and record bodies
 
-Before routing, read the source, the user's recent replies, completion evidence, and the destination record. Confirm the owner from the sender and topic, not from a similar name or an AI summary. Copy IDs and references from the source. A proposal, meeting suggestion, quoted request, or draft does not prove the user accepted the work.
+Before routing, read the source, the user's recent replies, completion evidence, and the destination record. Confirm the owner from the sender and topic. Copy IDs and references from the source. A proposal, meeting suggestion, quoted request, or draft does not prove the user accepted the work.
 
-- **Task body**: a current Brief and dated Updates, written as `timeline.md` describes. Existing Timeline sections remain the event log. Triage and T3 read the current record and add only missing facts.
+- **Task body**: a current Brief and dated Updates, written as `task-body.md` describes. Existing Timeline sections remain the event log. Triage and T3 read the current record and add only missing facts.
 - **Project body**: agreed outcomes, scope, project-wide agreements, and main document links. Update it only when a dated source changes the agreement.
 - **Company body**: organization context and customer-wide agreements, not project progress or a second editable list of Google contact details.
 - **Properties**: status, ownership, and planning.
@@ -69,7 +69,7 @@ Task Status:
 - **Done**: completed and verified. Reopen only for the same deliverable.
 - **Canceled**: duplicate, replaced, moved to Someday, no longer executable, or explicitly dropped. Clear the Sprint and Date.
 
-Apply a status change that a source supports without asking again. Evidence goes in Updates (or the existing Timeline), status in properties. Plan routine work through Sprints. Use the Task `Date` only for a deadline or commitment that needs a specific date. Tell hard cutoffs apart from scheduled follow-ups. Never invent dates, silently move overdue planning forward, or drop a reminder when moving its date.
+Apply a status change that a source supports without asking again. Evidence goes in Updates (or the existing Timeline), status in properties. Plan routine work through Sprints. Use the Task `Date` only for a deadline or commitment that needs a specific date. Tell hard cutoffs apart from scheduled follow-ups. Do not silently move overdue planning forward or drop a reminder when moving its date.
 
 Project Status:
 

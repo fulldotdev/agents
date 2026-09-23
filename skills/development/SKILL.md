@@ -27,23 +27,20 @@ Shopify themes are production, including development and unpublished themes. Cre
 - Use existing Shopify previews read-only unless theme writes are approved.
 - Create a theme-library draft only when that was approved.
 
-## Simplicity and scope
+## Simplicity
 
-- Make the smallest complete change that delivers the request. Reuse existing components and dependencies.
-- Prefer direct code, even with some duplication. Add an abstraction only when it removes repeated logic or makes the current behavior clearer. Do not build for hypothetical future features.
+- Prefer direct code, even with some duplication. Add an abstraction only when it removes repeated logic or makes the current behavior clearer.
 - Remove unnecessary fallbacks, redundant checks, obvious comments, and boilerplate that adds no behavior. Keep validation and error handling for real failure cases.
-- Remove dead code and scaffolding this task introduced. Report issues outside the request separately instead of fixing them.
-- Review for correctness and for unnecessary complexity. Stop when the requested behavior works and the relevant checks pass.
 
-Use `design` for visual or interaction decisions. Keep implementation details out of user-facing flows unless they help people act or decide.
+Use `design` for visual or interaction decisions.
 
 ## Tests
 
-Add or change tests only when the user asks. A bug fix, a review, or a reviewer's comment is not that request. Run the existing tests, lint, type checks, builds, and browser checks when they help. Suggest new tests only for a specific unresolved risk.
+Add or change tests only when the user asks. Run the existing tests, lint, type checks, builds, and browser checks when they help.
 
 ## Work ownership
 
-Continue in the existing checkout and branch, with focused commits. Check Git when you resume; the recorded branch may be stale. If another task uses the checkout, do not switch its branch or mix changes. Agree on a separate one.
+Work on a branch in the project checkout under `~/projects`, with focused commits. If you create a worktree, remove it when the work is merged or dropped. Check Git when you resume; the recorded branch may be stale. If another task uses the checkout, do not switch its branch or mix changes.
 
 Use `work-management` for tracking and Notion. Use `t3-code` when dispatching work through T3. Local reviewer subagents do not need their own T3 thread or Notion Task.
 
@@ -53,13 +50,13 @@ This flow applies to work a customer will see or receive. Internal work, experim
 
 1. Implement locally or in a preview.
 2. QA in Chrome. Open the affected pages on mobile and desktop, walk through the flow that changed, and take screenshots of the end result.
-3. For a change with logic, get one read-only review from an independent reviewer subagent. Give it the request, the repository instructions, and the diff. Ask for defects, regressions, and missed requirements, each with a location. Fix what matters within scope and recheck. Review again only after large fixes.
+3. When the change is risky or you are unsure, get one read-only review from an independent reviewer subagent. Give it the request, the repository instructions, and the diff. Ask for defects, regressions, and missed requirements, each with a location. Fix what matters within scope and recheck.
 4. Hand off with the checked preview URL, the screenshots, what is unresolved, and a draft customer message written with `customer-communication`. Do not send it or release.
 
 ## Delivery
 
 Our CMSes are CloudCannon, Sanity, and Shopify. Use their skills for details. For a CMS change, check the editing experience as well as the rendered page: CloudCannon's editor, Sanity Studio, or Shopify's theme editor and custom-data fields. Test only the editing surfaces the change touches.
 
-For a UI change, give the user a checked preview, what to look at, and any access or expiry limits. A localhost URL on Otis cannot be opened from another device. Report what you checked, what is unresolved, and whether the work is committed, pushed, or released, each separately.
+For a UI change, give the user a checked preview, what to look at, and any access or expiry limits. A localhost URL on Otis cannot be opened from another device.
 
 Stop temporary processes you started. Keep requested previews running and leave pre-existing resources alone. Lasting work goes under `~/projects`, not in a temporary directory.

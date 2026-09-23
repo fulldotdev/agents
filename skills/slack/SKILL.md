@@ -20,7 +20,7 @@ Use the Slack Web API. Leave the OpenClaw Slack gateway alone unless the user as
 
 For a focused read, use `python3 ~/.agents/skills/work-triage/scripts/collect.py source slack --workspace <slug>`.
 
-Read the full history and complete threads. Search snippets are not enough. Keep timestamps and permalinks, and report any workspace you could not reach.
+Read the full history and complete threads. Keep timestamps and permalinks, and report any workspace you could not reach.
 
 ## Drafting and sending
 
@@ -33,4 +33,4 @@ Do not delete, schedule, edit, or broadcast a message unless the user asks for t
 ## Safety
 
 - Keep tokens, private channel names, and unrelated private content out of your output.
-- On `invalid_auth`, name only the failing variable. On `missing_scope`, name the operation or scope. Do not try other credentials.
+- On `invalid_auth`, name only the failing variable. On `missing_scope`, name the operation or scope.

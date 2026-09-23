@@ -1,11 +1,9 @@
 ---
 name: agent-delegation
-description: Use only when the user explicitly asks to delegate work to a subagent, another model, or another CLI. Explains how to pick the model, start it, brief it, and use its result.
+description: Use when delegating work to a subagent, another model, or another CLI. Explains how to pick the model, start it, brief it, and use its result.
 ---
 
 # Agent delegation
-
-Delegate only when the user asks for it. Otherwise do the work yourself in the main thread. When the user does ask, this is how to do it well.
 
 ## Models
 
@@ -33,4 +31,4 @@ Run long jobs in the background.
 
 ## Brief and return
 
-Give each subagent the goal, scope and paths, whether it may edit, and the expected output. Ask it to return findings with exact file paths, lines, commands or URLs, plus what it did not check, in under about 300 words unless more is needed. Never let two agents edit the same files at once. Check key claims before acting on them.
+Give each subagent the goal, scope and paths, whether it may edit, and the expected output. Ask it to return findings with exact file paths, lines, commands or URLs, plus what it did not check, in under about 300 words unless more is needed. Never let two agents edit the same files at once.

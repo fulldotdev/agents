@@ -25,12 +25,12 @@ It contains the Notion Companies with Status `Target` with their notes and websi
 - An agency must demonstrably take on website or webshop projects, through design or implementation. Branding, flyers, or packaging alone is not enough. In-house developers are not required.
 - Pick people involved in clients, partnerships, design, marketing, commerce, or development. Assess what FullDev could add. A similar stack or a growing agency does not prove a need to outsource. Consider in-house capacity and time zone when they affect the collaboration.
 - Include someone outside a target company only with a proven connection, such as a collaboration or a relevant former role. Same industry or one shared LinkedIn connection is not enough.
-- Use Dex, the Sales chat, and the earlier lists to recognize relationships, sent requests, and past suggestions. Being in Dex, a sent request, and an accepted connection are three different things. An earlier suggestion does not mean the user contacted them.
+- Use Dex, the Sales chat, and the earlier lists to recognize relationships, sent requests, and past suggestions.
 - Check the person's current role and profile. Read their recent posts, preferably from the past week. Spread the research across target companies. Repeat a person only with a new reason.
 
 ## Draft
 
-Add a draft only when a relevant post, event, or confirmed shared partnership gives a reason. Write in the recipient's language, using `customer-communication` and the user's DM examples for tone, without copying their typos. Keep it short and specific to the reason. No pitch, no closing question, no claims you have not verified. No readable page, no draft. Reuse an introductory reason only with new context.
+Add a draft only when a relevant post, event, or confirmed shared partnership gives a reason. Write in the recipient's language, using `customer-communication` and the user's DM examples for tone. Keep it short and specific to the reason. No pitch, no closing question, no claims you have not verified. No readable page, no draft. Reuse an introductory reason only with new context.
 
 ## Daily list
 

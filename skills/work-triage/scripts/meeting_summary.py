@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read meeting source without summaries, or save an Astra summary."""
+"""Read meeting source without summaries, or save a meeting summary."""
 
 import argparse
 import hashlib
@@ -51,8 +51,8 @@ def save_summary(page_id, summary, fingerprint):
     if len(matches) != 1 or "<transcript>" not in before:
         raise ValueError("Expected one completed meeting with a summary and transcript")
     summary = summary.strip()
-    if not summary or not summary.startswith("Astra summary") or re.search(r"</?(?:summary|notes|transcript|meeting-notes)\b", summary):
-        raise ValueError("Supply summary Markdown starting with 'Astra summary', without meeting tags")
+    if not summary or not summary.startswith("Meeting summary") or re.search(r"</?(?:summary|notes|transcript|meeting-notes)\b", summary):
+        raise ValueError("Supply summary Markdown starting with 'Meeting summary', without meeting tags")
     match = matches[0]
     replacement = "\t<summary>\n" + "\n".join("\t\t" + line for line in summary.splitlines()) + "\n\t</summary>\n"
     payload = {"type": "update_content", "update_content": {"content_updates": [
