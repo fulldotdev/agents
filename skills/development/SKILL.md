@@ -46,7 +46,7 @@ The PR is the record. Open a draft PR from the first code commit. Keep its descr
 
 1. Before marking ready, run the CodeRabbit CLI review once in the background while doing QA. For customer-facing work, check the changed flow on mobile and desktop and take screenshots. Use `browser` for the browser choice.
 2. Fix major CLI findings without another CLI review loop.
-3. Mark the PR ready to trigger CodeRabbit and Codex. Address their comments, push, and request one re-review by comment from each bot. No third round.
+3. Mark the PR ready to trigger CodeRabbit. Address its comments, push, and request one re-review by comment. No third round.
 4. Hand off with the PR, checked preview URL, screenshots, unresolved work, and a draft customer message written with `customer-communication`. Do not send it or release.
 
 Internal work, experiments, and tiny copy or formatting changes do not need QA screenshots.
