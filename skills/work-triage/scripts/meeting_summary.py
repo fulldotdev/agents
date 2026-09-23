@@ -32,6 +32,14 @@ def read_page(page_id):
     return data["markdown"]
 
 
+def normalized_summary(value):
+    value = re.sub(r"\\([\W])", r"\1", value)
+    # Notion turns bare domains into links, while named links must retain their URLs.
+    value = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)",
+                   lambda match: match[1] if match[1] == re.sub(r"^https?://", "", match[2]) else match[0], value)
+    return " ".join(value.split())
+
+
 def save_summary(page_id, summary, fingerprint):
     meetings = [block["meeting_notes"] for block in notion_blocks(page_id) if block.get("type") == "meeting_notes"]
     if len(meetings) != 1 or meetings[0].get("status") != "notes_ready":
@@ -56,9 +64,7 @@ def save_summary(page_id, summary, fingerprint):
     if source_markdown(after) != source_markdown(before):
         raise ValueError("Source changed during summary save; re-read and retry this meeting")
     saved = list(SUMMARY.finditer(after))
-    # Notion normalizes whitespace and Markdown escapes during a write.
-    normalize = lambda value: " ".join(re.sub(r"\\([\W])", r"\1", value).split())
-    if len(saved) != 1 or normalize(saved[0].group(1)) != normalize(summary):
+    if len(saved) != 1 or normalized_summary(saved[0].group(1)) != normalized_summary(summary):
         raise ValueError("Summary readback differs; inspect the saved summary before acknowledging")
     return {"saved": True, "page_id": page_id, "source_fingerprint": fingerprint}
 
