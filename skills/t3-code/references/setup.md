@@ -1,6 +1,16 @@
 # Otis T3 setup
 
-Use this only for installation, service, Connect, visibility, or split-server problems.
+Use this for project setup, installation, service, Connect, visibility, or split-server problems.
+
+## Projects
+
+Use the exact GitHub repository name as the T3 project name, without the owner prefix. New checkouts go in `~/projects/<repo-name>`. Check each machine's `origin` and T3 workspace path against the intended repository, then verify that MacBook and Otis have matching registrations. Existing paths can stay when threads or tools depend on them.
+
+Keep Project grouping off for plain repository names. The combined repository view can replace a matching project title with `owner/repo`; verify the labels in the app after changing this setting.
+
+GitHub transfers committed work through pushes and fetches or pulls. It does not sync uncommitted files, ignored files, or the branch checked out on the other machine. Report those separately from broken project links. Compare patches before calling divergent commits unique; cherry-picked changes can have different commit IDs.
+
+When a repository moves or is renamed, update its existing T3 record so its threads stay attached. Before removing a project, check archived threads as well as visible ones. The shell/list response can omit archived threads; an empty list does not prove the project has no history.
 
 ## Architecture
 

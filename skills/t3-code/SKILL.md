@@ -1,13 +1,13 @@
 ---
 name: t3-code
-description: "Use when inspecting, creating, resuming, or settling T3 agent threads on Otis, or installing, updating, linking, or troubleshooting the Otis T3 service and T3 Connect."
+description: "Use when managing T3 projects or threads, or installing, updating, linking, or troubleshooting the Otis T3 service and T3 Connect."
 ---
 
 # T3 Code on Otis
 
 Otis runs the T3 server. Use a T3 thread when work must be visible on the user's other devices, and start it through the helper below.
 
-Read [references/setup.md](references/setup.md) only for installing, updating, linking, or troubleshooting the service or T3 Connect.
+Read [references/setup.md](references/setup.md) when adding, renaming, syncing, or removing projects, or working on the service or T3 Connect.
 
 Read [references/account-pools.md](references/account-pools.md) for how T3 connects to the account pool. The pool itself, its accounts, and usage limits are in [account-pool.md](../../global/references/account-pool.md).
 
