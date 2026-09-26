@@ -93,8 +93,13 @@ def check_t3():
     if problem:
         return problem
     status = run(["t3", "connect", "status", "--base-dir", str(HOME / ".t3"), "--json"])
-    config = json.loads(status.stdout)
-    if status.returncode or not all(config.get(key) for key in ("desired", "authenticated", "linked")):
+    if status.returncode:
+        return "T3 Connect is niet volledig gekoppeld of ingelogd"
+    try:
+        config = json.loads(status.stdout)
+    except ValueError:
+        config = {}
+    if not isinstance(config, dict) or not all(config.get(key) for key in ("desired", "authenticated", "linked")):
         return "T3 Connect is niet volledig gekoppeld of ingelogd"
     return None
 
@@ -182,4 +187,3 @@ def check_contacts(now_local):
     if health.get("issues"):
         return f"contactsync heeft {len(health['issues'])} waarschuwingen, zie ~/projects/contact-enrichment/reports"
     return None
-
