@@ -75,6 +75,7 @@ def collect(machine, state):
             "openclaw_doctor": checks.check_openclaw_doctor,
             "openclaw_auth": checks.check_openclaw_auth,
             "openclaw_plugins": checks.check_openclaw_plugins,
+            "openclaw_update": checks.check_openclaw_update,
             "whatsapp": lambda: checks.check_whatsapp(state, now),
             "google": checks.check_google,
             "t3": checks.check_t3,
