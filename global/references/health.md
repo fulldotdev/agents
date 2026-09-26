@@ -6,7 +6,7 @@ Run local checks on both machines with one shared script. MacBook submits its la
 
 Both Macs check the local account proxy, the routing receipt and free disk space. Routing must report `ok: true`, `apply: true`, and a run within 45 minutes. After MacBook wakes from a gap longer than 45 minutes, give routing 15 minutes to catch up. Warn below 10 GiB or 5% free disk space. Backup setup and iCloud sync are intentionally excluded.
 
-Otis also checks OpenClaw, T3 and its saved Connect configuration, WhatsApp, Google access, contact sync, work-triage, weekly-planning and system-hygiene. A configured T3 connection is not proof of live relay connectivity. Agent jobs get a 45-minute completion grace; contact sync gets one hour. Disabled jobs are skipped. OpenClaw's existing automatic gateway restart remains enabled. Other checks only observe.
+Otis also checks OpenClaw, T3 and its saved Connect configuration, WhatsApp, Google access, contact sync, work-triage, weekly-planning and system-hygiene. It runs `openclaw doctor`, checks account profile expiry and checks that enabled OpenClaw plugins are loaded. Expected doctor findings such as loopback binding, browser cookie import and disabled device pairing are informational; errors and critical findings are reported. A configured T3 connection is not proof of live relay connectivity. Agent jobs get a 45-minute completion grace; contact sync gets one hour. Disabled jobs are skipped. OpenClaw's existing automatic gateway restart remains enabled. Other checks only observe.
 
 Read without starting jobs, sending messages or creating threads:
 
