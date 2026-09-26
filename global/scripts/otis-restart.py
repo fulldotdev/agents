@@ -73,7 +73,7 @@ def report_recovery(state):
     if not pending or boot_time() == pending['boot_time']:
         return
     spec = importlib.util.spec_from_file_location(
-        'otis_health', SCRIPTS / 'skills/system-hygiene/scripts/otis-health.py')
+        'otis_health', SCRIPTS / 'skills/system-hygiene/scripts/health-checks.py')
     health = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(health)
     problems = []

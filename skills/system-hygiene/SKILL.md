@@ -11,7 +11,9 @@ You propose, the user decides. Do not clean up, install, upgrade, change Git, st
 
 Read [checks.md](references/checks.md) and `~/.local/state/fulldev/system-hygiene/state.json`. Read the user's recent replies in the System chat for decisions.
 
-Inspect Otis and, when reachable, MacBook at `silveltman@macbook-pro-2.tailb5cb80.ts.net`. Use non-interactive SSH with a short timeout. Do not change authentication or network settings to get in. If MacBook is unreachable, continue on Otis and mention the gap.
+Read `~/.local/state/fulldev/health/report.json` on Otis first. It combines Otis checks with MacBook's submitted status. Check each machine's timestamp: a stale MacBook report is missing coverage, not a pass or a failure. Use these results for routine service, routing, storage and scheduled-job checks; investigate differences and maintenance needs. Read [health setup](../../global/references/health.md) for commands, thresholds, delivery and incident threads.
+
+MacBook submits status to Otis through a restricted SSH key. Otis has no inbound SSH access to MacBook. For deeper MacBook inspection, work locally when available; otherwise report the gap. Backup setup and personal iCloud sync are intentionally outside this healthcheck.
 
 Cover all eight check areas each week. The skills check in `checks.md` describes what a clean skill looks like; propose edits when a skill drifts from it. Start with an overview, then look closer at changes that could affect work. Review apps, plugins, and models in depth once a month, or sooner for a specific issue. Use CLI help and official docs when needed. Do not scan every project's dependencies, fetch every repository, or propose an upgrade just because a newer version exists.
 

@@ -13,20 +13,25 @@ Otis is the always-on Mac mini. It runs OpenClaw for Telegram, Discord and Slack
 
 ## Scheduled work
 
-| Job | When | Runs |
-|---|---|---|
-| work-triage (OpenClaw cron) | 07:00, 18:00 | `~/.agents/skills/work-triage/scripts/run.py`, Astra high, report to Telegram Triage |
-| weekly-planning (OpenClaw cron) | Sunday 10:00 | Astra high; compare seven days of incoming sources with Notion, then maintain active records; report to Telegram Planning |
-| system-hygiene (OpenClaw cron) | Sunday 09:00 | agent turn, Astra high, report to Telegram System |
-| com.fulldev.wacli-sync (launchd) | always | `wacli sync --follow` |
-| dev.fulldev.contact-enrichment.google-google (launchd) | daily 04:15 | `~/projects/contact-enrichment/sync-google-google.ts daily`, work Google contacts to personal Google contacts |
-| com.fulldev.otis-health (launchd) | every 15 min | `~/.agents/skills/system-hygiene/scripts/otis-health.py`, one message to Telegram System when something breaks or recovers |
-| com.fulldev.pool-routing (launchd, both Macs) | at login, every 15 min | `~/.agents/skills/t3-code/scripts/pool-routing.py --apply`, order the local pool by next weekly reset; status in `~/.local/state/fulldev/pool-routing/state.json` |
-| com.fulldev.otis-restart (launchd) | first eligible day of each month, 05:00 | `~/.agents/global/scripts/otis-restart.py`; postpone to the next day when busy and report service recovery to Telegram System |
+| Job | Machine | When | Source / installer |
+|---|---|---|---|
+| work-triage (OpenClaw cron) | Otis | 07:00, 18:00 | `~/.agents/skills/work-triage/scripts/run.py`; Astra high; Telegram Triage |
+| weekly-planning (OpenClaw cron) | Otis | Sunday 10:00 | `~/.agents/skills/weekly-planning/SKILL.md`; Astra high; Telegram Planning |
+| system-hygiene (OpenClaw cron) | Otis | Sunday 09:00 | `~/.agents/skills/system-hygiene/SKILL.md`; Astra high; Telegram System |
+| ai.openclaw.gateway | Otis | always | OpenClaw's own service installer and local config |
+| com.t3tools.t3code.service | Otis | always | `t3 service install --base-dir ~/.t3`; runtime in `~/.t3/runtime/versions/` |
+| com.fulldev.cliproxyapi | Both | always | local binary in `~/.local/share/cliproxyapi/`; [account pool setup](account-pool.md) |
+| com.fulldev.wacli-sync | Otis | always | Homebrew `wacli sync --follow`; local LaunchAgent |
+| dev.fulldev.contact-enrichment.google-google | Otis | daily 04:15 | `~/projects/contact-enrichment/sync-google-google.ts daily`; own project repo |
+| com.fulldev.health | Both | at login, every 15 min | `~/.agents/skills/system-hygiene/scripts/health.py`; installer `install-health.py` in the same directory |
+| com.fulldev.pool-routing | Both | at login, every 15 min | `~/.agents/skills/t3-code/scripts/pool-routing.py --apply`; installer `install-pool-routing.py` in the same directory |
+| com.fulldev.otis-restart | Otis | first eligible day of each month, 05:00 | `~/.agents/global/scripts/otis-restart.py`; installer `install-otis-restart.sh` in the same directory |
+
+Health runs locally on each Mac. MacBook submits only check booleans and a timestamp to Otis. Otis sends one combined report to Telegram System when a problem changes or recovers and starts a read-only T3 investigation for a persistent incident. See [health setup](health.md) for status, logs, installation and restricted SSH access.
 
 Agent jobs are created with `openclaw cron add`; plain scripts run through launchd plists in `~/Library/LaunchAgents`. Give a one-off or temporary job a clear name and delete it when done.
 
-State lives under `~/.local/state/fulldev/`: `work-triage/` (batch, state, run receipts), `health/`. Scratch files under `~/.cache/fulldev/`.
+State lives under `~/.local/state/fulldev/`: `work-triage/` (batch, state, run receipts), `health/`, `pool-routing/`, `restart/`. Health and routing logs live in `~/Library/Logs/fulldev/`. Scratch files under `~/.cache/fulldev/`.
 
 Google automation uses `gog`'s encrypted file keyring. `~/.local/bin/gog` loads its generated unlock key from the owner-only file `~/.config/gogcli/keyring-password` and runs the Homebrew binary. Keep `~/.local/bin` before Homebrew in shell and service PATHs; direct calls to `/opt/homebrew/bin/gog` omit the unlock key. OpenClaw's service environment and the contact-sync, health, and restart LaunchAgents use this path. The key and credentials stay local to Otis. Health and restart recovery check `gog auth list --check --json --no-input`; revoked Google authorization still requires consent.
 

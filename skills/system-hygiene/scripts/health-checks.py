@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Every 15 minutes on Otis: gateway up, WhatsApp synced, triage ran on time, contact sync finished, T3 and local proxy reachable. One Telegram message when that changes."""
+"""Local checks shared by health reporting and Otis restart recovery."""
 
 import json
+import shutil
 import os
 import sqlite3
 import subprocess
@@ -70,27 +71,60 @@ def check_whatsapp(state, now):
 
 
 
-def check_agent_services():
-    for label, port, name in (
-        ("com.t3tools.t3code.service", 3773, "T3"),
-        ("com.fulldev.cliproxyapi", 8317, "CLIProxyAPI"),
-    ):
-        service = run(["launchctl", "print", f"gui/{os.getuid()}/{label}"])
-        if service.returncode or "state = running" not in service.stdout:
-            return f"{name} draait niet; controleer de launchd-service"
-        try:
-            with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=5) as response:
-                if response.status != 200:
-                    return f"{name} antwoordt niet normaal op poort {port}"
-        except OSError:
-            return f"{name} is niet bereikbaar op lokale poort {port}"
+def check_service(label, port, name):
+    service = run(["launchctl", "print", f"gui/{os.getuid()}/{label}"])
+    if service.returncode or "state = running" not in service.stdout:
+        return f"{name} draait niet"
+    try:
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=5) as response:
+            if response.status != 200:
+                return f"{name} is niet bereikbaar"
+    except OSError:
+        return f"{name} is niet bereikbaar"
+    return None
+
+
+def check_proxy():
+    return check_service("com.fulldev.cliproxyapi", 8317, "Accountproxy")
+
+
+def check_t3():
+    problem = check_service("com.t3tools.t3code.service", 3773, "T3")
+    if problem:
+        return problem
     status = run(["t3", "connect", "status", "--base-dir", str(HOME / ".t3"), "--json"])
+    if status.returncode:
+        return "T3 Connect is niet volledig gekoppeld of ingelogd"
     try:
         config = json.loads(status.stdout)
     except ValueError:
-        return "T3 Connect-configuratie kon niet worden gecontroleerd"
-    if status.returncode or not all(config.get(key) for key in ("desired", "authenticated", "linked")):
+        config = {}
+    if not isinstance(config, dict) or not all(config.get(key) for key in ("desired", "authenticated", "linked")):
         return "T3 Connect is niet volledig gekoppeld of ingelogd"
+    return None
+
+
+def check_agent_services():
+    return check_proxy() or check_t3()
+
+
+def check_routing(now, grace_until=0):
+    try:
+        data = json.loads((HOME / ".local/state/fulldev/pool-routing/state.json").read_text())
+        checked = datetime.fromisoformat(data["checked_at"]).timestamp()
+        if checked > now + 60 or (now - checked > 2700 and now >= grace_until):
+            return "Routing heeft geen recente run"
+        if data.get("ok") is not True or data.get("apply") is not True:
+            return "Routing is mislukt"
+    except (OSError, ValueError, KeyError, TypeError):
+        return "Routingstatus ontbreekt of is ongeldig"
+    return None
+
+
+def check_disk():
+    usage = shutil.disk_usage(HOME)
+    if usage.free < 10 * 1024**3 or usage.free / usage.total < 0.05:
+        return "Minder dan 10 GB of 5% vrije schijfruimte"
     return None
 
 
@@ -100,23 +134,43 @@ def latest_slot(hours, minute, now_local, grace):
     return max(slot for slot in slots if slot + grace <= now_local)
 
 
-def check_triage(now_local):
+def check_job(name, now_local):
     with sqlite3.connect(f"file:{OPENCLAW_DB}?mode=ro", uri=True) as db:
-        rows = db.execute("SELECT job_json, state_json FROM cron_jobs WHERE name='work-triage'").fetchall()
+        rows = db.execute("SELECT job_json, state_json FROM cron_jobs WHERE name=?", (name,)).fetchall()
     if len(rows) != 1:
-        return "triage-cronjob ontbreekt of staat dubbel in OpenClaw"
+        return f"{name}: cronjob ontbreekt of staat dubbel"
     job, state = json.loads(rows[0][0]), json.loads(rows[0][1])
     if not job.get("enabled", True):
         return None
-    if state.get("runningAtMs") and now_local.timestamp() * 1000 - state["runningAtMs"] < TRIAGE_GRACE.total_seconds() * 1000:
+    schedule = job["schedule"]
+    minute, hours, day, month, weekday = schedule["expr"].split()
+    if schedule.get("kind") != "cron" or day != "*" or month != "*":
+        return f"{name}: controleschema wordt niet ondersteund"
+    minute = int(minute)
+    hours = [int(h) for h in hours.split(",")]
+    weekdays = set(range(7)) if weekday == "*" else {int(d) % 7 for d in weekday.split(",")}
+    if not 0 <= minute < 60 or any(not 0 <= h < 24 for h in hours):
+        return f"{name}: ongeldig controleschema"
+    local = now_local.astimezone(ZoneInfo(schedule.get("tz", "Europe/Amsterdam")))
+    slots = [(local - timedelta(days=d)).replace(hour=h, minute=minute, second=0, microsecond=0)
+             for d in range(9) for h in hours]
+    due = max(s for s in slots if (s.weekday() + 1) % 7 in weekdays and s + TRIAGE_GRACE <= local)
+    if (state.get("scheduleActivatedAtMs") or 0) / 1000 > due.timestamp():
         return None
-    minute, hours, *_ = job["schedule"]["expr"].split()
-    due = latest_slot([int(h) for h in hours.split(",")], int(minute), now_local, TRIAGE_GRACE)
+    running = (state.get("runningAtMs") or 0) / 1000
+    if running and 0 <= local.timestamp() - running < TRIAGE_GRACE.total_seconds():
+        return None
     if (state.get("lastRunAtMs") or 0) / 1000 < due.timestamp():
-        return f"triage van {due.strftime('%H:%M')} is niet gedraaid"
+        return f"{name}: geplande run is niet uitgevoerd"
     if state.get("lastRunStatus") != "ok":
-        return "laatste triage-run is mislukt"
+        return f"{name}: laatste run is mislukt"
+    if state.get("lastDelivered") is False:
+        return f"{name}: rapport is niet afgeleverd"
     return None
+
+
+def check_triage(now_local):
+    return check_job("work-triage", now_local)
 
 
 def check_contacts(now_local):
@@ -129,42 +183,7 @@ def check_contacts(now_local):
     if not completed or datetime.fromisoformat(completed.replace("Z", "+00:00")) < due:
         return "contactsync full.dev → Gmail van vannacht is niet afgerond"
     if health.get("status") == "failed":
-        return "contactsync full.dev → Gmail is mislukt: " + str(health.get("error") or health.get("phase") or "")[:120]
+        return "contactsync full.dev → Gmail is mislukt"
     if health.get("issues"):
         return f"contactsync heeft {len(health['issues'])} waarschuwingen, zie ~/projects/contact-enrichment/reports"
     return None
-
-
-def main():
-    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
-    now = int(time.time())
-    now_local = datetime.now(TZ)
-    problems = []
-    gateway_ok = False
-    try:
-        gateway_ok = check_gateway()
-    except Exception:
-        pass
-    if not gateway_ok:
-        problems.append("OpenClaw gateway is down; herstart geprobeerd")
-        run(["openclaw", "gateway", "restart"], timeout=90)
-    for check in (lambda: check_whatsapp(state, now), lambda: check_triage(now_local), lambda: check_contacts(now_local), check_agent_services, check_google):
-        try:
-            problem = check()
-        except Exception as exc:
-            problem = f"controle mislukt: {exc}"[:160]
-        if problem:
-            problems.append(problem)
-    if problems != state.get("problems", []):
-        text = ("Otis: " + "\n".join(f"{i}. {p}" for i, p in enumerate(problems, 1))) if problems else "Otis: alles is weer in orde."
-        if gateway_ok or not problems:
-            run(["openclaw", "message", "send", "--channel", "telegram", "--target", SYSTEM_CHAT, "--message", text, "--json"])
-    state.update(problems=problems, checked_at=now)
-    STATE_FILE.write_text(json.dumps(state, indent=2) + "\n")
-    print(json.dumps({"ok": not problems, "problems": problems}))
-    return 0 if not problems else 2
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
