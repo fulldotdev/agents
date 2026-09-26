@@ -99,6 +99,18 @@ def check_openclaw_plugins():
     return None
 
 
+def check_openclaw_update():
+    result, data = _openclaw_json(["update", "status"], timeout=30)
+    if result.returncode or not isinstance(data, dict):
+        return "OpenClaw update-status kon niet worden gecontroleerd"
+    availability = data.get("availability") or {}
+    if availability.get("hasRegistryUpdate"):
+        current = data.get("target", {}).get("version") or data.get("version") or "huidige versie"
+        latest = availability.get("latestVersion") or "nieuwe versie"
+        return f"OpenClaw-update beschikbaar: {current} → {latest}"
+    return None
+
+
 def check_google():
     result = run(["gog", "auth", "list", "--check", "--json", "--no-input"])
     try:
