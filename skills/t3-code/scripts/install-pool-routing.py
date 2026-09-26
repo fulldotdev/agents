@@ -5,6 +5,7 @@ import os
 import plistlib
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 
@@ -37,6 +38,11 @@ def main():
         if "state = running" in existing.stdout:
             raise SystemExit("The routing task is running. Wait for it to finish, then install again.")
         subprocess.run(["launchctl", "bootout", target], check=True)
+        deadline = time.monotonic() + 5
+        while subprocess.run(["launchctl", "print", target], capture_output=True).returncode == 0:
+            if time.monotonic() >= deadline:
+                raise SystemExit("The old task did not unload within five seconds; installation stopped.")
+            time.sleep(0.2)
     with path.open("wb") as file:
         plistlib.dump(plist, file)
     subprocess.run(["plutil", "-lint", str(path)], check=True)
