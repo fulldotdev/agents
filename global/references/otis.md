@@ -31,6 +31,8 @@ Health runs locally on each Mac. MacBook submits only check booleans and a times
 
 Agent jobs are created with `openclaw cron add`; plain scripts run through launchd plists in `~/Library/LaunchAgents`. Give a one-off or temporary job a clear name and delete it when done.
 
+System and vendor jobs are separate from Fulldev automation and should not be removed during routine cleanup. The MacBook has `com.google.GoogleUpdater.wake` hourly and `homebrew.mxcl.postgresql@15`. Otis has the Google updater; its Google Keystone jobs are disabled leftovers. OpenClaw's disabled heartbeat and skill-collection jobs are system-owned. There are no user crontabs. Fulldev recurring jobs use launchd or OpenClaw cron, and the combined health report is the source of truth for both Macs.
+
 State lives under `~/.local/state/fulldev/`: `work-triage/` (batch, state, run receipts), `health/`, `pool-routing/`, `restart/`. Health and routing logs live in `~/Library/Logs/fulldev/`. Scratch files under `~/.cache/fulldev/`.
 
 Google automation uses `gog`'s encrypted file keyring. `~/.local/bin/gog` loads its generated unlock key from the owner-only file `~/.config/gogcli/keyring-password` and runs the Homebrew binary. Keep `~/.local/bin` before Homebrew in shell and service PATHs; direct calls to `/opt/homebrew/bin/gog` omit the unlock key. OpenClaw's service environment and the contact-sync, health, and restart LaunchAgents use this path. The key and credentials stay local to Otis. Health and restart recovery check `gog auth list --check --json --no-input`; revoked Google authorization still requires consent.

@@ -22,6 +22,7 @@ TRIAGE_GRACE = timedelta(minutes=45)
 CONTACT_SLOT = (4, 15)
 CONTACT_GRACE = timedelta(hours=1)
 WHATSAPP_DISCONNECT_TOLERANCE = 600
+OPENCLAW_AUTH_WINDOW = timedelta(hours=24)
 
 
 def run(cmd, timeout=45):
@@ -31,6 +32,71 @@ def run(cmd, timeout=45):
 def check_gateway():
     result = run(["openclaw", "health", "--json"])
     return result.returncode == 0 and json.loads(result.stdout).get("ok") is True
+
+
+def _openclaw_json(args, timeout=60):
+    result = run(["openclaw", *args, "--json"], timeout=timeout)
+    try:
+        data = json.loads(result.stdout)
+    except (ValueError, TypeError):
+        return result, None
+    return result, data
+
+
+def check_openclaw_doctor():
+    result, data = _openclaw_json(["doctor"])
+    if result.returncode or not isinstance(data, dict):
+        return "OpenClaw doctor kon niet worden uitgevoerd"
+    findings = data.get("findings") or data.get("issues") or []
+    actionable = []
+    for finding in findings:
+        if not isinstance(finding, dict):
+            continue
+        severity = str(finding.get("severity", "")).lower()
+        if severity in {"error", "critical"}:
+            actionable.append(str(finding.get("title") or finding.get("message") or "probleem"))
+    if actionable:
+        return "OpenClaw doctor: " + "; ".join(actionable[:3])
+    return None
+
+
+def check_openclaw_auth():
+    result, data = _openclaw_json(["models", "auth", "list"], timeout=30)
+    if result.returncode or not isinstance(data, dict):
+        return "OpenClaw accountpool kon niet worden gecontroleerd"
+    profiles = data.get("profiles") or data.get("accounts") or []
+    now_ms = time.time() * 1000
+    attention = 0
+    for profile in profiles:
+        if not isinstance(profile, dict):
+            continue
+        expires = profile.get("expiresAt") or profile.get("expires_at")
+        if isinstance(expires, str):
+            try:
+                expires = datetime.fromisoformat(expires.replace("Z", "+00:00")).timestamp() * 1000
+            except ValueError:
+                expires = None
+        if isinstance(expires, (int, float)) and expires <= now_ms + OPENCLAW_AUTH_WINDOW.total_seconds() * 1000:
+            attention += 1
+    if attention:
+        return f"OpenClaw-auth: {attention} account(s) verlopen of verlopen binnen 24 uur"
+    return None
+
+
+def check_openclaw_plugins():
+    result, data = _openclaw_json(["plugins", "list"], timeout=30)
+    if result.returncode or not isinstance(data, dict):
+        return "OpenClaw plugins konden niet worden gecontroleerd"
+    plugins = data.get("plugins") or []
+    broken = []
+    for plugin in plugins:
+        if not isinstance(plugin, dict) or not plugin.get("enabled"):
+            continue
+        if plugin.get("status") != "loaded":
+            broken.append(str(plugin.get("id") or plugin.get("name") or "onbekende plugin"))
+    if broken:
+        return "OpenClaw-plugins niet geladen: " + ", ".join(broken[:3])
+    return None
 
 
 def check_google():
