@@ -5,7 +5,7 @@ description: "Use when managing T3 projects or threads, checking Codex or Claude
 
 # T3 Code on Otis
 
-Otis runs the T3 server. Start a T3 thread only when the user asks for one, through the helper below. Delegation without that request goes over the CLI, see `agent-delegation`.
+Otis runs the T3 server. Start a T3 thread, through the helper below, only when the user asks for one or will read and work in it themselves. Other delegation goes over the CLI, see `agent-delegation`.
 
 Read [references/setup.md](references/setup.md) when adding, renaming, syncing, or removing projects, or working on the service or T3 Connect.
 
