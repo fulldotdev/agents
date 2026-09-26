@@ -16,12 +16,26 @@ Use these names in reports. Each machine holds its own OAuth files; subscription
 
 ## Routing
 
-Both machines use unique account priorities to drain accounts in a fixed order:
+Both machines use `fill-first` with unique account priorities. The local `com.fulldev.pool-routing` launchd task runs at login and every 15 minutes, ordering each provider's enabled accounts by the next all-models weekly reset. The earliest reset receives the highest priority. After a reset, that account moves behind accounts whose next reset is sooner. Claude's model-specific limits, including Fable, remain subject to the proxy's normal quota failover.
 
-- Codex: Codex (500), Codex 0 (400), Codex 1 (300), Codex 2 (200), Codex 3 (100).
-- Claude: Claude 0 (200), Claude (100).
+Session affinity keeps existing conversations on their account until it becomes unavailable. New conversations and failover use the current priority order. No proxy restart or selector replacement is needed for priority updates.
 
-The configured strategy is `fill-first` on both machines. Priorities determine the fixed account order. Session affinity keeps existing conversations on their account until it becomes unavailable. A recovered higher-priority account is eligible for new conversations again. Priorities are fixed, not automatically reordered after resets.
+Use the shared [routing script](../../skills/t3-code/scripts/pool-routing.py) to inspect or apply the order:
+
+```bash
+python3 ~/.agents/skills/t3-code/scripts/pool-routing.py
+python3 ~/.agents/skills/t3-code/scripts/pool-routing.py --apply
+```
+
+The default is a dry-run. The script fetches live usage, keeps the previous order for a provider if any of its accounts has missing or invalid reset data, and writes only changed priorities. It verifies the API readback and attempts to restore previous priorities if an update fails. A local lock prevents overlapping runs. It changes neither quota limits nor reset credits, and it does not start agent turns or send messages.
+
+Install or refresh the LaunchAgent locally on each Mac after syncing the shared repository:
+
+```bash
+python3 ~/.agents/skills/t3-code/scripts/install-pool-routing.py
+```
+
+The task uses `/opt/homebrew/bin/python3`. Its last applied run is recorded in `~/.local/state/fulldev/pool-routing/state.json`; output and errors are in `~/Library/Logs/fulldev/pool-routing.log`. Check `ok`, `checked_at`, and each provider's status. An API error produces a nonzero exit and is retried on the next scheduled run. The script uses only that machine's loopback proxy and local management key.
 
 Change priorities through `PATCH /v0/management/auth-files/fields` with `{"name":"<auth filename>","priority":500}`. This persists the setting without replacing the selector or restarting the proxy. Check persisted priorities and real requests after changes. Previous priority settings are stored locally in `~/.config/cliproxyapi/routing-backups/` on each machine.
 

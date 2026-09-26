@@ -13,6 +13,8 @@ Read [references/account-pools.md](references/account-pools.md) for how T3 conne
 
 For remaining quota and reset times, use `python3 ~/.agents/skills/t3-code/scripts/pool-usage.py`. Add `--provider claude` or `--provider codex` to narrow the read, and `--json` for structured output. Read the account-pool reference for remote checks and interpretation. Use the API by default; open the dashboard for a requested visual check.
 
+For automatic reset-based account ordering, read the Routing section of that reference. `pool-routing.py` previews the order; `--apply` changes local priorities. The same script runs through launchd on both Macs.
+
 ## Dispatch
 
 Use one thread per PR. A Task may have several threads over time; reuse the thread for follow-up work on the same PR.
