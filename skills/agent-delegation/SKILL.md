@@ -20,11 +20,13 @@ description: Use when delegating work to a subagent, another model, or another C
 
 ## Cross provider
 
+Delegate over the CLI, in the background, from the current session. Start a T3 thread only when the user asks for one.
+
 - Fable from Codex, to clean up a finished change, then verify it yourself:
   `claude -p --model claude-fable-5-1 --permission-mode acceptEdits "TASK"`
 - Astra from Claude, for validating changes with shell tools, then review its findings:
   `codex exec --skip-git-repo-check -m gpt-6-astra -o /tmp/NAME.md "TASK"`
-- Headless `codex exec` has no browser or computer use. For those checks, ask the user to run them in a T3 Codex thread.
+- Headless `codex exec` has no browser or computer use. For those checks, ask the user whether to start a T3 Codex thread.
 - Both CLIs go through the local account pool. "Out of usage" means every pooled account is exhausted; say so instead of switching models silently.
 
 Run long jobs in the background.

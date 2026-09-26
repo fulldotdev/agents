@@ -13,7 +13,7 @@ Base the message on what the recipients have seen: their threads and the meeting
 
 ## Write the message
 
-Give the answer or result first, with enough explanation to be useful. Match the language and familiarity of the conversation. In Dutch, use `ik`, `je`, and `jullie`. A short acknowledgment or a fitting emoji can add warmth. Greet only when a message restarts contact after a while.
+Give the answer or result first, with enough explanation to be useful. Match the language and familiarity of the conversation. In Dutch, use `ik`, `je`, and `jullie`. A short acknowledgment or a fitting emoji can add warmth. Greet only when a message restarts contact after a while. Use `Hey` instead of `Hoi` when greeting someone in Dutch.
 
 Describe the agreed work positively. Omit unconfirmed details; raise unclear scope only when it needs a decision. For a problem, keep confirmed facts apart from possible causes and offer a next step within the agreed work.
 

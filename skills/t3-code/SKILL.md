@@ -1,15 +1,17 @@
 ---
 name: t3-code
-description: "Use when managing T3 projects or threads, or installing, updating, linking, or troubleshooting the Otis T3 service and T3 Connect."
+description: "Use when managing T3 projects or threads, checking Codex or Claude account-pool limits, or installing, updating, linking, or troubleshooting the Otis T3 service and T3 Connect."
 ---
 
 # T3 Code on Otis
 
-Otis runs the T3 server. Use a T3 thread when work must be visible on the user's other devices, and start it through the helper below.
+Otis runs the T3 server. Start a T3 thread only when the user asks for one, through the helper below. Delegation without that request goes over the CLI, see `agent-delegation`.
 
 Read [references/setup.md](references/setup.md) when adding, renaming, syncing, or removing projects, or working on the service or T3 Connect.
 
 Read [references/account-pools.md](references/account-pools.md) for how T3 connects to the account pool. The pool itself, its accounts, and usage limits are in [account-pool.md](../../global/references/account-pool.md).
+
+For remaining quota and reset times, use `python3 ~/.agents/skills/t3-code/scripts/pool-usage.py`. Add `--provider claude` or `--provider codex` to narrow the read, and `--json` for structured output. Read the account-pool reference for remote checks and interpretation. Use the API by default; open the dashboard for a requested visual check.
 
 ## Dispatch
 

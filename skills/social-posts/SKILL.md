@@ -20,11 +20,19 @@ Do not invent handles, metrics, quotes, results, or client approval. Ask for a m
 ## Media
 
 - Prefer real screenshots, photos, interfaces, logos, and diagrams over decorative imagery.
+- For screenshots, choose a view without personal or contact details, such as homepage content fields instead of a contact page. Company branding may remain when approved; that approval does not cover visible phone numbers or email addresses. Inspect every screenshot and the final composition for these details before presenting them as ready to post. If any remain, capture another view or crop or redact them, then check the exported image again.
 - Keep screenshots legible with the important content intact. Use consistent aspect ratios. Keep the whole image when the full interface or composition matters.
 - Skip nested cards, decorative borders, repeated headers, and interface framing unless they explain structure.
 
 ## LinkedIn
 
+For Dutch posts, read [the approved voice examples](references/linkedin-voice.md) before drafting or revising. Use the user's final wording as the style reference.
+
+- Write as a developer talking about his own work: personal, conversational, and concrete. Keep natural wording such as `AI-power`, `gewoon`, and `'ie` when it fits.
+- Keep paragraphs short, usually one to three sentences, with space between them. A short standalone sentence can carry the motivation; vary the rhythm instead of splitting every sentence apart.
+- When telling a project story, connect the practical frustration, what he wanted to change, what he built, and what the customer can now do. Use this as a helpful shape, not a mandatory template.
+- Explain a technical term briefly through its purpose, then return to the people using it. Keep future capabilities distinct from what works today.
+- A light emoji or informal punctuation can fit his voice. Preserve these in approved copy; use them selectively in new drafts rather than copying every quirk.
 - In a repost, add the user's perspective. Start with what he believes, then describe his role and way of working in the first person.
 - For development work, describe how he keeps work moving: get something working quickly, then build, test, learn, and adjust.
 - Use the client and project as a short example. Focus on his contribution and what he enjoys about the work.

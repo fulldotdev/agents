@@ -14,9 +14,39 @@ Codex and Claude requests from T3, the terminal CLIs, and `codex exec` or `claud
 
 Use these names in reports. Each machine holds its own OAuth files; subscription quotas are shared across machines. Claude has a Fable-scoped weekly window besides the all-models weekly window, and the Fable window blocks first.
 
+## Routing
+
+Both machines use unique account priorities to drain accounts in a fixed order:
+
+- Codex: Codex (500), Codex 0 (400), Codex 1 (300), Codex 2 (200), Codex 3 (100).
+- Claude: Claude 0 (200), Claude (100).
+
+The configured strategy is `fill-first` on both machines. Priorities determine the fixed account order. Session affinity keeps existing conversations on their account until it becomes unavailable. A recovered higher-priority account is eligible for new conversations again. Priorities are fixed, not automatically reordered after resets.
+
+Change priorities through `PATCH /v0/management/auth-files/fields` with `{"name":"<auth filename>","priority":500}`. This persists the setting without replacing the selector or restarting the proxy. Check persisted priorities and real requests after changes. Previous priority settings are stored locally in `~/.config/cliproxyapi/routing-backups/` on each machine.
+
+Set the strategy through `PUT /v0/management/routing/strategy` with `{"value":"fill-first"}` and verify it with GET on the same path. A strategy change replaces the selector and can rebind existing conversations; no service restart is needed.
+
 ## Checking limits
 
-Check usage limits in T3 Code’s Account pool view. Its usage source reads each machine’s local CLIProxyAPI pool.
+Read usage through the local CLIProxyAPI management API with the [pool usage helper](../../skills/t3-code/scripts/pool-usage.py):
+
+```bash
+python3 ~/.agents/skills/t3-code/scripts/pool-usage.py
+python3 ~/.agents/skills/t3-code/scripts/pool-usage.py --provider claude --json
+```
+
+For Otis, run the same helper there. From MacBook, this reads Otis without copying credentials or requiring an installed copy of the helper:
+
+```bash
+ssh -A otis 'python3 - --json' < ~/.agents/skills/t3-code/scripts/pool-usage.py
+```
+
+The helper lists accounts with `GET /v0/management/auth-files`, then sends provider usage GET requests through `POST /v0/management/api-call` with `auth_index` and the literal `Bearer $TOKEN$` placeholder. The proxy supplies OAuth credentials. Output contains account identity, remaining percentages, reset timestamps and errors only. It neither changes routing nor consumes reset credits.
+
+Use T3 Code's Account pool view when the user asks for a visual check or a comparison with T3. Read API timestamps as authoritative instants and display them in Europe/Amsterdam; T3's displayed minute can differ. Compare the same account and window, and refresh stale dashboard values before diagnosing a percentage mismatch. The same subscription shown on both machines is one quota, not two.
+
+Codex windows are identified by `limit_window_seconds`; `primary_window` can be the weekly limit. Claude reports used percentages in `utilization` and `limits[].percent`; remaining is `100 - used`. Include the model-specific `weekly_scoped` windows, especially Fable, with their own reset times. A free five-hour window or remaining all-models quota does not make an exhausted Fable window usable. Missing usage is unknown, not zero or full. Report per-account API failures without silently trying another account or machine.
 
 ## Local setup
 
